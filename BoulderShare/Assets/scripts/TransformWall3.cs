@@ -13,7 +13,7 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	
 	// Use this for initialization
 	void Start () {
-		eTouches = new int[] {-1,-1};
+		eTouches = new int[] {Observer.FINGER_NONE,Observer.FINGER_NONE};
 		prevLength = -1;
 		observer = GameObject.Find("Observer").GetComponent<Observer>();
 		cam = observer.GetCamera();
@@ -21,13 +21,13 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	
 
 	public void OnBeginDrag(PointerEventData data){
-		if (eTouches[0] == -1){
+		if (eTouches[0] == Observer.FINGER_NONE){
 			eTouches[0] = data.pointerId;
-		}else if(eTouches[1] == -1){
+		}else if(eTouches[1] == Observer.FINGER_NONE){
 			eTouches[1] = data.pointerId;
 		}
 
-		if (eTouches[1] != -1){
+		if (eTouches[1] != Observer.FINGER_NONE){
 			prevLength = -1;
 		}
 		observer.ReleaseFocus();
@@ -53,11 +53,18 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 			}
 		}
 
+		//マウスの左クリックの場合
+		if (data.pointerId == -1){
+			p1 = data.position;
+			dP1 = data.delta;
+		}
+
 		
 		Transform camTransform = cam.transform;
 		float depth = Mathf.Abs(camTransform.position.z);
 	
-        if (eTouches[1] != -1){
+        if (eTouches[1] != Observer.FINGER_NONE){
+
         	//２点間の距離
 			float length = Vector2.Distance(p1, p2);
 
@@ -110,9 +117,9 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	public void OnEndDrag(PointerEventData data){
 		if (eTouches[0] == data.pointerId){
 			eTouches[0] = eTouches[1];
-			eTouches[1] = -1;
+			eTouches[1] = Observer.FINGER_NONE;
 		}else if(eTouches[1] == data.pointerId){
-			eTouches[1] = -1;
+			eTouches[1] = Observer.FINGER_NONE;
 		}
 	}
 

@@ -17,7 +17,7 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 		sRoot = transform.Find("Items");
 		current = null;
 		Add(0);
-		finger = -1;
+		finger = Observer.FINGER_NONE;
 	}
 
 	public void Init(){
@@ -29,7 +29,7 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	}
 
 	public void OnBeginDrag(PointerEventData data){
-		if (finger == -1){
+		if (finger == Observer.FINGER_NONE){
 			startX = data.position.x;
 			finger = data.pointerId;
 		}
@@ -52,7 +52,7 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	public void OnEndDrag(PointerEventData data){
 		if (finger == data.pointerId){
 			startX = 0.0f;
-			finger = -1;
+			finger = Observer.FINGER_NONE;
 		}
 	}
 	

@@ -19,7 +19,7 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 	// Use this for initialization
 	void Start () {
 		isOpen = false;
-		finger = -1;
+		finger = Observer.FINGER_NONE;
 		width = rect.rect.width;
 		startPos = rect.localPosition;
 		endPos = new Vector3(startPos.x+width, startPos.y, startPos.z);
@@ -31,7 +31,7 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 
 	public void OnBeginDrag(PointerEventData data){
 		Debug.Log("Start:"+data.position.x);
-		if (finger == -1){
+		if (finger == Observer.FINGER_NONE){
 			//Debug.Log("Start:"+data.position.x);
 			beginX = data.position.x;
 			finger = data.pointerId;
@@ -54,7 +54,7 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 					Open();
 				}
 			}
-			finger = -1;
+			finger = Observer.FINGER_NONE;
 			beginX = 0.0f;
 		}
 	}
