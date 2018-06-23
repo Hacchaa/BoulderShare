@@ -15,13 +15,13 @@ public class HoldScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
 	// Use this for initialization
 	void Start () {
-		finger = -1;;
+		finger = Observer.FINGER_NONE;
 		parent = transform.parent;
 		curCamera = GameObject.Find("Observer").GetComponent<Observer>().GetCamera();
 	}
 	
 	public void OnBeginDrag(PointerEventData data){
-		if (finger == -1){
+		if (finger == Observer.FINGER_NONE){
 
 			finger = data.pointerId;
 			offset = curCamera.ScreenToWorldPoint(
@@ -70,7 +70,7 @@ public class HoldScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	}
 	public void OnEndDrag(PointerEventData data){
 		if (data.pointerId == finger){
-			finger = -1;
+			finger = Observer.FINGER_NONE;
 		}
 	}
 

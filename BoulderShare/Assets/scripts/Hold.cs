@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
-	private static int finger = -1;
+	private static int finger ;
 	private Camera curCamera;
 	private Observer observer;
 	private GameObject child;
@@ -23,7 +23,6 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		child = transform.Find("Hold_Scale").gameObject;
 		rend = GetComponent<Renderer>();
 		holdScript = GetComponent<Hold>();
-		finger = -1;
 
 		body = new GameObject[4];
 		if (gameObject.tag == "Hold_Normal"){
@@ -32,6 +31,10 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		}
 		body[2] = transform.Find("Phase2").Find("body_RF").gameObject;
 		body[3] = transform.Find("Phase2").Find("body_LF").gameObject;
+	}
+
+	void Start(){
+		finger = Observer.FINGER_NONE;
 	}
 
 	public void SetBodyActive(int index, bool isActive){
@@ -73,7 +76,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	
 	public void OnBeginDrag(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
-			if (finger == -1){
+			if (finger == Observer.FINGER_NONE){
 				finger = data.pointerId;
 				gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 				SetSLN("Hold");
@@ -104,7 +107,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	public void OnEndDrag(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
 			if (data.pointerId == finger){
-				finger = -1;
+				finger = Observer.FINGER_NONE;
 			
 				//bounds
 				Vector3 p = transform.position;

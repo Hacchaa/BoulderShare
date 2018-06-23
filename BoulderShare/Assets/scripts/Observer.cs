@@ -10,6 +10,7 @@ public class Observer : MonoBehaviour {
 	public const float WALL_W = 6.0f;
 	public const float WALL_H = 4.0f;
 	public static int currentPhase = 1;
+	public static int FINGER_NONE = -10;
 	public enum Phase{HOLD_EDIT=1, SCENE_EDIT};
 	public Holds holds;
 	public HScenes hScenes ;

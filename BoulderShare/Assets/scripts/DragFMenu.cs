@@ -11,13 +11,13 @@ public class DragFMenu : MonoBehaviour, IEndDragHandler, IBeginDragHandler{
 	private static float THRESHOLD = 5.0f;
 	// Use this for initialization
 	void Start () {
-		finger = -1;
+		finger = Observer.FINGER_NONE;
 		target = transform.Find("Viewport").Find("Content");
 	}
 	
 	public void OnBeginDrag(PointerEventData data){
 		//Debug.Log("OnBeginDrag");
-		if (finger == -1){
+		if (finger == Observer.FINGER_NONE){
 			startX = target.position.x;
 			finger = data.pointerId;
 		}
@@ -34,7 +34,7 @@ public class DragFMenu : MonoBehaviour, IEndDragHandler, IBeginDragHandler{
 				//Debug.Log("prev");
 				hs.PrevScene2();
 			}
-			finger = -1;
+			finger = Observer.FINGER_NONE;
 		}
 	}
 }

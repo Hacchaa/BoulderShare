@@ -11,7 +11,7 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	private Transform holds;
 	private Hold holdScript;
 	private static float HOLD_RATE = 0.1f;
-	private static int finger = -1;
+	private static int finger ;
 	private static int num = 0;
 	private const string GENTAG_NH = "Generate_NH";
 	private const string GENTAG_FH = "Generate_FH";
@@ -20,6 +20,7 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	void Start () {
 		cam = GameObject.Find("Observer").GetComponent<Observer>().GetCamera();
 		holds = GameObject.Find("Wall").transform.Find("Holds");
+		finger = Observer.FINGER_NONE;
 	}
 
 	public static void SetNum(int n){
@@ -29,7 +30,7 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	public void OnBeginDrag(PointerEventData data){
 		GameObject target = null;
 
-		if (finger == -1){
+		if (finger == Observer.FINGER_NONE){
 			if (gameObject.tag == GENTAG_NH){
 				target = holdNPrefab;
 			}else if (gameObject.tag == GENTAG_FH){
@@ -73,7 +74,7 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 				holdScript.Focus_P1();
 				holdScript.SetSLN("Default");
 			}
-			finger = -1;
+			finger = Observer.FINGER_NONE;
 
 		}
 	}
