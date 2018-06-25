@@ -75,7 +75,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	}
 	
 	public void OnBeginDrag(PointerEventData data){
-		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
+		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
+				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
 			if (finger == Observer.FINGER_NONE){
 				finger = data.pointerId;
 				gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -86,7 +87,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	}
 
 	public void OnDrag(PointerEventData data){
-		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
+		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
+				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
 			if (data.pointerId == finger){
 				Vector3 p = curCamera.ScreenToWorldPoint(
 					new Vector3(
@@ -105,7 +107,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		}
 	}
 	public void OnEndDrag(PointerEventData data){
-		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
+		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
+			 FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
 			if (data.pointerId == finger){
 				finger = Observer.FINGER_NONE;
 			
@@ -127,7 +130,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	}
 
 	public void OnPointerClick(PointerEventData data){
-		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT){
+		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
+				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
 			Focus_P1();
 		}
 	}

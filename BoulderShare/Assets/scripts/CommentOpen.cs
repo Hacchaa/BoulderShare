@@ -30,7 +30,6 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 	}
 
 	public void OnBeginDrag(PointerEventData data){
-		Debug.Log("Start:"+data.position.x);
 		if (finger == Observer.FINGER_NONE){
 			//Debug.Log("Start:"+data.position.x);
 			beginX = data.position.x;
