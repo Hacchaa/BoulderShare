@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class RotateAvaCam : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	public Transform trans;
 	private int finger ;
-	private static float weight = 2.0f;
+	private static float weight = 0.5f;
 
 	// Use this for initialization
 	void Start () {
