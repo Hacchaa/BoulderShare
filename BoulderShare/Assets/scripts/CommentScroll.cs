@@ -21,6 +21,10 @@ public class CommentScroll : MonoBehaviour {
 			GameObject.Destroy(child.gameObject);
 		}
 	}
+
+	public void ActiveIF(){
+		input.ActivateInputField();
+	}
 	
 	public void AddComment(){
 		string txt = input.text;

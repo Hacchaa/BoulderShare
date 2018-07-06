@@ -45,8 +45,8 @@ public class Hold_Pose : MonoBehaviour {
 				index += (int)Mathf.Pow(2, i);
 			}
 		}
-		Debug.Log("index:"+index);
-		Debug.Log("arr:"+centerArr[index]);
+		//Debug.Log("index:"+index);
+		//Debug.Log("arr:"+centerArr[index]);
 		if (n != 0){
 			pivot /= n;
 		}

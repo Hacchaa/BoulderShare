@@ -8,6 +8,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	private Camera curCamera;
 	private Observer observer;
 	private GameObject child;
+	private GameObject child2;
 	private Renderer rend;
 	private RectTransform canvasPos;
 	private SceneFocus sf;
@@ -16,21 +17,32 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	private RectTransform focus;
 
 	// Use this for initialization
+	
 	void Awake () {
 		GameObject tmp = GameObject.Find("Observer");
 		observer = tmp.GetComponent<Observer>();
 		curCamera = observer.GetCamera();
 		child = transform.Find("Hold_Scale").gameObject;
+		child2 = transform.Find("Phase2").gameObject;
 		rend = GetComponent<Renderer>();
 		holdScript = GetComponent<Hold>();
 
 		body = new GameObject[4];
 		if (gameObject.tag == "Hold_Normal"){
-			body[0] = transform.Find("Phase2").Find("body_RH").gameObject;
-			body[1] = transform.Find("Phase2").Find("body_LH").gameObject;
+			body[0] = child2.transform.Find("body_RH").gameObject;
+			body[1] = child2.transform.Find("body_LH").gameObject;
 		}
-		body[2] = transform.Find("Phase2").Find("body_RF").gameObject;
-		body[3] = transform.Find("Phase2").Find("body_LF").gameObject;
+		body[2] = child2.transform.Find("body_RF").gameObject;
+		body[3] = child2.transform.Find("body_LF").gameObject;
+	}
+
+	public void SwitchPhase(int type){
+		if (type == (int)Observer.Phase.HOLD_EDIT){
+			child2.SetActive(false);
+		}else if (type == (int)Observer.Phase.SCENE_EDIT){
+			child.SetActive(false);
+			child2.SetActive(true);
+		}
 	}
 
 	void Start(){
@@ -76,7 +88,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	
 	public void OnBeginDrag(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
-				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
+				Phase1.curType == (int)Phase1.TYPE.HOLDOPERATION){
 			if (finger == Observer.FINGER_NONE){
 				finger = data.pointerId;
 				gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -88,7 +100,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 
 	public void OnDrag(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
-				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
+				Phase1.curType == (int)Phase1.TYPE.HOLDOPERATION){
 			if (data.pointerId == finger){
 				Vector3 p = curCamera.ScreenToWorldPoint(
 					new Vector3(
@@ -108,7 +120,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	}
 	public void OnEndDrag(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
-			 FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
+			 Phase1.curType == (int)Phase1.TYPE.HOLDOPERATION){
 			if (data.pointerId == finger){
 				finger = Observer.FINGER_NONE;
 			
@@ -131,7 +143,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 
 	public void OnPointerClick(PointerEventData data){
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
-				FMenuP1.curType == (int)FMenuP1.TYPE.HOLDOPERATION){
+				Phase1.curType == (int)Phase1.TYPE.HOLDOPERATION){
 			Focus_P1();
 		}
 	}

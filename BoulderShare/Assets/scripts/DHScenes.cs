@@ -12,7 +12,7 @@ public class DHScenes : MonoBehaviour {
 		
 	}
 
-	public void Construction(){
+	private void Construction(){
 		scenes = new DataArray();
 		scenes.arr = new Data[hscenes.GetNum()];
 		int i = 0;

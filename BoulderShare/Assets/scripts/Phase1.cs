@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FMenuP1 : MonoBehaviour {
+public class Phase1 : MonoBehaviour {
 	public GameObject model;
 	public GameObject slider;
 	public GameObject holdOpe;
@@ -14,12 +14,12 @@ public class FMenuP1 : MonoBehaviour {
 		
 	}
 
-	public void Switch(int type){
-		if (type == (int)FMenuP1.TYPE.HOLDOPERATION){
+	public void SwitchSubMenu(int type){
+		if (type == (int)TYPE.HOLDOPERATION){
 			model.SetActive(false);
 			slider.SetActive(false);
 			holdOpe.SetActive(true);
-		}else if (type == (int)FMenuP1.TYPE.MODELSIZE){
+		}else if (type == (int)TYPE.MODELSIZE){
 			model.SetActive(true);
 			slider.SetActive(true);
 			holdOpe.SetActive(false);

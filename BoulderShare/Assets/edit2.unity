@@ -1608,7 +1608,6 @@ GameObject:
   - component: {fileID: 292627771}
   - component: {fileID: 292627770}
   - component: {fileID: 292627769}
-  - component: {fileID: 292627768}
   m_Layer: 5
   m_Name: ModelSizeBtn
   m_TagString: Untagged
@@ -1632,20 +1631,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 665.61926, y: -125}
+  m_AnchoredPosition: {x: 665, y: -125}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &292627768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 292627766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78d3893ca17d240cbbd7a8b4e934a5f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &292627769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1685,8 +1673,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 442539957}
-        m_MethodName: Switch
+      - m_Target: {fileID: 698897726}
+        m_MethodName: SwitchSubMenu
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2107,7 +2095,6 @@ GameObject:
   - component: {fileID: 365312531}
   - component: {fileID: 365312530}
   - component: {fileID: 365312529}
-  - component: {fileID: 365312528}
   m_Layer: 5
   m_Name: HVisible
   m_TagString: Untagged
@@ -2134,18 +2121,6 @@ RectTransform:
   m_AnchoredPosition: {x: -100, y: -400}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &365312528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 365312526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef8083953ed7440e285197b9e265ecd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holds: {fileID: 461319892}
 --- !u!114 &365312529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2185,8 +2160,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 365312528}
-        m_MethodName: Switch
+      - m_Target: {fileID: 461319894}
+        m_MethodName: SwitchVisibility
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2703,7 +2678,7 @@ GameObject:
   - component: {fileID: 427551205}
   - component: {fileID: 427551207}
   - component: {fileID: 427551209}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2789,7 +2764,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 442539956}
-  - component: {fileID: 442539957}
   m_Layer: 5
   m_Name: FMenu
   m_TagString: Untagged
@@ -2817,21 +2791,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 250}
   m_SizeDelta: {x: 0, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &442539957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 442539955}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5ecd96c4c0afa54aab496525e99c4ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  model: {fileID: 2055459815}
-  slider: {fileID: 1680340416}
-  holdOpe: {fileID: 511550305}
-  observer: {fileID: 527801504}
 --- !u!1 &443844477
 GameObject:
   m_ObjectHideFlags: 0
@@ -5818,6 +5777,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 698897725}
+  - component: {fileID: 698897726}
   m_Layer: 0
   m_Name: Phase1
   m_TagString: Untagged
@@ -5840,6 +5800,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &698897726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 698897724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30e3a2fa474d5d4c8a2f8a19b1aec47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 2055459815}
+  slider: {fileID: 1680340416}
+  holdOpe: {fileID: 511550305}
+  observer: {fileID: 527801504}
 --- !u!1 &707510010
 GameObject:
   m_ObjectHideFlags: 0
@@ -6099,7 +6074,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540.61926, y: -105}
+  m_AnchoredPosition: {x: 540.5, y: -105}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &727746944
@@ -6276,7 +6251,6 @@ GameObject:
   - component: {fileID: 737368385}
   - component: {fileID: 737368384}
   - component: {fileID: 737368383}
-  - component: {fileID: 737368382}
   - component: {fileID: 737368381}
   m_Layer: 5
   m_Name: AddBtn
@@ -6323,18 +6297,6 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &737368382
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 737368379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d95514d1ae6c4801bc04bf294037ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  input: {fileID: 1545679825}
 --- !u!114 &737368383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6373,7 +6335,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 737368384}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 138885342}
+        m_MethodName: ActiveIF
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &737368384
@@ -7050,7 +7023,7 @@ GameObject:
   m_Component:
   - component: {fileID: 792909555}
   - component: {fileID: 792909556}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DisplayPose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10063,8 +10036,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1625712888}
   m_HandleRect: {fileID: 1625712887}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.99196196
+  m_Value: 0.0000061035157
+  m_Size: 0.9908257
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13030,7 +13003,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 442539957}
+      - m_Target: {fileID: 698897726}
         m_MethodName: SliderOpe
         m_Mode: 0
         m_Arguments:
@@ -14221,7 +14194,6 @@ GameObject:
   - component: {fileID: 1703791640}
   - component: {fileID: 1703791639}
   - component: {fileID: 1703791638}
-  - component: {fileID: 1703791637}
   m_Layer: 5
   m_Name: HoldOpeBtn
   m_TagString: Untagged
@@ -14245,20 +14217,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 415.61926, y: -125}
+  m_AnchoredPosition: {x: 415, y: -125}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1703791637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1703791635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78d3893ca17d240cbbd7a8b4e934a5f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1703791638
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14298,8 +14259,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 442539957}
-        m_MethodName: Switch
+      - m_Target: {fileID: 698897726}
+        m_MethodName: SwitchSubMenu
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14444,7 +14405,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 790.61926, y: -105}
+  m_AnchoredPosition: {x: 790.5, y: -105}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1718175894
@@ -16720,7 +16681,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 290.61926, y: -105}
+  m_AnchoredPosition: {x: 290.5, y: -105}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2132885255
