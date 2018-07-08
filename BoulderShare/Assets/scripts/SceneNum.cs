@@ -16,7 +16,6 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	void Start () {
 		sRoot = transform.Find("Items");
 		current = null;
-		Add(0);
 		finger = Observer.FINGER_NONE;
 	}
 

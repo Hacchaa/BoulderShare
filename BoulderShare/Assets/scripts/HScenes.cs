@@ -17,10 +17,11 @@ public class HScenes : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		list = new List<HScene>();
-		list.Add(new HScene());
-		curNum.text = "1";
-		num.text = "1";
+		curNum.text = "0";
+		num.text = "0";
 		holds = GameObject.Find("Wall").transform.Find("Holds");
+
+		AddScene();
 	}
 
 	public int GetNum(){
@@ -91,7 +92,10 @@ public class HScenes : MonoBehaviour {
 		int index = int.Parse(curNum.text) - 1;
 		HScene scene = new HScene();
 
-		SaveScene(list[index]);
+		if (index >= 0){
+			SaveScene(list[index]);
+		}
+
 		LoadScene(scene);
 		list.Insert(index+1, scene);
 		sn.Add(index+1);
@@ -103,7 +107,9 @@ public class HScenes : MonoBehaviour {
 		int index = int.Parse(curNum.text) - 1;
 		HScene scene = s;
 
-		SaveScene(list[index]);
+		if (index >= 0){
+			SaveScene(list[index]);
+		}
 		LoadScene(scene);
 		list.Insert(index+1, scene);
 		sn.Add(index+1);

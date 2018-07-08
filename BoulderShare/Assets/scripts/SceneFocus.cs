@@ -10,7 +10,7 @@ public class SceneFocus : MonoBehaviour {
 	private Hold[] curFocusHolds;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		choiced = (int)Choice.None;
 		curFocusHolds = new Hold[4];
 	}

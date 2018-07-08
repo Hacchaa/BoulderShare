@@ -8,9 +8,14 @@ public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler{
 	private SceneFocus sf;
 	private Image image;
 	// Use this for initialization
+	
+	void Awake(){
+		image = GetComponent<Image>();
+	}
+
+
 	void Start () {
 		sf = transform.parent.gameObject.GetComponent<SceneFocus>();
-		image = GetComponent<Image>();
 	}
 
 	
