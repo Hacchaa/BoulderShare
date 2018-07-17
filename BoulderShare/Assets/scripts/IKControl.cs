@@ -7,7 +7,7 @@ using System.Collections;
 public class IKControl : MonoBehaviour {
 	
 	protected Animator avatar;
-	public bool ikActive;
+	public bool ikActive = false;
 	
 	public Transform bodyObj = null;
 	public Transform leftFootObj = null;
@@ -44,11 +44,14 @@ public class IKControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		avatar = GetComponent<Animator>();
-		InitAvater();
 	}
 
 	public void InitAvater(){
 		ikActive = false;
+	}
+
+	public bool GetIkActive(){
+		return ikActive;
 	}
 
 	public Transform[] GetPose(){

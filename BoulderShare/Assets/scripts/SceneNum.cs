@@ -13,9 +13,11 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	private static int num = 0;
 	public HScenes hScenes;
 	// Use this for initialization
+	void Awake(){
+		current = null;
+	}
 	void Start () {
 		sRoot = transform.Find("Items");
-		current = null;
 		finger = Observer.FINGER_NONE;
 	}
 

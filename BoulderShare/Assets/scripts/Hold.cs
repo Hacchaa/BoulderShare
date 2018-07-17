@@ -17,8 +17,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	private RectTransform focus;
 
 	// Use this for initialization
-	
-	void Awake () {
+	void Start () {
 		GameObject tmp = GameObject.Find("Observer");
 		observer = tmp.GetComponent<Observer>();
 		curCamera = observer.GetCamera();
@@ -26,7 +25,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		child2 = transform.Find("Phase2").gameObject;
 		rend = GetComponent<Renderer>();
 		holdScript = GetComponent<Hold>();
-
+		
 		body = new GameObject[4];
 		if (gameObject.tag == "Hold_Normal"){
 			body[0] = child2.transform.Find("body_RH").gameObject;
@@ -34,6 +33,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		}
 		body[2] = child2.transform.Find("body_RF").gameObject;
 		body[3] = child2.transform.Find("body_LF").gameObject;
+
+		finger = Observer.FINGER_NONE;
 	}
 
 	public void SwitchPhase(int type){
@@ -43,10 +44,6 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 			child.SetActive(false);
 			child2.SetActive(true);
 		}
-	}
-
-	void Start(){
-		finger = Observer.FINGER_NONE;
 	}
 
 	public void SetBodyActive(int index, bool isActive){

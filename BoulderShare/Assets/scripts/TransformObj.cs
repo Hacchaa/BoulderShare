@@ -43,6 +43,10 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 			transform.position = avatar.position;
 		}
 	}
+
+	public bool IsFixed(){
+		return isFixed;
+	}
 	
 	public void SetFixed(bool b){
 		isFixed = b;

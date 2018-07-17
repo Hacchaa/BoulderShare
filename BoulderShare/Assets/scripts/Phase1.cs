@@ -6,12 +6,12 @@ public class Phase1 : MonoBehaviour {
 	public GameObject model;
 	public GameObject slider;
 	public GameObject holdOpe;
-	public enum TYPE{HOLDOPERATION=0, MODELSIZE};
+	public GameObject inclineObj;
+	public enum TYPE{HOLDOPERATION=0, MODELSIZE, INCLINE};
 	public static int curType = 0;
 	public Observer observer;
 	// Use this for initialization
 	void Start () {
-		
 	}
 
 	public void SwitchSubMenu(int type){
@@ -19,10 +19,17 @@ public class Phase1 : MonoBehaviour {
 			model.SetActive(false);
 			slider.SetActive(false);
 			holdOpe.SetActive(true);
+			inclineObj.SetActive(false);
 		}else if (type == (int)TYPE.MODELSIZE){
 			model.SetActive(true);
 			slider.SetActive(true);
 			holdOpe.SetActive(false);
+			inclineObj.SetActive(false);
+		}else if (type == (int)TYPE.INCLINE){
+			model.SetActive(false);
+			slider.SetActive(false);
+			holdOpe.SetActive(false);
+			inclineObj.SetActive(true);
 		}
 		curType = type;
 		observer.ReleaseFocus();

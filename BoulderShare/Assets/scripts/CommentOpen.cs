@@ -9,7 +9,7 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 	private float width ;
 	public float duration = 1.0f;
 	public AnimationCurve animCurve = AnimationCurve.Linear(0, 0, 1, 1);
-	private bool isOpen;
+	private bool isOpen = false;
 	public RectTransform rect;
 	public GameObject shield;
 	private float beginX;
@@ -18,7 +18,6 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 
 	// Use this for initialization
 	void Start () {
-		isOpen = false;
 		finger = Observer.FINGER_NONE;
 		width = rect.rect.width;
 		startPos = rect.localPosition;

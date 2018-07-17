@@ -13,12 +13,15 @@ public class HScenes : MonoBehaviour {
 	private Transform holds;
 	public CommentScroll cs;
 	public IKControl ik;
+	public AvatarControl ac;
 
 	// Use this for initialization
-	void Start () {
+	void Awake(){
 		list = new List<HScene>();
 		curNum.text = "0";
 		num.text = "0";
+	}
+	void Start () {
 		holds = GameObject.Find("Wall").transform.Find("Holds");
 
 		AddScene();
@@ -68,6 +71,7 @@ public class HScenes : MonoBehaviour {
 		}else{
 			ik.InitAvater();
 		}
+		ac.Init();
 	}
 
 	public Hold[] GetCurHolds(){

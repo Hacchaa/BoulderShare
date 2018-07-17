@@ -16,8 +16,33 @@ public class Observer : MonoBehaviour {
 	public HScenes hScenes ;
 	public GameObject[] phaseArr;
 
-	void Start(){
+	void Awake(){
 		currentPhase = 1;
+	}
+
+	void Start(){
+		//InitAllObjects(phaseArr[0]);
+		//InitAllObjects(phaseArr[1]);
+	}
+
+	public void InitAllObjects(GameObject obj){
+		bool b = obj.activeSelf;
+		if(!b){
+			Debug.Log(obj.name);
+			obj.SetActive(true);
+		}
+		foreach (Transform child in obj.transform ){
+			InitAllObjects(child.gameObject);
+		}
+		StartCoroutine("Wait");
+
+		if (!b){
+			obj.SetActive(false);
+		}
+
+	}
+	IEnumerator Wait(){
+		yield return new WaitForSeconds(.1f);
 	}
 
 	public void InitHoldsAndScenes(){

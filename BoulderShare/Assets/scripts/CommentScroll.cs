@@ -11,7 +11,7 @@ public class CommentScroll : MonoBehaviour {
 	public Transform addBtn;
 	private List<string> comments ;
 
-	void Start(){
+	void Awake(){
 		comments = new List<string>();
 	}
 
