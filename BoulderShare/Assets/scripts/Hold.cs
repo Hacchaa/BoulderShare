@@ -17,7 +17,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	private RectTransform focus;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		GameObject tmp = GameObject.Find("Observer");
 		observer = tmp.GetComponent<Observer>();
 		curCamera = observer.GetCamera();
@@ -71,13 +71,13 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 			sf.Registration(holdScript);
 			observer.ReleaseFocus();
 
-			if (choice == (int)SceneFocus.Choice.RH){
+			if (choice == (int)AvatarControl.BODYS.RH){
 
-			}else if (choice == (int)SceneFocus.Choice.LH){
+			}else if (choice == (int)AvatarControl.BODYS.LH){
 
-			}else if (choice == (int)SceneFocus.Choice.RF){
+			}else if (choice == (int)AvatarControl.BODYS.RF){
 
-			}else if (choice == (int)SceneFocus.Choice.LF){
+			}else if (choice == (int)AvatarControl.BODYS.LF){
 	
 			}
 		}

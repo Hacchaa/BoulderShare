@@ -67,7 +67,15 @@ public class HScene{
 	public void show(){
 		for(int i = 0 ; i < onHolds.Length ; i++){
 			if (onHolds[i] != null){
-				Debug.Log(i+":"+onHolds[i]);
+				Debug.Log("onHolds["+i+"]:"+onHolds[i]);
+			}
+		}
+		for(int i = 0 ; i < pose.Length ; i++){
+			Debug.Log("pose["+i+"]:"+pose[i]);
+		}
+		for(int i = 0 ; i < pRotate.Length ; i++){
+			if (pRotate[i] != null){
+				Debug.Log("pROtate["+i+"]:"+pRotate[i]);
 			}
 		}
 	}

@@ -86,19 +86,19 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 					float r = 0.0f;
 					Vector3 pos = Vector3.zero;
 					if (isRHD){
-						r = hp.GetR((int)SceneFocus.Choice.RH);
-						pos = hp.GetHoldPos((int)SceneFocus.Choice.RH);
+						r = hp.GetR((int)AvatarControl.BODYS.RH);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RH);
 					}else if(isRFD){
-						r = hp.GetR((int)SceneFocus.Choice.RF);
-						pos = hp.GetHoldPos((int)SceneFocus.Choice.RF);
+						r = hp.GetR((int)AvatarControl.BODYS.RF);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RF);
 					}
 					else if(isLHD){
-						r = hp.GetR((int)SceneFocus.Choice.LH);
-						pos = hp.GetHoldPos((int)SceneFocus.Choice.LH);
+						r = hp.GetR((int)AvatarControl.BODYS.LH);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LH);
 					}
 					else if(isLFD){
-						r = hp.GetR((int)SceneFocus.Choice.LF);
-						pos = hp.GetHoldPos((int)SceneFocus.Choice.LF);
+						r = hp.GetR((int)AvatarControl.BODYS.LF);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LF);
 					}
 
 					Vector3 v = target.localPosition - pos;

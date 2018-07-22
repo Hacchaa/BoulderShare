@@ -3,22 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AvatarControl : MonoBehaviour {
-	private int incline;
-	public enum BODYS{RH=0,RF,RE,RK,LH,LF,LE,LK,BODY};
+	private int incline ;
+	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY};
 	public Transform plane;
-	public TransformObj[] tObjs;
+	public TransformObj[] acObjs;
 
 	// Use this for initialization
 	void Start () {
-		incline = 90;
-		SetIncline(incline);
+		if (plane != null){
+			SetIncline(90);
+		}
 	}
 	
 	public void Init(){
-		for (int i = 0; i < tObjs.Length ; i++){
-			tObjs[i].SetFixed(false);
+		for (int i = 0; i < acObjs.Length ; i++){
+			if (acObjs[i] != null){
+				acObjs[i].SetFixed(false);
+			}
 		}
 	}
+
+	public bool IsFixed(int t){
+		return acObjs[t].IsFixed();
+	}
+
+	public void SetFixed(int t, bool b){
+		acObjs[t].SetFixed(b);
+	}
+
 	public int GetIncline(){
 		return incline;
 	}

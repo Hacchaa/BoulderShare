@@ -36,42 +36,45 @@ public class HScenes : MonoBehaviour {
 	}
 
 	public void Construction(List<HScene> data){
-		Start();
+		int n = data.Count;
+		Awake();
 		sn.Init();
-		foreach(HScene scene in data){
-			AddScene2(scene);
+		
+		for(int i = 0 ; i < n ; i++){
+			sn.Add(0);
 		}
-		while(int.Parse(curNum.text) > 1){
-			PrevScene();
-		}
-		RemoveScene();
+
+		list = data;
+		curNum.text = "1";
+		num.text = n + "";
+		LoadScene(list[0]);
 	}
 
 	public void InitScenes(){
+		Awake();
 		Start();
 	}
 
 	private void LoadScene(HScene scene){
 		sf.Reset();
-
+		ac.Init();
 		string[] onHolds = scene.GetOnHolds();
-		for(int i = (int)SceneFocus.Choice.RH ; i <= (int)SceneFocus.Choice.LF ; i++){
-			if (onHolds[i] != null && onHolds[i].Length > 0){
-				//Debug.Log(i+":"+onHolds[i]);
+		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
+			if (!string.IsNullOrEmpty(onHolds[i])){
 				Transform t = holds.Find(onHolds[i]);
 				if (t != null){
 					Hold hold = t.gameObject.GetComponent<Hold>();
 					sf.SetFocusHold(i, hold);
+					ac.SetFixed(i, true);
 				}
 			}
 		}
 		cs.SetComments(scene.GetComments());
 		if (scene.IsPose()){
-			ik.SetPose2(scene.GetPose(), scene.GetPRotate());
+			ik.SetPose(scene.GetPose(), scene.GetPRotate());
 		}else{
-			ik.InitAvater();
+			ik.InitAvatar();
 		}
-		ac.Init();
 	}
 
 	public Hold[] GetCurHolds(){
@@ -100,20 +103,6 @@ public class HScenes : MonoBehaviour {
 			SaveScene(list[index]);
 		}
 
-		LoadScene(scene);
-		list.Insert(index+1, scene);
-		sn.Add(index+1);
-
-		curNum.text = index + 2 + "";
-		num.text = int.Parse(num.text) + 1 + "";
-	}
-	public void AddScene2(HScene s){
-		int index = int.Parse(curNum.text) - 1;
-		HScene scene = s;
-
-		if (index >= 0){
-			SaveScene(list[index]);
-		}
 		LoadScene(scene);
 		list.Insert(index+1, scene);
 		sn.Add(index+1);

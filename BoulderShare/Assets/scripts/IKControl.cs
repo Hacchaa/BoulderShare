@@ -46,14 +46,14 @@ public class IKControl : MonoBehaviour {
 		avatar = GetComponent<Animator>();
 	}
 
-	public void InitAvater(){
+	public void InitAvatar(){
 		ikActive = false;
 	}
 
 	public bool GetIkActive(){
 		return ikActive;
 	}
-
+/*
 	public Transform[] GetPose(){
 		Transform [] trans = new Transform[Enum.GetNames(typeof(AvatarControl.BODYS)).Length];
 
@@ -68,7 +68,7 @@ public class IKControl : MonoBehaviour {
 		trans[(int)AvatarControl.BODYS.RE] = rightElbow;
 
 		return trans;
-	}
+	}*/
 
 	public Vector3[] GetPosition(){
 		Vector3[] pos = new Vector3[Enum.GetNames(typeof(AvatarControl.BODYS)).Length];
@@ -104,47 +104,7 @@ public class IKControl : MonoBehaviour {
 
 	}
 
-	public void SetPose(Transform[] arr){
-		if(bodyObj != null && arr[(int)AvatarControl.BODYS.BODY] != null){
-			bodyObj.localPosition = arr[(int)AvatarControl.BODYS.BODY].localPosition;
-			bodyObj.localRotation = arr[(int)AvatarControl.BODYS.BODY].localRotation;
-		}				
-
-		if(leftFootObj != null && arr[(int)AvatarControl.BODYS.LF] != null){
-			leftFootObj.localPosition = arr[(int)AvatarControl.BODYS.LF].localPosition;
-			leftFootObj.localRotation = arr[(int)AvatarControl.BODYS.LF].localRotation;
-		}				
-	
-		if(rightFootObj != null && arr[(int)AvatarControl.BODYS.RF] != null){
-			rightFootObj.localPosition = arr[(int)AvatarControl.BODYS.RF].localPosition;
-			rightFootObj.localRotation = arr[(int)AvatarControl.BODYS.RF].localRotation;
-		}				
-
-		if(leftHandObj != null && arr[(int)AvatarControl.BODYS.LH] != null){
-			leftHandObj.localPosition = arr[(int)AvatarControl.BODYS.LH].localPosition;
-			leftHandObj.localRotation = arr[(int)AvatarControl.BODYS.LH].localRotation;
-		}				
-	
-		if(rightHandObj != null && arr[(int)AvatarControl.BODYS.RH] != null){
-			rightHandObj.localPosition = arr[(int)AvatarControl.BODYS.RH].localPosition;
-			rightHandObj.localRotation = arr[(int)AvatarControl.BODYS.RH].localRotation;
-		}
-
-		if (leftKnee != null && arr[(int)AvatarControl.BODYS.LK] != null){
-			leftKnee.localPosition = arr[(int)AvatarControl.BODYS.LK].localPosition;
-		}	
-		if (rightKnee != null && arr[(int)AvatarControl.BODYS.RK] != null){
-			rightKnee.localPosition = arr[(int)AvatarControl.BODYS.RK].localPosition;
-		}
-		if (leftElbow != null && arr[(int)AvatarControl.BODYS.LE] != null){
-			leftElbow.localPosition = arr[(int)AvatarControl.BODYS.LE].localPosition;
-		}
-		if (rightElbow != null && arr[(int)AvatarControl.BODYS.RE] != null){
-			rightElbow.localPosition = arr[(int)AvatarControl.BODYS.RE].localPosition;
-		}	
-	}
-
-	public void SetPose2(Vector3[] pos, Quaternion[] rot){
+	public void SetPose(Vector3[] pos, Quaternion[] rot){
 		if(bodyObj != null ){
 			bodyObj.localPosition = pos[(int)AvatarControl.BODYS.BODY];
 			bodyObj.localRotation = rot[(int)AvatarControl.BODYS.BODY];
@@ -246,6 +206,7 @@ public class IKControl : MonoBehaviour {
 					avatar.SetIKHintPosition(AvatarIKHint.RightElbow,rightElbow.position);
 				}				
 			}else{
+				//Debug.Log("ik false");
 				avatar.SetIKPositionWeight(AvatarIKGoal.LeftFoot,0);
 				avatar.SetIKRotationWeight(AvatarIKGoal.LeftFoot,0);
 							

@@ -14,7 +14,17 @@ public class Incline : MonoBehaviour {
 	}
 	
 	public void SetInclineValue(){
-		ac.SetIncline((int)slider.value);
-		inclineText.text = "" + slider.value;
+		ac.SetIncline((int)slider.value*5);
+		inclineText.text = "" + slider.value*5;
+	}
+
+	public int GetIncline(){
+		return (int)slider.value*5;
+	}
+
+	public void SetIncline(int value){
+		slider.value = value/5;
+		ac.SetIncline(value);
+		inclineText.text = "" + value;
 	}
 }

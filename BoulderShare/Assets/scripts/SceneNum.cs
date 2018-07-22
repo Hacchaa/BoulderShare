@@ -13,10 +13,8 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	private static int num = 0;
 	public HScenes hScenes;
 	// Use this for initialization
-	void Awake(){
-		current = null;
-	}
 	void Start () {
+		current = null;
 		sRoot = transform.Find("Items");
 		finger = Observer.FINGER_NONE;
 	}
@@ -60,6 +58,9 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	public void Add(int index){
 		if (current != null){
 			current.DeSelect();
+		}
+		if (sRoot == null){
+			sRoot = transform.Find("Items");
 		}
 		current = Instantiate(IconPrefab, sRoot).GetComponent<SceneNumIcon>();
 		current.gameObject.name = num + "";

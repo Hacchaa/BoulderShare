@@ -11,7 +11,7 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 	public AnimationCurve animCurve = AnimationCurve.Linear(0, 0, 1, 1);
 	private bool isOpen = false;
 	public RectTransform rect;
-	public GameObject shield;
+	public Shield shield;
 	private float beginX;
 	private int finger ;
 	private static float THRESHOLD = 15.0f;
@@ -59,9 +59,9 @@ public class CommentOpen : MonoBehaviour , IBeginDragHandler, IDragHandler, IEnd
 	
 	public void Open(){
 		if (isOpen){
-			shield.SetActive(false);
+			shield.gameObject.SetActive(false);
 		}else{
-			shield.SetActive(true);
+			shield.Open(this.Open);
 		}
 		StartCoroutine(OpenComment());
 	}

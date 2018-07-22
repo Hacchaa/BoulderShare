@@ -24,13 +24,13 @@ public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler{
 			string name = data.pointerEnter.name;
 			//Debug.Log(name);
 			if (name == "RightHand"){
-				sf.SetChoice((int)SceneFocus.Choice.RH);
+				sf.SetChoice((int)AvatarControl.BODYS.RH);
 			}else if (name == "LeftHand"){
-				sf.SetChoice((int)SceneFocus.Choice.LH);
+				sf.SetChoice((int)AvatarControl.BODYS.LH);
 			}else if (name == "RightFoot"){
-				sf.SetChoice((int)SceneFocus.Choice.RF);
+				sf.SetChoice((int)AvatarControl.BODYS.RF);
 			}else if (name == "LeftFoot"){
-				sf.SetChoice((int)SceneFocus.Choice.LF);
+				sf.SetChoice((int)AvatarControl.BODYS.LF);
 			}
 		}
 	}

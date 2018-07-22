@@ -11,38 +11,20 @@ public class Observer : MonoBehaviour {
 	public const float WALL_H = 4.0f;
 	public static int currentPhase = 1;
 	public static int FINGER_NONE = -10;
-	public enum Phase{HOLD_EDIT=1, SCENE_EDIT};
+	public enum Phase{HOLD_EDIT=0, SCENE_EDIT};
 	public Holds holds;
 	public HScenes hScenes ;
 	public GameObject[] phaseArr;
+	public ThreeDModel threeDModel;
+	public Phase1 phase1;
 
 	void Awake(){
-		currentPhase = 1;
+		currentPhase = 0;
 	}
 
 	void Start(){
 		//InitAllObjects(phaseArr[0]);
 		//InitAllObjects(phaseArr[1]);
-	}
-
-	public void InitAllObjects(GameObject obj){
-		bool b = obj.activeSelf;
-		if(!b){
-			Debug.Log(obj.name);
-			obj.SetActive(true);
-		}
-		foreach (Transform child in obj.transform ){
-			InitAllObjects(child.gameObject);
-		}
-		StartCoroutine("Wait");
-
-		if (!b){
-			obj.SetActive(false);
-		}
-
-	}
-	IEnumerator Wait(){
-		yield return new WaitForSeconds(.1f);
 	}
 
 	public void InitHoldsAndScenes(){
@@ -72,10 +54,29 @@ public class Observer : MonoBehaviour {
 
 	public void SwitchPhase(int phase){
 		ReleaseFocus();
+/*
+		for(int i = 0 ; i < phaseArr.Length ; i++){
+			if (i == phase-1){
+				phaseArr[i].SetActive(true);
+			}else{
+				phaseArr[i].SetActive(false);
+			}
+		}*/
 
-		phaseArr[currentPhase-1].SetActive(false);
-		phaseArr[phase-1].SetActive(true);
+		if(phase == (int)Observer.Phase.HOLD_EDIT){
+			phaseArr[(int)Observer.Phase.HOLD_EDIT].SetActive(true);
+			phase1.SwitchSubMenu((int)Phase1.TYPE.DEFAULT);
+		}else{
+			phaseArr[(int)Observer.Phase.HOLD_EDIT].SetActive(false);
+		} 
 
+		if(phase == (int)Observer.Phase.SCENE_EDIT){
+			phaseArr[(int)Observer.Phase.SCENE_EDIT].SetActive(true);
+			threeDModel.ChangeMode((int)ThreeDModel.Mode.WINDOW);
+		}else{
+			phaseArr[(int)Observer.Phase.SCENE_EDIT].SetActive(false);
+			threeDModel.ChangeMode((int)ThreeDModel.Mode.DEFAULT);
+		} 
 		//GameObject.Find("Phase"+currentPhase).SetActive(false);
 		//GameObject.Find("Phase"+phase).SetActive(true);
 		currentPhase = phase;

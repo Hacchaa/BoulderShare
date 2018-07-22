@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class RotateAvaCam : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class RotateObj : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	public Transform trans;
 	private int finger ;
 	private static float weight = 0.5f;
@@ -21,7 +21,7 @@ public class RotateAvaCam : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 	
 	public void OnDrag(PointerEventData data){
 		if (data.pointerId == finger){
-			//カメラをy軸に回転させる
+			//y軸に回転させる
 			trans.Rotate(0, -data.delta.x * weight, 0);
 		}
 	}
