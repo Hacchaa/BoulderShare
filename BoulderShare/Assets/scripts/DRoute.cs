@@ -9,7 +9,7 @@ public class DRoute : MonoBehaviour{
 	public Data route;
 	public DHolds dHolds;
 	public DHScenes dHScenes;
-	public Text title;
+	public InputField title;
 	public Incline incline;
 	public Phase1 phase1;
 
@@ -32,13 +32,14 @@ public class DRoute : MonoBehaviour{
 
 	public void FromJson(string json){
 		route = JsonUtility.FromJson<Data>(json);
-		/*
+		
 		Debug.Log("title:"+route.title);
 		Debug.Log("time:"+route.time);
 		Debug.Log("holds:"+route.holds);
-		Debug.Log("hScenes:"+route.hScenes);*/
+		Debug.Log("hScenes:"+route.hScenes);
 		dHolds.FromJson(route.holds);
 		dHScenes.FromJson(route.hScenes);
+		Debug.Break();
 		title.text = route.title;
 		incline.SetIncline(route.incline);
 		phase1.SetModelSize(route.scaleH2M);

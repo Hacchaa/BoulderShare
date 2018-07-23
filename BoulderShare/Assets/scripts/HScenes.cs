@@ -23,7 +23,7 @@ public class HScenes : MonoBehaviour {
 	}
 	void Start () {
 		holds = GameObject.Find("Wall").transform.Find("Holds");
-
+		sn.Init();
 		AddScene();
 	}
 

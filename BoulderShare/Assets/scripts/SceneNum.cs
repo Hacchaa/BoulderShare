@@ -62,11 +62,14 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 		if (sRoot == null){
 			sRoot = transform.Find("Items");
 		}
-		current = Instantiate(IconPrefab, sRoot).GetComponent<SceneNumIcon>();
+		current = Instantiate(IconPrefab).GetComponent<SceneNumIcon>();
 		current.gameObject.name = num + "";
 		num++;
 		current.gameObject.transform.SetSiblingIndex(index);
 		current.Select();
+		current.gameObject.transform.parent = sRoot;
+		current.gameObject.transform.localScale = Vector3.one;
+		current.gameObject.transform.localPosition = Vector3.zero;
 	}
 
 	public void Remove(int index){

@@ -17,6 +17,8 @@ public class Observer : MonoBehaviour {
 	public GameObject[] phaseArr;
 	public ThreeDModel threeDModel;
 	public Phase1 phase1;
+	public const string WALLPATH = "/Wall.png";
+	public const string ROUTEPATH = "/route/";
 
 	void Awake(){
 		currentPhase = 0;
