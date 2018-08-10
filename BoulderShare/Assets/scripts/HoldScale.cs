@@ -22,8 +22,8 @@ public class HoldScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	
 	public void OnBeginDrag(PointerEventData data){
 		if (finger == Observer.FINGER_NONE){
-
 			finger = data.pointerId;
+			//タップしたスクリーン座標に交わるように y = -x から垂線を引いた交点の、原点からの距離(BaseR)を求める
 			offset = curCamera.ScreenToWorldPoint(
 				new Vector3(
 					data.position.x, 
