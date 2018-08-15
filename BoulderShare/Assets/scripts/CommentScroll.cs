@@ -11,7 +11,7 @@ public class CommentScroll : MonoBehaviour {
 	public Transform addBtn;
 	private List<string> comments ;
 
-	void Start(){
+	void Awake(){
 		comments = new List<string>();
 	}
 
@@ -20,6 +20,10 @@ public class CommentScroll : MonoBehaviour {
 		foreach (Transform child in root ){
 			GameObject.Destroy(child.gameObject);
 		}
+	}
+
+	public void ActiveIF(){
+		input.ActivateInputField();
 	}
 	
 	public void AddComment(){

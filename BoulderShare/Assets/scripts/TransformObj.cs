@@ -16,7 +16,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 	private bool isRFD = false;
 	private bool isLHD = false;
 	private bool isLFD = false;
-
+	private bool isBDY = false;
 	// Use this for initialization
 	void Start () {
 		finger = Observer.FINGER_NONE;
@@ -33,12 +33,19 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 		if (gameObject.name.Equals("CollisionLFD")){
 			isLFD = true;
 		}
+		if (gameObject.name.Equals("CollisionBody")){
+			isBDY = true;
+		}
 	}	
 
 	void LateUpdate(){
 		if (avatar != null){
 			transform.position = avatar.position;
 		}
+	}
+
+	public bool IsFixed(){
+		return isFixed;
 	}
 	
 	public void SetFixed(bool b){
@@ -63,31 +70,59 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 		
 			target.position = p;
 
-			if (isFixed){
-				float r = 0.0f;
-				Vector3 pos = Vector3.zero;
-				if (isRHD){
-					r = hp.GetR((int)SceneFocus.Choice.RH);
-					pos = hp.GetHoldPos((int)SceneFocus.Choice.RH);
-				}else if(isRFD){
-					r = hp.GetR((int)SceneFocus.Choice.RF);
-					pos = hp.GetHoldPos((int)SceneFocus.Choice.RF);
-				}
-				else if(isLHD){
-					r = hp.GetR((int)SceneFocus.Choice.LH);
-					pos = hp.GetHoldPos((int)SceneFocus.Choice.LH);
-				}
-				else if(isLFD){
-					r = hp.GetR((int)SceneFocus.Choice.LF);
-					pos = hp.GetHoldPos((int)SceneFocus.Choice.LF);
-				}
-
+			if (isRHD || isRFD || isLHD || isLFD){
+				
 				//バウンド処理
-				Vector3 v = target.localPosition - pos;
-
-				if (v.magnitude > r){
-					target.localPosition = pos + v.normalized * r;
+				float z = target.localPosition.z;
+				float boundZ = ac.CalcZPos(target.localPosition);
+				if (z > boundZ){
+					target.localPosition = 
+						new Vector3(target.localPosition.x,
+							target.localPosition.y,
+							boundZ);
 				}
+
+				if (isFixed){
+					float r = 0.0f;
+					Vector3 pos = Vector3.zero;
+					if (isRHD){
+						r = hp.GetR((int)AvatarControl.BODYS.RH);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RH);
+					}else if(isRFD){
+						r = hp.GetR((int)AvatarControl.BODYS.RF);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RF);
+					}
+					else if(isLHD){
+						r = hp.GetR((int)AvatarControl.BODYS.LH);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LH);
+					}
+					else if(isLFD){
+						r = hp.GetR((int)AvatarControl.BODYS.LF);
+						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LF);
+					}
+
+					Vector3 v = target.localPosition - pos;
+
+					if (v.magnitude > r){
+						target.localPosition = pos + v.normalized * r;
+					}
+				}
+			}else if (isBDY){
+				Vector2 o = new Vector2(0.0f, 0.6f);
+				float bodyR = 0.5f;
+				float z =  target.localPosition.z;
+				Vector2 v = (Vector2)target.localPosition - o;
+				Vector2 tmp = target.localPosition;
+				if (v.magnitude > bodyR){
+					tmp = o + v.normalized * bodyR;
+				}
+				float zUB = ac.CalcZPos(tmp) - 0.15f;
+				float zLB = -0.35f;
+
+				z = Mathf.Min(z, zUB);
+				z = Mathf.Max(z, zLB);
+
+				target.localPosition = new Vector3(tmp.x, tmp.y, z);
 			}
 			/*
 			if (gameObject.name.Equals(BODY_NAME)){

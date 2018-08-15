@@ -22,9 +22,9 @@ TagManager:
   - 3D_GUI
   - DisplayPose
   - Hold_Pose
-  - 
-  - 
-  - 
+  - World
+  - Window
+  - Model
   - 
   - 
   - 

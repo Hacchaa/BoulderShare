@@ -1,42 +1,91 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 public class Post : MonoBehaviour {
-	public DHolds dHolds;
-	public DHScenes dHScenes;
-	public GameObject[] hideObj;
+	public DRoute dRoute;
 	public Observer obs;
 	public HScenes hScenes;
+	public Shield shield;
+	public ThreeDModel model;
+	public SpriteRenderer rend;
 
 	public void Submit(){
-		Debug.Log(dHolds.ToJson());
-		Debug.Log(dHScenes.ToJson());
+		string json = dRoute.ToJson();
+		Debug.Log(json);
+
+		string path = Application.persistentDataPath + Observer.ROUTEPATH + dRoute.route.time ;
+		if (!Directory.Exists(path)){
+			Directory.CreateDirectory(path);
+			/*
+			FileSystemAccessRule rule = new FileSystemAccessRule(
+			    new NTAccount("everyone"),
+			    FileSystemRights.FullControl, 
+			    InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit,
+			    PropagationFlags.None,
+			    AccessControlType.Allow);
+      	
+			  DirectorySecurity security = Directory.GetAccessControl(path);
+			  security.SetAccessRule(rule);
+			  Directory.SetAccessControl(path, security);*/
+		}
+		string filepath =  path + "/route.txt";
+		File.WriteAllText(filepath, json);
+
+		filepath = Application.persistentDataPath + Observer.WALLPATH;
+		string toPath = path + "/Wall.png";
+
+		try {
+            if (File.Exists(filepath) && !File.Exists(toPath)){
+            	File.Move(filepath, toPath);
+            }
+        } 
+        catch (Exception e) 
+        {
+            Debug.Log("The process failed: " + e.ToString());
+        }
 	}
 
 	public void Open(){
 		hScenes.Save();
 		gameObject.SetActive(true);
-		foreach(GameObject obj in hideObj){
-			obj.SetActive(false);
-		}
+		shield.OpenIgnoreTouch();
+		model.ChangeMode((int)ThreeDModel.Mode.DEFAULT);
 	}
 
 	public void Close(){
 		gameObject.SetActive(false);
-		foreach(GameObject obj in hideObj){
-			obj.SetActive(true);
-		}
+		shield.CloseIgnoreTouch();
+		model.ChangeMode((int)ThreeDModel.Mode.WINDOW);
 	}
 
-	public void Load(){
-		string hold = "{\"arr\":[{\"id\":0,\"x\":-2.314316511154175,\"y\":-1.3262780904769898,\"z\":0.0,\"scale\":1.0,\"type\":1,\"name\":\"0\"},{\"id\":1,\"x\":-1.4778120517730713,\"y\":-0.7023195028305054,\"z\":0.0,\"scale\":1.0,\"type\":2,\"name\":\"1\"},{\"id\":2,\"x\":-0.6815962791442871,\"y\":-0.05784708261489868,\"z\":0.0,\"scale\":1.0,\"type\":1,\"name\":\"2\"}]}";
-		string scene = "{\"arr\":[{\"id\":0,\"holdsOnHand\":[\"\",\"\",\"0\",\"\"],\"comments\":[],\"pose\":[{\"x\":-0.03302764892578125,\"y\":0.8630151152610779,\"z\":0.032437317073345187},{\"x\":0.20577239990234376,\"y\":0.8176660537719727,\"z\":-0.027390824630856515},{\"x\":0.12816619873046876,\"y\":0.08044417947530747,\"z\":0.03148356452584267},{\"x\":0.14977264404296876,\"y\":0.9690275192260742,\"z\":-0.025612685829401017},{\"x\":0.0438079833984375,\"y\":0.45405399799346926,\"z\":0.2820393741130829},{\"x\":-0.2245941162109375,\"y\":1.8441765308380128,\"z\":-0.14885109663009644},{\"x\":-0.13558197021484376,\"y\":0.08311139792203903,\"z\":-0.06645409017801285},{\"x\":-0.2077178955078125,\"y\":0.9733273386955261,\"z\":-0.06604073941707611},{\"x\":-0.1665802001953125,\"y\":0.45480039715766909,\"z\":0.22399090230464936}],\"rotate\":[{\"x\":0.02014218084514141,\"y\":0.06025884300470352,\"z\":0.006270651239901781,\"w\":-0.9979598522186279},{\"x\":0.4160895049571991,\"y\":0.593503475189209,\"z\":-0.35009366273880007,\"w\":0.5933444499969482},{\"x\":0.000003814697265625,\"y\":0.05695408582687378,\"z\":-0.0000013709068298339844,\"w\":-0.9983768463134766},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.28901511430740359,\"y\":-0.612671434879303,\"z\":0.3749145567417145,\"w\":0.6328848004341126},{\"x\":0.0000035315752029418947,\"y\":0.10897347331047058,\"z\":-5.513429641723633e-7,\"w\":-0.9940446615219116},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0}],\"posable\":true},{\"id\":1,\"holdsOnHand\":[\"\",\"\",\"\",\"1\"],\"comments\":[],\"pose\":[{\"x\":-0.03303837776184082,\"y\":0.8622455596923828,\"z\":0.03474617004394531},{\"x\":0.29345703125,\"y\":1.9081974029541016,\"z\":-0.16013969480991364},{\"x\":0.12824702262878419,\"y\":0.07984805107116699,\"z\":0.031450748443603519},{\"x\":0.15081477165222169,\"y\":0.9713113307952881,\"z\":-0.029475688934326173},{\"x\":0.04406428337097168,\"y\":0.4527466297149658,\"z\":0.2895021438598633},{\"x\":-0.2961883544921875,\"y\":2.1142635345458986,\"z\":-0.19647471606731416},{\"x\":-0.13559269905090333,\"y\":0.0825960636138916,\"z\":-0.06653881072998047},{\"x\":-0.20765233039855958,\"y\":0.972322940826416,\"z\":-0.06108236312866211},{\"x\":-0.16697239875793458,\"y\":0.45276951789855959,\"z\":0.2309856414794922}],\"rotate\":[{\"x\":0.01644185371696949,\"y\":0.060453251004219058,\"z\":0.006266125477850437,\"w\":-0.9980159401893616},{\"x\":0.41263434290885928,\"y\":0.5824547410011292,\"z\":-0.3537161350250244,\"w\":0.6044536828994751},{\"x\":0.0000040084123611450199,\"y\":0.05695386230945587,\"z\":-7.897615432739258e-7,\"w\":-0.9983768463134766},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.28933775424957278,\"y\":-0.6043424606323242,\"z\":0.37765347957611086,\"w\":0.6390866041183472},{\"x\":0.0000032186512726184448,\"y\":0.10897345840930939,\"z\":-4.768372150465439e-7,\"w\":-0.9940447211265564},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0}],\"posable\":true},{\"id\":2,\"holdsOnHand\":[\"\",\"\",\"2\",\"\"],\"comments\":[],\"pose\":[{\"x\":-0.03303837776184082,\"y\":0.8618459701538086,\"z\":0.03535938262939453},{\"x\":0.2562103271484375,\"y\":2.0982136726379396,\"z\":-0.1936447024345398},{\"x\":0.8437423706054688,\"y\":0.2694569230079651,\"z\":0.1288144439458847},{\"x\":0.15105128288269044,\"y\":0.9713742733001709,\"z\":-0.029932022094726564},{\"x\":0.04407191276550293,\"y\":0.45229268074035647,\"z\":0.2919034957885742},{\"x\":-0.2589111328125,\"y\":2.0021510124206545,\"z\":-0.1767062544822693},{\"x\":-0.13560032844543458,\"y\":0.08243513107299805,\"z\":-0.06656503677368164},{\"x\":-0.20765995979309083,\"y\":0.9714086055755615,\"z\":-0.058983802795410159},{\"x\":-0.16701054573059083,\"y\":0.4520905017852783,\"z\":0.23322153091430665}],\"rotate\":[{\"x\":0.015919120982289316,\"y\":0.06048039346933365,\"z\":0.0062656463123857979,\"w\":-0.998022735118866},{\"x\":0.4101867377758026,\"y\":0.5783407092094421,\"z\":-0.3562723994255066,\"w\":0.6085547208786011},{\"x\":0.000003889203071594238,\"y\":0.0569542795419693,\"z\":-9.08970832824707e-7,\"w\":-0.9983768463134766},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.2875692546367645,\"y\":-0.6003148555755615,\"z\":0.3800561726093292,\"w\":0.6422486305236816},{\"x\":0.0000036060812362848084,\"y\":0.10897330194711685,\"z\":-3.2782557468635789e-7,\"w\":-0.9940447211265564},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0},{\"x\":0.0,\"y\":0.0,\"z\":0.0,\"w\":1.0}],\"posable\":true}]}";
-		obs.InitHoldsAndScenes();
-		dHolds.FromJson(hold);
-		dHScenes.FromJson(scene);
 
+	public void Load(){
+		string path = Application.persistentDataPath + Observer.ROUTEPATH + "20180723194745";
+		string routeJson = File.ReadAllText(path + "/route.txt");
+		//obs.InitHoldsAndScenes();
+		dRoute.FromJson(routeJson);
+		Texture2D texture = new Texture2D(0, 0);
+		texture.LoadImage(LoadBytes(path + "/Wall.png"));
+		rend.sprite = Sprite.Create(
+                texture, 
+                new Rect(0.0f, 0.0f, texture.width, texture.height), 
+                new Vector2(0.5f, 0.5f),
+                texture.height/4);
 		//phaseを変える
+		shield.CloseIgnoreTouch();
 		obs.SwitchPhase((int)Observer.Phase.HOLD_EDIT);
+	}
+
+	byte[] LoadBytes(string path) {
+		FileStream fs = new FileStream(path, FileMode.Open);
+		BinaryReader bin = new BinaryReader(fs);
+		byte[] result = bin.ReadBytes((int)bin.BaseStream.Length);
+		bin.Close();
+		return result;
 	}
 }

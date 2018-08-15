@@ -41,6 +41,7 @@ public class DHolds : MonoBehaviour{
 
 
 	public void FromJson(string json){
+		gameObject.GetComponent<Holds>().InitHolds();
 		int max = -1;
 		holds = JsonUtility.FromJson<DataArray>(json);
 		GameObject hold, target;
@@ -55,6 +56,7 @@ public class DHolds : MonoBehaviour{
 			hold.transform.localPosition = new Vector3((float)holds.arr[i].x, (float)holds.arr[i].y, (float)holds.arr[i].z);
 			hold.transform.localScale = Vector3.one * (float)holds.arr[i].scale;
 			hold.name = holds.arr[i].name;
+			hold.GetComponent<Hold>().SetSLN("Default");
 			if (int.Parse(hold.name) > max){
 				max = int.Parse(hold.name);
 			}

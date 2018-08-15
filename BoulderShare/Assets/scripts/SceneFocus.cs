@@ -6,12 +6,12 @@ using UnityEngine;
 public class SceneFocus : MonoBehaviour {
 	private int choiced ;
 	public SceneFocusElem[] focusElems;
-	public enum Choice{None=-1,RH, LH, RF, LF};
 	private Hold[] curFocusHolds;
+	public AvatarControl ac;
 
 	// Use this for initialization
-	void Start () {
-		choiced = (int)Choice.None;
+	void Awake () {
+		choiced = (int)AvatarControl.BODYS.NONE;
 		curFocusHolds = new Hold[4];
 	}
 	
@@ -25,14 +25,14 @@ public class SceneFocus : MonoBehaviour {
 
 	//holdが左右手足に触れているかどうかを表示する
 	public void LoadOnHold(Hold hold){
-		for(int i = (int)Choice.RH ; i <= (int)Choice.LF ; i++){
+		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
 			if (curFocusHolds[i] == hold){
 				focusElems[i].Emphasis();
 			}else{
 				focusElems[i].DeEmphasis();
 			}
 		}
-		choiced = (int)Choice.None;
+		choiced = (int)AvatarControl.BODYS.NONE;
 
 		if (hold.gameObject.tag == "Hold_Normal"){
 			focusElems[0].gameObject.SetActive(true);
@@ -44,7 +44,8 @@ public class SceneFocus : MonoBehaviour {
 	}
 
 	public void Registration(Hold hold){
-		if (choiced != (int)Choice.None){
+		if (choiced != (int)AvatarControl.BODYS.NONE){
+			ac.SetFixed(choiced, false);
 			if (curFocusHolds[choiced] == hold){
 				hold.SetBodyActive(choiced, false);
 				curFocusHolds[choiced] = null;
@@ -59,7 +60,7 @@ public class SceneFocus : MonoBehaviour {
 			focusElems[i].DeEmphasis();
 		}
 
-		for(int i = (int)Choice.RH ; i <= (int)Choice.LF ; i++){
+		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
 			if (curFocusHolds[i] != null){
 				curFocusHolds[i].SetBodyActive(i, false);
 				curFocusHolds[i] = null;

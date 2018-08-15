@@ -45,7 +45,7 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			hold.name = num+"";
 			num++;
 			holdScript = hold.GetComponent<Hold>();
-			holdScript.SetSLN("Hold");
+
 			hold.transform.localScale = Vector3.one * HOLD_RATE * -cam.transform.position.z;
 
 			finger = data.pointerId;

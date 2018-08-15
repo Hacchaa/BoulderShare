@@ -17,12 +17,11 @@ public class Holds : MonoBehaviour {
 
 	public void SwitchPhase(int phase){
 		foreach(Transform child in transform){
-			if(phase == (int)Observer.Phase.HOLD_EDIT){
-				child.Find("Phase2").gameObject.SetActive(false);
-			}else if(phase == (int)Observer.Phase.SCENE_EDIT){
-				child.Find("Hold_Scale").gameObject.SetActive(false);
-				child.Find("Phase2").gameObject.SetActive(true);
-			}
+			child.GetComponent<Hold>().SwitchPhase(phase);
 		}
+	}
+
+	public void SwitchVisibility(){
+		gameObject.SetActive(!gameObject.activeSelf);
 	}
 }

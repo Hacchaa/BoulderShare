@@ -12,9 +12,11 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	private const float CAMERA_DEPTH_UL = 12.0f;
 	
 	// Use this for initialization
+	void Awake () {
+		prevLength = -1;
+	}
 	void Start () {
 		eTouches = new int[] {Observer.FINGER_NONE,Observer.FINGER_NONE};
-		prevLength = -1;
 		observer = GameObject.Find("Observer").GetComponent<Observer>();
 		cam = observer.GetCamera();
 	}	

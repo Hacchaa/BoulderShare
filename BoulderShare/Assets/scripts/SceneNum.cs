@@ -14,9 +14,8 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 	public HScenes hScenes;
 	// Use this for initialization
 	void Start () {
-		sRoot = transform.Find("Items");
 		current = null;
-		Add(0);
+		sRoot = transform.Find("Items");
 		finger = Observer.FINGER_NONE;
 	}
 
@@ -60,11 +59,17 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 		if (current != null){
 			current.DeSelect();
 		}
-		current = Instantiate(IconPrefab, sRoot).GetComponent<SceneNumIcon>();
+		if (sRoot == null){
+			sRoot = transform.Find("Items");
+		}
+		current = Instantiate(IconPrefab).GetComponent<SceneNumIcon>();
 		current.gameObject.name = num + "";
 		num++;
 		current.gameObject.transform.SetSiblingIndex(index);
 		current.Select();
+		current.gameObject.transform.parent = sRoot;
+		current.gameObject.transform.localScale = Vector3.one;
+		current.gameObject.transform.localPosition = Vector3.zero;
 	}
 
 	public void Remove(int index){
