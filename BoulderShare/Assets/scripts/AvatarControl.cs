@@ -7,6 +7,7 @@ public class AvatarControl : MonoBehaviour {
 	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY};
 	public Transform plane;
 	public TransformObj[] acObjs;
+	public Transform lightObj;
 
 	// Use this for initialization
 	void Start () {
@@ -38,6 +39,7 @@ public class AvatarControl : MonoBehaviour {
 	public void SetIncline(int value){
 		incline = value;
 		plane.localRotation = Quaternion.Euler(-value, 0, 0);
+		lightObj.localRotation = Quaternion.Euler(140-value, 0, 0);
 	}
 
 	//(0, 0)を中心にz軸をincline度だけ傾けた時のz座標を返す

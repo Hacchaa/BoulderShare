@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	private static int finger ;
@@ -15,6 +16,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 	private Hold holdScript;
 	private GameObject[] body;
 	private RectTransform focus;
+	private SortingGroup sg;
 
 	// Use this for initialization
 	void Awake () {
@@ -34,6 +36,9 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		body[2] = child2.transform.Find("body_RF").gameObject;
 		body[3] = child2.transform.Find("body_LF").gameObject;
 
+		if (gameObject.tag == "Hold_Foot"){
+			sg = GetComponent<SortingGroup>();
+		}
 		finger = Observer.FINGER_NONE;
 	}
 
@@ -134,6 +139,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 				Focus_P1();
 				gameObject.layer = LayerMask.NameToLayer("Hold");
 				SetSLN("Defalut");
+				transform.SetAsLastSibling();
 			}
 		}
 	}
@@ -142,6 +148,7 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 		if (Observer.currentPhase == (int)Observer.Phase.HOLD_EDIT &&
 				Phase1.curType == (int)Phase1.TYPE.HOLDOPERATION){
 			Focus_P1();
+			transform.SetAsLastSibling();
 		}
 	}
 	
@@ -168,5 +175,8 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 
 	public void SetSLN(string name){
 		rend.sortingLayerName = name;
+		if (sg != null){
+			sg.sortingLayerName = name;
+		}
 	}
 }

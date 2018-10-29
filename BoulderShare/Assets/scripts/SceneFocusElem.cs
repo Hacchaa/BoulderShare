@@ -39,6 +39,9 @@ public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler{
 	}
 
 	public void DeEmphasis(){
+		if (image == null){
+			image = GetComponent<Image>();
+		}
 		image.color = Color.white;
 	}
 }

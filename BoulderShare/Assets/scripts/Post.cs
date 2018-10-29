@@ -18,7 +18,7 @@ public class Post : MonoBehaviour {
 		string json = dRoute.ToJson();
 		Debug.Log(json);
 
-		string path = Application.persistentDataPath + Observer.ROUTEPATH + dRoute.route.time ;
+		string path = Application.persistentDataPath + Observer.ROUTEPATH + dRoute.route.timestamp ;
 		if (!Directory.Exists(path)){
 			Directory.CreateDirectory(path);
 			/*
@@ -65,7 +65,7 @@ public class Post : MonoBehaviour {
 
 
 	public void Load(){
-		string path = Application.persistentDataPath + Observer.ROUTEPATH + "20180723194745";
+		string path = Application.persistentDataPath + Observer.ROUTEPATH + "20180816154722";
 		string routeJson = File.ReadAllText(path + "/route.txt");
 		//obs.InitHoldsAndScenes();
 		dRoute.FromJson(routeJson);

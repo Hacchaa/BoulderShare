@@ -32,7 +32,7 @@ public class RouteView : MonoBehaviour {
 			string json = File.ReadAllText(path + "/route.txt");
 			DRoute.Data rData = JsonUtility.FromJson<DRoute.Data>(json);
 			title.text = rData.title;
-			time.text = rData.time;
+			time.text = rData.date;
 		}
 	}
 
