@@ -5500,7 +5500,6 @@ GameObject:
   - component: {fileID: 517857193}
   - component: {fileID: 517857192}
   - component: {fileID: 517857194}
-  - component: {fileID: 517857195}
   m_Layer: 12
   m_Name: Bounds
   m_TagString: Untagged
@@ -5532,6 +5531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3461df3b4aa064ae88432d9f0ff0b9ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  threeDModel: {fileID: 1707862854}
 --- !u!212 &517857193
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5603,17 +5603,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 200, y: 20}
   m_EdgeRadius: 0
---- !u!114 &517857195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 517857190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3461df3b4aa064ae88432d9f0ff0b9ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &521792407
 GameObject:
   m_ObjectHideFlags: 0
@@ -7382,6 +7371,7 @@ MonoBehaviour:
   threeDModel: {fileID: 1707862854}
   observer: {fileID: 527801504}
   msSlider: {fileID: 1680340418}
+  wall: {fileID: 517857192}
 --- !u!1 &705671200
 GameObject:
   m_ObjectHideFlags: 0
@@ -8260,7 +8250,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -730.83057}
+  m_SizeDelta: {x: 0, y: -732.3999}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &746614584
 MonoBehaviour:
@@ -14425,8 +14415,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1625712888}
   m_HandleRect: {fileID: 1625712887}
   m_Direction: 0
-  m_Value: 0.0000061035903
-  m_Size: 0.9908258
+  m_Value: 0.000006103441
+  m_Size: 0.9908256
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -17367,7 +17357,7 @@ RectTransform:
   m_Father: {fileID: 1583951878}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.000000055995727, y: 0}
+  m_AnchorMin: {x: 0.00000005599545, y: 0}
   m_AnchorMax: {x: 0.99082583, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -21892,7 +21882,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2055459815}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -2, z: -0.72}
+  m_LocalPosition: {x: 0, y: -2, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1697151442}

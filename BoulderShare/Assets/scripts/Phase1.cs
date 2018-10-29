@@ -13,8 +13,11 @@ public class Phase1 : MonoBehaviour {
 	public static int curType = 0;
 	public Observer observer;
 	public Slider msSlider;
+	private Camera cam;
+	public TransformWall3 wall;
 	// Use this for initialization
 	void Start () {
+		cam = observer.GetCamera();
 	}
 
 	public void SwitchSubMenu(int type){
@@ -28,10 +31,14 @@ public class Phase1 : MonoBehaviour {
 			model.SetActive(true);
 			slider.SetActive(true);
 			threeDModel.ChangeMode((int)ThreeDModel.Mode.MODEL_SIZE);
+			//カメラを動かせなくして、正面に配置する
+			cam.transform.localPosition = new Vector3(0.0f, 0.0f, cam.transform.localPosition.z);
+			wall.IgnoreTouch(true);
 		}else{
 			model.SetActive(false);
 			slider.SetActive(false);
 			threeDModel.ChangeMode((int)ThreeDModel.Mode.DEFAULT);
+			wall.IgnoreTouch(false);
 		}
 		
 		if (type == (int)TYPE.INCLINE){

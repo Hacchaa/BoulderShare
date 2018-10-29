@@ -10,19 +10,30 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	private Observer observer;
 	private const float CAMERA_DEPTH_LL = 1.2f;
 	private const float CAMERA_DEPTH_UL = 12.0f;
-	
+	public ThreeDModel threeDModel ;
+	private bool isTouchIgnore;
+
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
+		isTouchIgnore = false;
 	}
 	void Start () {
 		eTouches = new int[] {Observer.FINGER_NONE,Observer.FINGER_NONE};
 		observer = GameObject.Find("Observer").GetComponent<Observer>();
 		cam = observer.GetCamera();
 	}	
+
+	public void IgnoreTouch(bool b){
+		isTouchIgnore = b;
+	}
 	
 
 	public void OnBeginDrag(PointerEventData data){
+		//タッチを無効にする場合何もしない。
+		if (isTouchIgnore){
+			return ;
+		}
 		if (eTouches[0] == Observer.FINGER_NONE){
 			eTouches[0] = data.pointerId;
 		}else if(eTouches[1] == Observer.FINGER_NONE){
@@ -102,6 +113,7 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
         	Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3(p1.x, p1.y, depth));
         	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3(p1.x - dP1.x, p1.y - dP1.y, depth));
 
+        	Debug.Log((wP1Old - wP1));
         	camTransform.Translate(wP1Old - wP1);
         	Vector3 bPos = camTransform.position;
 

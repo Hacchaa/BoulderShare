@@ -16,12 +16,13 @@ public class ThreeDModel : MonoBehaviour {
 	public AvatarControl ac;
 	private bool isReturned;
 	public Shield shield;
+
 	// Use this for initialization
 	void Start () {
-		isReturned = false;
+		isReturned = true;
 		ik = model.gameObject.GetComponent<IKControl>();
 	}
-	
+
 	public void ChangeMode(int mode){
 	
 		if(mode == (int)ThreeDModel.Mode.MODEL_SIZE){
@@ -112,6 +113,7 @@ public class ThreeDModel : MonoBehaviour {
 		modelsize.parent = modelSizeParent;
 		modelsize.localPosition = local;
 		modelsize.localScale = Vector3.one;
+		modelsize.localRotation = Quaternion.Euler(0, 0, 0);
 	}
 
 	private void ReturnModel(){
@@ -119,6 +121,7 @@ public class ThreeDModel : MonoBehaviour {
 		modelsize.parent = parent;
 		modelsize.localPosition = local;
 		modelsize.localScale = Vector3.one;
+		modelsize.localRotation = Quaternion.Euler(0, 0, 0);
 		if(tmpV != null){
 			ik.SetPose(tmpV, tmpR);
 			tmpV = null;

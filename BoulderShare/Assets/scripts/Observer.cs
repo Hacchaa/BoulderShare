@@ -64,10 +64,10 @@ public class Observer : MonoBehaviour {
 				phaseArr[i].SetActive(false);
 			}
 		}*/
+		phase1.SwitchSubMenu((int)Phase1.TYPE.DEFAULT);
 
 		if(phase == (int)Observer.Phase.HOLD_EDIT){
 			phaseArr[(int)Observer.Phase.HOLD_EDIT].SetActive(true);
-			phase1.SwitchSubMenu((int)Phase1.TYPE.DEFAULT);
 		}else{
 			phaseArr[(int)Observer.Phase.HOLD_EDIT].SetActive(false);
 		} 
