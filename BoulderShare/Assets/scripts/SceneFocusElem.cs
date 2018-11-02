@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler{
+public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler, IPointerExitHandler{
 	private SceneFocus sf;
 	private Image image;
 	// Use this for initialization
@@ -33,6 +33,10 @@ public class SceneFocusElem : MonoBehaviour , IPointerEnterHandler{
 				sf.SetChoice((int)AvatarControl.BODYS.LF);
 			}
 		}
+	}
+
+	public void OnPointerExit(PointerEventData data){
+		sf.SetChoice((int)AvatarControl.BODYS.NONE);
 	}
 	public void Emphasis(){
 		image.color = new Color(0.0f, 1.0f, 0.0f, 0.5f);

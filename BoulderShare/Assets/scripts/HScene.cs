@@ -74,9 +74,7 @@ public class HScene{
 			Debug.Log("pose["+i+"]:"+pose[i]);
 		}
 		for(int i = 0 ; i < pRotate.Length ; i++){
-			if (pRotate[i] != null){
-				Debug.Log("pROtate["+i+"]:"+pRotate[i]);
-			}
+			Debug.Log("pROtate["+i+"]:"+pRotate[i]);
 		}
 	}
 }

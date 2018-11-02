@@ -19,14 +19,19 @@ public class Observer : MonoBehaviour {
 	public Phase1 phase1;
 	public const string WALLPATH = "/Wall.png";
 	public const string ROUTEPATH = "/route/";
+	public BoRouteLSManager bManager;
+	public SpriteRenderer wallImg;
 
 	void Awake(){
 		currentPhase = 0;
 	}
 
 	void Start(){
-		//InitAllObjects(phaseArr[0]);
-		//InitAllObjects(phaseArr[1]);
+		bManager.LoadBoRoute();
+		if (bManager.IsLoaded()){
+			wallImg.sprite = bManager.GetImg();
+			bManager.BoRouteLoadFirst();
+		}
 	}
 
 	public void InitHoldsAndScenes(){

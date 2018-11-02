@@ -1,53 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
+using UnityEngine.SceneManagement;
 
 public class Post : MonoBehaviour {
-	public DRoute dRoute;
 	public Observer obs;
 	public HScenes hScenes;
 	public Shield shield;
 	public ThreeDModel model;
 	public SpriteRenderer rend;
+	public BoRouteLSManager bManager;
+
+
+	public void Start(){
+		if(bManager.IsLoaded()){
+			bManager.BoRouteLoadThird();
+		}
+	}
 
 	public void Submit(){
-		string json = dRoute.ToJson();
-		Debug.Log(json);
-
-		string path = Application.persistentDataPath + Observer.ROUTEPATH + dRoute.route.timestamp ;
-		if (!Directory.Exists(path)){
-			Directory.CreateDirectory(path);
-			/*
-			FileSystemAccessRule rule = new FileSystemAccessRule(
-			    new NTAccount("everyone"),
-			    FileSystemRights.FullControl, 
-			    InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit,
-			    PropagationFlags.None,
-			    AccessControlType.Allow);
-      	
-			  DirectorySecurity security = Directory.GetAccessControl(path);
-			  security.SetAccessRule(rule);
-			  Directory.SetAccessControl(path, security);*/
-		}
-		string filepath =  path + "/route.txt";
-		File.WriteAllText(filepath, json);
-
-		filepath = Application.persistentDataPath + Observer.WALLPATH;
-		string toPath = path + "/Wall.png";
-
-		try {
-            if (File.Exists(filepath) && !File.Exists(toPath)){
-            	File.Move(filepath, toPath);
-            }
-        } 
-        catch (Exception e) 
-        {
-            Debug.Log("The process failed: " + e.ToString());
-        }
+		bManager.SaveBoRoute();
+		SceneManager.LoadScene("routeview");
 	}
 
 	public void Open(){
@@ -63,7 +36,7 @@ public class Post : MonoBehaviour {
 		model.ChangeMode((int)ThreeDModel.Mode.WINDOW);
 	}
 
-
+/*
 	public void Load(){
 		string path = Application.persistentDataPath + Observer.ROUTEPATH + "20180816154722";
 		string routeJson = File.ReadAllText(path + "/route.txt");
@@ -87,5 +60,5 @@ public class Post : MonoBehaviour {
 		byte[] result = bin.ReadBytes((int)bin.BaseStream.Length);
 		bin.Close();
 		return result;
-	}
+	}*/
 }

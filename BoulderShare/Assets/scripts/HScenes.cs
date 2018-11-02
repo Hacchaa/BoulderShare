@@ -10,21 +10,23 @@ public class HScenes : MonoBehaviour {
 	private List<HScene> list ;
 	public SceneFocus sf;
 	public SceneNum sn;
-	private Transform holds;
+	public Transform holds;
 	public CommentScroll cs;
 	public IKControl ik;
 	public AvatarControl ac;
+	public BoRouteLSManager bManager;
 
-	// Use this for initialization
 	void Awake(){
 		list = new List<HScene>();
 		curNum.text = "0";
 		num.text = "0";
 	}
-	void Start () {
-		holds = GameObject.Find("Wall").transform.Find("Holds");
-		sn.Init();
-		AddScene();
+	void Start(){
+		if (bManager.IsLoaded()){
+			bManager.BoRouteLoadSecond();
+		}else{
+			InitScenes();
+		}
 	}
 
 	public int GetNum(){
@@ -51,14 +53,16 @@ public class HScenes : MonoBehaviour {
 	}
 
 	public void InitScenes(){
+		sn.Init();
 		Awake();
-		Start();
+		AddScene();
 	}
 
 	private void LoadScene(HScene scene){
 		sf.Reset();
 		ac.Init();
 		string[] onHolds = scene.GetOnHolds();
+		//Debug.Log("onholds:"+onHolds);
 		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
 			if (!string.IsNullOrEmpty(onHolds[i])){
 				Transform t = holds.Find(onHolds[i]);

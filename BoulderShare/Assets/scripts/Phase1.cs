@@ -32,7 +32,7 @@ public class Phase1 : MonoBehaviour {
 			slider.SetActive(true);
 			threeDModel.ChangeMode((int)ThreeDModel.Mode.MODEL_SIZE);
 			//カメラを動かせなくして、正面に配置する
-			cam.transform.localPosition = new Vector3(0.0f, 0.0f, cam.transform.localPosition.z);
+			wall.ResetCamPosAndDepth();
 			wall.IgnoreTouch(true);
 		}else{
 			model.SetActive(false);

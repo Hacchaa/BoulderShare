@@ -10,6 +10,7 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	private Observer observer;
 	private const float CAMERA_DEPTH_LL = 1.2f;
 	private const float CAMERA_DEPTH_UL = 12.0f;
+	private const float CAMERA_DEPTH_DEF = 10.0f;
 	public ThreeDModel threeDModel ;
 	private bool isTouchIgnore;
 
@@ -23,6 +24,11 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 		observer = GameObject.Find("Observer").GetComponent<Observer>();
 		cam = observer.GetCamera();
 	}	
+
+	public void ResetCamPosAndDepth(){
+		cam.gameObject.transform.position = 
+			new Vector3(0.0f, 0.0f, -CAMERA_DEPTH_DEF);
+	}
 
 	public void IgnoreTouch(bool b){
 		isTouchIgnore = b;
@@ -113,7 +119,7 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
         	Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3(p1.x, p1.y, depth));
         	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3(p1.x - dP1.x, p1.y - dP1.y, depth));
 
-        	Debug.Log((wP1Old - wP1));
+        	//Debug.Log((wP1Old - wP1));
         	camTransform.Translate(wP1Old - wP1);
         	Vector3 bPos = camTransform.position;
 

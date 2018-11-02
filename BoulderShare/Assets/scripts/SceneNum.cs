@@ -65,9 +65,10 @@ public class SceneNum : MonoBehaviour , IBeginDragHandler, IDragHandler, IEndDra
 		current = Instantiate(IconPrefab).GetComponent<SceneNumIcon>();
 		current.gameObject.name = num + "";
 		num++;
-		current.gameObject.transform.SetSiblingIndex(index);
+	
 		current.Select();
-		current.gameObject.transform.parent = sRoot;
+		current.gameObject.transform.SetParent(sRoot);
+		current.gameObject.transform.SetSiblingIndex(index);
 		current.gameObject.transform.localScale = Vector3.one;
 		current.gameObject.transform.localPosition = Vector3.zero;
 	}
