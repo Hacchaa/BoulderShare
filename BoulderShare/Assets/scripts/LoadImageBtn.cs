@@ -7,7 +7,7 @@ public class LoadImageBtn : MonoBehaviour {
 
 	void Start(){
 		//ボルートが新規作成でない場合、表示しない
-		if (bManager.IsLoaded()){
+		if (!bManager.IsNew()){
 			this.gameObject.SetActive(false);
 		}
 	}

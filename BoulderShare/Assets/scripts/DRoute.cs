@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 [Serializable]
 public class DRoute : MonoBehaviour{
@@ -15,16 +16,15 @@ public class DRoute : MonoBehaviour{
 	public Dropdown tryDD;
 	public Toggle complete;
 	public InputField gComment;
+	public PlaceDD placeDD;
 	public BoRouteLSManager bManager;
-	private bool isAwakeCalled = false;
 
-	void Awake (){
-		isAwakeCalled = true;
+	void Awake(){
+		route = new Data();
 	}
-	public void Construction(){
-		//上書き保存の場合、タイムスタンプは更新しない
-		if (!bManager.IsLoaded()){
-			route = new Data();
+	public void Construction(bool isOldOrTemp = false){
+		//一時保存か新規作成でない場合、タイムスタンプは更新しない
+		if (!isOldOrTemp){
 			route.timestamp = System.DateTime.Now.ToString("yyyyMMddHHmmss");
 		}
 		route.date = dateDD.GetDate();
@@ -43,13 +43,18 @@ public class DRoute : MonoBehaviour{
 		route = JsonUtility.FromJson<Data>(json);
 	}
 
-	public String ToJson(){
-		if (isAwakeCalled){
-			Construction();
-			return JsonUtility.ToJson(route);
-		}
-		return "{}";
+	public String ToJson(bool isOldOrTemp = false){
+		Construction(isOldOrTemp);
+		return JsonUtility.ToJson(route);
 	}
+
+	public String GetEmptyJson(){
+		Data data = new Data();
+		//data.timestamp = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+		return JsonUtility.ToJson(data);
+	}
+
+
 
 	/*
 	public void FromJson(string json, bool isBoRouteLoaded = false){
@@ -77,18 +82,36 @@ public class DRoute : MonoBehaviour{
 	}*/
 
 	public void LoadFirst(){
-		incline.SetIncline(route.incline);
-		phase1.SetModelSize(route.scaleH2M); 
+		if (route.incline != 0){
+			incline.SetIncline(route.incline);
+		}
+		if (route.scaleH2M != 0.0f){
+			phase1.SetModelSize(route.scaleH2M); 
+		}
 	} 
 
 	//ボルートが新規作成されていない場合の処理
 	public void LoadThird(){
-		dateDD.SetDate(route.date);
+		if (!String.IsNullOrEmpty(route.date)){
+			dateDD.SetDate(route.date);
+		}
+
 		place.text = route.place;
-		gradeDD.value = route.grade;
-		tryDD.value = route.tryCount;
+		
+		if (route.grade != 0){
+			gradeDD.value = route.grade;
+		}
+		if (route.tryCount != 0){
+			tryDD.value = route.tryCount;
+		}
 		complete.isOn = route.isComplete;
 		gComment.text = route.globalComment;
+	}
+
+	public void SetPList(List<string> list){
+		if (list != null && list.Any()){
+			placeDD.CreateOptions(list);
+		}
 	}
 
 	public static DataArr ConvertJsonToDRouteList(string json){

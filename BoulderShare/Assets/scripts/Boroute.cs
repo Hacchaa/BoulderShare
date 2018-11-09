@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 //シーン遷移時ボルート受け渡し用オブジェクト
 public class Boroute : MonoBehaviour {
@@ -8,6 +9,7 @@ public class Boroute : MonoBehaviour {
 	private string dHScenesJson;
 	private string dHoldsJson;
 	private Sprite img;
+	private bool isRouteTemp = false;
 
 	void Awake(){
 		DontDestroyOnLoadManager.DontDestroyOnLoad(gameObject);
@@ -20,6 +22,22 @@ public class Boroute : MonoBehaviour {
 		dRouteJson = d;
 	}
 
+	public string GetDHolds(){
+		return dHoldsJson;
+	}
+
+	public void SetDHolds(string d){
+		dHoldsJson = d;
+	}
+
+	public string GetDHScenes(){
+		return dHScenesJson;
+	}
+
+	public void SetDHScenes(string d){
+		dHScenesJson = d;
+	}
+
 	public Sprite GetImg(){
 		return img;
 	}
@@ -28,5 +46,11 @@ public class Boroute : MonoBehaviour {
 		img = t;
 	}
 
+	public void SetIsRouteTemp(bool b){
+		isRouteTemp = b;
+	}
 
+	public bool IsRouteTemp(){
+		return isRouteTemp;
+	}
 }

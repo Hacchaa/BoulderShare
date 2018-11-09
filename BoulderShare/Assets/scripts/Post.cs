@@ -10,14 +10,19 @@ public class Post : MonoBehaviour {
 	public ThreeDModel model;
 	public SpriteRenderer rend;
 	public BoRouteLSManager bManager;
+	private bool isInit = false;
 
 
 	public void Start(){
 		if(bManager.IsLoaded()){
 			bManager.BoRouteLoadThird();
 		}
+		bManager.DeployPList();
+		isInit = true;
 	}
-
+	public bool IsInit(){
+		return isInit;
+	}
 	public void Submit(){
 		bManager.SaveBoRoute();
 		SceneManager.LoadScene("routeview");

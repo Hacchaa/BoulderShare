@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Holds : MonoBehaviour {
+	private bool isInit = false;
 
-	// Use this for initialization
-	void Start () {
-		
+	void Awake(){
+		isInit = true;
+	}
+
+	public bool IsInit(){
+		return isInit;
 	}
 	
 	public void InitHolds(){

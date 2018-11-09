@@ -10,12 +10,6 @@ public class DHolds : MonoBehaviour{
 	public static int HTYPE_FOOT = 2;
 	public GameObject hold_Normal;
 	public GameObject hold_Foot;
-	private bool isAwakeCalled = false;
-
-	void Awake (){
-		isAwakeCalled = true;
-	}
-
 
 	private void Construction(){
 		Data data;
@@ -41,11 +35,14 @@ public class DHolds : MonoBehaviour{
 	}
 
 	public String ToJson(){
-		if (isAwakeCalled){
-			Construction();
-			return JsonUtility.ToJson(holds);
-		}
-		return "{}";
+		Construction();
+		return JsonUtility.ToJson(holds);
+	}
+
+	public String GetEmptyJson(){
+		DataArray data = new DataArray();
+		data.arr = new Data[0];
+		return JsonUtility.ToJson(data);
 	}
 
 

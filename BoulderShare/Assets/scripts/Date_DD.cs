@@ -18,9 +18,7 @@ public class Date_DD : MonoBehaviour {
 		for(int i = 1 ; i < 29 ; i++){
 			baseDays.Add(i+"");
 		}
-	}
 
-	void Start(){
 		DateTime now = DateTime.Now;
 		SetYearOptions(now.Year);
 
@@ -28,7 +26,9 @@ public class Date_DD : MonoBehaviour {
 		month.value = now.Month - 1;
 		day.value = now.Day - 1;
 	}
-
+	public void Init(){
+		Awake();
+	}
 	//選択された日付をyyyyMMdd形式で返す
 	public string GetDate(){
 		return year.options[year.value].text +
@@ -39,6 +39,10 @@ public class Date_DD : MonoBehaviour {
 	public void SetDate(string date){
 		int v = int.Parse(date);
 
+		SetDate(v);
+	}
+
+	public void SetDate(int v){
 		day.value = (v % 100) - 1;
 		v = (int) (v / 100.0f);
 		month.value = (v % 100) - 1;

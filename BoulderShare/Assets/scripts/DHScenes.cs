@@ -7,14 +7,6 @@ using System;
 public class DHScenes : MonoBehaviour {
 	public DataArray scenes;
 	public HScenes hscenes;
-	private bool isAwakeCalled = false;
-
-	void Awake (){
-		isAwakeCalled = true;
-	}
-	// Use this for initialization
-	void Start () {
-	}
 
 	private void Construction(){
 		scenes = new DataArray();
@@ -35,13 +27,17 @@ public class DHScenes : MonoBehaviour {
 		}
 	}
 
-	public string ToJson(){
-		if(isAwakeCalled){
-			Construction();
-			return JsonUtility.ToJson(scenes);
-		}
-		return "{}";
+	public String ToJson(){
+		Construction();
+		return JsonUtility.ToJson(scenes);
 	}
+
+	public String GetEmptyJson(){
+		DataArray data = new DataArray();
+		data.arr = new Data[0];
+		return JsonUtility.ToJson(data);
+	}
+
 
 
 	public void FromJson(string json){
@@ -60,6 +56,10 @@ public class DHScenes : MonoBehaviour {
 				scene.SavePRotate(data.rotate);
 			}
 			list.Add(scene);
+		}
+
+		if(list.Count == 0){
+			list.Add(new HScene());
 		}
 
 		hscenes.Construction(list);

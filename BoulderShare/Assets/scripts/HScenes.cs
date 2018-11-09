@@ -15,6 +15,7 @@ public class HScenes : MonoBehaviour {
 	public IKControl ik;
 	public AvatarControl ac;
 	public BoRouteLSManager bManager;
+	private bool isInit = false;
 
 	void Awake(){
 		list = new List<HScene>();
@@ -27,6 +28,10 @@ public class HScenes : MonoBehaviour {
 		}else{
 			InitScenes();
 		}
+		isInit = true;
+	}
+	public bool IsInit(){
+		return isInit;
 	}
 
 	public int GetNum(){
