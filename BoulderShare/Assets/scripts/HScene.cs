@@ -64,7 +64,7 @@ public class HScene{
 		return posable;
 	}
 	
-	public void show(){
+	public void Show(){
 		for(int i = 0 ; i < onHolds.Length ; i++){
 			if (onHolds[i] != null){
 				Debug.Log("onHolds["+i+"]:"+onHolds[i]);

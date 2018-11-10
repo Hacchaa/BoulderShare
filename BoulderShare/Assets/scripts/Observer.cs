@@ -20,7 +20,6 @@ public class Observer : MonoBehaviour {
 	public const string WALLPATH = "/Wall.png";
 	public const string ROUTEPATH = "/route/";
 	public BoRouteLSManager bManager;
-	public SpriteRenderer wallImg;
 
 	void Awake(){
 		currentPhase = 0;
@@ -29,7 +28,6 @@ public class Observer : MonoBehaviour {
 	void Start(){
 		bManager.LoadBoRoute();
 		if (bManager.IsLoaded()){
-			wallImg.sprite = bManager.GetImg();
 			bManager.BoRouteLoadFirst();
 		}
 	}

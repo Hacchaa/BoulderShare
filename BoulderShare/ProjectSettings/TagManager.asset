@@ -9,6 +9,8 @@ TagManager:
   - Hold_Foot
   - Generate_NH
   - Generate_FH
+  - SGNodeSet
+  - SGEdgeSet
   layers:
   - Default
   - TransparentFX
@@ -54,4 +56,7 @@ TagManager:
     locked: 0
   - name: Hold
     uniqueID: 1378561983
+    locked: 0
+  - name: SceneGraph
+    uniqueID: 566602493
     locked: 0

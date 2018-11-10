@@ -109,9 +109,9 @@ public class RouteView : MonoBehaviour {
 			}
 			json = null;
 			//上書き編集かどうか(上書きはwallがここにない)
-			if (File.Exists(path + "Temp/Wall.png")){
+			if (File.Exists(path + "Temp/thumbnail.png")){
 				//新規作成の場合
-				raTemp.SetImg(LoadImage(path + "Temp/Wall.png"));
+				raTemp.SetImg(LoadImage(path + "Temp/thumbnail.png"));
 				/*
 				//画像を移す
 				string wallPath = Application.persistentDataPath + Observer.WALLPATH ;
@@ -152,8 +152,8 @@ public class RouteView : MonoBehaviour {
 
 			//画像を読み込む
 			path = Application.persistentDataPath + Observer.ROUTEPATH + data.timestamp;
-			if (File.Exists(path + "/Wall.png")){
-				ra.SetImg(LoadImage(path + "/Wall.png"));
+			if (File.Exists(path + "/thumbnail.png")){
+				ra.SetImg(LoadImage(path + "/thumbnail.png"));
 			}
 			//このボルートの一時保存がある場合
 			if (!String.IsNullOrEmpty(tempTS) 
@@ -249,8 +249,8 @@ public class RouteView : MonoBehaviour {
 
 			//画像を読み込む
 			string path = Application.persistentDataPath + Observer.ROUTEPATH + data.timestamp;
-			if (File.Exists(path + "/Wall.png")){
-				ra.SetImg(LoadImage(path + "/Wall.png"));
+			if (File.Exists(path + "/thumbnail.png")){
+				ra.SetImg(LoadImage(path + "/thumbnail.png"));
 			}
 			//Debug.Log("tempTS:"+tempTS);
 			//Debug.Log("timestamp:"+data.timestamp);
