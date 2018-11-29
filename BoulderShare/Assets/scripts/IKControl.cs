@@ -71,7 +71,7 @@ public class IKControl : MonoBehaviour {
 	}*/
 
 	public Vector3[] GetPosition(){
-		Vector3[] pos = new Vector3[Enum.GetNames(typeof(AvatarControl.BODYS)).Length];
+		Vector3[] pos = new Vector3[Enum.GetNames(typeof(AvatarControl.BODYS)).Length-1];
 		
 		pos[(int)AvatarControl.BODYS.BODY] = bodyObj.localPosition;
 		pos[(int)AvatarControl.BODYS.LF] = leftFootObj.localPosition;
@@ -88,7 +88,7 @@ public class IKControl : MonoBehaviour {
 	}
 
 	public Quaternion[] GetRotation(){
-		Quaternion[] rot = new Quaternion[Enum.GetNames(typeof(AvatarControl.BODYS)).Length];
+		Quaternion[] rot = new Quaternion[Enum.GetNames(typeof(AvatarControl.BODYS)).Length-1];
 		
 		rot[(int)AvatarControl.BODYS.BODY] = bodyObj.localRotation;
 		rot[(int)AvatarControl.BODYS.LF] = leftFootObj.localRotation;

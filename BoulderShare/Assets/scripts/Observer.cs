@@ -7,8 +7,6 @@ using System.IO;
 public class Observer : MonoBehaviour {
 	public Camera curCamera;
 	private GameObject focusObj;
-	public const float WALL_W = 6.0f;
-	public const float WALL_H = 4.0f;
 	public static int currentPhase = 1;
 	public static int FINGER_NONE = -10;
 	public enum Phase{HOLD_EDIT=0, SCENE_EDIT};
@@ -20,21 +18,28 @@ public class Observer : MonoBehaviour {
 	public const string WALLPATH = "/Wall.png";
 	public const string ROUTEPATH = "/route/";
 	public BoRouteLSManager bManager;
+	[SerializeField]
+	private SpriteRenderer wallImg;
 
 	void Awake(){
 		currentPhase = 0;
 	}
 
 	void Start(){
+		HScene.SetNum(0);
 		bManager.LoadBoRoute();
 		if (bManager.IsLoaded()){
 			bManager.BoRouteLoadFirst();
 		}
 	}
-
+/*
 	public void InitHoldsAndScenes(){
 		holds.InitHolds();
 		hScenes.InitScenes();
+	}*/
+
+	public Bounds GetWallBounds(){
+		return wallImg.bounds;
 	}
 
 	public Camera GetCamera(){

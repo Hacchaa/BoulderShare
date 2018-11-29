@@ -7,14 +7,19 @@ using System;
 public class DHScenes : MonoBehaviour {
 	public DataArray scenes;
 	public HScenes hscenes;
+	[SerializeField]
+	private Issues issues;
 
 	private void Construction(){
+		hscenes.Save();
 		scenes = new DataArray();
+		scenes.failedList = issues.GetList();
+		scenes.numOfCreatingHScene = HScene.GetNum();
 		scenes.arr = new Data[hscenes.GetNum()];
 		int i = 0;
 		foreach(HScene scene in hscenes.GetScenes()){
 			Data data = new Data();
-			data.id = i;
+			data.id = scene.GetID();
 			
 			data.holdsOnHand = scene.GetOnHolds();
 			data.comments = scene.GetComments();
@@ -35,6 +40,7 @@ public class DHScenes : MonoBehaviour {
 	public String GetEmptyJson(){
 		DataArray data = new DataArray();
 		data.arr = new Data[0];
+		data.failedList = new List<string>();
 		return JsonUtility.ToJson(data);
 	}
 
@@ -47,7 +53,7 @@ public class DHScenes : MonoBehaviour {
 		for(int i = 0 ; i < scenes.arr.Length ; i++){
 			Data data = scenes.arr[i];
 			HScene scene = new HScene();
-
+			scene.SetID(data.id);
 			scene.SetOnHolds(data.holdsOnHand);
 			scene.SaveComments(data.comments);
 
@@ -62,13 +68,20 @@ public class DHScenes : MonoBehaviour {
 			list.Add(new HScene());
 		}
 
-		hscenes.Construction(list);
-		
+		hscenes.Construction(list, scenes.numOfCreatingHScene);
+		issues.Regist(scenes.failedList);
+	}
+
+	public static DataArray ConvertJsonToDHScenes(string json){
+		return JsonUtility.FromJson<DataArray>(json);
 	}
 	
 	[Serializable]
 	public class DataArray{
 		public Data[] arr;
+		public List<string> failedList;
+		//最初からこのシーンが保存されるまでに作られたシーンの数
+		public int numOfCreatingHScene;
 	}
 
 	[Serializable]

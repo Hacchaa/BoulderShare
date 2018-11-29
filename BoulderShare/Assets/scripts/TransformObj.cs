@@ -9,14 +9,28 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 	public AvatarControl ac;
 	public Transform target = null;
 	public Transform avatar = null;
+	[SerializeField]
 	private bool isFixed = false;
 	public Hold_Pose hp;
 	private static string BODY_NAME = "CollisionBody";
+	[SerializeField]
 	private bool isRHD = false;
+	[SerializeField]
 	private bool isRFD = false;
+	[SerializeField]
 	private bool isLHD = false;
+	[SerializeField]
 	private bool isLFD = false;
+	[SerializeField]
 	private bool isBDY = false;
+	[SerializeField]
+	private ThreeDHolds threeDHolds;
+	private float threeDHoldR;
+	private Vector3 threeDHoldPos;
+	[SerializeField]
+	private Observer observer;
+	private Bounds bounds;
+
 	// Use this for initialization
 	void Start () {
 		finger = Observer.FINGER_NONE;
@@ -38,6 +52,10 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 		}
 	}	
 
+	public Vector3 GetTargetPos(){
+		return target.position;
+	}
+
 	void LateUpdate(){
 		if (avatar != null){
 			transform.position = avatar.position;
@@ -56,6 +74,24 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 		if (finger == Observer.FINGER_NONE){
 			finger = data.pointerId;
 			target.position = transform.position;
+
+			if (isRHD){
+				threeDHoldR = threeDHolds.GetR((int)AvatarControl.BODYS.RH);
+				threeDHoldPos = threeDHolds.GetPos((int)AvatarControl.BODYS.RH);
+			}else if(isRFD){
+				threeDHoldR = threeDHolds.GetR((int)AvatarControl.BODYS.RF);
+				threeDHoldPos = threeDHolds.GetPos((int)AvatarControl.BODYS.RF);
+			}
+			else if(isLHD){
+				threeDHoldR = threeDHolds.GetR((int)AvatarControl.BODYS.LH);
+				threeDHoldPos = threeDHolds.GetPos((int)AvatarControl.BODYS.LH);
+			}
+			else if(isLFD){
+				threeDHoldR = threeDHolds.GetR((int)AvatarControl.BODYS.LF);
+				threeDHoldPos = threeDHolds.GetPos((int)AvatarControl.BODYS.LF);
+			}else if (isBDY){
+				bounds = observer.GetWallBounds();
+			}
 		}
 	}
 
@@ -66,7 +102,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 				new Vector3(
 					data.position.x, 
 					data.position.y, 
-					target.position.z - cam.transform.position.z));
+					cam.gameObject.transform.InverseTransformPoint(target.position).z));
 		
 			target.position = p;
 
@@ -75,6 +111,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 				//バウンド処理
 				float z = target.localPosition.z;
 				float boundZ = ac.CalcZPos(target.localPosition);
+				
 				if (z > boundZ){
 					target.localPosition = 
 						new Vector3(target.localPosition.x,
@@ -83,46 +120,33 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 				}
 
 				if (isFixed){
-					float r = 0.0f;
-					Vector3 pos = Vector3.zero;
-					if (isRHD){
-						r = hp.GetR((int)AvatarControl.BODYS.RH);
-						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RH);
-					}else if(isRFD){
-						r = hp.GetR((int)AvatarControl.BODYS.RF);
-						pos = hp.GetHoldPos((int)AvatarControl.BODYS.RF);
-					}
-					else if(isLHD){
-						r = hp.GetR((int)AvatarControl.BODYS.LH);
-						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LH);
-					}
-					else if(isLFD){
-						r = hp.GetR((int)AvatarControl.BODYS.LF);
-						pos = hp.GetHoldPos((int)AvatarControl.BODYS.LF);
-					}
-
-					Vector3 v = target.localPosition - pos;
-
-					if (v.magnitude > r){
-						target.localPosition = pos + v.normalized * r;
+					Vector3 v = target.position - threeDHoldPos;
+					/*
+					Debug.Log("taget"+target.position);
+					Debug.Log("3D"+threeDHoldPos);
+					Debug.Log("v"+v);
+					Debug.Log("v.mag"+v.magnitude);
+					Debug.Log("r:"+threeDHoldR);*/
+					if (v.magnitude > threeDHoldR){
+						target.position = threeDHoldPos + v.normalized * threeDHoldR;
 					}
 				}
 			}else if (isBDY){
-				Vector2 o = new Vector2(0.0f, 0.6f);
-				float bodyR = 0.5f;
-				float z =  target.localPosition.z;
-				Vector2 v = (Vector2)target.localPosition - o;
-				Vector2 tmp = target.localPosition;
-				if (v.magnitude > bodyR){
-					tmp = o + v.normalized * bodyR;
-				}
-				float zUB = ac.CalcZPos(tmp) - 0.15f;
-				float zLB = -0.35f;
+				float x = target.localPosition.x;
+				float y = target.localPosition.y;
+				float z = target.localPosition.z;
+				float offsetW = 0.5f;
+				float zUB = ac.CalcZPos(target.localPosition) - 0.15f;
+				float zLB = ac.CalcZPos(target.localPosition) - 0.5f;
 
+				x = Mathf.Min(x, bounds.size.x/2 + offsetW);
+				x = Mathf.Max(x, -(bounds.size.x/2 + offsetW));
+				y = Mathf.Min(y, bounds.size.y);
+				y = Mathf.Max(y, 0.0f);
 				z = Mathf.Min(z, zUB);
 				z = Mathf.Max(z, zLB);
 
-				target.localPosition = new Vector3(tmp.x, tmp.y, z);
+				target.localPosition = new Vector3(x, y, z);
 			}
 			/*
 			if (gameObject.name.Equals(BODY_NAME)){
@@ -137,6 +161,9 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 
 	public void OnEndDrag(PointerEventData data){
 		if (finger == data.pointerId){
+			if(isBDY){
+				cam.gameObject.transform.parent.position = gameObject.transform.position;
+			}
 			finger = Observer.FINGER_NONE;
 		}
 	}

@@ -63,14 +63,16 @@ public class RouteView : MonoBehaviour {
 		list.AddRange(DRoute.ConvertJsonToDRouteList(json).arr);
 
 		//場所の一覧をオブジェクトに格納する
-		placeList = list.Select(x => x.place);
+		placeList = list.Where(x => !String.IsNullOrEmpty(x.place))
+						.Select(x => x.place)
+						.Distinct();
 		GameObject obj = Instantiate(bInfoPrefab);
 		obj.name = "BoRouteInfo";
 		obj.GetComponent<BoRouteInfo>().SetPlaceList(new List<string>(placeList));
 	}
 
 	public void ToEdit2(){
-		SceneManager.LoadScene("edit2");
+		SceneManager.LoadScene("edit3");
 	}
 
 	public void LoadRouteFirst(){

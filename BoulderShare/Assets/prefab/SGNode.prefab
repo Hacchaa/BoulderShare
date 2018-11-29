@@ -96,6 +96,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46d811cd5d0e3b3408310d3852c9b01e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sGNodePrefab: {fileID: 1048029867384180}
+  sGEdgePrefab: {fileID: 1415561030457850, guid: 1b73cba3d8af85d4188f22abadcd7623,
+    type: 2}
 --- !u!135 &135190183803867648
 SphereCollider:
   m_ObjectHideFlags: 1

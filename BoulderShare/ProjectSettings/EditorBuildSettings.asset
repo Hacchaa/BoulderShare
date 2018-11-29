@@ -14,7 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/routeview.unity
     guid: ff4440366ddcafd47bef8db01d5449f3
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/edit2.unity
-    guid: 9af37a9ad4f684a76960a4c64f71f89f
+    path: Assets/edit3.unity
+    guid: ca5f296d509297147a01cacf821c40ea
   m_configObjects: {}

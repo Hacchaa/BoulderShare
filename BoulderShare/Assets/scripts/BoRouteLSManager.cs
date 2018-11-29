@@ -26,6 +26,9 @@ public class BoRouteLSManager : MonoBehaviour {
 	private List<string> placeList;
 	[SerializeField]
 	private WallImg wallRend;
+	[SerializeField]
+	private HScenesList hScenesList;
+	
 
 	void Awake(){
 		isLoaded = false;
@@ -154,7 +157,7 @@ public class BoRouteLSManager : MonoBehaviour {
 			File.WriteAllText(filepath, json);
 			//シーンを書き込む
 			filepath = path + "hscenes.json";
-			json = dHScenes.ToJson();
+			json = hScenesList.ToJson();
 			File.WriteAllText(filepath, json);
 
 			//画像を保存する
@@ -229,14 +232,14 @@ public class BoRouteLSManager : MonoBehaviour {
 			filepath = path + "/hscenes.json";
 			if (hScenes.IsInit()){
 				//初期化が住んでいる場合
-				json = dHScenes.ToJson();
+				json = hScenesList.ToJson();
 			}else{
 				//初期化が住んでいない場合
 
 				//再編集かどうか
 				if (!isLoaded){
 					//再編集でない場合
-					json = dHScenes.GetEmptyJson();
+					json = hScenesList.GetEmptyJson();
 				}else{
 					//再編集の場合
 					json = dHScenesJson;
@@ -373,7 +376,7 @@ public class BoRouteLSManager : MonoBehaviour {
 
 	public void BoRouteLoadSecond(){
 		Debug.Log(dHScenesJson);
-		dHScenes.FromJson(dHScenesJson);
+		hScenesList.FromJson(dHScenesJson);
 	}
 
 	public void BoRouteLoadThird(){

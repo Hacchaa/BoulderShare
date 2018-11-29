@@ -45,7 +45,7 @@ public class RouteAction : MonoBehaviour {
 		b.SetDHolds(tempHoldsJson);
 		b.SetDHScenes(tempHScenesJson);
 		b.SetIsRouteTemp(isRouteTemp);
-		SceneManager.LoadScene("edit2");
+		SceneManager.LoadScene("edit3");
 	}
 
 	public void SetImg(Sprite spr){

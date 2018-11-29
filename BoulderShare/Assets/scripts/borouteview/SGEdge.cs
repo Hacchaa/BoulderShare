@@ -14,6 +14,24 @@ public class SGEdge : MonoBehaviour {
 	[SerializeField]
 	private LineRenderer lineRend;
 
+	private int slopeB = -1;
+	private int slopeD = -1;
+
+	public void SetSlopeB(int b){
+		slopeB = b;
+	}
+
+	public void SetSlopeD(int d){
+		slopeD = d;
+	}
+
+	public int GetSlopeB(){
+		return slopeB;
+	}
+
+	public int GetSlopeD(){
+		return slopeD;
+	}
 
 	//ノードを登録するメソッド
 	//以前に登録してあったノードの処理はしない
@@ -25,6 +43,13 @@ public class SGEdge : MonoBehaviour {
 	public void RegistrateAncestorNode(SGNode node){
 		ancestorNode = node;
 		//グラフィカルな部分の処理
+	}
+
+	public bool IsDesNode(SGNode node){
+		if (descendantNode == null){
+			return false;
+		}
+		return descendantNode.GetData().GetID() == node.GetData().GetID();
 	}
 
 	//線を引く

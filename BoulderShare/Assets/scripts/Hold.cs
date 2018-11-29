@@ -128,11 +128,15 @@ public class Hold : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPoin
 			
 				//bounds
 				Vector3 p = transform.position;
-
-				p.x = Mathf.Min(p.x, Observer.WALL_W / 2);
-		    	p.x = Mathf.Max(p.x, -Observer.WALL_W / 2);
-		    	p.y = Mathf.Min(p.y, Observer.WALL_H / 2);
-		    	p.y = Mathf.Max(p.y, -Observer.WALL_H / 2);
+				//wallの幅とサイズを取得
+				//高さは4units
+				Bounds b = observer.GetWallBounds();
+				float height = b.size.y;
+				float width = b.size.x;
+				p.x = Mathf.Min(p.x, width/2);
+		    	p.x = Mathf.Max(p.x, -width/2);
+		    	p.y = Mathf.Min(p.y, height/2);
+		    	p.y = Mathf.Max(p.y, -height/2);
 
 		    	transform.position = p;
 

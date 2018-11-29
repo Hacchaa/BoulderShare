@@ -7,6 +7,7 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	private int[] eTouches;
 	private float prevLength;
 	private Camera cam;
+	[SerializeField]
 	private Observer observer;
 	private const float CAMERA_DEPTH_LL = 1.2f;
 	private const float CAMERA_DEPTH_UL = 12.0f;
@@ -21,7 +22,6 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
 	}
 	void Start () {
 		eTouches = new int[] {Observer.FINGER_NONE,Observer.FINGER_NONE};
-		observer = GameObject.Find("Observer").GetComponent<Observer>();
 		cam = observer.GetCamera();
 	}	
 
@@ -124,11 +124,14 @@ public class TransformWall3 : MonoBehaviour, IPointerClickHandler, IDragHandler,
         	Vector3 bPos = camTransform.position;
 
         	//バウンド処理
-        	bPos.x = Mathf.Min(bPos.x, Observer.WALL_W/2);
-        	bPos.x = Mathf.Max(bPos.x, -Observer.WALL_W/2);
+        	Bounds b = observer.GetWallBounds();
+			float height = b.size.y;
+			float width = b.size.x;
+        	bPos.x = Mathf.Min(bPos.x, width/2);
+        	bPos.x = Mathf.Max(bPos.x, -width/2);
 
-        	bPos.y = Mathf.Min(bPos.y, Observer.WALL_H/2);
-        	bPos.y = Mathf.Max(bPos.y, -Observer.WALL_H/2);
+        	bPos.y = Mathf.Min(bPos.y, height/2);
+        	bPos.y = Mathf.Max(bPos.y, -height/2);
 
         	camTransform.position = bPos;
 	    }

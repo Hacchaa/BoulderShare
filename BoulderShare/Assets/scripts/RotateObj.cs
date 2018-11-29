@@ -22,7 +22,7 @@ public class RotateObj : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 	public void OnDrag(PointerEventData data){
 		if (data.pointerId == finger){
 			//y軸に回転させる
-			trans.Rotate(0, -data.delta.x * weight, 0);
+			trans.Rotate(0, data.delta.x * weight, 0);
 		}
 	}
 

@@ -12,15 +12,25 @@ namespace Kakera
         [SerializeField]
         private SpriteRenderer imageRenderer;
 
+        [SerializeField]
         private Observer observer;
+
+        [SerializeField]
+        private Phase1 phase1;
+  
         void Awake()
         {
             imagePicker.Completed += (string path) =>
             {
                 StartCoroutine(LoadImage(path, imageRenderer));
             };
+/*
+            //画像が読み込まれたことを知らせる
+            imagePicker.Completed += (string path) =>
+            {
+                phase1.AfterLoadingImage();
+            };*/
 
-            observer = GameObject.Find("Observer").GetComponent<Observer>();
         }
 
         public void OnPressShowPicker()
@@ -51,7 +61,8 @@ namespace Kakera
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
 
-            observer.InitHoldsAndScenes();
+             phase1.AfterLoadingImage();
+
 /*
             byte[] values;
             using(FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read)){

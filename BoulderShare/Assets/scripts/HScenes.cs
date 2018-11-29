@@ -7,6 +7,7 @@ using System.Linq;
 public class HScenes : MonoBehaviour {
 	public Text curNum;
 	public Text num;
+	[SerializeField]
 	private List<HScene> list ;
 	public SceneFocus sf;
 	public SceneNum sn;
@@ -16,12 +17,16 @@ public class HScenes : MonoBehaviour {
 	public AvatarControl ac;
 	public BoRouteLSManager bManager;
 	private bool isInit = false;
+	private string[] curHoldsInPose;
+	private bool isCurScenePosable = false;
 
 	void Awake(){
+		curHoldsInPose = new string[4];
 		list = new List<HScene>();
 		curNum.text = "0";
 		num.text = "0";
 	}
+
 	void Start(){
 		if (bManager.IsLoaded()){
 			bManager.BoRouteLoadSecond();
@@ -30,8 +35,33 @@ public class HScenes : MonoBehaviour {
 		}
 		isInit = true;
 	}
+
+
+	//use 3DModel/Pose/Canvas_Pose/Frame/Studio/ApplyButton
+	public void AdmitSettingPose(){
+		int index = int.Parse(curNum.text) - 1;
+		list[index].SetIsPoseSaved(true);
+
+		Hold[] arr = sf.GetFocusHold();
+		for(int i = 0 ; i < arr.Length ; i++){
+			if (arr[i] != null){
+				curHoldsInPose[i] = arr[i].gameObject.name;
+			}else{
+				curHoldsInPose[i] = "" ;
+			}
+		}
+		isCurScenePosable = true;
+	}
+
+	public string[] GetCurHoldsInPose(){
+		return curHoldsInPose;
+	}
+
 	public bool IsInit(){
 		return isInit;
+	}
+	public bool IsCurScenePosable(){
+		return isCurScenePosable;
 	}
 
 	public int GetNum(){
@@ -42,7 +72,7 @@ public class HScenes : MonoBehaviour {
 		return list;
 	}
 
-	public void Construction(List<HScene> data){
+	public void Construction(List<HScene> data, int numOfCreatingHScene){
 		int n = data.Count;
 		Awake();
 		sn.Init();
@@ -52,6 +82,7 @@ public class HScenes : MonoBehaviour {
 		}
 
 		list = data;
+		HScene.SetNum(numOfCreatingHScene);
 		curNum.text = "1";
 		num.text = n + "";
 		LoadScene(list[0]);
@@ -59,7 +90,6 @@ public class HScenes : MonoBehaviour {
 
 	public void InitScenes(){
 		sn.Init();
-		Awake();
 		AddScene();
 	}
 
@@ -67,6 +97,7 @@ public class HScenes : MonoBehaviour {
 		sf.Reset();
 		ac.Init();
 		string[] onHolds = scene.GetOnHolds();
+		onHolds.CopyTo(curHoldsInPose, 0);
 		//Debug.Log("onholds:"+onHolds);
 		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
 			if (!string.IsNullOrEmpty(onHolds[i])){
@@ -84,10 +115,24 @@ public class HScenes : MonoBehaviour {
 		}else{
 			ik.InitAvatar();
 		}
+		isCurScenePosable = scene.IsPose();
 	}
 
 	public Hold[] GetCurHolds(){
 		return sf.GetFocusHold();
+	}
+
+	public string[] GetCurHolds2(){
+		Hold[] h = sf.GetFocusHold();
+		string[] s = new string[4];
+
+		for(int i = 0 ; i < s.Length ; i++){
+			if (h[i] != null){
+				s[i] = h[i].gameObject.name;
+			}
+		}
+
+		return s;
 	}
 
 	//現在シーンを保存する
@@ -97,10 +142,24 @@ public class HScenes : MonoBehaviour {
 	}
 
 	private void SaveScene(HScene scene){
-		scene.SaveOnHolds(sf.GetFocusHold());
+		//もしhsceneの内容が変更されていたら、hsceneを更新して新しいidを付与する
+		if (!scene.IsEqualTo(sf.GetFocusHold(), ik.GetPosition(), ik.GetRotation())){
+			//Debug.Log("curScene"+scene.GetID() + "is Overwriting");
+			//初めて保存するとき以外のみ新しいidを付与
+			if (scene.IsAlreadySaved()){
+				//Debug.Log("ID of curScene was updated("+scene.GetID() +" to "+ HScene.GetNum());
+				scene.SetID(HScene.GetNum());
+				HScene.SetNum(HScene.GetNum()+1);
+			}
+			scene.SaveOnHolds(sf.GetFocusHold());
+			//このシーンをロードしてから、一回でもポーズを保存した場合
+			if (scene.IsPoseSaved()){
+				scene.SavePose(ik.GetPosition());
+				scene.SavePRotate(ik.GetRotation());
+			}
+		}
+		//コメントは必ず上書きする
 		scene.SaveComments(cs.GetComments());
-		scene.SavePose(ik.GetPosition());
-		scene.SavePRotate(ik.GetRotation());
 	}
 
 

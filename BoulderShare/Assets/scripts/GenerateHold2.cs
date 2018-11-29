@@ -8,18 +8,20 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	public GameObject holdNPrefab;
 	public GameObject holdFPrefab;
 	private GameObject hold;
-	private Transform holds;
 	private Hold holdScript;
 	private static float HOLD_RATE = 0.1f;
 	private static int finger ;
 	private static int num = 0;
 	private const string GENTAG_NH = "Generate_NH";
 	private const string GENTAG_FH = "Generate_FH";
+	[SerializeField]
+	private Observer observer;
+	[SerializeField]
+	private Transform holds;
 
 	// Use this for initialization
 	void Start () {
-		cam = GameObject.Find("Observer").GetComponent<Observer>().GetCamera();
-		holds = GameObject.Find("Wall").transform.Find("Holds");
+		cam = observer.GetCamera();
 		finger = Observer.FINGER_NONE;
 	}
 
@@ -68,7 +70,10 @@ public class GenerateHold2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			float x = Mathf.Abs(hold.transform.position.x);
 			float y = Mathf.Abs(hold.transform.position.y);
 			//wallの外にドロップした場合
-			if (x > Observer.WALL_W / 2 || y > Observer.WALL_H / 2){
+			Bounds b = observer.GetWallBounds();
+			float height = b.size.y;
+			float width = b.size.x;
+			if (x > width / 2 || y > height / 2){
 				Destroy(hold);
 			}else{
 				holdScript.Focus_P1();
