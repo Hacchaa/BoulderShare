@@ -31,6 +31,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 	private Observer observer;
 	private Bounds bounds;
 
+
 	// Use this for initialization
 	void Start () {
 		finger = Observer.FINGER_NONE;
@@ -139,9 +140,9 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 				float zUB = ac.CalcZPos(target.localPosition) - 0.15f;
 				float zLB = ac.CalcZPos(target.localPosition) - 0.5f;
 
-				x = Mathf.Min(x, bounds.size.x/2 + offsetW);
-				x = Mathf.Max(x, -(bounds.size.x/2 + offsetW));
-				y = Mathf.Min(y, bounds.size.y);
+				x = Mathf.Min(x, (bounds.size.x/2 + offsetW) * transform.lossyScale.x);
+				x = Mathf.Max(x, -(bounds.size.x/2 + offsetW) * transform.lossyScale.x);
+				y = Mathf.Min(y, bounds.size.y * transform.lossyScale.x);
 				y = Mathf.Max(y, 0.0f);
 				z = Mathf.Min(z, zUB);
 				z = Mathf.Max(z, zLB);

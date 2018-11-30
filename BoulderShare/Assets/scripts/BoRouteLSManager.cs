@@ -274,6 +274,8 @@ public class BoRouteLSManager : MonoBehaviour {
 
 	public void WriteThumbnail(string filepath){
 		Texture2D texture = wallRend.GetTexture();
+		Texture2D newTex = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1);
+		newTex.LoadRawTextureData(texture.GetRawTextureData());
 		int w = texture.width;
     	int h = texture.height;
     	//widhtとheightの大きいほうを選ぶ
@@ -281,8 +283,8 @@ public class BoRouteLSManager : MonoBehaviour {
     	//maxが200になるように縮小する
     	//float rate = max / 200.0f;
     	float rate = max / 50.0f;
-    	TextureScale.Bilinear(texture, (int)(w/rate), (int)(h/rate));
-    	WriteImage(texture, filepath);
+    	TextureScale.Bilinear(newTex, (int)(w/rate), (int)(h/rate));
+    	WriteImage(newTex, filepath);
 	}
 
 	public void WriteImage(Texture2D tex, string filepath){

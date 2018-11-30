@@ -107,6 +107,7 @@ public class ThreeDModel : MonoBehaviour {
 		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
 			if (!String.IsNullOrEmpty(curHolds[i])){
 				noTouch = false;
+				ac.SetFixed(i, true);
 			}
 		}
 

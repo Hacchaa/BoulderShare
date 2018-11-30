@@ -17,6 +17,8 @@ public class ThreeDHolds : MonoBehaviour {
 	private Vector3[] centerPos;
 	[SerializeField]
 	private Vector3[] offsetFromBody;
+	[SerializeField]
+	private Vector3[] offsetOnHand;
 	private Hold[] curHolds;
 	[SerializeField]
 	private GameObject threeDModel;
@@ -80,7 +82,7 @@ public class ThreeDHolds : MonoBehaviour {
 				n++;
 				index += (int)Mathf.Pow(2, i);
 				Debug.Log(i+", "+pos[i]);
-				pos[i] = threeDModel.transform.InverseTransformPoint(pos[i]);
+				pos[i] = threeDModel.transform.InverseTransformPoint(pos[i] + GetR(i) * offsetOnHand[i] / 2);
 				Debug.Log("before"+ map[curHolds[i].gameObject.name].transform.localPosition);
 				Debug.Log("after"+pos[i]);
 				pivot += pos[i];
@@ -94,8 +96,9 @@ public class ThreeDHolds : MonoBehaviour {
 		Debug.Log("center"+centerPos[index]);
 		pos[(int)AvatarControl.BODYS.BODY] = pivot + centerPos[index];
 
-		//ホールドをつかんでいない手足の位置
+		//手足位置の微調整
 		for(int i = (int)AvatarControl.BODYS.RH ; i <= (int)AvatarControl.BODYS.LF ; i++){
+			//ホールドをつかんでいない手足の位置
 			if(curHolds[i] == null){
 				pos[i] = offsetFromBody[i] + pos[(int)AvatarControl.BODYS.BODY];
 			}
