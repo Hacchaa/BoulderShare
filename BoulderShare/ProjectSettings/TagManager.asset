@@ -11,6 +11,7 @@ TagManager:
   - Generate_FH
   - SGNodeSet
   - SGEdgeSet
+  - 2DMark
   layers:
   - Default
   - TransparentFX
@@ -27,8 +28,8 @@ TagManager:
   - World
   - Window
   - Model
-  - 
-  - 
+  - 2D
+  - 3D
   - 
   - 
   - 
@@ -59,4 +60,7 @@ TagManager:
     locked: 0
   - name: SceneGraph
     uniqueID: 566602493
+    locked: 0
+  - name: Mark
+    uniqueID: 2236519967
     locked: 0

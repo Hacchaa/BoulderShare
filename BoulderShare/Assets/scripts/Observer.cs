@@ -31,6 +31,7 @@ public class Observer : MonoBehaviour {
 		if (bManager.IsLoaded()){
 			bManager.BoRouteLoadFirst();
 		}
+		phase1.FirstProc();
 	}
 /*
 	public void InitHoldsAndScenes(){

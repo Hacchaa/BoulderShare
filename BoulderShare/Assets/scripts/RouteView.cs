@@ -113,7 +113,7 @@ public class RouteView : MonoBehaviour {
 			//上書き編集かどうか(上書きはwallがここにない)
 			if (File.Exists(path + "Temp/thumbnail.png")){
 				//新規作成の場合
-				raTemp.SetImg(LoadImage(path + "Temp/thumbnail.png"));
+				raTemp.SetImg(MyUtility.LoadImage(path + "Temp/thumbnail.png"));
 				/*
 				//画像を移す
 				string wallPath = Application.persistentDataPath + Observer.WALLPATH ;
@@ -155,7 +155,7 @@ public class RouteView : MonoBehaviour {
 			//画像を読み込む
 			path = Application.persistentDataPath + Observer.ROUTEPATH + data.timestamp;
 			if (File.Exists(path + "/thumbnail.png")){
-				ra.SetImg(LoadImage(path + "/thumbnail.png"));
+				ra.SetImg(MyUtility.LoadImage(path + "/thumbnail.png"));
 			}
 			//このボルートの一時保存がある場合
 			if (!String.IsNullOrEmpty(tempTS) 
@@ -168,24 +168,6 @@ public class RouteView : MonoBehaviour {
 				tempOriginObj = route;
 			}
 		}
-	}
-
-	private Sprite LoadImage(string path){
-		Texture2D texture = new Texture2D(0, 0);
-		texture.LoadImage(LoadBytes(path));
-		return Sprite.Create(
-			texture, 
-            new Rect(0.0f, 0.0f, texture.width, texture.height), 
-            new Vector2(0.5f, 0.5f),
-            texture.height/4);
-	}
-
-	private byte[] LoadBytes(string path) {
-		FileStream fs = new FileStream(path, FileMode.Open);
-		BinaryReader bin = new BinaryReader(fs);
-		byte[] result = bin.ReadBytes((int)bin.BaseStream.Length);
-		bin.Close();
-		return result;
 	}
 
 	public void Search(bool isTermValid, string fromDate, string toDate, string place, List<int> gradeList){
@@ -252,7 +234,7 @@ public class RouteView : MonoBehaviour {
 			//画像を読み込む
 			string path = Application.persistentDataPath + Observer.ROUTEPATH + data.timestamp;
 			if (File.Exists(path + "/thumbnail.png")){
-				ra.SetImg(LoadImage(path + "/thumbnail.png"));
+				ra.SetImg(MyUtility.LoadImage(path + "/thumbnail.png"));
 			}
 			//Debug.Log("tempTS:"+tempTS);
 			//Debug.Log("timestamp:"+data.timestamp);

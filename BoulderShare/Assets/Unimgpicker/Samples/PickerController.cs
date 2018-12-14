@@ -61,7 +61,7 @@ namespace Kakera
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
 
-             phase1.AfterLoadingImage();
+            phase1.AfterLoadingImage();
 
 /*
             byte[] values;

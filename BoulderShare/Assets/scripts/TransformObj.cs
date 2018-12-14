@@ -133,6 +133,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 					}
 				}
 			}else if (isBDY){
+				/*
 				float x = target.localPosition.x;
 				float y = target.localPosition.y;
 				float z = target.localPosition.z;
@@ -147,7 +148,7 @@ public class TransformObj : MonoBehaviour, IDragHandler, IEndDragHandler, IBegin
 				z = Mathf.Min(z, zUB);
 				z = Mathf.Max(z, zLB);
 
-				target.localPosition = new Vector3(x, y, z);
+				target.localPosition = new Vector3(x, y, z);*/
 			}
 			/*
 			if (gameObject.name.Equals(BODY_NAME)){

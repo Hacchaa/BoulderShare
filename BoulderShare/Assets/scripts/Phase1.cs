@@ -26,12 +26,18 @@ public class Phase1 : MonoBehaviour {
 	private PickerController pc;
 	[SerializeField]
 	private GameObject plane;
+	[SerializeField]
+	private WallImg wallRend;
 	// Use this for initialization
 	void Start () {
 		cam = observer.GetCamera();
+	}
 
+	public void FirstProc(){
 		if (!bManager.IsLoaded()){
 			firstLoadObj.SetActive(true);
+		}else{
+			AfterLoadingImage();
 		}
 	}
 
@@ -46,6 +52,15 @@ public class Phase1 : MonoBehaviour {
 		Bounds b = observer.GetWallBounds();
 		plane.transform.localScale = new Vector3(b.size.x * 0.1f, 0.1f, b.size.y * 0.1f);
 		plane.transform.parent.localPosition = new Vector3(0.0f, b.size.y/2, 0.0f);
+
+		//3Dモデルの壁のテクスチャーを設定
+		Renderer rend = plane.GetComponent<Renderer>();
+		Material[] mat = rend.materials;
+		Material m = new Material(mat[0]);
+		m.SetTexture("_MainTex", wallRend.GetTexture());
+		mat[0] = m;
+		rend.materials = mat;
+
 	}
 /*
 	private IEnumerator Load(){

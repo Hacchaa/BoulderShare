@@ -11,13 +11,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/scenemake.unity
     guid: 13c08c29aa842477f95dbdba4d15aa73
-  - enabled: 1
+  - enabled: 0
     path: Assets/routeview.unity
     guid: ff4440366ddcafd47bef8db01d5449f3
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/edit3.unity
     guid: ca5f296d509297147a01cacf821c40ea
+  - enabled: 1
+    path: Assets/borouteEdit.unity
+    guid: de06336ede477034885eff6b76ea359e
+  - enabled: 1
+    path: Assets/routeview2.unity
+    guid: 2cfa477b8df69604c9712f7e4ea296f2
   m_configObjects: {}
