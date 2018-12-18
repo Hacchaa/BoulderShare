@@ -19,9 +19,13 @@ public class Post2 : MonoBehaviour , IUIComponent{
 	private Toggle completeToggle;
 	[SerializeField]
 	private InputField gComment;
+	[SerializeField]
+	private ScrollRect sr;
 
 	public void ShowProc(){
 		gameObject.SetActive(true);
+			//課題一覧を一番上にスクロールする
+		sr.verticalNormalizedPosition = 1.0f;
 	}
 
 	public void HideProc(){

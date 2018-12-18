@@ -33,23 +33,9 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 
 	public void LoadingBorouteProc(){
 		SyncSceneScroll();
-		HScene2 scene = GetCurScene();
-		if (scene != null){
-			Load(scene);
-		}
 		failedListView.SetIsUpdateNeed(true);
 	}
 
-	public void SwitchDimension(){
-		twoDCamera.SetActive(!twoDCamera.activeSelf);
-		threeDCamera.SetActive(!threeDCamera.activeSelf);
-
-		if (threeDCamera.activeSelf){
-			threeD.ResetCamPos();
-		}else{
-			twoDWallImage.ResetCamPosAndDepth();
-		}
-	}
 
 	private void SyncSceneScroll(){
 		ss.Delete();
@@ -162,5 +148,6 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 	public void Load(HScene2 scene){
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
 		threeD.SetModelPose(scene.GetPose(), scene.GetPRotate());
+		threeD.SetIsLookingActivate(scene.IsLookingActivate());
 	}
 }

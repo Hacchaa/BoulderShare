@@ -13,6 +13,8 @@ public class SceneScroll : MonoBehaviour {
 	private float iconWidth;
 	private float space;
 	private int num;
+	[SerializeField]
+	private Text text;
 
 	void Awake(){
 		num = 0;
@@ -28,10 +30,21 @@ public class SceneScroll : MonoBehaviour {
 		foreach(Transform t in child){
 			Destroy(t.gameObject);
 		}
+
+		text.text = "0 / 0";
 	}
 
 	//index番目のアイコンにフォーカスをあてる
 	public void Focus(int index){
+		if (num == 0){
+			text.text = "0 / 0";
+			return ;
+		}
+		if (index < 0 || index > num - 1){
+			return ;
+		}
+		text.text = (index + 1) + " / " + num;
+		/*
 		if (curFocus != null){
 			curFocus.color = BaseColor;
 			curFocus = null;
@@ -48,12 +61,13 @@ public class SceneScroll : MonoBehaviour {
 			child.anchoredPosition = v;
 			curFocus = icon.GetComponent<Image>();
 			curFocus.color = Color.white;
-		}
+		}*/
 	}
 
 	public void Add(int index){
+		/*
 		GameObject obj = Instantiate(sceneScrollIconPrefab, child);
-		obj.transform.SetSiblingIndex(index);
+		obj.transform.SetSiblingIndex(index);*/
 		num++;
 	}
 
@@ -61,7 +75,7 @@ public class SceneScroll : MonoBehaviour {
 		if (index < 0){
 			return ;
 		}
-		Destroy(child.GetChild(index).gameObject);
+		//Destroy(child.GetChild(index).gameObject);
 		num--;
 	}
 }

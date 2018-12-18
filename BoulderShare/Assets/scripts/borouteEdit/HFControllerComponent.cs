@@ -16,6 +16,7 @@ public class HFControllerComponent : MonoBehaviour, IDragHandler, IEndDragHandle
 		if (finger == FINGER_NONE){
 			finger = data.pointerId;
 			controller.SetBodyType(bodyType);
+			controller.AdjustArrowScale();
 		}
 	}
 

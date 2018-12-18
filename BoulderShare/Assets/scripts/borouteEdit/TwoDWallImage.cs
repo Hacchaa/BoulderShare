@@ -8,7 +8,7 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	private float prevLength;
 	private Bounds bounds;
 	private bool isOn = false;
-
+	private Vector2 offTouchPos ;
 	[SerializeField]
 	private Camera cam;
 	[SerializeField]
@@ -144,9 +144,14 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 
 	public void OnPointerExit(PointerEventData data){
 		isOn = false;
+		offTouchPos = data.position;
 	}
 
 	public bool IsOnPointerEnter(){
 		return isOn;
+	}
+
+	public Vector2 GetOffTouchPos(){
+		return offTouchPos;
 	}
 }

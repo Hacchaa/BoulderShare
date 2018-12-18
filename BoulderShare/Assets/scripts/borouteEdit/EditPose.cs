@@ -20,6 +20,13 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	private Slider modelSizeSlider;
 	[SerializeField]
 	private EditScene es;
+	[SerializeField]
+	private IKLookAt ikLookAt;
+
+
+	public void LookButton(){
+		ikLookAt.ActivateLooking();
+	}
 
 	public void CopyJustBeforeScene(){
 		int index = atv.GetCurSceneIndex();
@@ -46,6 +53,7 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	public void Submit(){
 		es.SetPose(threeD.GetModelPosition());
 		es.SetRotate(threeD.GetModelRotation());
+		es.SetIsCurLookingActivate(threeD.IsLookingActivate());
 		Close();
 	}
 
@@ -59,6 +67,10 @@ public class EditPose : MonoBehaviour, IUIComponent {
 
 		if(es.IsPoseDetermined()){
 			threeD.SetModelPose(es.GetPose(), es.GetRotate());
+			threeD.SetIsLookingActivate(es.IsCurLookingActivate());
+			if(es.IsCurLookingActivate()){
+				ikLookAt.gameObject.SetActive(true);
+			}
 		}else{
 			threeD.CorrectModelPose();
 		}
@@ -73,6 +85,7 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	}
 
 	public void HideProc(){
+		ikLookAt.gameObject.SetActive(false);
 		Hide();
 	}
 

@@ -281,7 +281,7 @@ public class RouteView2 : MonoBehaviour {
 			string json = JsonUtility.ToJson(b);
 
 			//新しいlistをファイルに保存
-			string filePath = Application.persistentDataPath + EditorManager.BOROUTEPATH + "boroute.json";
+			string filePath = Application.persistentDataPath + EditorManager.BOROUTEPATH + "search.json";
 			try{
 				if (File.Exists(filePath)){
 					File.WriteAllText(filePath, json);

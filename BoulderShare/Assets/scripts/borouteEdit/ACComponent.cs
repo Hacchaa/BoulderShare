@@ -128,7 +128,9 @@ public class ACComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 			}else{
 				target.position = new Vector3(p.x, p.y, ac.CalcZPos(p));
 			}*/
-			target.localRotation = transform.localRotation;
+
+			//target.rotation = Quaternion.LookRotation(Vector3.up);
+			//target.localRotation = transform.localRotation;
 	    }
 	}
 

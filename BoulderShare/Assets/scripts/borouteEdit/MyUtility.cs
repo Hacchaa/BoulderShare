@@ -90,6 +90,7 @@ public class MyUtility {
 		public List<string> comments;
 		public Vector3[] pose;
 		public Quaternion[] rotate;
+		public bool isLookingActivate;
 	}
 
 	[Serializable]

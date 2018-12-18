@@ -20,6 +20,8 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	private TwoDWall twoDWall;
 	[SerializeField]
 	private TwoDWallMarks twoDWallMarks;
+	[SerializeField]
+	private TwoDWallImage twoDWallImage;
 
 
 	// Use this for initialization
@@ -94,8 +96,19 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 		if (data.pointerId == finger){
 			finger = FINGER_NONE;
 
+			Vector3 p ;
+			if (!twoDWallImage.IsOnPointerEnter()){
+				Vector2 off = twoDWallImage.GetOffTouchPos();
+				p = cam.ScreenToWorldPoint(
+				new Vector3(
+					off.x, 
+					off.y, 
+					-cam.transform.position.z));
+			}else{
+				p = transform.position;
+			}
+
 			//bounds
-			Vector3 p = transform.position;
 			//wallの幅とサイズを取得
 			//高さは4units
 			Bounds b = twoDWall.GetWallBounds();

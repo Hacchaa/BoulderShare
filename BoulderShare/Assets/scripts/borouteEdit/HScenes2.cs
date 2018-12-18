@@ -135,6 +135,7 @@ public class HScenes2 : MonoBehaviour {
 			data.comments = scene.GetComments();
 			data.pose = scene.GetPose();
 			data.rotate = scene.GetPRotate();
+			data.isLookingActivate = scene.IsLookingActivate();
 
 			tree.data[i] = data;
 			i++;
@@ -154,6 +155,7 @@ public class HScenes2 : MonoBehaviour {
 			scene.SaveComments(data.comments);
 			scene.SavePose(data.pose);
 			scene.SavePRotate(data.rotate);
+			scene.SetIsLookingActivate(data.isLookingActivate);
 	
 			list.Add(scene);
 		}

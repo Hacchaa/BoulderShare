@@ -6,7 +6,7 @@ using System;
 using Kakera;
 
 public class EditorManager : MonoBehaviour {
-	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY};
+	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY, LOOK};
 	public static string BOROUTEPATH = "/route/";
 	public const string WALLPATH = "/";
 	[SerializeField]
@@ -35,20 +35,30 @@ public class EditorManager : MonoBehaviour {
 	}
 
 	void Start(){
+		StartCoroutine(FirstProc());
+	}
+
+	//borouteeditの初期化処理
+	private IEnumerator FirstProc(){
+		//ikが有効になるまで待つ
+		while(!threeD.IsIKValid()){
+			yield return null;
+		}
+		transition.Init();
+
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
 			pc.OpenImagePicker();
-			return ;
-		}
-
-		InfoFromViewToEdit info = obj.GetComponent<InfoFromViewToEdit>();
-		if (info.IsNew()){
-			pc.OpenImagePicker();
 		}else{
-			bManager.LoadBoroute();
+			InfoFromViewToEdit info = obj.GetComponent<InfoFromViewToEdit>();
+			if (info.IsNew()){
+				pc.OpenImagePicker();
+			}else{
+				bManager.LoadBoroute();
+			}
+			SetPList(info.GetPlaceList());
+			transition.Transition("AttemptTreeView");
 		}
-		SetPList(info.GetPlaceList());
-		transition.Transition("AttemptTreeView");
 	}
 
 	public void SetPList(List<string> list){

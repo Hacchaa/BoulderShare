@@ -28,18 +28,22 @@ public class HFController : MonoBehaviour{
 		selectedBodyInfo = type;
 	}
 
+	public void AdjustArrowScale(){
+		arrow.transform.localScale = Vector3.one * -cam.transform.position.z * 0.1f;
+	}
+
 	public void Drag(PointerEventData data){
 		//マークが存在しないなら何もしない
 		if(!twoDWallMarks.IsMarkExist()){
 			return ;
 		}
-		Vector3 p = cam.ScreenToWorldPoint(
+
+		if (twoDWallImage.IsOnPointerEnter()){
+			Vector3 p = cam.ScreenToWorldPoint(
 				new Vector3(
 				data.position.x, 
 				data.position.y, 
 				-cam.transform.position.z));
-
-		if (twoDWallImage.IsOnPointerEnter()){
 			//タッチ座標に最も近いマークを探す
 			selectedMark = twoDWallMarks.CalcNearestMark(new Vector2(p.x, p.y));
 			Vector3 target = selectedMark.transform.position;
@@ -49,14 +53,14 @@ public class HFController : MonoBehaviour{
 			//タッチした座標からtargetの座標に向かうベクトルの取得
 			Vector3 dir = target - p ;
 			float mag = dir.magnitude;
-
-			if (mag < HEIGHT_MIN){
-				Vector2 tmp = new Vector2(-dir.x, -dir.y).normalized * HEIGHT_MIN / 2;
+			if (mag / arrow.transform.localScale.x < HEIGHT_MIN){
+				Vector2 tmp = new Vector2(-dir.x, -dir.y).normalized * HEIGHT_MIN * arrow.transform.localScale.x / 2;
 				arrow.gameObject.transform.position = new Vector3(target.x + tmp.x, target.y + tmp.y , p.z);
-				mag = HEIGHT_MIN;
+				mag = HEIGHT_MIN ;
 			}else{
 				//矢印の座標をタッチ座標にする
 				arrow.gameObject.transform.position = new Vector3(p.x + dir.x/2, p.y + dir.y/2, p.z);
+				mag /= arrow.transform.localScale.x;
 			}
 
 			//矢印をtargetに向かせる

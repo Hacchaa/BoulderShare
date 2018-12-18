@@ -14,12 +14,21 @@ public class ScreenTransitionManager : MonoBehaviour {
 	}
 
 	void Start(){
+		/*
 		foreach(GameObject obj in uiList){
 			IUIComponent com = obj.GetComponent<IUIComponent>();
 			map.Add(obj.name, com);
 			com.Hide();
 		}
-		Transition("AttemptTreeView");
+		Transition("AttemptTreeView");*/
+	}
+
+	public void Init(){
+		foreach(GameObject obj in uiList){
+			IUIComponent com = obj.GetComponent<IUIComponent>();
+			map.Add(obj.name, com);
+			com.Hide();
+		}
 	}
 	
 	public void Transition(string name){

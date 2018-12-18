@@ -8,7 +8,7 @@ public class HScene2{
 	private List<string> comments;
 	private Vector3[] pose;
 	private Quaternion[] pRotate;
-	private bool posable;
+	private bool isLookingActivate ;
 	private int id;
 	private static int num = 0;
 	private bool isSaved;
@@ -18,9 +18,9 @@ public class HScene2{
 	public HScene2(){
 		onHolds = new string[4];
 		comments = new List<string>();
-		pose = new Vector3[Enum.GetNames(typeof(AvatarControl.BODYS)).Length - 1];
-		pRotate = new Quaternion[Enum.GetNames(typeof(AvatarControl.BODYS)).Length - 1];
-		posable = false;
+		pose = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
+		pRotate = new Quaternion[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
+		isLookingActivate = false;
 		isSaved = false;
 		id = num;
 		num++;
@@ -89,7 +89,6 @@ public class HScene2{
 	}
 
 	public void SavePose(Vector3[] arr){
-		posable = true;
 		pose = arr;
 		isSaved = true;
 	}
@@ -103,8 +102,12 @@ public class HScene2{
 		isSaved = true;
 	}
 
-	public bool IsPose(){
-		return posable;
+	public bool IsLookingActivate(){
+		return isLookingActivate;
+	}
+
+	public void SetIsLookingActivate(bool b){
+		isLookingActivate = b;
 	}
 	
 	public void Show(){
@@ -119,41 +122,5 @@ public class HScene2{
 		for(int i = 0 ; i < pRotate.Length ; i++){
 			Debug.Log("pROtate["+i+"]:"+pRotate[i]);
 		}
-	}
-
-	//hScene間の同値判定
-	//pose[], pRotate[], onHolds[]の値が等しい時true
-	public bool IsEqualTo(Hold[] aOnHolds, Vector3[] aPose, Quaternion[] aRotate){
-		//string[] aOnHolds = another.GetOnHolds();
-		for(int i = 0 ; i < onHolds.Length ; i++){
-			string another = null;
-			if (aOnHolds[i] != null){
-				another = aOnHolds[i].gameObject.name;
-			}
-			//Debug.Log("compare "+ onHolds[i] +" and "+ another);
-			if (!String.Equals(onHolds[i], another)){
-				//Debug.Log("false in onHolds");
-				return false;
-			}
-		}
-
-		//Vector3[] aPose = another.GetPose();
-		for(int i = 0 ; i < pose.Length ; i++){
-			if (aPose[i] != pose[i]){
-				//Debug.Log("false in pose");
-				return false;
-			}
-		}
-
-		//Quaternion[] aRotate = another.GetPRotate();
-		for(int i = 0 ; i < pRotate.Length ; i++){
-			//Debug.Log("ratate " + pRotate[i].eulerAngles + " and "+ aRotate[i].eulerAngles);
-			if (pRotate[i] != aRotate[i]){
-				//Debug.Log("false in rotate");
-				return false;
-			}
-		}
-
-		return true;
 	}
 }

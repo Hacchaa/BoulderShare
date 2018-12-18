@@ -26,8 +26,20 @@ public class ThreeD : MonoBehaviour {
 	private const float DEPTH_LOOKING = 5.0f;
 	private const float DEPTH_DEFAULT = 10.0f;
 
+	public bool IsIKValid(){
+		return ik.IsIKActive();
+	}
+
 	public int GetWallIncline(){
 		return threeDWall.GetWallIncline();
+	}
+
+	public bool IsLookingActivate(){
+		return ik.IsLookingActivate();
+	}
+
+	public void SetIsLookingActivate(bool b){
+		ik.SetIsLookingActivate(b);
 	}
 
 	public void SetWallIncline(int value){
@@ -77,6 +89,7 @@ public class ThreeD : MonoBehaviour {
 
 	public void CorrectModelPose(){
 		Vector3[] pos = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length-1];
+		Quaternion[] rot = ik.GetRotation();
 		string[] onTouch = twoDWallMarks.GetTouchInfo();
 		//Debug.Log(string.Join(", ", onTouch));
 		int index = 0;
@@ -97,19 +110,48 @@ public class ThreeD : MonoBehaviour {
 		pos[(int)EditorManager.BODYS.BODY] = pivot + centerPos[index];
 
 		//手足位置の微調整
-		for(int i = (int)EditorManager.BODYS.RH ; i <= (int)EditorManager.BODYS.LF ; i++){
+		for(int i = (int)EditorManager.BODYS.RH ; i <= (int)EditorManager.BODYS.LH ; i++){
+			//ホールドをつかんでいない手足の位置
+			if(onTouch[i] == null){
+				pos[i] = offsetFromBody[i] + pos[(int)EditorManager.BODYS.BODY];
+			}
+
+			rot[i] = Quaternion.Euler(-50.0f, 0.0f, 0.0f);
+		}
+
+		for(int i = (int)EditorManager.BODYS.RF ; i <= (int)EditorManager.BODYS.LF ; i++){
 			//ホールドをつかんでいない手足の位置
 			if(onTouch[i] == null){
 				pos[i] = offsetFromBody[i] + pos[(int)EditorManager.BODYS.BODY];
 			}
 		}
-		//左右肘膝
-		for(int i = (int)EditorManager.BODYS.RE ; i <= (int)EditorManager.BODYS.LK ; i++){
-				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
-				pos[i].z = 0.0f;
-		}
-		int j = 0;
 
-		ik.SetPose(pos, ik.GetRotation());
+		//左右肘
+		for(int i = (int)EditorManager.BODYS.RE ; i <= (int)EditorManager.BODYS.LE ; i++){
+				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
+				//rot[i]
+				//pos[i].z = 0.0f;
+		}
+		//左右膝
+		for(int i = (int)EditorManager.BODYS.RK ; i <= (int)EditorManager.BODYS.LK ; i++){
+				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
+				//pos[i].z = 0.0f;
+		}
+
+		ik.SetPose(pos, rot);
 	}
+/*
+	public void CalcJointAngle(){
+		Vector3[] pos = ik.GetPosition();
+		Quaternion[] rot = ik.GetRotation();
+		float bodyAngleY = rot[(int)EditorManager.BODYS.BODY].eulerAngles.y;
+		int index = (int)EditorManager.BODYS.LF;
+
+		Vector3 kneePos = pos[(int)EditorManager.BODYS.LK];
+		Vector3 footPos = pos[index];
+
+		//膝から足に向かうベクトルを返す
+		Vector3 p = footPos - kneePos;
+		float degZY = Vector2.Angle(new Vector2(0, -1), new Vecotr2())
+	}*/
 }

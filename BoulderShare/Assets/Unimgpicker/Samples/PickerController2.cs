@@ -14,6 +14,8 @@ namespace Kakera
         private EditorPopup popup;
         [SerializeField]
         private EditorManager eManager;
+        [SerializeField]
+        private ScreenTransitionManager trans;
         private bool isLoading = false;
 
         void Awake()
@@ -23,6 +25,7 @@ namespace Kakera
                 isLoading = true;
                 StartCoroutine(LoadImage(path));
             };
+
 /*
             //画像が読み込まれたことを知らせる
             imagePicker.Completed += (string path) =>
@@ -47,8 +50,7 @@ namespace Kakera
         private IEnumerator WaitForExit(){
             float startTime = Time.time;
             while(!isLoading){
-                Debug.Log(Time.time - startTime);
-                if (Time.time - startTime < 0.2f){
+                if (Time.time - startTime < 1.0f){
                     yield return null;
                 }else{
                     eManager.ExitImmediately();
@@ -80,6 +82,7 @@ namespace Kakera
             string filePath = Application.persistentDataPath + "/Wall.png";
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
+            trans.Transition("AttemptTreeView");
 
 /*
             byte[] values;
