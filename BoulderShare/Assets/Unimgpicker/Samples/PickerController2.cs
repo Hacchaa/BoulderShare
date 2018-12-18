@@ -44,7 +44,7 @@ namespace Kakera
         public void OnPressShowPicker()
         {
             imagePicker.Show("Select Image", "unimgpicker", 1024);
-            StartCoroutine(WaitForExit());
+            //StartCoroutine(WaitForExit());
         }
 
         private IEnumerator WaitForExit(){

@@ -168,13 +168,13 @@ public class IKControl2 : MonoBehaviour {
 				avatar.SetIKPositionWeight(AvatarIKGoal.RightHand,rightHandWeightPosition);
 				//avatar.SetIKRotationWeight(AvatarIKGoal.RightHand,rightHandWeightRotation);
 
-				//avatar.SetIKHintPositionWeight(AvatarIKHint.LeftKnee, leftKneeWeightPosition);
+				avatar.SetIKHintPositionWeight(AvatarIKHint.LeftKnee, leftKneeWeightPosition);
 
-				//avatar.SetIKHintPositionWeight(AvatarIKHint.RightKnee, rightKneeWeightPosition);
+				avatar.SetIKHintPositionWeight(AvatarIKHint.RightKnee, rightKneeWeightPosition);
 
-				//avatar.SetIKHintPositionWeight(AvatarIKHint.LeftElbow, leftElbowWeightPosition);
+				avatar.SetIKHintPositionWeight(AvatarIKHint.LeftElbow, leftElbowWeightPosition);
 				
-				//avatar.SetIKHintPositionWeight(AvatarIKHint.RightElbow, rightElbowWeightPosition);
+				avatar.SetIKHintPositionWeight(AvatarIKHint.RightElbow, rightElbowWeightPosition);
 				//avatar.SetLookAtWeight(lookAtWeight,0.3f,0.6f,1.0f,0.5f);
 				
 
