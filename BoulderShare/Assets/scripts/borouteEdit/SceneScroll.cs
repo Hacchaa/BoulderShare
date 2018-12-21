@@ -12,24 +12,25 @@ public class SceneScroll : MonoBehaviour {
 	private Color BaseColor ;
 	private float iconWidth;
 	private float space;
-	private int num;
+	private int num = 0;
 	[SerializeField]
 	private Text text;
 
 	void Awake(){
-		num = 0;
-		child = transform.GetChild(0).gameObject.GetComponent<RectTransform>();
-		space = child.gameObject.GetComponent<HorizontalLayoutGroup>().spacing;
-		iconWidth = sceneScrollIconPrefab.GetComponent<RectTransform>().rect.width;
+		//num = 0;
+		//child = transform.GetChild(0).gameObject.GetComponent<RectTransform>();
+		//space = child.gameObject.GetComponent<HorizontalLayoutGroup>().spacing;
+		//iconWidth = sceneScrollIconPrefab.GetComponent<RectTransform>().rect.width;
 
-		Focus(0);
+		//Focus(0);
 	}
 
 	public void Delete(){
 		num = 0;
+		/*
 		foreach(Transform t in child){
 			Destroy(t.gameObject);
-		}
+		}*/
 
 		text.text = "0 / 0";
 	}

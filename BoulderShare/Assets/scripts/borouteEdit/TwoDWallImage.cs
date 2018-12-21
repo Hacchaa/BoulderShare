@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerEnterHandler, IPointerExitHandler {
 	private int[] eTouches;
@@ -9,10 +10,13 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	private Bounds bounds;
 	private bool isOn = false;
 	private Vector2 offTouchPos ;
+	private int wallRotTarget;
 	[SerializeField]
 	private Camera cam;
 	[SerializeField]
 	private TwoDWall twoDWall;
+	[SerializeField]
+	private Transform wallTrans;
 
 	private const float CAMERA_DEPTH_LL = 1.2f;
 	private const float CAMERA_DEPTH_UL = 12.0f;
@@ -20,9 +24,11 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	private const int FINGER_NONE = -10;
 
 
+
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
+		wallRotTarget = 0;
 		eTouches = new int[] {FINGER_NONE,FINGER_NONE};
 	}
 
@@ -153,5 +159,73 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 
 	public Vector2 GetOffTouchPos(){
 		return offTouchPos;
+	}
+
+	public void RotWall(bool isClockwise){
+		if(isClockwise){
+			wallRotTarget--;
+			if (wallRotTarget < 0){
+				wallRotTarget = 3;
+			}
+		}else{
+			wallRotTarget++;
+			if (wallRotTarget > 3){
+				wallRotTarget = 0;
+			}
+		}
+		float ang = 90.0f * wallRotTarget;
+		wallTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, ang), 0.25f);
+	}
+
+	public void RotateWallTexture(){
+		wallTrans.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+		Texture2D texture = twoDWall.GetWallTexture();
+
+		if(wallRotTarget > 0 && wallRotTarget <= 3){
+			RotTexture(texture, wallRotTarget);
+			twoDWall.OverWriteWallTexture(texture);
+		}
+	}
+
+	private void RotTexture(Texture2D tex, int rotType){
+		int w = tex.width;
+		int h = tex.height;
+		Debug.Log("w, h " + w + "," + h);
+		Debug.Log("rotType= "+rotType);
+
+		Color[] cOri = tex.GetPixels();
+		Color[] cNew = new Color[w * h];
+		Debug.Log("tex.GetPixels()= "+cOri.Length);
+		Debug.Log("cNew.Length = "+ (w * h));
+
+		for(int i = 0 ; i < cOri.Length ; i++){
+			int j = i / w ;
+			int k = i % w ;
+			Color c = new Color(cOri[i].r, cOri[i].g, cOri[i].b, cOri[i].a);
+			//Debug.Log("i "+ i);
+			//Debug.Log("j, k "+ j + "," + k);
+
+			if(rotType == 1){
+				int tmp = k;
+				k = h - 1 - j;
+				j = tmp;
+				//Debug.Log("after j, k " + j + "," +k);
+				cNew[h * j + k] = c; 
+			}else if(rotType == 2){
+				cNew[w * h - 1 - i] = c;
+			}else if(rotType == 3){
+				int tmp = k;
+				k = j;
+				j = w - 1 - tmp;
+				//Debug.Log("after j, k " + j + "," +k);
+				cNew[h * j + k] = c; 
+			};
+		}
+		if (rotType == 1 || rotType == 3){
+			tex.Resize(h, w);
+		}
+		tex.SetPixels(cNew);
+		tex.Apply();
+ 
 	}
 }

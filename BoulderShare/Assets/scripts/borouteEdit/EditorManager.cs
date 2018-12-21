@@ -49,10 +49,12 @@ public class EditorManager : MonoBehaviour {
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
 			pc.OpenImagePicker();
+			transition.Transition("PickImageView");
 		}else{
 			InfoFromViewToEdit info = obj.GetComponent<InfoFromViewToEdit>();
 			if (info.IsNew()){
 				pc.OpenImagePicker();
+				transition.Transition("PickImageView");
 			}else{
 				bManager.LoadBoroute();
 			}

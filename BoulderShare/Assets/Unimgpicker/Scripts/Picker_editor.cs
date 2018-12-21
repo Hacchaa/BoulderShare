@@ -22,6 +22,12 @@ namespace Kakera
 				{
 					receiver.SendMessage("OnComplete", Application.persistentDataPath + "/" + outputFileName);
 				}
+			}else{
+				var receiver = GameObject.Find("Unimgpicker");
+				if (receiver != null)
+				{
+					receiver.SendMessage("OnFailure", "Failed to pick the image");
+				}
 			}
 		}
 	}

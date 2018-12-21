@@ -14,16 +14,18 @@ namespace Kakera
         private EditorPopup popup;
         [SerializeField]
         private EditorManager eManager;
-        [SerializeField]
-        private ScreenTransitionManager trans;
-        private bool isLoading = false;
 
         void Awake()
         {
             imagePicker.Completed += (string path) =>
             {
-                isLoading = true;
                 StartCoroutine(LoadImage(path));
+            };
+
+            imagePicker.Failed += (string message) =>
+            {
+                Debug.Log(message);
+                eManager.ExitImmediately();
             };
 
 /*
@@ -44,19 +46,6 @@ namespace Kakera
         public void OnPressShowPicker()
         {
             imagePicker.Show("Select Image", "unimgpicker", 1024);
-            //StartCoroutine(WaitForExit());
-        }
-
-        private IEnumerator WaitForExit(){
-            float startTime = Time.time;
-            while(!isLoading){
-                if (Time.time - startTime < 1.0f){
-                    yield return null;
-                }else{
-                    eManager.ExitImmediately();
-                    isLoading = true;
-                }
-            }
         }
 
         private IEnumerator LoadImage(string path)
@@ -82,7 +71,6 @@ namespace Kakera
             string filePath = Application.persistentDataPath + "/Wall.png";
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
-            trans.Transition("AttemptTreeView");
 
 /*
             byte[] values;
