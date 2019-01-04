@@ -16,6 +16,8 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	private GameObject twoDCamera;
 	[SerializeField]
 	private ThreeD threeD;
+	[SerializeField]
+	private SceneCommentController scc;
 
 	private HScene2 curScene;
 	private Vector3[] curPose;
@@ -24,6 +26,8 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private bool isPoseDetermined = false;
 	private bool isCurLookingAct = false;
+	//コメントかポーズのシーンから帰ってきたかどうか(sceneを読み込んでから一度showProcが呼ばれたかどうか)
+	private bool isAlreadyLoaded = false;
 
 	void Awake(){
 	}
@@ -74,6 +78,7 @@ public class EditScene : MonoBehaviour, IUIComponent {
 		if (curScene == null){
 			curScene = new HScene2();
 			curScene.SetOnHolds(twoDWallMarks.GetTouchInfo());
+			curScene.SaveComments(scc.GetSceneComments());
 
 			if (isPoseDetermined){
 				curScene.SavePose(curPose);
@@ -87,6 +92,7 @@ public class EditScene : MonoBehaviour, IUIComponent {
 			atv.AddScene(curScene);
 		}else{
 			curScene.SetOnHolds(twoDWallMarks.GetTouchInfo());
+			curScene.SaveComments(scc.GetSceneComments());
 
 			if (isPoseDetermined){
 				curScene.SavePose(curPose);
@@ -104,6 +110,7 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	public void Close(){
 		isPoseDetermined = false;
 		isCurLookingAct = false;
+		isAlreadyLoaded = false;
 		curScene = null;
 		twoDWallMarks.ClearTouch();
 		trans.Transition("AttemptTreeView");
@@ -112,25 +119,38 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	public void ShowProc(){
 		int t = AttemptTreeView.GetSceneType();
 
-		if(!isPoseDetermined && t == (int)AttemptTreeView.SCENETYPE.EDIT){
-			Debug.Log("1");
-			curScene = atv.GetCurScene();
-			if (curScene != null){
-				Debug.Log("2");
-				twoDWallMarks.SetTouchInfo(curScene.GetOnHolds());
-				curPose = curScene.GetPose();
-				curRotate = curScene.GetPRotate();
-				isCurLookingAct = curScene.IsLookingActivate();
-				isPoseDetermined = true;
+		if(!isAlreadyLoaded){
+			scc.Init();
+			if( t == (int)AttemptTreeView.SCENETYPE.EDIT){
+				//Debug.Log("1");
+				curScene = atv.GetCurScene();
+				if (curScene != null){
+					//Debug.Log("2");
+					twoDWallMarks.SetTouchInfo(curScene.GetOnHolds());
+					curPose = curScene.GetPose();
+					curRotate = curScene.GetPRotate();
+					isCurLookingAct = curScene.IsLookingActivate();
+					isPoseDetermined = true;
+					scc.SetSceneComments(curScene.GetComments());
+				}
 			}
 		}
-		threeD.InitModelPose();
+
+		if (isPoseDetermined){
+			threeD.SetModelPose(curPose, curRotate);
+		}else{
+			threeD.InitModelPose();
+		}
+		threeD.ResetCamPos();
+		threeD.LookAtModel();
 
 		gameObject.SetActive(true);
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(true);
 		}
 		twoDCamera.SetActive(true);
+
+		isAlreadyLoaded = true;
 	}
 
 	public void HideProc(){
@@ -144,6 +164,10 @@ public class EditScene : MonoBehaviour, IUIComponent {
 		}
 
 		twoDCamera.SetActive(false);
+	}
+
+	public void ToEditSceneComment(){
+		trans.Transition("EditSceneComment");
 	}
 
 }

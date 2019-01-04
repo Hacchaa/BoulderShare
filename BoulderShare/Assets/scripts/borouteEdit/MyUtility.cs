@@ -87,10 +87,20 @@ public class MyUtility {
 	public class Scene {
 		public int id;
 		public string[] holdsOnHand;
-		public List<string> comments;
+		public List<SceneCommentData> comments;
 		public Vector3[] pose;
 		public Quaternion[] rotate;
 		public bool isLookingActivate;
+	}
+
+	[Serializable]
+	public class SceneCommentData{
+		public string text;
+		public float fontSize;
+		public Vector3 pos;
+		public float rotDeg;
+		public float width;
+		public Color color;
 	}
 
 	[Serializable]

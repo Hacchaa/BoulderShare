@@ -5,7 +5,7 @@ using System;
 
 public class HScene2{
 	private string[] onHolds;
-	private List<string> comments;
+	private List<MyUtility.SceneCommentData> comments;
 	private Vector3[] pose;
 	private Quaternion[] pRotate;
 	private bool isLookingActivate ;
@@ -17,7 +17,7 @@ public class HScene2{
 
 	public HScene2(){
 		onHolds = new string[4];
-		comments = new List<string>();
+		comments = new List<MyUtility.SceneCommentData>();
 		pose = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
 		pRotate = new Quaternion[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
 		isLookingActivate = false;
@@ -75,12 +75,12 @@ public class HScene2{
 		isSaved = true;
 	}
 
-	public List<string> GetComments(){
-		return new List<string>(comments);
+	public List<MyUtility.SceneCommentData> GetComments(){
+		return new List<MyUtility.SceneCommentData>(comments);
 	}
 
-	public void SaveComments(List<string> com){
-		comments = new List<string>(com);
+	public void SaveComments(List<MyUtility.SceneCommentData> com){
+		comments = new List<MyUtility.SceneCommentData>(com);
 		isSaved = true;
 	}
 

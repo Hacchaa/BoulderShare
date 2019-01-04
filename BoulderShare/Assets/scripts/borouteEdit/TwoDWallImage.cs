@@ -32,6 +32,14 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		eTouches = new int[] {FINGER_NONE,FINGER_NONE};
 	}
 
+	public void IgnoreEvents(){
+		gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+	}
+
+	public void AcceptEvents(){
+		gameObject.layer = LayerMask.NameToLayer("2D");
+	}
+
 	public void ResetCamPosAndDepth(){
 		cam.gameObject.transform.position = 
 			new Vector3(0.0f, 0.0f, -CAMERA_DEPTH_DEF);

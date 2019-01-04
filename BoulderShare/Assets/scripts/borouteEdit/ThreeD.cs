@@ -7,7 +7,9 @@ public class ThreeD : MonoBehaviour {
 	[SerializeField]
 	private IKControl2 ik;
 	[SerializeField]
-	private Camera cam;
+	private GameObject cameras;
+	[SerializeField]
+	private GameObject windowCamera;
 	[SerializeField]
 	private GameObject cameraObj;
 	[SerializeField]
@@ -23,8 +25,9 @@ public class ThreeD : MonoBehaviour {
 	[SerializeField]
 	private ThreeDWall threeDWall;
 
-	private const float DEPTH_LOOKING = 5.0f;
-	private const float DEPTH_DEFAULT = 10.0f;
+	private const float DEPTH_NORMAL_LOOKING = 5.0f;
+	private const float DEPTH_NORMAL_DEFAULT = 10.0f;
+	private const float DEPTH_WINDOW_DEFAULT = 2.6f;
 
 	public bool IsIKValid(){
 		return ik.IsIKActive();
@@ -56,19 +59,21 @@ public class ThreeD : MonoBehaviour {
 
 	public void LookAtModel(bool isDefault = true){
 		Vector3 body = ik.GetBodyPosition();
-		cameraObj.transform.position = new Vector3(body.x, body.y, 0.0f);
+		cameraObj.transform.position = new Vector3(body.x, body.y, body.z);
 		if (isDefault){
-			cam.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_LOOKING);
+			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_LOOKING);
 		}else{
-			cam.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_DEFAULT);
+			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_DEFAULT);
 		}
+		windowCamera.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_WINDOW_DEFAULT * GetModelSize());
 	}
 
 	public void ResetCamPos(){
 		Vector3 v = threeDWall.GetWallWorldPos();
 		cameraObj.transform.position = new Vector3(v.x, v.y, 0.0f);
 		cameraObj.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-		cam.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_DEFAULT);
+		cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_DEFAULT);
+		windowCamera.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_WINDOW_DEFAULT * GetModelSize());
 	}
 
 	public Vector3[] GetModelPosition(){

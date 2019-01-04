@@ -8,7 +8,7 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 	private const int FINGER_NONE = -10;
 	private float prevLength;
 	[SerializeField]
-	private Camera cam;
+	private GameObject cameras;
 	private const float CAMERA_DEPTH_LL = 2.0f;
 	private const float CAMERA_DEPTH_UL = 12.0f;
 	private const float WEIGHT = 0.5f;
@@ -59,7 +59,7 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 		}
 
 		
-		Transform camTransform = cam.transform;
+		Transform camTransform = cameras.transform;
 		float depth = Mathf.Abs(camTransform.localPosition.z);
 	
         if (eTouches[1] != FINGER_NONE){

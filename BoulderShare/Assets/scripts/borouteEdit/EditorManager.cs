@@ -7,6 +7,8 @@ using Kakera;
 
 public class EditorManager : MonoBehaviour {
 	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY, LOOK};
+	[SerializeField]
+	private Color color;
 	public static string BOROUTEPATH = "/route/";
 	public const string WALLPATH = "/";
 	[SerializeField]

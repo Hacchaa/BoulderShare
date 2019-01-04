@@ -27,6 +27,8 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 	private FailedListView failedListView;
 	[SerializeField]
 	private GameObject failedListButton;
+	[SerializeField]
+	private SceneCommentController scc;
 
 	public enum SCENETYPE{EDIT = 0, ADD};
 	private static int sceneType = 0;
@@ -149,5 +151,6 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
 		threeD.SetModelPose(scene.GetPose(), scene.GetPRotate());
 		threeD.SetIsLookingActivate(scene.IsLookingActivate());
+		scc.SetSceneComments(scene.GetComments());
 	}
 }

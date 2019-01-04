@@ -11,6 +11,9 @@ public class ACHead2 : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragH
 	public Transform body = null;
 	private float depth;
 	private const float WEIGHT = 1.0f;
+
+	[SerializeField]
+	private GameObject camBaseParent;
 	// Use this for initialization
 	void Start () {
 		finger = FINGER_NONE;
@@ -31,7 +34,7 @@ public class ACHead2 : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragH
 	public void OnDrag(PointerEventData data){
 		if (finger == data.pointerId){
 			//カメラからみたxz面上に頭を動かす
-			Vector3 camDir = cam.transform.position - cam.transform.parent.position;
+			Vector3 camDir = cam.transform.position - camBaseParent.transform.position;
 			Vector2 camXZ = new Vector2(camDir.x, camDir.z);
 			camXZ = camXZ.normalized;
 

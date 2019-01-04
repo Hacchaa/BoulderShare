@@ -15,10 +15,6 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private ThreeD threeD;
 	[SerializeField]
-	private Incline2 inclineUI;
-	[SerializeField]
-	private Slider modelSizeSlider;
-	[SerializeField]
 	private EditScene es;
 	[SerializeField]
 	private IKLookAt ikLookAt;
@@ -40,16 +36,6 @@ public class EditPose : MonoBehaviour, IUIComponent {
 		}
 	}
 
-	public void ModelSizeButton(){
-		modelSizeSlider.transform.parent.gameObject.SetActive(true);
-		inclineUI.gameObject.SetActive(false);
-	}
-
-	public void InclineButton(){
-		inclineUI.gameObject.SetActive(true);
-		modelSizeSlider.transform.parent.gameObject.SetActive(false);
-	}
-
 	public void Submit(){
 		es.SetPose(threeD.GetModelPosition());
 		es.SetRotate(threeD.GetModelRotation());
@@ -62,9 +48,6 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	}
 
 	public void ShowProc(){
-		SyncIncline();
-		SyncModelSize();
-
 		if(es.IsPoseDetermined()){
 			threeD.SetModelPose(es.GetPose(), es.GetRotate());
 			threeD.SetIsLookingActivate(es.IsCurLookingActivate());
@@ -95,40 +78,5 @@ public class EditPose : MonoBehaviour, IUIComponent {
 			obj.SetActive(false);
 		}
 		threeDCamera.SetActive(false);
-	}
-
-	public void SyncIncline(){
-		inclineUI.SetValue(threeD.GetWallIncline());
-	}
-
-	public void SetIncline(int value){
-		threeD.SetWallIncline(value);
-	}
-
-	public void SyncModelSize(){
-		modelSizeSlider.value = threeD.GetModelSize();
-	}
-
-	public void SetModelSize(){
-		threeD.SetModelSize(modelSizeSlider.value);
-
-	}
-
-	public void OpenIncline(){
-		inclineUI.gameObject.SetActive(true);
-		modelSizeSlider.transform.parent.gameObject.SetActive(false);
-	}
-
-	public void CloseIncline(){
-		inclineUI.gameObject.SetActive(false);
-	}
-
-	public void OpenModelSize(){
-		modelSizeSlider.transform.parent.gameObject.SetActive(true);
-		inclineUI.gameObject.SetActive(false);
-	}
-
-	public void CloseModelSize(){
-		modelSizeSlider.gameObject.SetActive(false);
 	}
 }
