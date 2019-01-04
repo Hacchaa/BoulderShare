@@ -14,6 +14,8 @@ namespace Kakera
         private EditorPopup popup;
         [SerializeField]
         private EditorManager eManager;
+        [SerializeField]
+        private ScreenTransitionManager sManager;
 
         void Awake()
         {
@@ -71,6 +73,8 @@ namespace Kakera
             string filePath = Application.persistentDataPath + "/Wall.png";
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
+
+            sManager.Transition("PickImageView");
 
 /*
             byte[] values;

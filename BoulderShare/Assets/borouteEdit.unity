@@ -13679,6 +13679,7 @@ MonoBehaviour:
   twoDWall: {fileID: 315672296}
   popup: {fileID: 1963523321}
   eManager: {fileID: 621592858}
+  sManager: {fileID: 135492765}
 --- !u!1 &622857228
 GameObject:
   m_ObjectHideFlags: 0
