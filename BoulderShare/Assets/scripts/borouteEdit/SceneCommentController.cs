@@ -84,6 +84,7 @@ public class SceneCommentController : MonoBehaviour
     }
 
     public void ActiveIF(){
+        Debug.Log("ActiveIF");
     	if (sc != null){
     		inputF.text = sc.GetText();
     	}

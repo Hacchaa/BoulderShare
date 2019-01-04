@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CommentExtendWidth : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CommentExtendWidth : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler, IPointerDownHandler
 {
     [SerializeField]
     private SceneComment sc;
@@ -17,6 +17,13 @@ public class CommentExtendWidth : MonoBehaviour, IBeginDragHandler, IDragHandler
     [SerializeField]
     private bool isLeft ;
     private float offsetDeg;
+
+
+    //イベント捕捉
+    public void OnPointerUp(PointerEventData data){
+    }
+    public void OnPointerDown(PointerEventData data){
+    }
 
     public void OnBeginDrag(PointerEventData data){
 		if (finger == FINGER_NONE){
