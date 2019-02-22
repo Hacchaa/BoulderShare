@@ -134,7 +134,7 @@ public class HScenes2 : MonoBehaviour {
 			data.holdsOnHand = scene.GetOnHolds();
 			data.comments = scene.GetComments();
 			data.pose = scene.GetPose();
-			data.rotate = scene.GetPRotate();
+			data.rots = scene.GetRots();
 			data.isLookingActivate = scene.IsLookingActivate();
 
 			tree.data[i] = data;
@@ -153,8 +153,7 @@ public class HScenes2 : MonoBehaviour {
 			scene.SetID(data.id);
 			scene.SetOnHolds(data.holdsOnHand);
 			scene.SaveComments(data.comments);
-			scene.SavePose(data.pose);
-			scene.SavePRotate(data.rotate);
+			scene.SavePose(data.pose, data.rots);
 			scene.SetIsLookingActivate(data.isLookingActivate);
 	
 			list.Add(scene);

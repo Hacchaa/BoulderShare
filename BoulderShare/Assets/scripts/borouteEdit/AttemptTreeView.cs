@@ -28,7 +28,8 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 	[SerializeField]
 	private GameObject failedListButton;
 	[SerializeField]
-	private SceneCommentController scc;
+	private SceneCommentController3D scc;
+	[SerializeField] private CameraUtility threeDCameraUtility;
 
 	public enum SCENETYPE{EDIT = 0, ADD};
 	private static int sceneType = 0;
@@ -109,8 +110,9 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 		}
 
 		twoDWallImage.ResetCamPosAndDepth();
-		twoDCamera.SetActive(true);
-		threeD.ResetCamPos();
+		twoDCamera.SetActive(false);
+		threeD.LookAtModel();
+		threeDCameraUtility.SetActive(true);
 		ac.SetActive(false);
 
 		failedListButton.SetActive(failedListView.IsExist());
@@ -128,7 +130,7 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(false);
 		}
-
+		threeDCameraUtility.SetActive(false);
 		twoDCamera.SetActive(false);
 		threeDCamera.SetActive(false);
 	}
@@ -149,8 +151,9 @@ public class AttemptTreeView : MonoBehaviour , IUIComponent{
 
 	public void Load(HScene2 scene){
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
-		threeD.SetModelPose(scene.GetPose(), scene.GetPRotate());
-		threeD.SetIsLookingActivate(scene.IsLookingActivate());
+		threeD.SetModelPose(scene.GetPose(), scene.GetRots());
+		threeD.SetIsLookingActive(scene.IsLookingActivate());
+		threeD.LookAtModel();
 		scc.SetSceneComments(scene.GetComments());
 	}
 }

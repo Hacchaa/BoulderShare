@@ -4,8 +4,7 @@ using UnityEngine;
 using System;
 
 public class ThreeD : MonoBehaviour {
-	[SerializeField]
-	private IKControl2 ik;
+	[SerializeField] private VRIKController fIK;
 	[SerializeField]
 	private GameObject cameras;
 	[SerializeField]
@@ -29,20 +28,23 @@ public class ThreeD : MonoBehaviour {
 	private const float DEPTH_NORMAL_DEFAULT = 10.0f;
 	private const float DEPTH_WINDOW_DEFAULT = 2.6f;
 
-	public bool IsIKValid(){
-		return ik.IsIKActive();
-	}
 
 	public int GetWallIncline(){
 		return threeDWall.GetWallIncline();
 	}
 
-	public bool IsLookingActivate(){
-		return ik.IsLookingActivate();
+	public bool IsLookingActive(){
+		//return ik.IsLookingActivate();
+		return fIK.IsLookingActive();
 	}
 
-	public void SetIsLookingActivate(bool b){
-		ik.SetIsLookingActivate(b);
+	public void SwitchLookingActive(){
+		fIK.SetIsLookingActive(!fIK.IsLookingActive());
+	}
+
+	public void SetIsLookingActive(bool b){
+		//ik.SetIsLookingActivate(b);
+		fIK.SetIsLookingActive(b);
 	}
 
 	public void SetWallIncline(int value){
@@ -58,12 +60,13 @@ public class ThreeD : MonoBehaviour {
 	}
 
 	public void LookAtModel(bool isDefault = true){
-		Vector3 body = ik.GetBodyPosition();
+		//Vector3 body = ik.GetBodyPosition();
+		Vector3 body = fIK.GetBodyPosition();
 		cameraObj.transform.position = new Vector3(body.x, body.y, body.z);
 		if (isDefault){
-			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_LOOKING);
+			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_LOOKING * GetModelSize());
 		}else{
-			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_DEFAULT);
+			cameras.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_NORMAL_DEFAULT );
 		}
 		windowCamera.transform.localPosition = new Vector3(0.0f, 0.0f, -DEPTH_WINDOW_DEFAULT * GetModelSize());
 	}
@@ -77,22 +80,37 @@ public class ThreeD : MonoBehaviour {
 	}
 
 	public Vector3[] GetModelPosition(){
-		return ik.GetPosition();
+		//return ik.GetPosition();
+		return fIK.GetPositions();
 	}
 
 	public Quaternion[] GetModelRotation(){
-		return ik.GetRotation();
+		return fIK.GetRotations();
 	}
 
-	public void SetModelPose(Vector3[] pos, Quaternion[] rot){
+	public Vector3 GetModelBodyPosition(){
+		return fIK.GetBodyPosition();
+	}
+/*
+	public Quaternion[] GetModelRotation2(){
+		return ik.GetRotation();
+	}*/
+/*
+	public void SetModelPose2(Vector3[] pos, Quaternion[] rot){
 		ik.SetPose(pos, rot);
+	}*/
+	public void SetModelPose(Vector3[] pos, Quaternion[] rots){
+		fIK.SetPositions(pos);
+		fIK.SetRotations(rots);
 	}
 
 	public void InitModelPose(){
-		ik.InitAvatar();
+		//ik.InitAvatar();
+		fIK.InitAvatar();
 	}
 
 	public void CorrectModelPose(){
+		/*
 		Vector3[] pos = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length-1];
 		Quaternion[] rot = ik.GetRotation();
 		string[] onTouch = twoDWallMarks.GetTouchInfo();
@@ -143,7 +161,7 @@ public class ThreeD : MonoBehaviour {
 				//pos[i].z = 0.0f;
 		}
 
-		ik.SetPose(pos, rot);
+		ik.SetPose(pos, rot);*/
 	}
 /*
 	public void CalcJointAngle(){

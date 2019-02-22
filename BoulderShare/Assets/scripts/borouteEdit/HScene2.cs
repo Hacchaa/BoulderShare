@@ -5,9 +5,9 @@ using System;
 
 public class HScene2{
 	private string[] onHolds;
-	private List<MyUtility.SceneCommentData> comments;
+	private List<MyUtility.SceneCommentData3D> comments;
 	private Vector3[] pose;
-	private Quaternion[] pRotate;
+	private Quaternion[] rots;
 	private bool isLookingActivate ;
 	private int id;
 	private static int num = 0;
@@ -17,9 +17,8 @@ public class HScene2{
 
 	public HScene2(){
 		onHolds = new string[4];
-		comments = new List<MyUtility.SceneCommentData>();
-		pose = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
-		pRotate = new Quaternion[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
+		comments = new List<MyUtility.SceneCommentData3D>();
+		//pose = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
 		isLookingActivate = false;
 		isSaved = false;
 		id = num;
@@ -75,12 +74,12 @@ public class HScene2{
 		isSaved = true;
 	}
 
-	public List<MyUtility.SceneCommentData> GetComments(){
-		return new List<MyUtility.SceneCommentData>(comments);
+	public List<MyUtility.SceneCommentData3D> GetComments(){
+		return new List<MyUtility.SceneCommentData3D>(comments);
 	}
 
-	public void SaveComments(List<MyUtility.SceneCommentData> com){
-		comments = new List<MyUtility.SceneCommentData>(com);
+	public void SaveComments(List<MyUtility.SceneCommentData3D> com){
+		comments = new List<MyUtility.SceneCommentData3D>(com);
 		isSaved = true;
 	}
 
@@ -88,19 +87,16 @@ public class HScene2{
 		return pose;
 	}
 
-	public void SavePose(Vector3[] arr){
+	public Quaternion[] GetRots(){
+		return rots;
+	}
+
+	public void SavePose(Vector3[] arr, Quaternion[] r){
 		pose = arr;
+		rots = r;
 		isSaved = true;
 	}
 
-	public Quaternion[] GetPRotate(){
-		return pRotate;
-	}
-
-	public void SavePRotate(Quaternion[] arr){
-		pRotate = arr;
-		isSaved = true;
-	}
 
 	public bool IsLookingActivate(){
 		return isLookingActivate;
@@ -118,9 +114,6 @@ public class HScene2{
 		}
 		for(int i = 0 ; i < pose.Length ; i++){
 			Debug.Log("pose["+i+"]:"+pose[i]);
-		}
-		for(int i = 0 ; i < pRotate.Length ; i++){
-			Debug.Log("pROtate["+i+"]:"+pRotate[i]);
 		}
 	}
 }

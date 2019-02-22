@@ -17,11 +17,13 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private ThreeD threeD;
 	[SerializeField]
-	private SceneCommentController scc;
-
+	private SceneCommentController3D scc;
+	[SerializeField] private RectTransform window;
+	[SerializeField] private CameraUtility cameraUtil;
+	[SerializeField] private CanvasScaler canvasScaler;
 	private HScene2 curScene;
-	private Vector3[] curPose;
-	private Quaternion[] curRotate;
+	[SerializeField] private Vector3[] curPose;
+	private Quaternion[] curRot;
 
 	[SerializeField]
 	private bool isPoseDetermined = false;
@@ -30,6 +32,10 @@ public class EditScene : MonoBehaviour, IUIComponent {
 	private bool isAlreadyLoaded = false;
 
 	void Awake(){
+		float length = cameraUtil.GetWidthRate() * canvasScaler.referenceResolution.x;
+		//Debug.Log(cameraUtil.GetWidthRate() + "," + canvasScaler.referenceResolution.x + "," + length);
+		window.anchoredPosition = new Vector2(-length/2, -length/2);
+		window.sizeDelta = new Vector2(length, length);
 	}
 
 	public void DeleteScene(){
@@ -48,17 +54,13 @@ public class EditScene : MonoBehaviour, IUIComponent {
 		return curPose;
 	}
 
-	public Quaternion[] GetRotate(){
-		return curRotate;
+	public Quaternion[] GetRots(){
+		return curRot;
 	}
 
-	public void SetPose(Vector3[] pose){
+	public void SetPose(Vector3[] pose, Quaternion[] rots){
 		curPose = pose;
-		isPoseDetermined = true;
-	}
-
-	public void SetRotate(Quaternion[] rot){
-		curRotate = rot;
+		curRot = rots;
 		isPoseDetermined = true;
 	}
 
@@ -81,12 +83,10 @@ public class EditScene : MonoBehaviour, IUIComponent {
 			curScene.SaveComments(scc.GetSceneComments());
 
 			if (isPoseDetermined){
-				curScene.SavePose(curPose);
-				curScene.SavePRotate(curRotate);
+				curScene.SavePose(curPose, curRot);
 				curScene.SetIsLookingActivate(isCurLookingAct);
 			}else{
-				curScene.SavePose(threeD.GetModelPosition());
-				curScene.SavePRotate(threeD.GetModelRotation());
+				curScene.SavePose(threeD.GetModelPosition(), threeD.GetModelRotation());
 				curScene.SetIsLookingActivate(isCurLookingAct);
 			}
 			atv.AddScene(curScene);
@@ -95,12 +95,10 @@ public class EditScene : MonoBehaviour, IUIComponent {
 			curScene.SaveComments(scc.GetSceneComments());
 
 			if (isPoseDetermined){
-				curScene.SavePose(curPose);
-				curScene.SavePRotate(curRotate);
+				curScene.SavePose(curPose, curRot);
 				curScene.SetIsLookingActivate(isCurLookingAct);
 			}else{
-				curScene.SavePose(threeD.GetModelPosition());
-				curScene.SavePRotate(threeD.GetModelRotation());
+				curScene.SavePose(threeD.GetModelPosition(), threeD.GetModelRotation());
 				curScene.SetIsLookingActivate(isCurLookingAct);
 			}
 		}
@@ -121,14 +119,14 @@ public class EditScene : MonoBehaviour, IUIComponent {
 
 		if(!isAlreadyLoaded){
 			scc.Init();
-			if( t == (int)AttemptTreeView.SCENETYPE.EDIT){
+			if(t == (int)AttemptTreeView.SCENETYPE.EDIT){
 				//Debug.Log("1");
 				curScene = atv.GetCurScene();
 				if (curScene != null){
 					//Debug.Log("2");
 					twoDWallMarks.SetTouchInfo(curScene.GetOnHolds());
 					curPose = curScene.GetPose();
-					curRotate = curScene.GetPRotate();
+					curRot = curScene.GetRots();
 					isCurLookingAct = curScene.IsLookingActivate();
 					isPoseDetermined = true;
 					scc.SetSceneComments(curScene.GetComments());
@@ -137,7 +135,7 @@ public class EditScene : MonoBehaviour, IUIComponent {
 		}
 
 		if (isPoseDetermined){
-			threeD.SetModelPose(curPose, curRotate);
+			threeD.SetModelPose(curPose, curRot);
 		}else{
 			threeD.InitModelPose();
 		}

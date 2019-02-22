@@ -12,6 +12,8 @@ public class ACComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 	private Bounds bounds;
 	private float threeDMarkR;
 	private Vector3 threeDMarkPos;
+	private Vector3 offset;
+	private float baseDepth;
 	private bool isFixed = false;
 	[SerializeField]
 	private int bodyType;
@@ -50,11 +52,17 @@ public class ACComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 				}else{
 					isFixed = false;
 				}
-			}
-
-			if (bodyType == (int)EditorManager.BODYS.BODY){
+			}else if (bodyType == (int)EditorManager.BODYS.BODY){
 				bounds = twoDWall.GetWallBounds();
 			}
+			baseDepth = cam.gameObject.transform.InverseTransformPoint(target.position).z;
+			offset = cam.ScreenToWorldPoint(
+				new Vector3(
+					data.position.x, 
+					data.position.y, 
+					baseDepth));
+			offset = transform.parent.InverseTransformPoint(offset);
+			offset = offset - target.localPosition;
 		}
 	}
 
@@ -65,9 +73,10 @@ public class ACComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 				new Vector3(
 					data.position.x, 
 					data.position.y, 
-					cam.gameObject.transform.InverseTransformPoint(target.position).z));
+					baseDepth));
+			p = transform.parent.InverseTransformPoint(p);
 		
-			target.position = p;
+			target.localPosition = p - offset;
 
 			if (bodyType >= (int)EditorManager.BODYS.RH && bodyType <= (int)EditorManager.BODYS.LF){
 				
@@ -88,7 +97,7 @@ public class ACComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginD
 					Debug.Log("v"+v);
 					Debug.Log("v.mag"+v.magnitude);
 					Debug.Log("r:"+threeDHoldR);*/
-					Debug.Log(v.magnitude +" > " + threeDMarkR);
+					//Debug.Log(v.magnitude +" > " + threeDMarkR);
 					if (v.magnitude > threeDMarkR){
 						target.position = threeDMarkPos + v.normalized * threeDMarkR;
 					}

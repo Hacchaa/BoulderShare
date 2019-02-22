@@ -31,7 +31,7 @@ TagManager:
   - 2D
   - 3D
   - AvatarControl
-  - 
+  - 3DWall
   - 
   - 
   - 
@@ -63,4 +63,7 @@ TagManager:
     locked: 0
   - name: Mark
     uniqueID: 2236519967
+    locked: 0
+  - name: 3DComment
+    uniqueID: 1270762993
     locked: 0

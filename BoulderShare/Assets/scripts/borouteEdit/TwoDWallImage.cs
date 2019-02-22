@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IPointerEnterHandler, IPointerExitHandler {
+public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler {
 	private int[] eTouches;
 	private float prevLength;
+	private bool isUpdate;
 	private Bounds bounds;
 	private bool isOn = false;
 	private Vector2 offTouchPos ;
@@ -32,6 +33,10 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		eTouches = new int[] {FINGER_NONE,FINGER_NONE};
 	}
 
+	public void LateUpdate(){
+		isUpdate = false;
+	}
+
 	public void IgnoreEvents(){
 		gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 	}
@@ -46,7 +51,7 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	}
 
 
-	public void OnBeginDrag(PointerEventData data){
+	public void OnPointerDown(PointerEventData data){
 
 		bounds = twoDWall.GetWallBounds();
 		
@@ -54,19 +59,16 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 			eTouches[0] = data.pointerId;
 		}else if(eTouches[1] == FINGER_NONE){
 			eTouches[1] = data.pointerId;
-		}
-
-		if (eTouches[1] != FINGER_NONE){
 			prevLength = -1;
 		}
 	}
 
 	public void OnDrag(PointerEventData data){
-		Vector2 p1, p2, dP1;
-		p1 = p2 = dP1 = Vector2.zero;
+		Vector2 p1, p2, dP1, dP2;
+		p1 = p2 = dP1 = dP2 = Vector2.zero;
 
 		//扱っている２本の指かどうか
-		if (data.pointerId != eTouches[0] && data.pointerId != eTouches[1]){
+		if (isUpdate || eTouches[1] == FINGER_NONE || (data.pointerId != eTouches[0] && data.pointerId != eTouches[1])){
 			return ;
 		}
 
@@ -77,73 +79,61 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 				dP1 = touch.deltaPosition;
 			}else if (touch.fingerId == eTouches[1]){
 				p2 = touch.position;
+				dP2 = touch.deltaPosition;
 			}
 		}
 
-		//マウスの左クリックの場合
-		if (data.pointerId == -1){
-			p1 = data.position;
-			dP1 = data.delta;
-		}
-
-		
 		Transform camTransform = cam.transform;
 		float depth = Mathf.Abs(camTransform.position.z);
+		float length = Vector2.Distance(p1, p2);
 	
-        if (eTouches[1] != FINGER_NONE){
-        	//２点間の距離
-			float length = Vector2.Distance(p1, p2);
+		isUpdate = true;
+		Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, depth));
+    	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f, depth));
 
-			//prevLengthが設定されてしまうている場合
-			//prevLengthとlengthの比で拡大、縮小する
-			if (prevLength > 0 && length > 0){
+    	camTransform.Translate(wP1Old - wP1);
 
-				if (!(depth <= CAMERA_DEPTH_LL && length / prevLength > 1) &&
-					!(depth >= CAMERA_DEPTH_UL && length / prevLength < 1 )){
-					
-					camTransform.Translate(
-						0, 
-						0, 
-						camTransform.position.z * -(length / prevLength - 1));
+		//バウンド処理
+    	Vector3 bPos = camTransform.position;
+		float height = bounds.size.y;
+		float width = bounds.size.x;
+    	bPos.x = Mathf.Min(bPos.x, width/2);
+    	bPos.x = Mathf.Max(bPos.x, -width/2);
+    	bPos.y = Mathf.Min(bPos.y, height/2);
+    	bPos.y = Mathf.Max(bPos.y, -height/2);
 
-					if (Mathf.Abs(camTransform.position.z) < CAMERA_DEPTH_LL){
-			        	camTransform.position = new Vector3(
-			        		camTransform.position.x, 
-			        		camTransform.position.y, 
-			        		-CAMERA_DEPTH_LL);
-			        }else if (Mathf.Abs(camTransform.position.z) > CAMERA_DEPTH_UL){
-			        	camTransform.position = new Vector3(
-			        		camTransform.position.x, 
-			        		camTransform.position.y, 
-			        		-CAMERA_DEPTH_UL);
-			        }
-				}
+    	camTransform.position = bPos;
+
+		//prevLengthが設定されてしまうている場合
+		//prevLengthとlengthの比で拡大、縮小する
+		if (prevLength > 0 && length > 0){
+
+			if (!(depth <= CAMERA_DEPTH_LL && length / prevLength > 1) &&
+				!(depth >= CAMERA_DEPTH_UL && length / prevLength < 1 )){
+				
+				camTransform.Translate(
+					0, 
+					0, 
+					camTransform.position.z * -(length / prevLength - 1));
+
+				if (Mathf.Abs(camTransform.position.z) < CAMERA_DEPTH_LL){
+		        	camTransform.position = new Vector3(
+		        		camTransform.position.x, 
+		        		camTransform.position.y, 
+		        		-CAMERA_DEPTH_LL);
+		        }else if (Mathf.Abs(camTransform.position.z) > CAMERA_DEPTH_UL){
+		        	camTransform.position = new Vector3(
+		        		camTransform.position.x, 
+		        		camTransform.position.y, 
+		        		-CAMERA_DEPTH_UL);
+		        }
 			}
-			
-			prevLength = length;
-
-        }else{
-        	Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3(p1.x, p1.y, depth));
-        	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3(p1.x - dP1.x, p1.y - dP1.y, depth));
-
-        	//Debug.Log((wP1Old - wP1));
-        	camTransform.Translate(wP1Old - wP1);
-        	Vector3 bPos = camTransform.position;
-
-        	//バウンド処理;
-			float height = bounds.size.y;
-			float width = bounds.size.x;
-        	bPos.x = Mathf.Min(bPos.x, width/2);
-        	bPos.x = Mathf.Max(bPos.x, -width/2);
-
-        	bPos.y = Mathf.Min(bPos.y, height/2);
-        	bPos.y = Mathf.Max(bPos.y, -height/2);
-
-        	camTransform.position = bPos;
-	    }
+		}
+		prevLength = length;
+		isUpdate = true;
 	}
 
-	public void OnEndDrag(PointerEventData data){
+	public void OnPointerUp(PointerEventData data){
 		if (eTouches[0] == data.pointerId){
 			eTouches[0] = eTouches[1];
 			eTouches[1] = FINGER_NONE;

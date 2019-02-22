@@ -9,7 +9,20 @@ public class ThreeDWall : MonoBehaviour {
 	private TwoDWall twoDWall;
 	[SerializeField]
 	private ThreeDWallMarks threeDWallMarks;
+	[SerializeField] private ThreeDView view;
+	[SerializeField] private Collider collider;
 
+	public void AcceptEvents(){
+		view.enabled = true;
+	}
+
+	public void IgnoreEvents(){
+		view.enabled = false;
+	}
+
+	public Bounds Get3DWallBounds(){
+		return collider.bounds;
+	}
 
 	public void SetWall(){
 		Bounds bounds = twoDWall.GetWallBounds();

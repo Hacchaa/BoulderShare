@@ -37,15 +37,11 @@ public class EditorManager : MonoBehaviour {
 	}
 
 	void Start(){
-		StartCoroutine(FirstProc());
+		FirstProc();
 	}
 
 	//borouteeditの初期化処理
-	private IEnumerator FirstProc(){
-		//ikが有効になるまで待つ
-		while(!threeD.IsIKValid()){
-			yield return null;
-		}
+	private void FirstProc(){
 		transition.Init();
 
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");

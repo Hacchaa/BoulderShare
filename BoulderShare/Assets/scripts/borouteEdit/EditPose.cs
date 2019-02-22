@@ -11,17 +11,20 @@ public class EditPose : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private AttemptTreeView atv;
 	[SerializeField]
-	private GameObject threeDCamera;
-	[SerializeField]
 	private ThreeD threeD;
 	[SerializeField]
 	private EditScene es;
-	[SerializeField]
-	private IKLookAt ikLookAt;
+	[SerializeField] private SceneComments3D comments;
 
 
 	public void LookButton(){
-		ikLookAt.ActivateLooking();
+		threeD.SwitchLookingActive();
+	}
+	public void ToEditComment(){
+		trans.Transition("Edit3DSceneComment");
+	}
+	public void ShowNextComment(){
+		comments.Next();
 	}
 
 	public void CopyJustBeforeScene(){
@@ -32,14 +35,13 @@ public class EditPose : MonoBehaviour, IUIComponent {
 		HScene2 scene = atv.GetScene(index);
 
 		if (scene != null){
-			threeD.SetModelPose(scene.GetPose(), scene.GetPRotate());
+			threeD.SetModelPose(scene.GetPose(), scene.GetRots());
 		}
 	}
 
 	public void Submit(){
-		es.SetPose(threeD.GetModelPosition());
-		es.SetRotate(threeD.GetModelRotation());
-		es.SetIsCurLookingActivate(threeD.IsLookingActivate());
+		es.SetPose(threeD.GetModelPosition(), threeD.GetModelRotation());
+		es.SetIsCurLookingActivate(threeD.IsLookingActive());
 		Close();
 	}
 
@@ -49,10 +51,10 @@ public class EditPose : MonoBehaviour, IUIComponent {
 
 	public void ShowProc(){
 		if(es.IsPoseDetermined()){
-			threeD.SetModelPose(es.GetPose(), es.GetRotate());
-			threeD.SetIsLookingActivate(es.IsCurLookingActivate());
+			threeD.SetModelPose(es.GetPose(), es.GetRots());
+			threeD.SetIsLookingActive(es.IsCurLookingActivate());
 			if(es.IsCurLookingActivate()){
-				ikLookAt.gameObject.SetActive(true);
+				threeD.SetIsLookingActive(true);
 			}
 		}else{
 			threeD.CorrectModelPose();
@@ -64,11 +66,12 @@ public class EditPose : MonoBehaviour, IUIComponent {
 		threeD.LookAtModel();
 
 		gameObject.SetActive(true);
-		threeDCamera.SetActive(true);
+		comments.ShowDynamically();
+		comments.SetShowAngle(SceneComments3D.ANGLE_VIEW);
+		//Debug.Break();
 	}
 
 	public void HideProc(){
-		ikLookAt.gameObject.SetActive(false);
 		Hide();
 	}
 
@@ -77,6 +80,5 @@ public class EditPose : MonoBehaviour, IUIComponent {
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(false);
 		}
-		threeDCamera.SetActive(false);
 	}
 }

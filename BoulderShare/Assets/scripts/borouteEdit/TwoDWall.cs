@@ -6,6 +6,8 @@ public class TwoDWall : MonoBehaviour {
 	[SerializeField]
 	private SpriteRenderer wallImg;
 	[SerializeField]
+	private SpriteRenderer wallImgGS;
+	[SerializeField]
 	private ThreeDWall threeDWall;
 
 	public Bounds GetWallBounds(){
@@ -22,6 +24,7 @@ public class TwoDWall : MonoBehaviour {
 
 	public void SetWallSprite(Sprite spr){
 		wallImg.sprite = spr;
+		wallImgGS.sprite = spr;
 		AfterLoadingImage();
 	}
 
@@ -31,6 +34,8 @@ public class TwoDWall : MonoBehaviour {
 	        new Rect(0.0f, 0.0f, texture.width, texture.height), 
 	        new Vector2(0.5f, 0.5f),
 	        wallImg.sprite.pixelsPerUnit);
+		wallImgGS.sprite = wallImg.sprite;
+		AfterLoadingImage();
 	}
 
 	private void AfterLoadingImage(){
