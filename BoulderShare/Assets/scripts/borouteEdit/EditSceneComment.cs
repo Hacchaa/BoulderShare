@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EditSceneComment : MonoBehaviour, IUIComponent {
+public class EditSceneComment : SEComponentBase {
 	[SerializeField]
 	private List<GameObject> externalUIComponents;
 	[SerializeField]
@@ -22,7 +22,7 @@ public class EditSceneComment : MonoBehaviour, IUIComponent {
 		sManager.Transition("EditScene");
 	}
 
-	public void ShowProc(){
+	public override void ShowProc(){
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(true);
 		}
@@ -37,11 +37,11 @@ public class EditSceneComment : MonoBehaviour, IUIComponent {
 		scc.AcceptEvents();
 	}
 
-	public void HideProc(){
+	public override void HideProc(){
 		Hide();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(false);
 		}

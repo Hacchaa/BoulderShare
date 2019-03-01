@@ -29,14 +29,14 @@ public class VRIKController : MonoBehaviour
 	[SerializeField] private VRIKFoot rightFoot;
 	[SerializeField] private VRIKHand leftHand;
 	[SerializeField] private VRIKHand rightHand;
-	[SerializeField] private VRIKBend leftElbow;
-	[SerializeField] private VRIKBend rightElbow;
-	[SerializeField] private VRIKBend leftKnee;
-	[SerializeField] private VRIKBend rightKnee;
-    [SerializeField] private VRIKChest chest;
+	[SerializeField] private VRIKComponent leftElbow;
+	[SerializeField] private VRIKComponent rightElbow;
+	[SerializeField] private VRIKComponent leftKnee;
+	[SerializeField] private VRIKComponent rightKnee;
+    [SerializeField] private VRIKComponent chest;
     [SerializeField] private VRIKPelvis pelvis;
     [SerializeField] private VRIKHead head;
-    [SerializeField] private VRIKLook look;
+    [SerializeField] private VRIKComponent look;
     [SerializeField] private bool isNeedInit;
     [SerializeField] private VRIK ik;
     [SerializeField] private AimIK aimIK;
@@ -52,6 +52,30 @@ public class VRIKController : MonoBehaviour
             InitAvatar();
             isNeedInit = false;
         }
+    }
+
+    //頭とmodel本体の座標とのオフセット
+    public Vector3 GetOffsetFromRoot(FullBodyMark m){
+        switch(m){
+            case FullBodyMark.Body: return Vector3.zero;
+            case FullBodyMark.Chest: return chest.GetOffset();
+            case FullBodyMark.Pelvis: return pelvis.GetOffset();
+            case FullBodyMark.LeftHand: return leftHand.GetOffset();
+            case FullBodyMark.RightHand: return rightHand.GetOffset();
+            case FullBodyMark.LeftFoot: return leftFoot.GetOffset();
+            case FullBodyMark.RightFoot: return rightFoot.GetOffset();
+            case FullBodyMark.LeftElbow: return leftElbow.GetOffset();
+            case FullBodyMark.RightElbow: return rightElbow.GetOffset();
+            case FullBodyMark.LeftKnee: return leftKnee.GetOffset();
+            case FullBodyMark.RightKnee: return rightKnee.GetOffset();
+            case FullBodyMark.Head: return head.GetOffset();
+            case FullBodyMark.Look: return look.GetOffset();
+        }
+        return Vector3.zero;
+    }
+
+    public void DoVRIK(){
+        ik.GetIKSolver().Update();
     }
 
     void LateUpdate(){
@@ -88,6 +112,26 @@ public class VRIKController : MonoBehaviour
         pelvis.Init();
         head.Init();
         look.Init();
+    }
+
+    public GameObject GetObj(FullBodyMark m){
+        switch(m){
+            case FullBodyMark.Body: return body.gameObject;
+            case FullBodyMark.Chest: return chest.gameObject;
+            case FullBodyMark.Pelvis: return pelvis.gameObject;
+            case FullBodyMark.LeftHand: return leftHand.gameObject;
+            case FullBodyMark.RightHand: return rightHand.gameObject;
+            case FullBodyMark.LeftFoot: return leftFoot.gameObject;
+            case FullBodyMark.RightFoot: return rightFoot.gameObject;
+            case FullBodyMark.LeftElbow: return leftElbow.gameObject;
+            case FullBodyMark.RightElbow: return rightElbow.gameObject;
+            case FullBodyMark.LeftKnee: return leftKnee.gameObject;
+            case FullBodyMark.RightKnee: return rightKnee.gameObject;
+            case FullBodyMark.Head: return head.gameObject;
+            case FullBodyMark.Look: return look.gameObject;
+        }
+
+        return null;
     }
 
     public Vector3 GetPosition(FullBodyMark m){
@@ -205,5 +249,14 @@ public class VRIKController : MonoBehaviour
     }
     public bool IsLookingActive(){
         return look.gameObject.activeSelf;
+    }
+
+    public void HideAllFO(){
+       chest.gameObject.SetActive(false);
+       leftElbow.gameObject.SetActive(false);
+       rightElbow.gameObject.SetActive(false);
+       leftKnee.gameObject.SetActive(false);
+       rightKnee.gameObject.SetActive(false);
+       look.gameObject.SetActive(false);
     }
 }

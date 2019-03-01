@@ -11,8 +11,6 @@ public class HScenes2 : MonoBehaviour {
 	private List<HScene2> list ;
 	private List<string> hScenesList;
 	private List<string> failedList;
-	[SerializeField]
-	private AttemptTreeView atv;
 
 	void Awake(){
 		list = new List<HScene2>();
@@ -65,6 +63,13 @@ public class HScenes2 : MonoBehaviour {
 	public void AddScene(HScene2 hScene){
 		curIndex++;
 		list.Insert(curIndex, hScene);
+	}
+
+	public void AddSceneLast(HScene2 hScene){
+		if (hScene != null){
+			list.Add(hScene);
+			curIndex = list.Count - 1 ;
+		}
 	}
 
 	//次に表示するべきhSceneを返す
@@ -164,7 +169,6 @@ public class HScenes2 : MonoBehaviour {
 			curIndex = 0;
 		}
 		failedList = tree.failedList;
-		atv.LoadingBorouteProc();
 	}
 
 	public void PrintJson(){

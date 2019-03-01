@@ -15,7 +15,9 @@ public class ColorSetter3D : MonoBehaviour
    	}
 
    	public void SetAlphaSliderVal(float v){
-   		alphaSlider.value = v;
+         if (alphaSlider != null){
+            alphaSlider.value = v;
+         }
    	}
 
    	public void SetColor(Color c){

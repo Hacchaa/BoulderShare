@@ -11,6 +11,9 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	protected Vector3 defaultPos;
 	[SerializeField] protected Transform avatar;
 	[SerializeField] protected Transform target;
+	[SerializeField] private Transform faceAvatar;
+	[SerializeField] private Transform model;
+	private Vector3 offset;
 
 	// Use this for initialization
 	void Awake () {
@@ -18,7 +21,17 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		//transform.position = avatar.position;
 		defaultPos = target.localPosition;
 		target.position = transform.position;
+		if (avatar != null){
+			offset = model.InverseTransformPoint(avatar.position);
+		}else{
+			offset = model.InverseTransformPoint(faceAvatar.position);
+		}
 		Init();
+	}
+
+	public Vector3 GetOffset(){
+		//return offset;
+		return defaultPos;
 	}
 
 	public virtual void Init(){
@@ -49,6 +62,12 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	//足の位置を変えないままtargetの位置を修正する
 	public virtual void ModifyPosition(){
 		target.position = transform.position;
+	}
+	public Transform GetFaceAvatar(){
+		return faceAvatar;
+	}
+	public Transform GetTarget(){
+		return target;
 	}
 	public Vector3 GetPosition(){
 		return target.localPosition;

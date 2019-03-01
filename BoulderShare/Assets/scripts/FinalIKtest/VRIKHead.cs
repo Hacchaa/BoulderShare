@@ -10,6 +10,11 @@ public class VRIKHead : VRIKComponent{
 
 	public override void Init(){
 		basePos = target.position;
+		ResetPos();
+	}
+
+	public override void ModifyPosition(){
+		//target.position = transform.position;
 	}
 
 	public override void OnDrag(PointerEventData data){

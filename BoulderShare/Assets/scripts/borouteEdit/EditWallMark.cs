@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EditWallMark : MonoBehaviour , IUIComponent{
+public class EditWallMark : SEComponentBase{
 	[SerializeField]
 	private ScreenTransitionManager trans;
 	[SerializeField]
@@ -16,17 +16,27 @@ public class EditWallMark : MonoBehaviour , IUIComponent{
 	private Slider scaleSlider;
 	[SerializeField]
 	private ThreeDWallMarks threeDWallMarks;
+	[SerializeField] private MakeAttemptTree makeAT;
 
 	public void Submit(){
 		Close();
 	}
 
-	public void Close(){
+	public void ToEdit2DPose(){
+		trans.Transition("EditScene");
+	}
+
+	public void ToATV(){
 		trans.Transition("AttemptTreeView");
 	}
 
+	public void Close(){
+		makeAT.Init();
+		trans.Transition("MainView");
+	}
+
 	//画面遷移時の前処理
-	public void ShowProc(){
+	public override void ShowProc(){
 		gameObject.SetActive(true);
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(true);
@@ -35,14 +45,14 @@ public class EditWallMark : MonoBehaviour , IUIComponent{
 		CloseMarkOptions();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		gameObject.SetActive(false);
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(false);
 		}
 	}
 	//画面遷移でこの画面を消す時の後処理
-	public void HideProc(){
+	public override void HideProc(){
 		twoDWallMarks.IgnoreEvents();
 		twoDWallMarks.ReleaseFocus();
 

@@ -24,6 +24,10 @@ public class ThreeDWall : MonoBehaviour {
 		return collider.bounds;
 	}
 
+	public Vector3 CalcWorldSubVec(Vector3 localP){
+		return transform.TransformPoint(localP) - transform.position;
+	}
+
 	public void SetWall(){
 		Bounds bounds = twoDWall.GetWallBounds();
 		Texture tex = twoDWall.GetWallTexture();

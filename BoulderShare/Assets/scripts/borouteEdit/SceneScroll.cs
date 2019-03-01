@@ -35,6 +35,10 @@ public class SceneScroll : MonoBehaviour {
 		text.text = "0 / 0";
 	}
 
+	public void SetTotalNum(int n){
+		num = n;
+	}
+
 	//index番目のアイコンにフォーカスをあてる
 	public void Focus(int index){
 		if (num == 0){

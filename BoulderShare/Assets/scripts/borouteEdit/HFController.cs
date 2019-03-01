@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class HFController : MonoBehaviour{
 	private float arrowDWidth;
 	private TwoDMark selectedMark;
-	private int selectedBodyInfo;
+	private TwoDMark.HFType selectedBodyInfo;
 	private const float HEIGHT_MIN = 0.65f;
 
 	[SerializeField]
@@ -21,10 +21,10 @@ public class HFController : MonoBehaviour{
 	void Awake(){
 		arrowDWidth = arrow.size.x;
 		selectedMark = null;
-		selectedBodyInfo = -1;
+		selectedBodyInfo = TwoDMark.HFType.NONE;
 	}
 
-	public void SetBodyType(int type){
+	public void SetBodyType(TwoDMark.HFType type){
 		selectedBodyInfo = type;
 	}
 
@@ -91,7 +91,7 @@ public class HFController : MonoBehaviour{
 			arrow.gameObject.SetActive(false);
 			twoDWallMarks.ReleaseFocus();
 			selectedMark = null;
-			selectedBodyInfo = -1;
+			selectedBodyInfo = TwoDMark.HFType.NONE;
 		}
 	}
 }

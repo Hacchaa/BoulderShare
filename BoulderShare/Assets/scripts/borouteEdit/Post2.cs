@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
-public class Post2 : MonoBehaviour , IUIComponent{
+public class Post2 :SEComponentBase{
 	[SerializeField]
 	private ScreenTransitionManager stManager;
 	[SerializeField]
@@ -22,22 +22,22 @@ public class Post2 : MonoBehaviour , IUIComponent{
 	[SerializeField]
 	private ScrollRect sr;
 
-	public void ShowProc(){
+	public override void ShowProc(){
 		gameObject.SetActive(true);
 			//課題一覧を一番上にスクロールする
 		sr.verticalNormalizedPosition = 1.0f;
 	}
 
-	public void HideProc(){
+	public override void HideProc(){
 		Hide();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		gameObject.SetActive(false);
 	}
 
-	public void ToATV(){
-		stManager.Transition("AttemptTreeView");
+	public void ToMainView(){
+		stManager.Transition("MainView");
 	}
 
 	public string GetPlace(){

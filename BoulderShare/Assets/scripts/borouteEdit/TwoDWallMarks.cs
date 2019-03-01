@@ -7,7 +7,8 @@ using System;
 public class TwoDWallMarks : MonoBehaviour {
 	private TwoDMark current = null;
 	private int index = 0;
-	private TwoDMark[] touchInfo;
+	private TwoDMark[] touchMarks;
+	private TwoDMark[] dummyMarks;
 	private static int num = 0;
 	private Dictionary<string, TwoDMark> map;
 	[SerializeField]
@@ -15,12 +16,11 @@ public class TwoDWallMarks : MonoBehaviour {
 	[SerializeField]
 	private GameObject twoDMarkOrigin;
 	[SerializeField]
-	private ThreeDWallMarks threeDWawllMarks;
-
-	private string test;
+	private ThreeDWallMarks threeDWallMarks;
 
 	void Awake(){
-		touchInfo = new TwoDMark[4];
+		touchMarks = new TwoDMark[4];
+		dummyMarks = new TwoDMark[4];
 		map = new Dictionary<string, TwoDMark>();
 	}
 
@@ -28,6 +28,10 @@ public class TwoDWallMarks : MonoBehaviour {
 		foreach(Transform child in transform){
 			Destroy(child.gameObject);
 		}
+	}
+
+	public bool DeleteMark(string name){
+		return map.Remove(name);
 	}
 
 	public GameObject MakeMark(string name = ""){
@@ -125,27 +129,31 @@ public class TwoDWallMarks : MonoBehaviour {
 		return mark;
 	}
 
-	public void Touch(TwoDMark mark, int bodyType){
-		if (mark == touchInfo[bodyType]){
+	public void Touch(TwoDMark mark, TwoDMark.HFType bodyType){
+		if (mark == touchMarks[(int)bodyType]){
 			mark.SetTouchInfo(bodyType, false);
-			touchInfo[bodyType] = null;
+			touchMarks[(int)bodyType] = null;
 			return ;
 		}
 
-		if (touchInfo[bodyType] != null){
-			touchInfo[bodyType].SetTouchInfo(bodyType, false);
-			touchInfo[bodyType] = null;
+		if (touchMarks[(int)bodyType] != null){
+			touchMarks[(int)bodyType].SetTouchInfo(bodyType, false);
+			touchMarks[(int)bodyType] = null;
 		}
 
 		mark.SetTouchInfo(bodyType, true);
-		touchInfo[bodyType] = mark;
+		touchMarks[(int)bodyType] = mark;
 	}
 
 	public void ClearTouch(){
-		for(int i = 0 ; i < touchInfo.Length ; i++){
-			if (touchInfo[i] != null){
-				touchInfo[i].SetTouchInfo(i, false);
-				touchInfo[i] = null;
+		for(int i = 0 ; i < touchMarks.Length ; i++){
+			if (touchMarks[i] != null){
+				touchMarks[i].Clear();
+				touchMarks[i] = null;
+			}
+			if (dummyMarks[i] != null){
+				dummyMarks[i].Clear();
+				dummyMarks[i] = null;
 			}
 		}
 	}
@@ -153,11 +161,11 @@ public class TwoDWallMarks : MonoBehaviour {
 	public string[] GetTouchInfo(){
 		string[] arr = new string[4];
 
-		for(int i = 0 ; i < touchInfo.Length ; i++){
-			if(touchInfo[i] == null){
+		for(int i = 0 ; i < touchMarks.Length ; i++){
+			if(touchMarks[i] == null){
 				arr[i] = null;
 			}else{
-				arr[i] = touchInfo[i].gameObject.name;
+				arr[i] = touchMarks[i].gameObject.name;
 			}
 		}
 
@@ -165,11 +173,20 @@ public class TwoDWallMarks : MonoBehaviour {
 	}
 
 	public void SetTouchInfo(string[] arr){
-		ClearTouch();
-		for(int i = 0 ; i < touchInfo.Length ; i++){
-			if (!string.IsNullOrEmpty(arr[i])){
-				touchInfo[i] = map[arr[i]];
-				touchInfo[i].SetTouchInfo(i, true);
+		for(int i = 0 ; i < touchMarks.Length ; i++){
+			//Debug.Log("set:"+arr[i]);
+			if (!string.IsNullOrEmpty(arr[i]) && IsMarkExist(arr[i])){
+				touchMarks[i] = map[arr[i]];
+				touchMarks[i].SetTouchInfo((TwoDMark.HFType)i, true);
+			}
+		}
+	}
+
+	public void SetDummyTouchInfo(string[] arr){
+		for(int i = 0 ; i < dummyMarks.Length ; i++){
+			if (!string.IsNullOrEmpty(arr[i]) && IsMarkExist(arr[i])){
+				dummyMarks[i] = map[arr[i]];
+				dummyMarks[i].SetDummyTouchInfo((TwoDMark.HFType)i, true);
 			}
 		}
 	}
@@ -194,15 +211,6 @@ public class TwoDWallMarks : MonoBehaviour {
 		return JsonUtility.ToJson(marks);
 	}
 
-	public void PrintJson(){
-		test = ToJson();
-		Debug.Log(test);
-	}
-
-	public void Repear(){
-		FromJson(test);
-	}
-
 	public void FromJson(string json){
 		DeleteMarks();
 
@@ -222,6 +230,6 @@ public class TwoDWallMarks : MonoBehaviour {
 		num = max+1;
 
 		IgnoreEvents();
-		threeDWawllMarks.Synchronize();
+		threeDWallMarks.Synchronize();
 	}
 }

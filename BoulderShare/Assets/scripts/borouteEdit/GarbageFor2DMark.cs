@@ -4,17 +4,15 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GarbageFor2DMark : MonoBehaviour , IDropHandler{
-	[SerializeField]
-	private EditWallMark editWallMark;
-	// Use this for initialization
-	void Start () {
-		
-	}
+	[SerializeField] private EditWallMark editWallMark;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	
 	public void OnDrop(PointerEventData data){
 		//Debug.Log("OnDrop");
 		if (data.pointerDrag != null && data.pointerDrag.tag == "2DMark"){
-			Destroy(data.pointerDrag);
+			GameObject obj = data.pointerDrag;
+			twoDWallMarks.DeleteMark(obj.name);
+			Destroy(obj);
 			editWallMark.CloseMarkOptions();
 		}
 	}

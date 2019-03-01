@@ -54,7 +54,7 @@ public class EditorManager : MonoBehaviour {
 				pc.OpenImagePicker();
 			}else{
 				bManager.LoadBoroute();
-				transition.Transition("AttemptTreeView");
+				transition.Transition("MainView");
 			}
 		}
 	}

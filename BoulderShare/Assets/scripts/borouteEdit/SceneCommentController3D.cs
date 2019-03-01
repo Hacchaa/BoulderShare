@@ -28,17 +28,13 @@ public class SceneCommentController3D : MonoBehaviour
             Destroy(t.gameObject);
         }
         comments.Init();
-
+        Release();
         sc = null;
     }
     public void CommentLookAtCamera(){
         if (sc != null){
             sc.LookAtCamera();
         }
-    }
-
-    public void ShowNextComment(){
-        comments.Next();
     }
 
     public List<MyUtility.SceneCommentData3D> GetSceneComments(){
@@ -50,7 +46,8 @@ public class SceneCommentController3D : MonoBehaviour
             data.text = sceneComment.GetText();
             data.fontSize = sceneComment.GetFontSize();
             data.pos = t.position;
-            data.rot = t.rotation;
+            data.rot = t.localRotation;
+            data.color = sceneComment.GetColor();
             data.width = sceneComment.GetWidth();
 
             list.Add(data);
@@ -68,8 +65,9 @@ public class SceneCommentController3D : MonoBehaviour
             //Debug.Log("data.text= "+ data.text);
             sceneComment.SetText(data.text);
             sceneComment.SetFontSize(data.fontSize);
+            sceneComment.SetColor(data.color);
             obj.transform.position = data.pos;
-            obj.transform.rotation = data.rot;
+            obj.transform.localRotation = data.rot;
             sceneComment.UpdateWidth(data.width);
 
             sceneComment.Focus(false);
@@ -97,7 +95,7 @@ public class SceneCommentController3D : MonoBehaviour
     }
 
     public void ActiveIF(){
-        Debug.Log("ActiveIF");
+        //Debug.Log("ActiveIF");
     	if (sc != null){
     		inputF.text = sc.GetText();
     	}

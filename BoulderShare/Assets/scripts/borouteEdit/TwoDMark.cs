@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System;
 
 public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler {
-	private Transform touchInfo;
-
+	public enum HFType {NONE = -1, RH, LH, RF, LF};
+	[SerializeField] private Transform touchInfo;
+	[SerializeField] private Transform dummy;
 	private static int finger ;
 	private const int FINGER_NONE = -10;
 	private static float SCALE_MIN = 0.12f;
@@ -27,7 +29,15 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	// Use this for initialization
 	void Awake () {
 		finger = FINGER_NONE;
-		touchInfo = transform.Find("TouchInfo");
+	}
+
+	public void Clear(){
+		foreach(Transform t in touchInfo){
+			t.gameObject.SetActive(false);
+		}
+		foreach(Transform t in dummy){
+			t.gameObject.SetActive(false);
+		}
 	}
 
 	public void SetScale(float r){
@@ -36,8 +46,11 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 		transform.localScale = Vector3.one * r;
 	}
 
-	public void SetTouchInfo(int bodyType, bool isTouched){
-		touchInfo.GetChild(bodyType).gameObject.SetActive(isTouched);
+	public void SetTouchInfo(HFType bodyType, bool isTouched){
+		touchInfo.GetChild((int)bodyType).gameObject.SetActive(isTouched);
+	}
+	public void SetDummyTouchInfo(HFType bodyType, bool isTouched){
+		dummy.GetChild((int)bodyType).gameObject.SetActive(isTouched);
 	}
 
 	public void OnPointerUp(PointerEventData data){

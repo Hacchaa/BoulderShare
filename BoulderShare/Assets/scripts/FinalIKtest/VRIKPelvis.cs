@@ -10,7 +10,7 @@ public class VRIKPelvis : VRIKComponent{
 	public override void ModifyPosition(){
 		Vector3 v = target.position - transform.position;
 		if (v.magnitude > diff){
-			target.position = transform.position + v.normalized * diff;
+			//target.position = transform.position + v.normalized * diff;
 		}
 	}
 

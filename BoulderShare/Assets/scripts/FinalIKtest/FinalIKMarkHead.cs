@@ -13,8 +13,8 @@ public class FinalIKMarkHead : MonoBehaviour, IDragHandler, IEndDragHandler, IBe
 	[SerializeField]
 	private Camera cam;
 	[SerializeField]
-	private Transform avatar = null;
-
+	private Transform avatar ;
+	private Vector3 offset;
 	public LayerMask targetMask;
 	
 	// Use this for initialization
@@ -24,7 +24,6 @@ public class FinalIKMarkHead : MonoBehaviour, IDragHandler, IEndDragHandler, IBe
 	void Awake(){
 		transform.position = avatar.position + Vector3.forward * 0.5f;
 	}
-
 
 	public Vector3 GetPosition(){
 		return transform.localPosition;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class TryView : MonoBehaviour, IUIComponent {
+public class TryView : SEComponentBase{
 	[SerializeField]
 	private GameObject[] frames;
 	private int curFrameIndex;
@@ -13,24 +13,22 @@ public class TryView : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private HScenes2 hScenes;
 	[SerializeField]
-	private FailedListView fListView;
-	[SerializeField]
 	private GameObject failedList_ParentObj;
 
 
-	public void ShowProc(){
+	public override void ShowProc(){
 		curFrameIndex = 0;
 
 		this.gameObject.SetActive(true);
 		frames[curFrameIndex].SetActive(true);
 	}
 
-	public void HideProc(){
+	public override void HideProc(){
 		curFrameIndex = 0;
 		Hide();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		foreach(GameObject obj in frames){
 			obj.SetActive(false);
 		}
@@ -63,8 +61,8 @@ public class TryView : MonoBehaviour, IUIComponent {
 		congFrame.SetActive(true);
 	}
 
-	public void ToATV(){
-		stManager.Transition("AttemptTreeView");
+	public void ToMainView(){
+		stManager.Transition("MainView");
 	}
 
 	public void ReObsProc(){
@@ -81,8 +79,6 @@ public class TryView : MonoBehaviour, IUIComponent {
 			}
 		}
 		hScenes.SetFailedList(fList);
-		//flistに更新が必要なことを伝える
-		fListView.SetIsUpdateNeed(true);
-		ToATV();
+		ToMainView();
 	}
 }

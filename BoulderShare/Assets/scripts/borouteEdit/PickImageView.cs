@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Kakera;
 
-public class PickImageView : MonoBehaviour, IUIComponent {
+public class PickImageView : SEComponentBase{
 	[SerializeField]
 	private List<GameObject> internalUIComponents;
 	[SerializeField]
@@ -15,7 +15,7 @@ public class PickImageView : MonoBehaviour, IUIComponent {
 	[SerializeField]
 	private TwoDWallImage twoDWallImage;
 
-	public void ShowProc(){
+	public override void ShowProc(){
 		foreach(GameObject obj in internalUIComponents){
 			obj.SetActive(true);
 		}
@@ -25,11 +25,11 @@ public class PickImageView : MonoBehaviour, IUIComponent {
 		gameObject.SetActive(true);
 	}
 
-	public void HideProc(){
+	public override void HideProc(){
 		Hide();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		foreach(GameObject obj in internalUIComponents){
 			obj.SetActive(false);
 		}
@@ -39,9 +39,9 @@ public class PickImageView : MonoBehaviour, IUIComponent {
 		gameObject.SetActive(false);
 	}
 
-	public void ToATV(){
+	public void ToMainView(){
 		twoDWallImage.RotateWallTexture();
-		trans.Transition("EditWallMark");
+		trans.Transition("MainView");
 	}
 
 }

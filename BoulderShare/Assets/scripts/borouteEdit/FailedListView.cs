@@ -13,26 +13,18 @@ public class FailedListView: MonoBehaviour {
 	private GameObject failedTextOrigin;
 	[SerializeField]
 	private HScenes2 hScenes;
-	private bool isUpdateNeed ;
+
 	void Awake(){
-		isUpdateNeed = false;
 		fList = new List<string>();
 	}
 
 	public void Open(){
-		if (isUpdateNeed){
-			Regist(hScenes.GetFailedList());
-			isUpdateNeed = false;
-		}
+		Regist(hScenes.GetFailedList());
 		this.gameObject.SetActive(true);
 	}
 
 	public void Close(){
 		this.gameObject.SetActive(false);
-	}
-
-	public void SetIsUpdateNeed(bool b){
-		isUpdateNeed = b;
 	}
 
 	//現在の原因リストを返す
@@ -41,7 +33,7 @@ public class FailedListView: MonoBehaviour {
 	}
 
 	public bool IsExist(){
-		return isUpdateNeed || fList.Any();
+		return fList.Any();
 	}
 
 	//新しい原因リストに更新する

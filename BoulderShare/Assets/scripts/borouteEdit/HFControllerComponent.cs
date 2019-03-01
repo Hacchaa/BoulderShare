@@ -7,7 +7,7 @@ public class HFControllerComponent : MonoBehaviour, IDragHandler, IEndDragHandle
 	private static int FINGER_NONE = -10;
 	private static int finger = FINGER_NONE;
 	[SerializeField]
-	private int bodyType;
+	private TwoDMark.HFType bodyType;
 	[SerializeField]
 	private HFController controller;
 

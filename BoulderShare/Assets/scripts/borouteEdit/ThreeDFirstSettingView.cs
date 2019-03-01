@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ThreeDFirstSettingView : MonoBehaviour, IUIComponent
+public class ThreeDFirstSettingView : SEComponentBase
 {
 	[SerializeField]
 	private List<GameObject> externalUIComponents;
@@ -16,7 +16,7 @@ public class ThreeDFirstSettingView : MonoBehaviour, IUIComponent
 	[SerializeField]
 	private ModelSizeSetter modelSize;
 
-	public void ShowProc(){
+	public override void ShowProc(){
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(true);
 		}
@@ -28,18 +28,14 @@ public class ThreeDFirstSettingView : MonoBehaviour, IUIComponent
 		modelSize.SyncModelSize();
 	}
 
-	public void HideProc(){
+	public override void HideProc(){
 		Hide();
 	}
 
-	public void Hide(){
+	public override void Hide(){
 		foreach(GameObject obj in externalUIComponents){
 			obj.SetActive(false);
 		}
 		gameObject.SetActive(false);
-	}
-
-	public void Submit(){
-		sManager.Transition("AttemptTreeView");
 	}
 }

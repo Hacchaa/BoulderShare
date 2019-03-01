@@ -80,6 +80,7 @@ public class SceneComments3D : MonoBehaviour
     }
 
     public void ShowDynamically(){
+    	SetShowAngle(ANGLE_VIEW);
     	isUpdateDynamically = true;
     }
 }
