@@ -9,14 +9,12 @@ namespace Kakera
         [SerializeField]
         private Unimgpicker imagePicker;
         [SerializeField]
-        private TwoDWall twoDWall;
-        [SerializeField]
         private EditorPopup popup;
         [SerializeField]
         private EditorManager eManager;
         [SerializeField]
         private ScreenTransitionManager sManager;
-
+        [SerializeField] private WallManager wallManager;
         void Awake()
         {
             imagePicker.Completed += (string path) =>
@@ -62,19 +60,21 @@ namespace Kakera
                 Debug.LogError("Failed to load texture url:" + url);
             }
 
+            wallManager.CommitWallImage(texture);
+            /*
             twoDWall.SetWallSprite(Sprite.Create(
                 texture, 
                 new Rect(0.0f, 0.0f, texture.width, texture.height), 
                 new Vector2(0.5f, 0.5f),
                 texture.height/4)
-            );
+            );*/
 
             byte[] pngData = texture.EncodeToPNG();
             string filePath = Application.persistentDataPath + "/Wall.png";
             Debug.Log("copy texture at "+ filePath);
             File.WriteAllBytes(filePath, pngData);
 
-            sManager.Transition("PickImageView");
+            sManager.Transition(ScreenTransitionManager.Screen.PickImageView);
 
 /*
             byte[] values;

@@ -24,7 +24,7 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	private TwoDWallMarks twoDWallMarks;
 	[SerializeField]
 	private TwoDWallImage twoDWallImage;
-
+	[SerializeField] private WallManager wallManager;
 
 	// Use this for initialization
 	void Awake () {
@@ -124,9 +124,9 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 			//bounds
 			//wallの幅とサイズを取得
 			//高さは4units
-			Bounds b = twoDWall.GetWallBounds();
-			float height = b.size.y;
-			float width = b.size.x;
+			Vector2 size = wallManager.GetMasterWallSize();
+			float height = size.y;
+			float width = size.x;
 			p.x = Mathf.Min(p.x, width/2);
 	    	p.x = Mathf.Max(p.x, -width/2);
 	    	p.y = Mathf.Min(p.y, height/2);

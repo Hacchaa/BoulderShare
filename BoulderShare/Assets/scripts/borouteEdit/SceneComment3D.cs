@@ -32,12 +32,11 @@ public class SceneComment3D : MonoBehaviour
 	public static string INIT_STRING = "タップして編集";
     private float MIN_HEIGHT = 60.0f;
     private float WIDTH = 300.0f;
-    private Bounds bounds;
+
 
     void Awake(){
         rectT = gameObject.GetComponent<RectTransform>();
         Resize();
-        bounds = twoDWall.GetWallBounds();
         ShowComment(true);
         LookAtCamera();
     }

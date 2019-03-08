@@ -12,15 +12,11 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	private bool isUpdate = false;
 	private bool isMove = false;
 	private bool isOperationDetermined = false;
-	[SerializeField]
-	private Transform camMoveTarget;
-	[SerializeField] Transform camRotTarget;
 	[SerializeField] private Camera cam;
 	[SerializeField] private ThreeDWall threeDWall;
 	private Bounds bounds;
-	private const float CAMERA_DEPTH_LL = 2.0f;
-	private const float CAMERA_DEPTH_UL = 12.0f;
 	private const float WEIGHT = 0.2f;
+	[SerializeField] private CameraManager cameraManager;
 
 	// Use this for initialization
 	void Awake () {
@@ -84,12 +80,11 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		//一本指の場合
 		if (eTouches[1] == FINGER_NONE){
 			//y軸に回転させる
-			camRotTarget.Rotate(0, data.delta.x * WEIGHT, 0);
+			cameraManager.Rotate3D(0, data.delta.x * WEIGHT, 0);
 			isUpdate = true;
 			return;
 		}
 
-		float depth = Mathf.Abs(camMoveTarget.localPosition.z);
 		float length = Vector2.Distance(p1, p2);
 
 		if(!isOperationDetermined){
@@ -113,48 +108,16 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		if(isMove){
 			//壁を移動させる
 			Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
-				cam.gameObject.transform.InverseTransformPoint(camRotTarget.position).z));
+				cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
 	    	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f,
-	    		cam.gameObject.transform.InverseTransformPoint(camRotTarget.position).z));
+	    		cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
 
-	    	camMoveTarget.Translate(wP1Old - wP1, Space.World);
-	    	//camMoveTarget.position = wP1;
-
-	    	//バウンド処理
-	    	Vector3 bPos = camMoveTarget.localPosition;
-			float height = bounds.size.y / 2f;
-			float width = bounds.size.x / 2f;
-			Debug.Log("bPos"+bPos);
-	    	bPos.x = Mathf.Min(bPos.x, width);
-	    	bPos.x = Mathf.Max(bPos.x, -width);
-	    	bPos.y = Mathf.Min(bPos.y, height);
-	    	bPos.y = Mathf.Max(bPos.y, -height);
-			Debug.Log("bPosaf"+bPos);
-	    	camMoveTarget.localPosition = bPos;
-
+	    	cameraManager.Translate3D(wP1Old - wP1, Space.World);
+	    	cameraManager.Bounds3D(bounds);
 		}else{
 			//prevLengthとlengthの比で拡大、縮小する
 			if (prevLength > 0 && length > 0){
-				if (!(depth <= CAMERA_DEPTH_LL && length / prevLength > 1) &&
-					!(depth >= CAMERA_DEPTH_UL && length / prevLength < 1 )){
-					
-					camMoveTarget.Translate(
-						0, 
-						0, 
-						camMoveTarget.localPosition.z * -(length / prevLength - 1));
-					
-					if (Mathf.Abs(camMoveTarget.localPosition.z) < CAMERA_DEPTH_LL){
-			        	camMoveTarget.localPosition = new Vector3(
-			        		camMoveTarget.localPosition.x, 
-			        		camMoveTarget.localPosition.y, 
-			        		-CAMERA_DEPTH_LL);
-			        }else if (Mathf.Abs(camMoveTarget.localPosition.z) > CAMERA_DEPTH_UL){
-			        	camMoveTarget.localPosition = new Vector3(
-			        		camMoveTarget.localPosition.x, 
-			        		camMoveTarget.localPosition.y, 
-			        		-CAMERA_DEPTH_UL);
-			        }
-				}
+				cameraManager.Zoom3D(-(length/prevLength - 1));
 			}
 			prevLength = length;
 		}

@@ -10,20 +10,20 @@ public class InclineSetter : MonoBehaviour {
 	[SerializeField]
 	private Slider inclineSlider;
 	[SerializeField]
-	private ThreeD threeD;
+	private ThreeDWall threeDWall;
 
 	public int GetValue(){
 		return (int)inclineSlider.value*5;
 	}
 
 	public void SyncInclineValue(){
-		float value = threeD.GetWallIncline();
+		float value = threeDWall.GetIncline();
 		inclineSlider.value = value/5;
 		inclineText.text = "" + value;
 	}
 
 	public void SetInclineValueFromSlider(){
-		threeD.SetWallIncline(GetValue());
+		threeDWall.SetIncline(GetValue());
 		inclineText.text = "" + GetValue();
 	}
 }

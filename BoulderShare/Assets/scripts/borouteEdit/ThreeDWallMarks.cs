@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ThreeDWallMarks : MonoBehaviour {
 	[SerializeField]
-	private TwoDWallMarks twoDWallMarks;
-	[SerializeField]
 	private GameObject threeDHoldsPrefab;
 	[SerializeField]
 	private ThreeDWall threeDWall;
@@ -16,6 +14,13 @@ public class ThreeDWallMarks : MonoBehaviour {
 	void Awake(){
 		map = new Dictionary<string, GameObject>();
 	}
+	public void Init(){
+		map.Clear();
+
+		foreach(Transform t in this.transform){
+			Destroy(t.gameObject);
+		}
+	}
 
 	private void SetLayerRecursively(GameObject self, int layer){
 		self.layer = layer;
@@ -25,7 +30,7 @@ public class ThreeDWallMarks : MonoBehaviour {
 		}
 	}
 
-	public void Remove3DMark(string name){
+	private void Remove3DMark(string name){
 		if (map.ContainsKey(name)){
 			GameObject obj = map[name];
 			map.Remove(name);
@@ -33,7 +38,7 @@ public class ThreeDWallMarks : MonoBehaviour {
 		}
 	}
 
-	public void Make3DMark(float x, float y, float scale, string name){
+	private void Make3DMark(float x, float y, float scale, string name){
 		Vector3 vec = transform.TransformPoint(new Vector3(x, y, 0.0f));
 		vec = threeDWall.CalcWallPoint(vec);
 		GameObject obj = Instantiate(threeDHoldsPrefab, transform);
@@ -46,9 +51,16 @@ public class ThreeDWallMarks : MonoBehaviour {
 		map.Add(name, obj);
 	}
 
-	//2dwallのマークを3dwallに同期
-	public void Synchronize(){
-		foreach(Transform child in twoDWallMarks.transform){
+	//同期
+	public void Synchronize(GameObject rootMarks){
+		Init();
+
+		foreach(Transform child in rootMarks.transform){
+			if (!string.IsNullOrEmpty(child.name)){
+				Make3DMark(child.localPosition.x, child.localPosition.y, child.localScale.x * THREED_MARK_SIZE, child.gameObject.name);
+			}
+		}/*
+		foreach(Transform child in rootMarks.transform){
 			if (map.ContainsKey(child.gameObject.name)){
 				GameObject mark = map[child.gameObject.name];
 				mark.transform.localPosition = child.localPosition;
@@ -56,25 +68,8 @@ public class ThreeDWallMarks : MonoBehaviour {
 			}else{
 				Make3DMark(child.localPosition.x, child.localPosition.y, child.localScale.x * THREED_MARK_SIZE, child.gameObject.name);
 			}
-		}
+		}*/
 
-		foreach(Transform child in transform){
-			if (!twoDWallMarks.IsMarkExist(child.name)){
-				Remove3DMark(child.name);
-			}
-		}
-	}
-
-	public GameObject GetMarkObj(int type){
-		string[] arr = twoDWallMarks.GetTouchInfo();
-
-		if (string.IsNullOrEmpty(arr[type])){
-			Debug.Log(type + " is null");
-			return null;
-		}
-
-		Debug.Log(type + " is " + map[arr[type]].name);
-		return map[arr[type]];
 	}
 
 	public GameObject GetMarkObj(string name){

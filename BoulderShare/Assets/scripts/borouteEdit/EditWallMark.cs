@@ -4,60 +4,46 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EditWallMark : SEComponentBase{
-	[SerializeField]
-	private ScreenTransitionManager trans;
-	[SerializeField]
-	private List<GameObject> externalUIComponents;
-	[SerializeField]
-	private TwoDWallMarks twoDWallMarks;
-	[SerializeField]
-	private GameObject markOptions;
-	[SerializeField]
-	private Slider scaleSlider;
-	[SerializeField]
-	private ThreeDWallMarks threeDWallMarks;
+	[SerializeField] private ScreenTransitionManager trans;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private GameObject markOptions;
+	[SerializeField] private Slider scaleSlider;
+	[SerializeField] private ThreeDWallMarks threeDWallMarks;
 	[SerializeField] private MakeAttemptTree makeAT;
-
-	public void Submit(){
-		Close();
-	}
+	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private WallManager wallManager;
+	[SerializeField] private TwoDWall twoDWall;
 
 	public void ToEdit2DPose(){
-		trans.Transition("EditScene");
+		wallManager.CommitWallMarks(twoDWall.GetWallMarks());
+		trans.Transition(ScreenTransitionManager.Screen.EditScene);
 	}
 
 	public void ToATV(){
-		trans.Transition("AttemptTreeView");
+		wallManager.CommitWallMarks(twoDWall.GetWallMarks());
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
 	}
 
 	public void Close(){
+		wallManager.CommitWallMarks(makeAT.GetWallMarks());
 		makeAT.Init();
-		trans.Transition("MainView");
+		trans.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
 	//画面遷移時の前処理
-	public override void ShowProc(){
-		gameObject.SetActive(true);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(true);
+	public override void OnPreShow(){
+		if (!makeAT.IsWallMarkSet()){
+			makeAT.SetWallMarks(wallManager.GetMasterWallMarks());
 		}
+		cameraManager.Active2D();
 		twoDWallMarks.AcceptEvents();
 		CloseMarkOptions();
 	}
 
-	public override void Hide(){
-		gameObject.SetActive(false);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(false);
-		}
-	}
 	//画面遷移でこの画面を消す時の後処理
-	public override void HideProc(){
+	public override void OnPreHide(){
 		twoDWallMarks.IgnoreEvents();
 		twoDWallMarks.ReleaseFocus();
-
-		threeDWallMarks.Synchronize();
-		Hide();
 	}
 
 	//2dmarkを選択する

@@ -3,36 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class TryView : SEComponentBase{
-	[SerializeField]
-	private GameObject[] frames;
+	[SerializeField] private GameObject[] frames; 
+	[SerializeField] private GameObject congFrame;
+	[SerializeField] private ScreenTransitionManager stManager;
+	[SerializeField] private HScenes2 hScenes;
+	[SerializeField] private GameObject failedList_ParentObj;
 	private int curFrameIndex;
-	[SerializeField]
-	private GameObject congFrame;
-	[SerializeField]
-	private ScreenTransitionManager stManager;
-	[SerializeField]
-	private HScenes2 hScenes;
-	[SerializeField]
-	private GameObject failedList_ParentObj;
 
-
-	public override void ShowProc(){
+	public override void OnPreShow(){
 		curFrameIndex = 0;
-
-		this.gameObject.SetActive(true);
-		frames[curFrameIndex].SetActive(true);
 	}
 
-	public override void HideProc(){
+	public override void OnPreHide(){
 		curFrameIndex = 0;
-		Hide();
-	}
-
-	public override void Hide(){
-		foreach(GameObject obj in frames){
-			obj.SetActive(false);
-		}
-		this.gameObject.SetActive(false);
 	}
 
 	public void Next(){
@@ -54,7 +37,7 @@ public class TryView : SEComponentBase{
 	}
 
 	public void ToPost(){
-		stManager.Transition("Post");
+		stManager.Transition(ScreenTransitionManager.Screen.Post);
 	}
 	public void ToCong(){
 		frames[curFrameIndex].SetActive(false);
@@ -62,7 +45,7 @@ public class TryView : SEComponentBase{
 	}
 
 	public void ToMainView(){
-		stManager.Transition("MainView");
+		stManager.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
 	public void ReObsProc(){

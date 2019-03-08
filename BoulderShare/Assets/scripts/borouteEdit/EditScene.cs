@@ -4,18 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EditScene : SEComponentBase{
-	[SerializeField]
-	private List<GameObject> externalUIComponents;
-	[SerializeField]
-	private ScreenTransitionManager trans;
-	[SerializeField]
-	private TwoDWallMarks twoDWallMarks;
-	[SerializeField]
-	private GameObject twoDCamera;
-	[SerializeField]
-	private ThreeD threeD;
+	[SerializeField] private ScreenTransitionManager trans;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private MakeAttemptTree makeAT;
 	[SerializeField] private HScenes2 hScenes;
+	[SerializeField] private CameraManager cameraManager;
+
 	void Awake(){
 		/*
 		float length = cameraUtil.GetWidthRate() * canvasScaler.referenceResolution.x;
@@ -26,50 +20,37 @@ public class EditScene : SEComponentBase{
 
 	public void ToATV(){
 		makeAT.Set2DTouchMarks(twoDWallMarks.GetTouchInfo());
-		trans.Transition("AttemptTreeView");
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
 	}
 
 	public void ToEditPose(){
 		makeAT.Set2DTouchMarks(twoDWallMarks.GetTouchInfo());
-		trans.Transition("EditPose");
+		trans.Transition(ScreenTransitionManager.Screen.EditPose);
 	}
 
 	public void ToEditWallMark(){
 		makeAT.Set2DTouchMarks(twoDWallMarks.GetTouchInfo());
-		trans.Transition("EditWallMark");
+		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
 	}
 
-	public override void ShowProc(){
+	public override void OnPreShow(){
+		cameraManager.Active2D();
 		twoDWallMarks.ClearTouch();
 		string[] str = makeAT.Get2DTouchMarks();
 		if (str != null && str.Length > 0){
 			twoDWallMarks.SetTouchInfo(str);
 		}
-		
-		HScene2 scene = hScenes.GetCurScene();
+		int ind = makeAT.GetIndex();
+		if (makeAT.GetMode() == MakeAttemptTree.Mode.Edit || makeAT.GetMode() == MakeAttemptTree.Mode.Add){
+			ind--;
+		}
+		HScene2 scene = hScenes.GetScene(ind);
 		if (scene != null){
 			twoDWallMarks.SetDummyTouchInfo(scene.GetOnHolds());
 		}
-
-		gameObject.SetActive(true);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(true);
-		}
-		twoDCamera.SetActive(true);
 	}
 
-	public override void HideProc(){
+	public override void OnPreHide(){
 		twoDWallMarks.ClearTouch();
-		Hide();
 	}
-
-	public override void Hide(){
-		gameObject.SetActive(false);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(false);
-		}
-
-		twoDCamera.SetActive(false);
-	}
-
 }

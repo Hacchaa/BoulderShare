@@ -114,7 +114,7 @@ public class RouteView2 : MonoBehaviour {
 
 				//画像を読み込む
 				if (File.Exists(path + "temp/thumbnail.png")){
-					raTemp.SetImg(MyUtility.LoadImage(path + "temp/thumbnail.png"));
+					raTemp.SetImg(MyUtility.CreateSprite(MyUtility.LoadImage(path + "temp/thumbnail.png")));
 				}
 
 				tempTS = bInfo.timestamp;
@@ -149,7 +149,7 @@ public class RouteView2 : MonoBehaviour {
 			//画像を読み込む
 			path = Application.persistentDataPath + EditorManager.BOROUTEPATH + data.timestamp;
 			if (File.Exists(path + "/thumbnail.png")){
-				ra.SetImg(MyUtility.LoadImage(path + "/thumbnail.png"));
+				ra.SetImg(MyUtility.CreateSprite(MyUtility.LoadImage(path + "/thumbnail.png")));
 			}
 			//このボルートの一時保存がある場合
 			if (!String.IsNullOrEmpty(tempTS) 
@@ -225,7 +225,7 @@ public class RouteView2 : MonoBehaviour {
 			//画像を読み込む
 			string path = Application.persistentDataPath + EditorManager.BOROUTEPATH + data.timestamp;
 			if (File.Exists(path + "/thumbnail.png")){
-				ra.SetImg(MyUtility.LoadImage(path + "/thumbnail.png"));
+				ra.SetImg(MyUtility.CreateSprite(MyUtility.LoadImage(path + "/thumbnail.png")));
 			}
 			//Debug.Log("tempTS:"+tempTS);
 			//Debug.Log("timestamp:"+data.timestamp);

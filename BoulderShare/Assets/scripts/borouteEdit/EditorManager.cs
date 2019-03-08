@@ -14,13 +14,9 @@ public class EditorManager : MonoBehaviour {
 	[SerializeField]
 	private EditorPopup popup;
 	[SerializeField]
-	private TwoDWall twoDWall;
-	[SerializeField]
-	private ThreeDWall threeDWall;
-	[SerializeField]
 	private Post2 post;
 	[SerializeField]
-	private ThreeD threeD;
+	private HumanModel humanModel;
 	[SerializeField]
 	private string timeStamp ;
 	[SerializeField]
@@ -29,6 +25,7 @@ public class EditorManager : MonoBehaviour {
 	private BorouteLSManager2 bManager;
 	[SerializeField]
 	private ScreenTransitionManager transition;
+	[SerializeField] private WallManager wallManager;
 
 	private string test;
 
@@ -54,7 +51,7 @@ public class EditorManager : MonoBehaviour {
 				pc.OpenImagePicker();
 			}else{
 				bManager.LoadBoroute();
-				transition.Transition("MainView");
+				transition.Transition(ScreenTransitionManager.Screen.MainView);
 			}
 		}
 	}
@@ -65,7 +62,11 @@ public class EditorManager : MonoBehaviour {
 
 	public void ExitEditor(){
 		string content = "編集作業を一時保存しますか？";
-		popup.Open(YesProc, ExitImmediately, content);
+		popup.Open(YesProc, ExitImmediately, content, CloseProc);
+	}
+	//何もしない
+	private void CloseProc(){
+
 	}
 
 	private void YesProc(){
@@ -92,11 +93,11 @@ public class EditorManager : MonoBehaviour {
 		}
 		boroute.date = post.GetDate();
 		boroute.place = post.GetPlace();
-		boroute.incline = threeD.GetWallIncline();
+		boroute.incline = wallManager.GetMasterIncline();
 		boroute.grade = post.GetGrade();
 		boroute.tryCount = post.GetTryCount();
 		boroute.isComplete = post.IsComplete();
-		boroute.scaleH2M = threeD.GetModelSize();
+		boroute.scaleH2M = humanModel.GetModelSize();
 		boroute.globalComment = post.GetGlobalComment();
 
 		return boroute;
@@ -112,11 +113,11 @@ public class EditorManager : MonoBehaviour {
 		timeStamp = boroute.timestamp;
 		post.SetDate(boroute.date);
 		post.SetPlace(boroute.place);
-		threeD.SetWallIncline(boroute.incline);
+		wallManager.CommitIncline(boroute.incline);
 		post.SetGrade(boroute.grade);
 		post.SetTryCount(boroute.tryCount);
 		post.SetIsComplete(boroute.isComplete);
-		threeD.SetModelSize(boroute.scaleH2M);
+		humanModel.SetModelSize(boroute.scaleH2M);
 		post.SetGlobalComment(boroute.globalComment);
 	}
 

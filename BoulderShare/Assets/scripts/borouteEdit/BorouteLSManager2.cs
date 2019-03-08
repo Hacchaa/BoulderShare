@@ -11,6 +11,7 @@ using System.Security.Principal;
 public class BorouteLSManager2 : MonoBehaviour {
 	[SerializeField]
 	private EditorManager eManager;
+	[SerializeField] private WallManager wallManager;
 	[SerializeField]
 	private TwoDWallMarks twoDWallMarks;
 	[SerializeField]
@@ -41,7 +42,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 			//画像を読み込む
 			path = Application.persistentDataPath + EditorManager.BOROUTEPATH + info.GetDirName() + "/Wall.png";
 			if (File.Exists(path)){
-				twoDWall.SetWallSprite(MyUtility.LoadImage(path));
+				wallManager.CommitWallImage(MyUtility.LoadImage(path));
 			}
 
 			//読み込まれたボルートが一時保存ならば、新規作成扱いにする
@@ -137,7 +138,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 
 	public void WriteThumbnail(string filepath){
-		Texture2D texture = twoDWall.GetWallTexture();
+		Texture2D texture = wallManager.GetMasterWallImage();
 		Texture2D newTex = new Texture2D(texture.width, texture.height, texture.format, texture.mipmapCount > 1);
 		newTex.LoadRawTextureData(texture.GetRawTextureData());
 		int w = texture.width;

@@ -3,107 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using RootMotion.FinalIK;
-public class VRIKBend : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler{
-	protected static int finger ;
-	protected const int FINGER_NONE = -10;
-	[SerializeField] protected Camera cam;
-	private Vector3 defaultPos;
-	[SerializeField] protected Transform avatar;
-	[SerializeField] protected Transform target;
-	private Vector3 center;
-	[SerializeField] private float radius = 0.5f;
-	[SerializeField] private float weight = 0.5f;
-	[SerializeField] private Transform parentAvatar;
-	[SerializeField] private Transform childAvatar;
-	private float lAP;
-	private float lAC;
-	private float lPC;
-	private float pivotRate;
-	private Vector3 axis;
-	private bool isDragging = false;
-	// Use this for initialization
-	void Awake () {
-		finger = FINGER_NONE;
-		//transform.position = avatar.position;
-		defaultPos = target.localPosition;
-		Init();
-	}
-
-	public void Init(){		
-		ResetPos();
-		//target.position = center + Vector3.forward * radius;
-	}
+public class VRIKBend : VRIKComponent {
+	[SerializeField] private float r = 0.5f;
+	[SerializeField] private Transform centerAvatar;
+	[SerializeField] private LineRenderer line;
 
 
-	void LateUpdate(){
-		Invoke("Correct", 0.0f);
+	void Update(){
+		if (gameObject.activeSelf){
+		    Vector3[] p = new Vector3[2];
+	    	p[0] = faceAvatar.position;
+	    	p[1] = transform.position;
+	    	line.SetPositions(p);
+        }
+        if (centerAvatar != null){
+			Vector3 dir = rootVRMark.InverseTransformPoint(target.position) - rootVRMark.InverseTransformPoint(centerAvatar.position);
+			if (dir.magnitude > r){
+				target.localPosition = rootVRMark.InverseTransformPoint(centerAvatar.position) + dir.normalized * r;
+			}
+		}
 	}
-
-	public void ResetPos(){
-		target.localPosition = defaultPos;
-	}	
-
-	public Vector3 GetPosition(){
-		return target.localPosition;
+	public override void Show(){
+		render.enabled = true;
+		line.gameObject.SetActive(true);
 	}
-
-	public void SetPosition(Vector3 p){
-		target.localPosition = p;
+	public override void Hide(){
+		render.enabled = false;
+		line.gameObject.SetActive(false);
 	}
-	public Quaternion GetRotation(){
-		return target.localRotation;
-	}
-	public void SetRotation(Quaternion rot){
-		target.localRotation = rot;
-	}
-
 	//avatarの位置に移動させる
-	public void Correct(){
-		//transform.position = avatar.position;
-		
-		if (isDragging){
-			transform.position = avatar.position;
-		}else{
-			target.position += (avatar.position - transform.position);
-			transform.position = avatar.position;
-			//target.position =  center + (avatar.position - center).normalized * radius;
-		}
-	}
-	
-	public void OnBeginDrag(PointerEventData data){
-		if (finger == FINGER_NONE){
-			finger = data.pointerId;;
-			
-			lPC = (childAvatar.position - parentAvatar.position).sqrMagnitude;
-			pivotRate =  (lAP + lPC - lAC)/ (2*lPC) ;
-
-			axis = (childAvatar.position - parentAvatar.position);
-			center = parentAvatar.position + (axis * pivotRate);
-			isDragging = true;
-			target.position =  center + (avatar.position - center).normalized * radius;
-		}
-	}
-
-	public void OnDrag(PointerEventData data){
-		if (finger == data.pointerId){
-			Vector3 camAxis = cam.WorldToScreenPoint(childAvatar.position) - cam.WorldToScreenPoint(parentAvatar.parent.position);
-			camAxis = camAxis.normalized;
-			float dot = Vector2.Dot(new Vector2(-camAxis.y, camAxis.x), data.delta.normalized);
-			target.RotateAround(center, axis, dot * weight);
-			/*
-			swivel += -1 * dot * weight;
-			if (swivel > 180.0f){
-				swivel -= 360;
-			}else if(swivel < -180){
-				swivel += 360;
-			}*/
-		}
-	}
-
-	public void OnEndDrag(PointerEventData data){
-		if (finger == data.pointerId){
-			finger = Observer.FINGER_NONE;
-			isDragging = false;
-		}
+	public override void Correct(){
 	}
 }

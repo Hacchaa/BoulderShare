@@ -24,7 +24,7 @@ public class FinalIKMarkBody : MonoBehaviour, IDragHandler, IEndDragHandler, IBe
 	[SerializeField]
 	private Transform pelvisParent;
 	[SerializeField] private ThreeD threeD;
-	[SerializeField] private CameraUtility cameraUtility;
+	[SerializeField] private CameraManager cameraManager;
 
 	// Use this for initialization
 	void Awake() {
@@ -110,7 +110,7 @@ public class FinalIKMarkBody : MonoBehaviour, IDragHandler, IEndDragHandler, IBe
 	public void OnEndDrag(PointerEventData data){
 		if (finger == data.pointerId){
 			//threeD.LookAtModel();
-			cameraUtility.SetPosWithFixedHierarchyPos(threeD.GetModelBodyPosition());
+			//cameraManager.SetPosWithFixedHierarchyPos(threeD.GetModelBodyPosition());
 			finger = FINGER_NONE;
 			isMoved = false;
 		}

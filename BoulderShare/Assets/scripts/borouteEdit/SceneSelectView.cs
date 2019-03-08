@@ -3,23 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AttemptTreeView : SEComponentBase{
+public class SceneSelectView : SEComponentBase{
+	public enum SelectMode {
+		Edit,
+		Add,
+		Remove
+	}
 	[SerializeField] private HScenes2 hScenes;
 	[SerializeField] private SceneScroll ss;
 	[SerializeField] private ScreenTransitionManager trans;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private HumanModel humanModel;
-	[SerializeField] private FailedListView failedListView;
-	[SerializeField] private GameObject failedListButton;
 	[SerializeField] private SceneCommentController3D scc;
 	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private Text dimText;
 	[SerializeField] private GameObject for3D;
+	[SerializeField] private GameObject forEdit;
+	[SerializeField] private GameObject forAdd;
+	[SerializeField] private GameObject forRemove;
 	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private MakeAttemptTree makeAT;
+	[SerializeField] private EditorPopup popup;
+	private SelectMode mode;
+	private string warningText = "本当に削除しますか？";
+	
+	public void SetMode(SelectMode m){
+		mode = m;
+	}
+	public void ToEdit(){
+		makeAT.Init();
+		makeAT.SetMode(MakeAttemptTree.Mode.Edit);
+		makeAT.SetIndex(hScenes.GetCurIndex());
+		makeAT.LoadScene(hScenes.GetCurScene());
+		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
+	}
+
+	public void ToAdd(){
+		makeAT.Init();
+		makeAT.SetMode(MakeAttemptTree.Mode.Add);
+		makeAT.SetIndex(hScenes.GetCurIndex());
+		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);		
+	}
+	public void ToRemove(){
+		popup.Open(Remove, null, warningText);
+	}
+
+	public void ToMainView(){
+		trans.Transition(ScreenTransitionManager.Screen.MainView);
+	}
+
+	public void Remove(){
+		hScenes.RemoveScene();
+		trans.Transition(ScreenTransitionManager.Screen.MainView);
+	}
 
 	public void Switch2D3D(){
 		Switch2D3D(cameraManager.Is2DActive());
 	}
+
 	private void Switch2D3D(bool isActive3D){
 		if(isActive3D){
 			dimText.text = "3D";
@@ -61,6 +102,7 @@ public class AttemptTreeView : SEComponentBase{
 	public override void OnPreShow(){
 		SyncSceneScroll();
 		int index = 0;
+
 		hScenes.SetCurIndex(index);
 		HScene2 scene = hScenes.GetCurScene();
 		if (scene != null){
@@ -71,9 +113,24 @@ public class AttemptTreeView : SEComponentBase{
 		cameraManager.Reset2DCamPosAndDepth();
 		humanModel.LookAtModel();
 
-		failedListButton.SetActive(failedListView.IsExist());
 		comments.ShowDynamically();
 		Switch2D3D(true);
+
+		forEdit.SetActive(false);
+		forAdd.SetActive(false);
+		forRemove.SetActive(false);
+
+		switch(mode){
+			case SelectMode.Edit:
+				forEdit.SetActive(true);
+				break;
+			case SelectMode.Add:
+				forAdd.SetActive(true);
+				break;
+			case SelectMode.Remove:
+				forRemove.SetActive(true);
+				break;
+		}
 	}
 
 	public override void OnPreHide(){

@@ -3,46 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MainView: SEComponentBase{
-	[SerializeField]private List<GameObject> externalUIComponents;
-	[SerializeField]private ScreenTransitionManager trans;
+	[SerializeField] private ScreenTransitionManager trans;
 	[SerializeField] private MakeAttemptTree makeAT;
-
-	public override void ShowProc(){
-		gameObject.SetActive(true);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(true);
+	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private HScenes2 hScenes2;
+	[SerializeField] private GameObject forEdit;
+	[SerializeField] private SceneSelectView ssView;
+	public override void OnPreShow(){
+		cameraManager.Active2D();
+		if (hScenes2.GetNum() == 0){
+			forEdit.SetActive(false);
+		}else{
+			forEdit.SetActive(true);
 		}
 	}
 
-	public override void HideProc(){
-		Hide();
-	}
+	public override void OnPreHide(){
 
-	public override void Hide(){
-		gameObject.SetActive(false);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(false);
-		}
 	}
 
 	public void ToMakeAT(){
 		makeAT.Init();
-		trans.Transition("EditWallMark");
+		makeAT.SetMode(MakeAttemptTree.Mode.Loop);
+		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
 	}
 
+	public void EditScene(){
+		ssView.SetMode(SceneSelectView.SelectMode.Edit);
+		ToSSV();
+	}
+
+	public void AddScene(){
+		ssView.SetMode(SceneSelectView.SelectMode.Add);
+		ToSSV();
+	}
+
+	public void RemoveScene(){
+		ssView.SetMode(SceneSelectView.SelectMode.Remove);
+		ToSSV();
+	}
+
+	private void ToSSV(){
+		trans.Transition(ScreenTransitionManager.Screen.SceneSelectView);
+	}
+
+
 	public void ToATV(){
-		trans.Transition("AttemptTreeView");
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
 	}
 
 	public void ToPost(){
-		trans.Transition("Post");
+		trans.Transition(ScreenTransitionManager.Screen.Post);
 	}
 
 	public void ToTry(){
-		trans.Transition("TryView");
+		trans.Transition(ScreenTransitionManager.Screen.TryView);
 	}
 
 	public void To3DSetting(){
-		trans.Transition("ThreeDFirstSettingView");
+		trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
 	}
 }

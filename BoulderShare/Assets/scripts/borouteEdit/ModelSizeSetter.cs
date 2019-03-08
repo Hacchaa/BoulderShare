@@ -6,16 +6,16 @@ using UnityEngine.UI;
 public class ModelSizeSetter : MonoBehaviour
 {
 	[SerializeField]
-	private ThreeD threeD;
+	private HumanModel humanModel;
 	[SerializeField]
 	private Slider modelSizeSlider;
 
     // Start is called before the first frame update
 	public void SyncModelSize(){
-		modelSizeSlider.value = threeD.GetModelSize();
+		modelSizeSlider.value = humanModel.GetModelSize();
 	}
 
 	public void SetModelSizeFromSlider(){
-		threeD.SetModelSize(modelSizeSlider.value);
+		humanModel.SetModelSize(modelSizeSlider.value);
 	}
 }

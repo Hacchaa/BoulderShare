@@ -6,98 +6,93 @@ using System;
 
 public class EditPose : SEComponentBase{
 	[SerializeField]
-	private List<GameObject> externalUIComponents;
-	[SerializeField]
 	private ScreenTransitionManager trans;
 	[SerializeField]
 	private HScenes2 hScenes;
 	[SerializeField]
-	private ThreeD threeD;
+	private HumanModel humanModel;
 	[SerializeField] private MakeAttemptTree makeAT;
 	[SerializeField] private FaceObjSelector foSelector;
 	[SerializeField] private Transform copyModel;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private VRIKController vrIK;
 	private bool isShadowLoaded = false;
 
 	private int index = -1;
 
 	public void ToEditComment(){
-		makeAT.SetPose(threeD.GetModelPosition(),threeD.GetModelRotation());
-		trans.Transition("Edit3DSceneComment");
+		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());
+		trans.Transition(ScreenTransitionManager.Screen.Edit3DSceneComment);
 	}
 	public void ToEditScene(){
-		makeAT.SetPose(threeD.GetModelPosition(),threeD.GetModelRotation());
-		trans.Transition("EditScene");		
+		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());
+		trans.Transition(ScreenTransitionManager.Screen.EditScene);		
 	}
 	public void ToATV(){
-		makeAT.SetPose(threeD.GetModelPosition(),threeD.GetModelRotation());
-		trans.Transition("AttemptTreeView");		
+		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);		
 	}
 	public void To3DSetting(){
-		makeAT.SetPose(threeD.GetModelPosition(),threeD.GetModelRotation());
-		trans.Transition("ThreeDFirstSettingView");			
+		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());
+		trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);			
 	}
-
 
 	public void CopyJustBeforeScene(){
-		int index = hScenes.GetCurIndex();
-		if (AttemptTreeView.GetSceneType() == (int)AttemptTreeView.SCENETYPE.EDIT){
-			index--;
+		int ind = makeAT.GetIndex();
+		if (makeAT.GetMode() == MakeAttemptTree.Mode.Edit || makeAT.GetMode() == MakeAttemptTree.Mode.Add){
+			ind--;
 		}
-		HScene2 scene = hScenes.GetScene(index);
+		HScene2 scene = hScenes.GetScene(ind);
 
 		if (scene != null){
-			threeD.SetModelPose(scene.GetPose(), scene.GetRots());
+			humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
 		}
 	}
 
-	public override void ShowProc(){
+	public void CorrectModelPose(){
+		humanModel.CorrectModelPose();
+	}
+
+	public override void OnPreShow(){
+		cameraManager.Active3D();
 		twoDWallMarks.SetTouchInfo(makeAT.Get2DTouchMarks());
-		int index = hScenes.GetCurIndex();
-		if (AttemptTreeView.GetSceneType() == (int)AttemptTreeView.SCENETYPE.EDIT){
-			index--;
+		int ind = makeAT.GetIndex();
+		if (makeAT.GetMode() == MakeAttemptTree.Mode.Edit || makeAT.GetMode() == MakeAttemptTree.Mode.Add){
+			ind--;
 		}
-		HScene2 scene = hScenes.GetScene(index);
+		HScene2 scene = hScenes.GetScene(ind);
+		isShadowLoaded = false;
 		if (scene != null){
-			threeD.CopyModelPose(copyModel, scene.GetPose(), scene.GetRots());	
+			humanModel.CopyModelPose(copyModel, scene.GetPose(), scene.GetRots());	
 			isShadowLoaded = true;
 		}
 
 		if(makeAT.IsPoseSet()){
-			threeD.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations());
+			humanModel.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations());
 		}else{
-			threeD.CorrectModelPose();
+			humanModel.CorrectModelPose();
 		}
 
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(true);
-		}
-
-		threeD.LookAtModel();
-
-		gameObject.SetActive(true);
+		humanModel.LookAtModel();
 		foSelector.Init();
+		index = -1;
+		copyModel.gameObject.SetActive(false);
+	}
+	
+	public override void OnPreHide(){
+		twoDWallMarks.ClearTouch();
+		humanModel.InitModelPose();
+		foSelector.Init();
+		isShadowLoaded = false;
+		index = -1;
+		copyModel.gameObject.SetActive(false);
 	}
 
 	public void SwitchShadow(){
 		if(isShadowLoaded){
 			copyModel.gameObject.SetActive(!copyModel.gameObject.activeSelf);
 		}
-	}
-
-	public override void HideProc(){
-		threeD.InitModelPose();
-		foSelector.Init();
-		Hide();
-	}
-
-	public override void Hide(){
-		gameObject.SetActive(false);
-		foreach(GameObject obj in externalUIComponents){
-			obj.SetActive(false);
-		}
-		isShadowLoaded = false;
-		copyModel.gameObject.SetActive(false);
 	}
 
 	public void SelectFO(){
@@ -108,7 +103,7 @@ public class EditPose : SEComponentBase{
 			foSelector.Release();
 			return ;
 		}
-		while(!foSelector.IsFaceObj((VRIKController.FullBodyMark)index)){
+		while(!vrIK.IsFaceObj((VRIKController.FullBodyMark)index)){
 			index++;
 			if (index > n){
 				index = 0;

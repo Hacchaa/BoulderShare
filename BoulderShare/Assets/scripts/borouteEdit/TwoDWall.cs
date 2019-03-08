@@ -2,18 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TwoDWall : MonoBehaviour {
-	[SerializeField]
-	private SpriteRenderer wallImg;
-	[SerializeField]
-	private SpriteRenderer wallImgGS;
-	[SerializeField]
-	private ThreeDWall threeDWall;
+public class TwoDWall : BaseWall{
+	[SerializeField] private SpriteRenderer wallImg;
+	[SerializeField] private SpriteRenderer wallImgGS;
+	[SerializeField] private WallManager wallManager;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	private int incline;
 
-	public Bounds GetWallBounds(){
-		return wallImg.bounds;
+	public override void SetWallImage(Texture2D texture){
+       	wallImg.sprite = MyUtility.CreateSprite(texture);
+	}
+	public Texture2D GetWallImage(){
+		return wallImg.sprite.texture;
 	}
 
+	public override void SetIncline(int inc){
+		incline = inc;
+	}
+
+	public override void SetWallMarks(GameObject rootMarks){
+		twoDWallMarks.Synchronize(rootMarks);
+	}
+	public GameObject GetWallMarks(){
+		return twoDWallMarks.GetWallMarks();
+	}
+/*
 	public SpriteRenderer GetWall(){
 		return wallImg;
 	}
@@ -40,5 +53,5 @@ public class TwoDWall : MonoBehaviour {
 
 	private void AfterLoadingImage(){
 		threeDWall.SetWall();
-	}
+	}*/
 }

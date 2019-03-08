@@ -19,6 +19,7 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	private TwoDWallMarks twoDWallMarks;
 	[SerializeField]
 	private TwoDWallImage twoDWallImage;
+	[SerializeField] private WallManager wallManager;
 
 	// Use this for initialization
 	void Awake () {
@@ -60,9 +61,9 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 				//bounds
 				Vector3 p = target.position;
 				//wallの幅とサイズを取得
-				Bounds b = twoDWall.GetWallBounds();
-				float height = b.size.y;
-				float width = b.size.x;
+				Vector2 size = wallManager.GetMasterWallSize();
+				float height = size.y;
+				float width = size.x;
 
 				if (p.x < -width / 2 || p.x > width / 2 || p.y < -height / 2 || p.y > height / 2){
 					Destroy(target.gameObject);

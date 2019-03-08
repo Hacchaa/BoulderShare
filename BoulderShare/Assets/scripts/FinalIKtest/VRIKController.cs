@@ -29,19 +29,22 @@ public class VRIKController : MonoBehaviour
 	[SerializeField] private VRIKFoot rightFoot;
 	[SerializeField] private VRIKHand leftHand;
 	[SerializeField] private VRIKHand rightHand;
-	[SerializeField] private VRIKComponent leftElbow;
-	[SerializeField] private VRIKComponent rightElbow;
-	[SerializeField] private VRIKComponent leftKnee;
-	[SerializeField] private VRIKComponent rightKnee;
-    [SerializeField] private VRIKComponent chest;
+	[SerializeField] private VRIKBend leftElbow;
+	[SerializeField] private VRIKBend rightElbow;
+	[SerializeField] private VRIKBend leftKnee;
+	[SerializeField] private VRIKBend rightKnee;
+    [SerializeField] private VRIKBend chest;
     [SerializeField] private VRIKPelvis pelvis;
     [SerializeField] private VRIKHead head;
-    [SerializeField] private VRIKComponent look;
+    [SerializeField] private VRIKBend look;
+    [SerializeField] private Transform bodyRot;
     [SerializeField] private bool isNeedInit;
     [SerializeField] private VRIK ik;
     [SerializeField] private AimIK aimIK;
+    [SerializeField] private Transform rootVRMark;
 
     private bool isLookingActive = false;
+    [SerializeField] private List<bool> hsList;
 
     void Awake(){
         aimIK.enabled = false;
@@ -52,6 +55,10 @@ public class VRIKController : MonoBehaviour
             InitAvatar();
             isNeedInit = false;
         }
+    }
+
+    public Transform GetRootVRMark(){
+        return rootVRMark;
     }
 
     //頭とmodel本体の座標とのオフセット
@@ -251,12 +258,124 @@ public class VRIKController : MonoBehaviour
         return look.gameObject.activeSelf;
     }
 
+    public VRIKComponent GetVRIKComponent(FullBodyMark m){
+        switch(m){
+            case FullBodyMark.Body: return null;
+            case FullBodyMark.Chest: return chest;
+            case FullBodyMark.Pelvis: return pelvis;
+            case FullBodyMark.LeftHand: return leftHand;
+            case FullBodyMark.RightHand: return rightHand;
+            case FullBodyMark.LeftFoot: return leftFoot;
+            case FullBodyMark.RightFoot: return rightFoot;
+            case FullBodyMark.LeftElbow: return leftElbow;
+            case FullBodyMark.RightElbow: return rightElbow;
+            case FullBodyMark.LeftKnee: return leftKnee;
+            case FullBodyMark.RightKnee: return rightKnee;
+            case FullBodyMark.Head: return head;
+            case FullBodyMark.Look: return look;
+        }
+        return null;
+    }
+
+    public void StoreHSState(){
+        hsList.Clear();
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            VRIKComponent com = GetVRIKComponent(value);
+            if (com != null){
+                Debug.Log(com.name + " "+ com.IsShow());
+                hsList.Add(com.IsShow());
+            }
+        }
+        hsList.Add(bodyRot.gameObject.activeSelf);
+    }
+    public void RepairHSState(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            VRIKComponent com = GetVRIKComponent(value);
+            if (com != null){
+                bool b = hsList[(int)value-1];
+                Debug.Log(com.name);
+                if (b){
+                    com.Show();
+                }else{
+                    com.Hide();
+                }
+            }
+        }
+        bodyRot.gameObject.SetActive(hsList[hsList.Count-1]);
+        hsList.Clear();
+    }
+
+    public void HideAll(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            SetMarkActive(GetVRIKComponent(value), false);
+        }
+        bodyRot.gameObject.SetActive(false);
+    }
+    public void ShowAll(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            SetMarkActive(GetVRIKComponent(value), true);
+        }
+        bodyRot.gameObject.SetActive(true);
+    }
+
+    private void SetMarkActive(VRIKComponent component, bool isShow){
+        if(component == null){
+            return ;
+        }
+        if(isShow){
+            component.Show();
+        }else{
+            component.Hide();
+        }
+    }
+    public void SetMarkActive(FullBodyMark m, bool isShow){
+        SetMarkActive(GetVRIKComponent(m), isShow);
+    }
     public void HideAllFO(){
-       chest.gameObject.SetActive(false);
-       leftElbow.gameObject.SetActive(false);
-       rightElbow.gameObject.SetActive(false);
-       leftKnee.gameObject.SetActive(false);
-       rightKnee.gameObject.SetActive(false);
-       look.gameObject.SetActive(false);
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            if (IsFaceObj(value)){
+                SetMarkActive(GetVRIKComponent(value), false);
+            }
+        }
+    }
+    public void ShowAllFO(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            if (IsFaceObj(value)){
+                SetMarkActive(GetVRIKComponent(value), true);
+            }
+        }
+    }
+    public void HideAllTO(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            if (IsTargetObj(value)){
+                SetMarkActive(GetVRIKComponent(value), false);
+            }
+        }
+        bodyRot.gameObject.SetActive(false);
+    }
+    public void ShowAllTO(){
+        foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
+            if (IsTargetObj(value)){
+                SetMarkActive(GetVRIKComponent(value), true);
+            }
+        }
+         bodyRot.gameObject.SetActive(true);
+    }
+
+    public bool IsFaceObj(VRIKController.FullBodyMark m){
+        return (m == VRIKController.FullBodyMark.Chest) || 
+                (m == VRIKController.FullBodyMark.LeftElbow) || 
+                (m == VRIKController.FullBodyMark.RightElbow) || 
+                (m == VRIKController.FullBodyMark.LeftKnee) || 
+                (m == VRIKController.FullBodyMark.RightKnee) || 
+                (m == VRIKController.FullBodyMark.Look);
+    }
+    public bool IsTargetObj(VRIKController.FullBodyMark m){
+        return (m == VRIKController.FullBodyMark.LeftHand) || 
+                (m == VRIKController.FullBodyMark.LeftFoot) || 
+                (m == VRIKController.FullBodyMark.RightHand) || 
+                (m == VRIKController.FullBodyMark.RightFoot) || 
+                (m == VRIKController.FullBodyMark.Head) || 
+                (m == VRIKController.FullBodyMark.Pelvis);
     }
 }

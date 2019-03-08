@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using System.Linq;
 
 public class TwoDWallMarks : MonoBehaviour {
 	private TwoDMark current = null;
@@ -15,8 +16,7 @@ public class TwoDWallMarks : MonoBehaviour {
 	private EditWallMark editWallMark;
 	[SerializeField]
 	private GameObject twoDMarkOrigin;
-	[SerializeField]
-	private ThreeDWallMarks threeDWallMarks;
+	[SerializeField] private WallManager wallManager;
 
 	void Awake(){
 		touchMarks = new TwoDMark[4];
@@ -24,6 +24,19 @@ public class TwoDWallMarks : MonoBehaviour {
 		map = new Dictionary<string, TwoDMark>();
 	}
 
+	private void Init(){
+		map.Clear();
+		DeleteMarks();
+		for(int i = 0 ; i < touchMarks.Length ; i++){
+			touchMarks[i] = null;
+			dummyMarks[i] = null;
+		}
+		current = null;
+		index = 0;
+	}
+	public GameObject GetWallMarks(){
+		return this.gameObject;
+	}
 	public void DeleteMarks(){
 		foreach(Transform child in transform){
 			Destroy(child.gameObject);
@@ -191,6 +204,19 @@ public class TwoDWallMarks : MonoBehaviour {
 		}
 	}
 
+	public void Synchronize(GameObject rootMarks){
+		Init();
+		foreach(Transform t in rootMarks.transform){
+			if(!string.IsNullOrEmpty(t.name)){
+				GameObject mark = MakeMark(t.name);
+				mark.transform.localPosition = t.localPosition;
+				mark.transform.localScale = t.localScale;
+				mark.SetActive(true);
+				map[t.name].Focus(false);
+			}
+		}
+	}
+
 	public string ToJson(){
 		MyUtility.Mark mark;
 		MyUtility.Marks marks = new MyUtility.Marks();
@@ -198,7 +224,6 @@ public class TwoDWallMarks : MonoBehaviour {
 		int i = 0;
 		foreach(Transform child in transform){
 			mark = new MyUtility.Mark();
-			mark.id = i;
 			mark.name = child.gameObject.name;
 			mark.x = (double)child.position.x;
 			mark.y = (double)child.position.y;
@@ -230,6 +255,6 @@ public class TwoDWallMarks : MonoBehaviour {
 		num = max+1;
 
 		IgnoreEvents();
-		threeDWallMarks.Synchronize();
+		wallManager.SyncWallMarks();
 	}
 }

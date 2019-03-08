@@ -11,7 +11,7 @@ public class SceneComments3D : MonoBehaviour
 	public static float ANGLE_VIEW = 30.0f;
 	public static float ANGLE_EDIT = 90.0f;
 	private int index;
-	[SerializeField] private CameraUtility cameraUtil;
+	[SerializeField] private CameraManager cameraManager;
 	void Awake(){
 		list = new List<SceneComment3D>();
 		index = -1;
@@ -32,7 +32,7 @@ public class SceneComments3D : MonoBehaviour
 			index = 0;
 		}
 
-		cameraUtil.RotateWithAnim(list[index].transform.localRotation);
+		cameraManager.Rotate3DWithAnim(list[index].transform.localRotation);
 	}
 
 	public void SetShowAngle(float f){

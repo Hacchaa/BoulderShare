@@ -5,39 +5,25 @@ using UnityEngine.UI;
 using System.Linq;
 
 public class Post2 :SEComponentBase{
-	[SerializeField]
-	private ScreenTransitionManager stManager;
-	[SerializeField]
-	private PlaceDD2 placeDD;
-	[SerializeField]
-	private GradeDD2 gradeDD;
-	[SerializeField]
-	private DateDD2 dataDD;
-	[SerializeField]
-	private Dropdown tryDD;
-	[SerializeField]
-	private Toggle completeToggle;
-	[SerializeField]
-	private InputField gComment;
-	[SerializeField]
-	private ScrollRect sr;
+	[SerializeField] private ScreenTransitionManager stManager;
+	[SerializeField] private PlaceDD2 placeDD;
+	[SerializeField] private GradeDD2 gradeDD;
+	[SerializeField] private DateDD2 dataDD;
+	[SerializeField] private Dropdown tryDD;
+	[SerializeField] private Toggle completeToggle;
+	[SerializeField] private InputField gComment;
+	[SerializeField] private ScrollRect sr;
 
-	public override void ShowProc(){
-		gameObject.SetActive(true);
-			//課題一覧を一番上にスクロールする
+	public override void OnPreShow(){
+		//課題一覧を一番上にスクロールする
 		sr.verticalNormalizedPosition = 1.0f;
 	}
 
-	public override void HideProc(){
-		Hide();
-	}
-
-	public override void Hide(){
-		gameObject.SetActive(false);
+	public override void OnPreHide(){
 	}
 
 	public void ToMainView(){
-		stManager.Transition("MainView");
+		stManager.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
 	public string GetPlace(){

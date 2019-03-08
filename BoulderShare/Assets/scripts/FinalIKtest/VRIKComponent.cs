@@ -11,9 +11,13 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	protected Vector3 defaultPos;
 	[SerializeField] protected Transform avatar;
 	[SerializeField] protected Transform target;
-	[SerializeField] private Transform faceAvatar;
-	[SerializeField] private Transform model;
+	[SerializeField] protected Transform faceAvatar;
+	[SerializeField] protected Transform model;
+	[SerializeField] private VRIKController vrIK;
+	[SerializeField] private VRIKController.FullBodyMark identity;
+	[SerializeField] protected MeshRenderer render;
 	private Vector3 offset;
+	protected Transform rootVRMark;
 
 	// Use this for initialization
 	void Awake () {
@@ -26,6 +30,7 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		}else{
 			offset = model.InverseTransformPoint(faceAvatar.position);
 		}
+		rootVRMark = vrIK.GetRootVRMark();
 		Init();
 	}
 
@@ -53,6 +58,17 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	}
 	protected virtual void OnPreLateUpdate(){
 
+	}
+
+	public virtual bool IsShow(){
+		return render.enabled;
+	}
+	public virtual void Hide(){
+		render.enabled = false;
+	}
+
+	public virtual void Show(){
+		render.enabled = true;
 	}
 
 	public virtual void ResetPos(){
@@ -94,6 +110,9 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 
 			baseDepth = cam.gameObject.transform.InverseTransformPoint(transform.position).z;
 			ModifyPosition();
+			vrIK.StoreHSState();
+			vrIK.HideAll();
+			Show();
 		}
 	}
 
@@ -119,6 +138,7 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		if (finger == data.pointerId){
 			finger = Observer.FINGER_NONE;
 			ModifyPosition();
+			vrIK.RepairHSState();
 		}
 	}
 

@@ -9,17 +9,21 @@ public class EditorPopup : MonoBehaviour {
 	private Action noProc = null;
 	private Action yesProc = null;
 	private Action closeProc = null;
-
+	[SerializeField] private GameObject closeObj;
 
 	public void Open(Action yesAction, Action noAction, string content, Action closeAction = null){
 		this.gameObject.SetActive(true);
+		if (closeAction == null){
+			closeObj.SetActive(false);
+		}
+
 		noProc = noAction;
 		yesProc = yesAction;
 		textContent.text = content;
-
 		closeProc = closeAction ;
 	}
-	
+
+
 	public void PushNoBtn(){
 		if (noProc != null){
 			noProc();

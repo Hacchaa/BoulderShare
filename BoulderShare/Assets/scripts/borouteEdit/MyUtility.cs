@@ -27,14 +27,18 @@ public class MyUtility {
 	}
 
 
-	public static Sprite LoadImage(string path){
+	public static Texture2D LoadImage(string path){
 		Texture2D texture = new Texture2D(0, 0);
 		texture.LoadImage(LoadBytes(path));
-		return Sprite.Create(
-			texture, 
-            new Rect(0.0f, 0.0f, texture.width, texture.height), 
-            new Vector2(0.5f, 0.5f),
-            texture.height/4);
+		return texture;
+	}
+
+	public static Sprite CreateSprite(Texture2D texture){
+	    return Sprite.Create(
+	        texture, 
+	        new Rect(0.0f, 0.0f, texture.width, texture.height), 
+	        new Vector2(0.5f, 0.5f),
+	        texture.height/WallManager.WALL_H);
 	}
 
 	private static byte[] LoadBytes(string path) {
@@ -120,7 +124,6 @@ public class MyUtility {
 
 	[Serializable]
 	public class Mark{
-		public int id;
 		public double x, y, z;
 		public double scale;
 		public string name;

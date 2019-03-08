@@ -29,13 +29,20 @@ public class HScenes2 : MonoBehaviour {
 		return new List<string>(failedList);
 	}
 
-
 	public int GetNum(){
 		return list.Count;
 	}
 
 	public int GetCurIndex(){
 		return curIndex;
+	}
+
+	public void SetCurIndex(int index){
+		if (index < 0 || index > list.Count - 1){
+			curIndex = -1;
+			return ;
+		}
+		curIndex = index ;
 	}
 
 	public List<HScene2> GetScenes(){
@@ -63,6 +70,10 @@ public class HScenes2 : MonoBehaviour {
 	public void AddScene(HScene2 hScene){
 		curIndex++;
 		list.Insert(curIndex, hScene);
+	}
+
+	public void AddSceneAt(HScene2 hScene, int index){
+		list.Insert(index, hScene);
 	}
 
 	public void AddSceneLast(HScene2 hScene){

@@ -8,23 +8,16 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	private int[] eTouches;
 	private float prevLength;
 	private bool isUpdate;
-	private Bounds bounds;
+	private Vector2 bounds;
 	private bool isOn = false;
 	private Vector2 offTouchPos ;
 	private int wallRotTarget;
-	[SerializeField]
-	private Camera cam;
-	[SerializeField]
-	private TwoDWall twoDWall;
-	[SerializeField]
-	private Transform wallTrans;
-
-	private const float CAMERA_DEPTH_LL = 1.2f;
-	private const float CAMERA_DEPTH_UL = 12.0f;
-	private const float CAMERA_DEPTH_DEF = 10.0f;
+	[SerializeField] private Camera cam;
+	[SerializeField] private TwoDWall twoDWall;
+	[SerializeField] private Transform wallTrans;
+	[SerializeField] private CameraManager cameraManager;
 	private const int FINGER_NONE = -10;
-
-
+	[SerializeField] private WallManager wallManager;
 
 	// Use this for initialization
 	void Awake () {
@@ -32,6 +25,7 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 		wallRotTarget = 0;
 		eTouches = new int[] {FINGER_NONE,FINGER_NONE};
 	}
+
 
 	public void LateUpdate(){
 		isUpdate = false;
@@ -45,15 +39,9 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 		gameObject.layer = LayerMask.NameToLayer("2D");
 	}
 
-	public void ResetCamPosAndDepth(){
-		cam.gameObject.transform.position = 
-			new Vector3(0.0f, 0.0f, -CAMERA_DEPTH_DEF);
-	}
-
 
 	public void OnPointerDown(PointerEventData data){
-
-		bounds = twoDWall.GetWallBounds();
+		bounds = wallManager.GetMasterWallSize();
 		
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
@@ -83,51 +71,20 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 			}
 		}
 
-		Transform camTransform = cam.transform;
-		float depth = Mathf.Abs(camTransform.position.z);
+		float depth = Mathf.Abs(cameraManager.Get2DDepth());
 		float length = Vector2.Distance(p1, p2);
 	
 		isUpdate = true;
 		Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, depth));
     	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f, depth));
 
-    	camTransform.Translate(wP1Old - wP1);
-
-		//バウンド処理
-    	Vector3 bPos = camTransform.position;
-		float height = bounds.size.y;
-		float width = bounds.size.x;
-    	bPos.x = Mathf.Min(bPos.x, width/2);
-    	bPos.x = Mathf.Max(bPos.x, -width/2);
-    	bPos.y = Mathf.Min(bPos.y, height/2);
-    	bPos.y = Mathf.Max(bPos.y, -height/2);
-
-    	camTransform.position = bPos;
+    	cameraManager.Translate2D(wP1Old - wP1);
+    	cameraManager.Bounds2D(bounds);
 
 		//prevLengthが設定されてしまうている場合
 		//prevLengthとlengthの比で拡大、縮小する
 		if (prevLength > 0 && length > 0){
-
-			if (!(depth <= CAMERA_DEPTH_LL && length / prevLength > 1) &&
-				!(depth >= CAMERA_DEPTH_UL && length / prevLength < 1 )){
-				
-				camTransform.Translate(
-					0, 
-					0, 
-					camTransform.position.z * -(length / prevLength - 1));
-
-				if (Mathf.Abs(camTransform.position.z) < CAMERA_DEPTH_LL){
-		        	camTransform.position = new Vector3(
-		        		camTransform.position.x, 
-		        		camTransform.position.y, 
-		        		-CAMERA_DEPTH_LL);
-		        }else if (Mathf.Abs(camTransform.position.z) > CAMERA_DEPTH_UL){
-		        	camTransform.position = new Vector3(
-		        		camTransform.position.x, 
-		        		camTransform.position.y, 
-		        		-CAMERA_DEPTH_UL);
-		        }
-			}
+			cameraManager.Zoom2D(-(length/prevLength - 1));
 		}
 		prevLength = length;
 		isUpdate = true;
@@ -177,11 +134,11 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 
 	public void RotateWallTexture(){
 		wallTrans.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-		Texture2D texture = twoDWall.GetWallTexture();
+		Texture2D texture = twoDWall.GetWallImage();
 
 		if(wallRotTarget > 0 && wallRotTarget <= 3){
 			RotTexture(texture, wallRotTarget);
-			twoDWall.OverWriteWallTexture(texture);
+			wallManager.CommitWallImage(texture);
 		}
 	}
 
