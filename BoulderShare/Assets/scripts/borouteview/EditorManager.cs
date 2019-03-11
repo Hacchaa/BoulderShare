@@ -40,6 +40,7 @@ public class EditorManager : MonoBehaviour {
 	//borouteeditの初期化処理
 	private void FirstProc(){
 		transition.Init();
+		transition.Transition(ScreenTransitionManager.Screen.MainView);
 
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
@@ -51,7 +52,6 @@ public class EditorManager : MonoBehaviour {
 				pc.OpenImagePicker();
 			}else{
 				bManager.LoadBoroute();
-				transition.Transition(ScreenTransitionManager.Screen.MainView);
 			}
 		}
 	}

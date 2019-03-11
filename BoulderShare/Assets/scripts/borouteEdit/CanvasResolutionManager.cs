@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +8,7 @@ public class CanvasResolutionManager : MonoBehaviour
 	[SerializeField] private float topOutSafeArea = 44.0f;
 	[SerializeField] private float botOutSafeArea = 34.0f;
 	[SerializeField] private float margin = 16.0f;
+    [SerializeField] private float marginXSMAX = 20.0f;
 	[SerializeField] private ScreenTransitionManager sManager;
 
     void Start()
@@ -40,6 +41,7 @@ public class CanvasResolutionManager : MonoBehaviour
 			top.anchorMax = new Vector2(1.0f, 1.0f);
 			top.anchoredPosition = new Vector2(0.0f, -topHeight/2.0f);
 			top.sizeDelta = new Vector2(0.0f, topHeight);
+            top.localScale = Vector3.one;
 
     		if(botHeight <= 0.0f){
     			bot.gameObject.SetActive(false);
@@ -50,21 +52,25 @@ public class CanvasResolutionManager : MonoBehaviour
 			bot.anchorMax = new Vector2(1.0f, 0.0f);
 			bot.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
 			bot.sizeDelta = new Vector2(0.0f, botHeight);
+            bot.localScale = Vector3.one;
 
 			content.gameObject.SetActive(true);
     		content.anchorMin = new Vector2(0.0f, 0.0f);
     		content.anchorMax = new Vector2(1.0f, 1.0f);
     		content.offsetMin = new Vector2(0.0f, botHeight);
     		content.offsetMax = new Vector2(0.0f, -topHeight);
+            content.localScale = Vector3.one;
+
+            t.localScale = Vector3.one;
     	}
 
-    	float margin = GetMargin();
+    	float mar = GetMargin();
     	foreach(SEComponentBase com in sManager.GetUIList()){
     		foreach(RectTransform rect in com.GetMarginList()){
     			rect.anchorMin = new Vector2(0.0f, 0.0f);
 	    		rect.anchorMax = new Vector2(1.0f, 1.0f);
-	    		rect.offsetMin = new Vector2(margin, rect.offsetMin.y);
-	    		rect.offsetMax = new Vector2(-margin, rect.offsetMax.y);
+	    		rect.offsetMin = new Vector2(mar, rect.offsetMin.y);
+	    		rect.offsetMax = new Vector2(-mar, rect.offsetMax.y);
     		}
     	}
     }
@@ -92,9 +98,13 @@ public class CanvasResolutionManager : MonoBehaviour
 
     public float GetMargin(){
     	float dpi = Screen.dpi;
+        Debug.Log("dpi:"+Screen.dpi);
     	if (dpi == 0.0f){
     		return 42.0f;
     	}
+        if (Screen.width == 1242 && Screen.height == 2688){
+            return marginXSMAX * (Screen.dpi / 72.0f);
+        }
     	return margin * (Screen.dpi / 72.0f);
     }
 

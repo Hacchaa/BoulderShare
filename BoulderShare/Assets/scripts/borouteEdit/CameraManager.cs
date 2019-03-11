@@ -10,11 +10,11 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Camera camera2D;
     [SerializeField] private float duration = 0.5f;
     [SerializeField] private ThreeDWall threeDWall;
-    private const float CAMERA2D_DEPTH_UB = -1.2f;
-    private const float CAMERA2D_DEPTH_LB = -12.0f;
+    private const float CAMERA2D_DEPTH_UB = -1.0f;
+    private const float CAMERA2D_DEPTH_LB = -15.0f;
     private const float CAMERA2D_DEPTH_DEF = -10.0f;
     private const float CAMERA3D_DEPTH_UB = -2.0f;
-    private const float CAMERA3D_DEPTH_LB = -12.0f;
+    private const float CAMERA3D_DEPTH_LB = -15.0f;
     private const float CAMERA3D_DEPTH_DEF = -10.0f;
     private List<Vector3> fixPosTmp;
 

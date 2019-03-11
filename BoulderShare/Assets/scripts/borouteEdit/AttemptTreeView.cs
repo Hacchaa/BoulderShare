@@ -89,7 +89,7 @@ public class AttemptTreeView : SEComponentBase{
 		twoDWallMarks.ClearTouch();
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
 		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
-		humanModel.LookAtModel();
+		//humanModel.LookAtModel();
 		scc.SetSceneComments(scene.GetComments());
 	}
 

@@ -13,6 +13,21 @@ public class Post2 :SEComponentBase{
 	[SerializeField] private Toggle completeToggle;
 	[SerializeField] private InputField gComment;
 	[SerializeField] private ScrollRect sr;
+	[SerializeField] private BorouteLSManager2 bManager;
+	[SerializeField] private EditorManager eManager;
+
+	public void PostBoroute(){
+		bManager.SaveBoroute();
+	}
+
+	public void Exit(){
+		eManager.ExitImmediately();
+	}
+
+	public void Post(){
+		PostBoroute();
+		Exit();
+	}
 
 	public override void OnPreShow(){
 		//課題一覧を一番上にスクロールする

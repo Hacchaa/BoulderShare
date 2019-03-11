@@ -9,6 +9,7 @@ public class WallManager : MonoBehaviour
 	private Texture2D masterWallImage;
 	[SerializeField] private GameObject masterWallMarks;
 	public static float WALL_H = 4.0f;
+	public static float WALL_MIN = 4.0f;
 	private Vector2 wallSize;
 
 	public Texture2D GetMasterWallImage(){
@@ -30,8 +31,16 @@ public class WallManager : MonoBehaviour
 	}
 	public void CommitWallImage(Texture2D tex){
 		masterWallImage = tex;
-		float r = tex.height / WALL_H;
-		wallSize = new Vector2(tex.width / r, WALL_H);
+		float r ;
+		if (tex.height < tex.width){
+			r = tex.height / WALL_MIN;
+			wallSize = new Vector2(tex.width / r, WALL_MIN);
+		}else{
+			r = tex.width / WALL_MIN;
+			wallSize = new Vector2(WALL_MIN, tex.height / r);
+		}
+		Debug.Log("r =" +r);
+		Debug.Log("wallsize:"+wallSize);
 		SyncWallImage();
 	}
 	public void CommitWallMarks(GameObject rootMarks){

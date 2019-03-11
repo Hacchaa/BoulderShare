@@ -241,7 +241,6 @@ public class TwoDWallMarks : MonoBehaviour {
 
 		MyUtility.Marks marks = JsonUtility.FromJson<MyUtility.Marks>(json);
 		int max = -1;
-
 		GameObject mark;
 		for(int i = 0 ; i < marks.data.Length ; i++){
 			mark = MakeMark(marks.data[i].name);
@@ -255,6 +254,6 @@ public class TwoDWallMarks : MonoBehaviour {
 		num = max+1;
 
 		IgnoreEvents();
-		wallManager.SyncWallMarks();
+		wallManager.CommitWallMarks(gameObject);
 	}
 }
