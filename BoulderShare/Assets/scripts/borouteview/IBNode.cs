@@ -9,8 +9,23 @@ public interface IBNode
 	bool IsParent(IBNode child);
 	void AddParent(IBNode parent);
 	void AddChild(IBNode child);
+	void RemoveEdge(IBEdge e);
+	void RemoveEdge(List<IBEdge> list);
 	List<IBEdge> GetParentEdgeList();
 	List<IBEdge> GetChildEdgeList();
-	void ResetAlreadySearched();
 	IBNodeData GetData();
+	void SetData(IBNodeData data);
+	int GetPosition();
+	bool SetPosition(int p);
+	int GetLayer();
+	void SetLayer(int l);
+	float CalcUpperCOG();
+	float CalcLowerCOG();
+	int SetLayerRecursively(int l);
+	void AssignNodeRecursively(List<IBNode>[] arrangeLists);
+	void ClearArrangeRecursively();
+	void SetUpPriority(int p);
+	void SetDownPriority(int p);
+	int GetUpPriority();
+	int GetDownPriority();
 }

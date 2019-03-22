@@ -8,4 +8,5 @@ public interface IBEdge
     IBNode GetAncestorNode();
     void SetDescendantNode(IBNode node);
     void SetAncestorNode(IBNode node);
+    
 }

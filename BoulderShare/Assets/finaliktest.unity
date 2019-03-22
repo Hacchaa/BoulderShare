@@ -241,7 +241,7 @@ MonoBehaviour:
   shoulderParent: {fileID: 0}
   pelvisParent: {fileID: 1437739082}
   threeD: {fileID: 0}
-  cameraUtility: {fileID: 0}
+  cameraManager: {fileID: 0}
 --- !u!135 &24146566
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4277,14 +4277,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 16
       objectReference: {fileID: 0}
-    - target: {fileID: 100186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
-      propertyPath: m_Layer
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 100214, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
-      propertyPath: m_Layer
-      value: 16
-      objectReference: {fileID: 0}
     - target: {fileID: 400068, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0.000008410595
@@ -4332,6 +4324,14 @@ PrefabInstance:
     - target: {fileID: 400104, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_LocalPosition.z
       value: -0.00008069822
+      objectReference: {fileID: 0}
+    - target: {fileID: 100186, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
+      propertyPath: m_Layer
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 100214, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
+      propertyPath: m_Layer
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 100262, guid: 412b92d4feeb9c548bfa98f62c4d1022, type: 3}
       propertyPath: m_Layer
@@ -5813,12 +5813,12 @@ MonoBehaviour:
     useRotationLimits: 1
     XY: 0
     bones:
-    - transform: {fileID: 424510370}
+    - transform: {fileID: 802857909}
       weight: 1
       solverPosition: {x: 0, y: 0, z: 0}
       solverRotation: {x: 0, y: 0, z: 0, w: 0}
-      defaultLocalPosition: {x: -0.1568513, y: 0.008298479, z: 0.00028669508}
-      defaultLocalRotation: {x: 0.007178454, y: 0.0018399023, z: -0.17932878, w: 0.9837613}
+      defaultLocalPosition: {x: -0.078083195, y: -0.0055345367, z: -0.0000000015732664}
+      defaultLocalRotation: {x: 0.021434488, y: -0.005929963, z: 0.090837546, w: 0.9956174}
       length: 0
       sqrMag: 0
       axis: {x: 0, y: 0, z: 0}

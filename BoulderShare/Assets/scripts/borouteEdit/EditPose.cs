@@ -12,7 +12,7 @@ public class EditPose : SEComponentBase{
 	[SerializeField]
 	private HumanModel humanModel;
 	[SerializeField] private MakeAttemptTree makeAT;
-	[SerializeField] private FaceObjSelector foSelector;
+	//[SerializeField] private FaceObjSelector foSelector;
 	[SerializeField] private Transform copyModel;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private CameraManager cameraManager;
@@ -73,9 +73,9 @@ public class EditPose : SEComponentBase{
 		}else{
 			humanModel.CorrectModelPose();
 		}
-
+		humanModel.ShowMarks();
 		humanModel.LookAtModel();
-		foSelector.Init();
+		//foSelector.Init();
 		index = -1;
 		copyModel.gameObject.SetActive(false);
 	}
@@ -83,7 +83,7 @@ public class EditPose : SEComponentBase{
 	public override void OnPreHide(){
 		twoDWallMarks.ClearTouch();
 		humanModel.InitModelPose();
-		foSelector.Init();
+		//foSelector.Init();
 		isShadowLoaded = false;
 		index = -1;
 		copyModel.gameObject.SetActive(false);
@@ -94,23 +94,23 @@ public class EditPose : SEComponentBase{
 			copyModel.gameObject.SetActive(!copyModel.gameObject.activeSelf);
 		}
 	}
-
+/*
 	public void SelectFO(){
 		int n = Enum.GetNames(typeof(VRIKController.FullBodyMark)).Length - 1;
 		index++;
 		if (index > n){
 			index = 0;
-			foSelector.Release();
+			//foSelector.Release();
 			return ;
 		}
 		while(!vrIK.IsFaceObj((VRIKController.FullBodyMark)index)){
 			index++;
 			if (index > n){
 				index = 0;
-				foSelector.Release();
+				//foSelector.Release();
 				return ;
 			}
 		}
-		foSelector.Regist((VRIKController.FullBodyMark)index);
-	}
+		//foSelector.Regist((VRIKController.FullBodyMark)index);
+	}*/
 }

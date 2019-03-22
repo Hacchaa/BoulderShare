@@ -12,6 +12,7 @@ TagManager:
   - SGNodeSet
   - SGEdgeSet
   - 2DMark
+  - DummyNode
   layers:
   - Default
   - TransparentFX

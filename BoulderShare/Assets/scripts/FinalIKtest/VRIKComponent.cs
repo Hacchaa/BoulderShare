@@ -18,7 +18,8 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	[SerializeField] protected MeshRenderer render;
 	private Vector3 offset;
 	protected Transform rootVRMark;
-
+	[SerializeField] List<Transform> relativePosList;
+	
 	// Use this for initialization
 	void Awake () {
 		finger = FINGER_NONE;
@@ -30,7 +31,9 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		}else{
 			offset = model.InverseTransformPoint(faceAvatar.position);
 		}
-		rootVRMark = vrIK.GetRootVRMark();
+		if (vrIK != null){
+			rootVRMark = vrIK.GetRootVRMark();
+		}
 		Init();
 	}
 
@@ -65,10 +68,12 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 	}
 	public virtual void Hide(){
 		render.enabled = false;
+		gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 	}
 
 	public virtual void Show(){
 		render.enabled = true;
+		gameObject.layer = LayerMask.NameToLayer("AvatarControl");
 	}
 
 	public virtual void ResetPos(){
@@ -110,9 +115,11 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 
 			baseDepth = cam.gameObject.transform.InverseTransformPoint(transform.position).z;
 			ModifyPosition();
-			vrIK.StoreHSState();
-			vrIK.HideAll();
-			Show();
+			if (vrIK != null){
+				vrIK.StoreHSState();
+				vrIK.HideAll();	
+				Show();			
+			}
 		}
 	}
 
@@ -129,7 +136,12 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 					data.position.y - data.delta.y, 
 					baseDepth));
 
-			target.Translate(p - pOld, Space.World);
+			Vector3 v = p - pOld;
+			target.Translate(v, Space.World);
+
+			foreach(Transform t in relativePosList){
+				t.Translate(v, Space.World);
+			}
 			OnPostDrag();
 		}
 	}
@@ -138,11 +150,19 @@ public class VRIKComponent : MonoBehaviour, IDragHandler, IEndDragHandler, IBegi
 		if (finger == data.pointerId){
 			finger = Observer.FINGER_NONE;
 			ModifyPosition();
-			vrIK.RepairHSState();
+			if(vrIK != null){
+				vrIK.RepairHSState();
+			}
+			OnPostEndDrag();
 		}
+
 	}
 
 	protected virtual void OnPostDrag(){
+
+	}
+
+	protected virtual void OnPostEndDrag(){
 
 	}
 }

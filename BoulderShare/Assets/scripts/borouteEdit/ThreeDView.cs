@@ -17,7 +17,6 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	private Bounds bounds;
 	private const float WEIGHT = 0.2f;
 	[SerializeField] private CameraManager cameraManager;
-
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
@@ -131,5 +130,6 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		}else if(eTouches[1] == data.pointerId){
 			eTouches[1] = FINGER_NONE;
 		}
+
 	}
 }

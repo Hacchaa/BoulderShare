@@ -54,6 +54,7 @@ public class SceneSelectView : SEComponentBase{
 
 	public void Remove(){
 		hScenes.RemoveScene();
+		hScenes.SetIsModified(true);
 		trans.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
@@ -65,7 +66,7 @@ public class SceneSelectView : SEComponentBase{
 		if(isActive3D){
 			dimText.text = "3D";
 			cameraManager.Active3D();	
-			humanModel.LookAtModel();
+			humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
 			for3D.SetActive(true);
 		}else{
 			dimText.text = "2D";
@@ -111,8 +112,8 @@ public class SceneSelectView : SEComponentBase{
 		}
 		cameraManager.Active3D();
 		cameraManager.Reset2DCamPosAndDepth();
-		humanModel.LookAtModel();
-
+		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
+		humanModel.HideMarks();
 		comments.ShowDynamically();
 		Switch2D3D(true);
 
@@ -146,7 +147,7 @@ public class SceneSelectView : SEComponentBase{
 		twoDWallMarks.ClearTouch();
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
 		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
-		humanModel.LookAtModel();
+		humanModel.SetCamAxisAsModelPos();
 		scc.SetSceneComments(scene.GetComments());
 	}
 

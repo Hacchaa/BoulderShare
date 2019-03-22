@@ -27,6 +27,7 @@ public class ThreeDFirstSettingView : SEComponentBase
 		size = humanModel.GetModelSize();
 		incline.SyncInclineValue();
 		humanModel.InitModelPose();
+		humanModel.HideMarks();
 		cameraManager.Active3D();
 		cameraManager.Reset3DCamPosAndDepth();
 		modelSize.SyncModelSize();

@@ -44,9 +44,9 @@ public class VRIKFoot : VRIKComponent
 		}
 		//Quaternion rot = footAvatar.rotation;
 		//Debug.Log("baseRotFoot:"+baseRotFoot.eulerAngles);
-		footAvatar.localRotation = baseRotFoot;
-		avatar.localRotation = baseRotToe;
-		//target.rotation = footAvatar.rotation * Quaternion.Euler(baseTargetRotEuler);
+		//footAvatar.localRotation = baseRotFoot;
+		//avatar.localRotation = baseRotToe;
+		////target.rotation = footAvatar.rotation * Quaternion.Euler(baseTargetRotEuler);
 		//footAvatar.rotation = rot;
 	}
 }

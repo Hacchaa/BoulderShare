@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 public class HumanModel : MonoBehaviour {
-	[SerializeField] private VRIKController fIK;
+	[SerializeField] private FBBIKController fIK;
 	[SerializeField] private CameraManager cameraManager;
 	[SerializeField] private ThreeDWallMarks threeDWallMarks;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
@@ -14,8 +14,15 @@ public class HumanModel : MonoBehaviour {
 	[SerializeField] private Vector3[] offsetFromBody;
 	[SerializeField] private Vector3[] offsetTouching;
 	[SerializeField] private Vector3 offsetFromCenterToHead;
-	private const float DEPTH3D_LOOKING = -5.0f;
+	[SerializeField] private GameObject marks;
 
+	public void HideMarks(){
+		marks.SetActive(false);
+	}
+
+	public void ShowMarks(){
+		marks.SetActive(true);
+	}
 
 	public float GetModelSize(){
 		return modelRootObj.localScale.x ;
@@ -25,11 +32,17 @@ public class HumanModel : MonoBehaviour {
 		modelRootObj.localScale = Vector3.one * value;
 	}
 
-	public void LookAtModel(){
-		Vector3 body = fIK.GetBodyPosition();
+	public void LookAtModel(float depth = CameraManager.CAMERA3D_DEPTH_LOOKING){
+		Vector3 body = fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
+		Debug.Log("lookat body:"+body);
 		cameraManager.Reset3DCamPosAndDepth();
 		cameraManager.SetRootWorldPos(body);
-		cameraManager.Set3DDepth(DEPTH3D_LOOKING);
+		cameraManager.Set3DDepth(depth);
+	}
+
+	public void SetCamAxisAsModelPos(){
+		Vector3 body = fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
+		cameraManager.SetRootPosWithFixedHierarchyPos(body);
 	}
 
 	public Vector3[] GetModelPosition(){
@@ -41,7 +54,7 @@ public class HumanModel : MonoBehaviour {
 	}
 
 	public Vector3 GetModelBodyPosition(){
-		return fIK.GetBodyPosition();
+		return fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
 	}
 
 	public void CopyModelPose(Transform copyTo, Vector3[] positions, Quaternion[] rotations){
@@ -52,7 +65,7 @@ public class HumanModel : MonoBehaviour {
 
 		fIK.DoVRIK();
 
-		CopyRecursively(fIK.GetObj(VRIKController.FullBodyMark.Body).transform , copyTo);
+		CopyRecursively(fIK.GetModelRoot() , copyTo);
 
 		SetModelPose(posOrigin, rotOrigin);
 	}
@@ -70,22 +83,21 @@ public class HumanModel : MonoBehaviour {
 	}
 
 	public void SetModelPose(Vector3[] pos, Quaternion[] rots){
-		fIK.SetPositions(pos);
-		fIK.SetRotations(rots);
+		fIK.SetPose(pos, rots);
 	}
 
 	public void InitModelPose(){
 		//ik.InitAvatar();
-		fIK.InitAvatar();
+		fIK.InitMarks();
 	}
 
-	//VRIKController.FullBodyMarkからTwoDMark.HFTypeに変換
+	//MyUtility.FullBodyMarkからTwoDMark.HFTypeに変換
 	public int Convert(int type){
 		switch(type){
-			case (int)VRIKController.FullBodyMark.LeftHand : return (int)TwoDMark.HFType.LH ;
-			case (int)VRIKController.FullBodyMark.RightHand : return (int)TwoDMark.HFType.RH ;
-			case (int)VRIKController.FullBodyMark.LeftFoot : return (int)TwoDMark.HFType.LF ;
-			case (int)VRIKController.FullBodyMark.RightFoot : return (int)TwoDMark.HFType.RF ;
+			case (int)MyUtility.FullBodyMark.LeftHand : return (int)TwoDMark.HFType.LH ;
+			case (int)MyUtility.FullBodyMark.RightHand : return (int)TwoDMark.HFType.RH ;
+			case (int)MyUtility.FullBodyMark.LeftFoot : return (int)TwoDMark.HFType.LF ;
+			case (int)MyUtility.FullBodyMark.RightFoot : return (int)TwoDMark.HFType.RF ;
 		}
 		return -1;
 	}
@@ -93,7 +105,7 @@ public class HumanModel : MonoBehaviour {
 
 	public void CorrectModelPose(){
 		
-		Vector3[] pos = new Vector3[Enum.GetNames(typeof(VRIKController.FullBodyMark)).Length];
+		Vector3[] pos = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
 		Quaternion[] rot = fIK.GetRotations();
 		string[] onTouch = twoDWallMarks.GetTouchInfo();
 		Debug.Log(string.Join(", ", onTouch));
@@ -101,7 +113,7 @@ public class HumanModel : MonoBehaviour {
 		Vector3 pivot = Vector3.zero;
 		int n = 0;
 		int type = -1;
-		for(int i = (int)VRIKController.FullBodyMark.LeftHand ; i <= (int)VRIKController.FullBodyMark.RightFoot ; i++){
+		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
 			type = Convert(i);
 			Debug.Log("i="+i+", type="+type);
 			if(!string.IsNullOrEmpty(onTouch[type])){
@@ -125,43 +137,66 @@ public class HumanModel : MonoBehaviour {
 			return ;
 		}
 
-		pos[(int)VRIKController.FullBodyMark.Head] = pivot + threeDWall.CalcWorldSubVec(centerPos[index] + offsetFromCenterToHead);
-		pos[(int)VRIKController.FullBodyMark.Look] = pos[(int)VRIKController.FullBodyMark.Head] 
+		Debug.Log("pivot:"+pivot);
+	
+		pos[(int)MyUtility.FullBodyMark.Body] = pivot + threeDWall.CalcWorldSubVec(centerPos[index]);
+		Debug.Log("body:"+pos[(int)MyUtility.FullBodyMark.Body]);
+
+		Vector3 modelCenter = pos[(int)MyUtility.FullBodyMark.Body] - threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Body));
+		Debug.Log("modelCenter:"+modelCenter);
+
+		pos[(int)MyUtility.FullBodyMark.Look] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Look));
+		Debug.Log("look:"+pos[(int)MyUtility.FullBodyMark.Look]);
+
+		pos[(int)MyUtility.FullBodyMark.LeftShoulder] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.LeftShoulder));
+		Debug.Log("ls:"+pos[(int)MyUtility.FullBodyMark.LeftShoulder]);
+
+		pos[(int)MyUtility.FullBodyMark.RightShoulder] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.RightShoulder));
+		Debug.Log("rs:"+pos[(int)MyUtility.FullBodyMark.RightShoulder]);
+
+		pos[(int)MyUtility.FullBodyMark.LeftPelvis] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.LeftPelvis));
+		Debug.Log("lp:"+pos[(int)MyUtility.FullBodyMark.LeftPelvis]);
+
+		pos[(int)MyUtility.FullBodyMark.RightPelvis] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.RightPelvis));
+		Debug.Log("rp:"+pos[(int)MyUtility.FullBodyMark.RightPelvis]);
+/*
+		pos[(int)MyUtility.FullBodyMark.Head] = pivot + threeDWall.CalcWorldSubVec(centerPos[index] + offsetFromCenterToHead);
+		pos[(int)MyUtility.FullBodyMark.Look] = pos[(int)MyUtility.FullBodyMark.Head] 
 			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
-		pos[(int)VRIKController.FullBodyMark.Body] = pos[(int)VRIKController.FullBodyMark.Head] 
-			- threeDWall.CalcWorldSubVec(fIK.GetOffsetFromRoot(VRIKController.FullBodyMark.Head));
-		pos[(int)VRIKController.FullBodyMark.Chest] = pos[(int)VRIKController.FullBodyMark.Body] 
-			+ threeDWall.CalcWorldSubVec(fIK.GetOffsetFromRoot(VRIKController.FullBodyMark.Chest) + Vector3.forward * 0.5f);
-		pos[(int)VRIKController.FullBodyMark.Pelvis] = pos[(int)VRIKController.FullBodyMark.Body] 
-			+ threeDWall.CalcWorldSubVec(fIK.GetOffsetFromRoot(VRIKController.FullBodyMark.Pelvis) - Vector3.up * 0.1f);
+		pos[(int)MyUtility.FullBodyMark.Body] = pos[(int)MyUtility.FullBodyMark.Head] 
+			- threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Head));
+		pos[(int)MyUtility.FullBodyMark.Chest] = pos[(int)MyUtility.FullBodyMark.Body] 
+			+ threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Chest) + Vector3.forward * 0.5f);
+		pos[(int)MyUtility.FullBodyMark.Pelvis] = pos[(int)MyUtility.FullBodyMark.Body] 
+			+ threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Pelvis) - Vector3.up * 0.1f);*/
 		
 		//手足位置の微調整
-		for(int i = (int)VRIKController.FullBodyMark.LeftHand ; i <= (int)VRIKController.FullBodyMark.RightFoot ; i++){
+		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
 			//ホールドをつかんでいない手足の位置
 			type = Convert(i);
 			if(onTouch[type] == null){
-				pos[i] = pos[(int)VRIKController.FullBodyMark.Body] 
-					+ threeDWall.CalcWorldSubVec(fIK.GetOffsetFromRoot((VRIKController.FullBodyMark)i) + offsetFromBody[type]);
+				pos[i] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition((MyUtility.FullBodyMark)i));
 			}
 		}
 
 		//左右肘膝
-		pos[(int)VRIKController.FullBodyMark.LeftElbow] = (pos[(int)VRIKController.FullBodyMark.Chest] + pos[(int)VRIKController.FullBodyMark.LeftHand]) / 2f 
+		
+		pos[(int)MyUtility.FullBodyMark.LeftElbow] = (pos[(int)MyUtility.FullBodyMark.LeftShoulder] + pos[(int)MyUtility.FullBodyMark.LeftHand]) / 2f 
 			- threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
-		pos[(int)VRIKController.FullBodyMark.RightElbow] = (pos[(int)VRIKController.FullBodyMark.Chest] + pos[(int)VRIKController.FullBodyMark.RightHand]) / 2f 
+		pos[(int)MyUtility.FullBodyMark.RightElbow] = (pos[(int)MyUtility.FullBodyMark.RightShoulder] + pos[(int)MyUtility.FullBodyMark.RightHand]) / 2f 
 			- threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
-		pos[(int)VRIKController.FullBodyMark.LeftKnee] = (pos[(int)VRIKController.FullBodyMark.Pelvis] + pos[(int)VRIKController.FullBodyMark.LeftFoot]) / 2f 
+		pos[(int)MyUtility.FullBodyMark.LeftKnee] = (pos[(int)MyUtility.FullBodyMark.LeftPelvis] + pos[(int)MyUtility.FullBodyMark.LeftFoot]) / 2f 
 			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
-		pos[(int)VRIKController.FullBodyMark.RightKnee] = (pos[(int)VRIKController.FullBodyMark.Pelvis] + pos[(int)VRIKController.FullBodyMark.RightFoot]) / 2f 
+		pos[(int)MyUtility.FullBodyMark.RightKnee] = (pos[(int)MyUtility.FullBodyMark.RightPelvis] + pos[(int)MyUtility.FullBodyMark.RightFoot]) / 2f 
 			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
 		
-		/*for(int i = (int)VRIKController.FullBodyMark.LeftElbow ; i <= (int)VRIKController.FullBodyMark.RightElbow ; i++){
-				pos[i] = (pos[(int)VRIKController.FullBodyMark.Pelvis] + pos[(int)VRIKController.FullBodyMark.LeftHand]) / 2f + Vector3.forward * 0.5f;
+		/*for(int i = (int)MyUtility.FullBodyMark.LeftElbow ; i <= (int)MyUtility.FullBodyMark.RightElbow ; i++){
+				pos[i] = (pos[(int)MyUtility.FullBodyMark.Pelvis] + pos[(int)MyUtility.FullBodyMark.LeftHand]) / 2f + Vector3.forward * 0.5f;
 				//rot[i]
 				//pos[i].z = 0.0f;
 		}
 		//左右膝
-		for(int i = (int)VRIKController.FullBodyMark.LeftKnee ; i <= (int)VRIKController.FullBodyMark.RightKnee ; i++){
+		for(int i = (int)MyUtility.FullBodyMark.LeftKnee ; i <= (int)MyUtility.FullBodyMark.RightKnee ; i++){
 				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
 				//pos[i].z = 0.0f;
 		}*/

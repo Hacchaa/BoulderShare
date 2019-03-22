@@ -2,19 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BEdge : IBEdge
+public class BEdge : MonoBehaviour, IBEdge, IBDrawable
 {
 	private IBNode parent;
 	private IBNode child;
-
-	public BEdge(){
-		parent = null;
-		child = null;
-	}
-	public BEdge(IBNode p, IBNode c){
-		parent = p;
-		child = c;
-	}
 
 	public IBNode GetDescendantNode(){
 		return child;
@@ -28,4 +19,20 @@ public class BEdge : IBEdge
     public void SetAncestorNode(IBNode node){
     	parent = node;
     }
+
+    public void Draw(){
+
+	}
+
+	public void DontDraw(){
+
+	}
+	
+	public void Focus(){
+
+	}
+
+	public void DontFocus(){
+		
+	}
 }

@@ -24,11 +24,11 @@ public class VRIKBend : VRIKComponent {
 		}
 	}
 	public override void Show(){
-		render.enabled = true;
+		base.Show();
 		line.gameObject.SetActive(true);
 	}
 	public override void Hide(){
-		render.enabled = false;
+		base.Hide();
 		line.gameObject.SetActive(false);
 	}
 	//avatarの位置に移動させる

@@ -32,7 +32,11 @@ public class Edit3DSceneComment : SEComponentBase{
 		sManager.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 	public void ToEditWallMark(){
+		MakeAttemptTree.Mode m = makeAT.GetMode();
+		int n = makeAT.GetIndex();
 		Submit();
+		makeAT.SetMode(m);
+		makeAT.SetIndex(n+1);
 		sManager.Transition(ScreenTransitionManager.Screen.EditWallMark);
 	}
 
@@ -46,11 +50,12 @@ public class Edit3DSceneComment : SEComponentBase{
 		cameraManager.Active3D();
 		humanModel.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations());
 		humanModel.LookAtModel();
+		humanModel.HideMarks();
 		scc.AcceptEvents();
 		comments.ShowDynamically();
 		comments.SetShowAngle(SceneComments3D.ANGLE_EDIT);
 
-		if (makeAT.GetMode() == MakeAttemptTree.Mode.Loop){
+		if (makeAT.GetMode() == MakeAttemptTree.Mode.Add || makeAT.GetMode() == MakeAttemptTree.Mode.Loop){
 			forLoopMode.SetActive(true);
 		}else{
 			forLoopMode.SetActive(false);

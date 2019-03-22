@@ -88,6 +88,7 @@ public class MakeAttemptTree : MonoBehaviour
 				hscenes.AddSceneAt(scene, curIndex);
 				break;
 		}
+		hscenes.SetIsModified(true);
 	}
 
 	public bool IsPoseSet(){

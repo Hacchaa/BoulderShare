@@ -15,10 +15,9 @@ public class CanvasResolutionManager : MonoBehaviour
     {	
     	Rect safe = Screen.safeArea;
     	float width, topHeight, botHeight;
-
-    	#if UNITY_IPHONE
-    		safe = SimulateIPhoneSafeArea(Screen.width, Screen.height);
-    	#endif
+        # if UNITY_EDITOR
+    	   safe = SimulateIPhoneSafeArea(Screen.width, Screen.height);
+        # endif
 
     	width = Screen.width;
     	topHeight = safe.y;
@@ -64,7 +63,7 @@ public class CanvasResolutionManager : MonoBehaviour
             t.localScale = Vector3.one;
     	}
 
-    	float mar = GetMargin();
+    	float mar = CalcCanvasMargin(Screen.width, Screen.height);
     	foreach(SEComponentBase com in sManager.GetUIList()){
     		foreach(RectTransform rect in com.GetMarginList()){
     			rect.anchorMin = new Vector2(0.0f, 0.0f);
@@ -96,16 +95,65 @@ public class CanvasResolutionManager : MonoBehaviour
     	return new Rect(0.0f, topOutSafeArea / logicalPt.y * height, (safeAreaPt.x / logicalPt.x * width), (safeAreaPt.y / logicalPt.y * height));
     }
 
-    public float GetMargin(){
-    	float dpi = Screen.dpi;
-        Debug.Log("dpi:"+Screen.dpi);
-    	if (dpi == 0.0f){
-    		return 42.0f;
-    	}
-        if (Screen.width == 1242 && Screen.height == 2688){
-            return marginXSMAX * (Screen.dpi / 72.0f);
+    private float SimulateDPI(int width, int height){
+        if ((width == 1125 && height == 2436) || (width == 1242 && height == 2688)){
+            //iPhone X, iPhone XS, iPhone XSMax
+            return 458;
+        }else if ((width == 828 && height == 1792) || (width == 750 && height == 1334)){
+            //iPhone XR, iphone 8
+            return 326;
+        }else if (width == 1080 && height == 1920){
+            //iphone 8 Plus
+            return 401;
         }
-    	return margin * (Screen.dpi / 72.0f);
+        return Screen.dpi;
     }
 
+    //マージンのピクセル量を返す
+    public float CalcCanvasMargin(int width, int height){
+        RectTransform canvasRect = canvasList[0].GetComponent<RectTransform>();
+        return canvasRect.sizeDelta.x * (GetRetina(width, height) * GetMarginPt(width, height) / width);
+    }
+
+    public static float GetRetina(int width, int height){
+        if (width == 320 && height == 480){
+            //iPhone iPhone3G iPhone3GS
+            return 1.0f;
+        }else if(width == 640 && height == 960){
+            //iPhone4 iPhone4S
+            return 2.0f;
+        }else if(width == 640 && height == 1136){
+            //iPhone5 iPhone5s iPhone5c iPhoneSE
+            return 2.0f;
+        }else if(width == 750 && height == 1334){
+            //iPhone6 iPhone6S iPhone7 iPhone8
+            return 2.0f;
+        }else if(width == 1080 && height == 1920){
+            //iPhone6Plus iPhone6SPlus iPhone7Plus iPhone8Plus
+            return 3.0f;
+        }else if(width == 1125 && height == 2436){
+            //iPhoneX iPhoneXS
+            return 3.0f;
+        }else if(width == 828 && height == 1792){
+            //iPhoneXR
+            return 2.0f;
+        }else if(width == 1242 && height == 2688){
+            //iPhoneXSMax
+            return 3.0f;
+        }
+        return 1.0f;
+    }
+    public static float GetMarginPt(int width, int height){
+        if(width == 1125 && height == 2436){
+            //iPhoneX iPhoneXS
+            return 16.0f;
+        }else if(width == 828 && height == 1792){
+            //iPhoneXR
+            return 16.0f;
+        }else if(width == 1242 && height == 2688){
+            //iPhoneXSMax
+            return 16.0f;
+        }
+        return 16.0f;
+    }
 }

@@ -90,7 +90,7 @@ public class VRIKController : MonoBehaviour
     }
 
     private void UpdateAimIK(){
-        aimIK.GetIKSolver().Update();
+       aimIK.GetIKSolver().Update();
     }
 
     public void InitAvatar(){
@@ -282,7 +282,7 @@ public class VRIKController : MonoBehaviour
         foreach(FullBodyMark value in Enum.GetValues(typeof(FullBodyMark))){
             VRIKComponent com = GetVRIKComponent(value);
             if (com != null){
-                Debug.Log(com.name + " "+ com.IsShow());
+                //Debug.Log(com.name + " "+ com.IsShow());
                 hsList.Add(com.IsShow());
             }
         }
@@ -293,7 +293,7 @@ public class VRIKController : MonoBehaviour
             VRIKComponent com = GetVRIKComponent(value);
             if (com != null){
                 bool b = hsList[(int)value-1];
-                Debug.Log(com.name);
+                //Debug.Log(com.name);
                 if (b){
                     com.Show();
                 }else{

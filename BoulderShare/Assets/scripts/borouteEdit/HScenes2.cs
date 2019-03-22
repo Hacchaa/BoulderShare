@@ -11,14 +11,24 @@ public class HScenes2 : MonoBehaviour {
 	private List<HScene2> list ;
 	private List<string> hScenesList;
 	private List<string> failedList;
+	private bool isModified;
+
+	[SerializeField] private int num;
 
 	void Awake(){
 		list = new List<HScene2>();
 		curIndex = -1;
 		hScenesList = new List<string>();
+		isModified = false;
+		num = -1;
 	}
 
-	void Start(){
+	void Update(){
+		num = hScenesList.Count;
+	}
+
+	public void SetIsModified(bool b){
+		isModified = b;
 	}
 
 	public void SetFailedList(List<string> list){
@@ -182,6 +192,15 @@ public class HScenes2 : MonoBehaviour {
 		failedList = tree.failedList;
 	}
 
+	public List<MyUtility.AttemptTree> GetConvertedHScenesList(){
+		List<MyUtility.AttemptTree> atList = new List<MyUtility.AttemptTree>();
+
+		foreach(string str in hScenesList){
+			atList.Add(JsonUtility.FromJson<MyUtility.AttemptTree>(str));
+		}
+		return atList;
+	}
+
 	public void PrintJson(){
 		Debug.Log(ToJson());
 	}
@@ -202,7 +221,11 @@ public class HScenes2 : MonoBehaviour {
 	//hScenesをlistに登録
 	//シリアライズ時とtryView.ReObs()で呼ばれる
 	public void RegistCurHScenes(){
-		hScenesList.Add(ToJson());
+		Debug.Log("registcurhscnes");
+		if(isModified){
+			hScenesList.Add(ToJson());
+		}
+		isModified = false;
 	}
 
 	public string GetLatestHScenes(){

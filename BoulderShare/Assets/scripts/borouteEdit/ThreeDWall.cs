@@ -48,6 +48,7 @@ public class ThreeDWall : BaseWall{
 	}
 
 	public Vector3 CalcWorldSubVec(Vector3 localP){
+		Debug.Log("calcWorldSubVec:"+localP+" = "+ (transform.TransformPoint(localP) - transform.position));
 		return transform.TransformPoint(localP) - transform.position;
 	}
 

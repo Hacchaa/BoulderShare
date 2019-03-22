@@ -5,7 +5,26 @@ using System.IO;
 using System;
 
 public class MyUtility {
+	public static int FINGER_NONE = -10;
 
+	[System.Serializable]
+    public enum FullBodyMark {
+        Body = 0,
+        LeftShoulder,
+        RightShoulder,
+        LeftPelvis,
+        RightPelvis,
+        LeftHand,
+        RightHand,
+        LeftFoot,
+        RightFoot,
+        LeftElbow,
+        RightElbow,
+        LeftKnee,
+        RightKnee,
+        Head,
+        Look
+    }
 	public static int Gcd(int a, int b){
 		if (a < b){
 			return Gcd(b, a);

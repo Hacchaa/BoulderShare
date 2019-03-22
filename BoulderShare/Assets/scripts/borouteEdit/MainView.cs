@@ -11,6 +11,7 @@ public class MainView: SEComponentBase{
 	[SerializeField] private SceneSelectView ssView;
 	public override void OnPreShow(){
 		cameraManager.Active2D();
+		cameraManager.Reset2DCamPosAndDepth();
 		if (hScenes2.GetNum() == 0){
 			forEdit.SetActive(false);
 		}else{
@@ -20,6 +21,10 @@ public class MainView: SEComponentBase{
 
 	public override void OnPreHide(){
 
+	}
+
+	public void ToLayerGraph(){
+		trans.Transition(ScreenTransitionManager.Screen.LayerGraphView);
 	}
 
 	public void ToMakeAT(){

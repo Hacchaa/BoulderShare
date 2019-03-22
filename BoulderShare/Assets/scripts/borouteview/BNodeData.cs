@@ -5,7 +5,9 @@ using UnityEngine;
 public class BNodeData : IBNodeData
 {
 	private int id ;
-
+	public BNodeData(){
+		this.id = -1;
+	}
 	public BNodeData(int id){
 		this.id = id;
 	}
