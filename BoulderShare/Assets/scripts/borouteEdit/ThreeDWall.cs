@@ -31,7 +31,7 @@ public class ThreeDWall : BaseWall{
 	public int GetIncline(){
 		return CalcIncline();
 	}
-	public override void SetWallMarks(GameObject rootMarks){
+	public override void SetWallMarks(GameObject rootMarks, int n){
 		threeDWallMarks.Synchronize(rootMarks);
 	}
 

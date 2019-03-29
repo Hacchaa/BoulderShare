@@ -6,5 +6,5 @@ interface IWall
 {
     void SetWallImage(Texture2D tex);
     void SetIncline(int incline);
-    void SetWallMarks(GameObject rootMarks);
+    void SetWallMarks(GameObject rootMarks, int n);
 }

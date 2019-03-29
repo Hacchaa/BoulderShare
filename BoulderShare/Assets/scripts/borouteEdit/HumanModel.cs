@@ -15,6 +15,8 @@ public class HumanModel : MonoBehaviour {
 	[SerializeField] private Vector3[] offsetTouching;
 	[SerializeField] private Vector3 offsetFromCenterToHead;
 	[SerializeField] private GameObject marks;
+	[SerializeField] private GameObject shadowRoot;
+	[SerializeField] private GameObject shadowPrefab;
 
 	public void HideMarks(){
 		marks.SetActive(false);
@@ -34,7 +36,7 @@ public class HumanModel : MonoBehaviour {
 
 	public void LookAtModel(float depth = CameraManager.CAMERA3D_DEPTH_LOOKING){
 		Vector3 body = fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
-		Debug.Log("lookat body:"+body);
+		//Debug.Log("lookat body:"+body);
 		cameraManager.Reset3DCamPosAndDepth();
 		cameraManager.SetRootWorldPos(body);
 		cameraManager.Set3DDepth(depth);
@@ -55,6 +57,24 @@ public class HumanModel : MonoBehaviour {
 
 	public Vector3 GetModelBodyPosition(){
 		return fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
+	}
+
+	public void DeleteShadows(){
+		foreach(Transform t in shadowRoot.transform){
+			Destroy(t.gameObject);
+		}		
+	}
+
+	public void ShowShadows(Vector3[][] positionsArr, Quaternion[][] rotationsArr){
+		DeleteShadows();
+		
+		for(int i = 0 ; i < positionsArr.Length - 1 ; i++){
+			GameObject obj = Instantiate(shadowPrefab, shadowRoot.transform);
+			CopyModelPose(obj.transform, positionsArr[i], rotationsArr[i]);
+			obj.SetActive(true);
+		}
+
+		SetModelPose(positionsArr[positionsArr.Length - 1], rotationsArr[rotationsArr.Length - 1]);
 	}
 
 	public void CopyModelPose(Transform copyTo, Vector3[] positions, Quaternion[] rotations){
@@ -108,19 +128,19 @@ public class HumanModel : MonoBehaviour {
 		Vector3[] pos = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
 		Quaternion[] rot = fIK.GetRotations();
 		string[] onTouch = twoDWallMarks.GetTouchInfo();
-		Debug.Log(string.Join(", ", onTouch));
+		//Debug.Log(string.Join(", ", onTouch));
 		int index = 0;
 		Vector3 pivot = Vector3.zero;
 		int n = 0;
 		int type = -1;
 		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
 			type = Convert(i);
-			Debug.Log("i="+i+", type="+type);
+			//Debug.Log("i="+i+", type="+type);
 			if(!string.IsNullOrEmpty(onTouch[type])){
 				pos[i] = threeDWallMarks.GetMarkObj(onTouch[type]).transform.position;
-				Debug.Log(":"+i+pos[i]);
+				//Debug.Log(":"+i+pos[i]);
 				pos[i] = modelRootObj.InverseTransformPoint(pos[i]);
-				Debug.Log(":"+i+pos[i]);
+				//Debug.Log(":"+i+pos[i]);
 				pos[i] += threeDWall.CalcWorldSubVec(offsetTouching[type]);
 				pivot += pos[i];
 				n++;
@@ -130,35 +150,35 @@ public class HumanModel : MonoBehaviour {
 		if (n != 0){
 			pivot /= n;
 		}
-		Debug.Log("index:"+index);
+		//Debug.Log("index:"+index);
 
 		if (index == 0){
 			InitModelPose();
 			return ;
 		}
 
-		Debug.Log("pivot:"+pivot);
+		//Debug.Log("pivot:"+pivot);
 	
 		pos[(int)MyUtility.FullBodyMark.Body] = pivot + threeDWall.CalcWorldSubVec(centerPos[index]);
-		Debug.Log("body:"+pos[(int)MyUtility.FullBodyMark.Body]);
+		//Debug.Log("body:"+pos[(int)MyUtility.FullBodyMark.Body]);
 
 		Vector3 modelCenter = pos[(int)MyUtility.FullBodyMark.Body] - threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Body));
-		Debug.Log("modelCenter:"+modelCenter);
+		//Debug.Log("modelCenter:"+modelCenter);
 
 		pos[(int)MyUtility.FullBodyMark.Look] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Look));
-		Debug.Log("look:"+pos[(int)MyUtility.FullBodyMark.Look]);
+		//Debug.Log("look:"+pos[(int)MyUtility.FullBodyMark.Look]);
 
 		pos[(int)MyUtility.FullBodyMark.LeftShoulder] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.LeftShoulder));
-		Debug.Log("ls:"+pos[(int)MyUtility.FullBodyMark.LeftShoulder]);
+		//Debug.Log("ls:"+pos[(int)MyUtility.FullBodyMark.LeftShoulder]);
 
 		pos[(int)MyUtility.FullBodyMark.RightShoulder] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.RightShoulder));
-		Debug.Log("rs:"+pos[(int)MyUtility.FullBodyMark.RightShoulder]);
+		//Debug.Log("rs:"+pos[(int)MyUtility.FullBodyMark.RightShoulder]);
 
 		pos[(int)MyUtility.FullBodyMark.LeftPelvis] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.LeftPelvis));
-		Debug.Log("lp:"+pos[(int)MyUtility.FullBodyMark.LeftPelvis]);
+		//Debug.Log("lp:"+pos[(int)MyUtility.FullBodyMark.LeftPelvis]);
 
 		pos[(int)MyUtility.FullBodyMark.RightPelvis] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.RightPelvis));
-		Debug.Log("rp:"+pos[(int)MyUtility.FullBodyMark.RightPelvis]);
+		//Debug.Log("rp:"+pos[(int)MyUtility.FullBodyMark.RightPelvis]);
 /*
 		pos[(int)MyUtility.FullBodyMark.Head] = pivot + threeDWall.CalcWorldSubVec(centerPos[index] + offsetFromCenterToHead);
 		pos[(int)MyUtility.FullBodyMark.Look] = pos[(int)MyUtility.FullBodyMark.Head] 

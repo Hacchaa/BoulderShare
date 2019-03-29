@@ -8,6 +8,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform root3D;
     [SerializeField] private Transform move3D;
     [SerializeField] private Transform depth3D;
+    [SerializeField] private List<Camera> cameras3D;
     [SerializeField] private Camera camera2D;
     [SerializeField] private float duration = 0.5f;
     [SerializeField] private HumanModel humanModel;
@@ -20,6 +21,13 @@ public class CameraManager : MonoBehaviour
     private const float CAMERA3D_MOVEZ = 4.0f;
     public const float CAMERA3D_DEPTH_LOOKING = -5.0f;
     void Start(){
+    }
+
+    public List<Camera> GetCameras(){
+        List<Camera> list = new List<Camera>();
+        list.AddRange(cameras3D);
+        list.Add(camera2D);
+        return list;
     }
 
     public void Set2DCamPos(Vector3 v){

@@ -204,7 +204,7 @@ public class TwoDWallMarks : MonoBehaviour {
 		}
 	}
 
-	public void Synchronize(GameObject rootMarks){
+	public void Synchronize(GameObject rootMarks, int n){
 		Init();
 		foreach(Transform t in rootMarks.transform){
 			if(!string.IsNullOrEmpty(t.name)){
@@ -215,45 +215,6 @@ public class TwoDWallMarks : MonoBehaviour {
 				map[t.name].Focus(false);
 			}
 		}
-	}
-
-	public string ToJson(){
-		MyUtility.Mark mark;
-		MyUtility.Marks marks = new MyUtility.Marks();
-		marks.data = new MyUtility.Mark[transform.childCount];
-		int i = 0;
-		foreach(Transform child in transform){
-			mark = new MyUtility.Mark();
-			mark.name = child.gameObject.name;
-			mark.x = (double)child.position.x;
-			mark.y = (double)child.position.y;
-			mark.z = (double)child.position.z;
-			mark.scale = (double)child.localScale.x;
-
-			marks.data[i] = mark;
-			i++;
-		}
-		return JsonUtility.ToJson(marks);
-	}
-
-	public void FromJson(string json){
-		DeleteMarks();
-
-		MyUtility.Marks marks = JsonUtility.FromJson<MyUtility.Marks>(json);
-		int max = -1;
-		GameObject mark;
-		for(int i = 0 ; i < marks.data.Length ; i++){
-			mark = MakeMark(marks.data[i].name);
-			mark.transform.localPosition = new Vector3((float)marks.data[i].x, (float)marks.data[i].y, (float)marks.data[i].z);
-			mark.transform.localScale = Vector3.one * (float)marks.data[i].scale;
-			mark.SetActive(true);
-			if (int.Parse(mark.name) > max){
-				max = int.Parse(mark.name);
-			}
-		}
-		num = max+1;
-
-		IgnoreEvents();
-		wallManager.CommitWallMarks(gameObject);
+		num = n;
 	}
 }

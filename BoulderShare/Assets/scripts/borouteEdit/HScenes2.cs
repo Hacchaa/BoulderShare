@@ -9,34 +9,28 @@ public class HScenes2 : MonoBehaviour {
 	[SerializeField]
 	private int curIndex;
 	private List<HScene2> list ;
-	private List<string> hScenesList;
-	private List<string> failedList;
-	private bool isModified;
+	private List<MyUtility.AttemptTree> atList;
+	private Dictionary<int, HScene2> masterScenes;
 
 	[SerializeField] private int num;
-
 	void Awake(){
+		Init();
+	}
+	private void Init(){
 		list = new List<HScene2>();
 		curIndex = -1;
-		hScenesList = new List<string>();
-		isModified = false;
+		atList = new List<MyUtility.AttemptTree>();
+		masterScenes = new Dictionary<int, HScene2>();
 		num = -1;
 	}
 
+	public void InitAT(){
+		list.Clear();
+		curIndex = -1;
+	}
+
 	void Update(){
-		num = hScenesList.Count;
-	}
-
-	public void SetIsModified(bool b){
-		isModified = b;
-	}
-
-	public void SetFailedList(List<string> list){
-		failedList = new List<string>(list);
-	}
-
-	public List<string> GetFailedList(){
-		return new List<string>(failedList);
+		num = atList.Count;
 	}
 
 	public int GetNum(){
@@ -54,35 +48,29 @@ public class HScenes2 : MonoBehaviour {
 		}
 		curIndex = index ;
 	}
-
-	public List<HScene2> GetScenes(){
+/*
+	public List<HScene2> GetSceneas(){
 		return new List<HScene2>(list);
-	}
+	}*/
 
 	public HScene2 GetScene(int index){
 		if (index < 0 || index > list.Count - 1){
 			return null;
 		}
-
 		return list[index];
-	}
-
-	public void Construction(List<HScene2> data, int numOfCreatingHScene){
-		list.Clear();
-		list.AddRange(data);
-		HScene2.SetNum(numOfCreatingHScene);
-		if(list.Any()){
-			curIndex = 0;
-		}
 	}
 
 
 	public void AddScene(HScene2 hScene){
 		curIndex++;
 		list.Insert(curIndex, hScene);
+
 	}
 
 	public void AddSceneAt(HScene2 hScene, int index){
+		if (index < 0 || index > list.Count){
+			return ;
+		}		
 		list.Insert(index, hScene);
 	}
 
@@ -120,6 +108,13 @@ public class HScenes2 : MonoBehaviour {
 		curIndex =  nextIndex ;
 		return next;
 	}
+	public HScene2 NextSceneWithLoop(){
+		curIndex++;
+		if (curIndex < 0 || curIndex > list.Count - 1){
+			curIndex = 0;
+		}
+		return list[curIndex];
+	}
 
 	public HScene2 NextScene(){
 		if (curIndex < 0){
@@ -148,9 +143,54 @@ public class HScenes2 : MonoBehaviour {
 		return list[curIndex];
 	}
 
+	public void SetATList(List<MyUtility.AttemptTree> l){
+		atList = new List<MyUtility.AttemptTree>(l);
+	}
+
+	public List<MyUtility.AttemptTree> GetATList(){
+		return new List<MyUtility.AttemptTree>(atList);
+	}
+
+	public MyUtility.AttemptTree GetAT(int index){
+		return atList[index];
+	}
+
+	public void LoadMasterScenes(List<MyUtility.Scene> mList){
+		masterScenes.Clear();
+		foreach(MyUtility.Scene data in mList){
+			HScene2 scene = new HScene2();
+			scene.SetID(data.id);
+			scene.SetOnHolds(data.holdsOnHand);
+			scene.SaveComments(data.comments);
+			scene.SavePose(data.pose, data.rots);
+			scene.SetFailureList(data.failureList);
+
+			masterScenes.Add(scene.GetID(), scene);
+		}
+	}
+
+	public List<MyUtility.Scene> GetMasterScenes(){
+		MyUtility.Scene data;
+		List<MyUtility.Scene> l = new List<MyUtility.Scene>();
+
+		foreach(HScene2 scene in masterScenes.Values){
+			data = new MyUtility.Scene();
+
+			data.id = scene.GetID();
+			data.holdsOnHand = scene.GetOnHolds();
+			data.comments = scene.GetComments();
+			data.pose = scene.GetPose();
+			data.rots = scene.GetRots();
+			data.failureList = scene.GetFailureList();
+
+			l.Add(data);
+		}
+
+		return l;
+	}
+/*
 	public string ToJson(){
 		MyUtility.AttemptTree tree = new MyUtility.AttemptTree();
-		tree.failedList = failedList;
 		tree.numOfCreatingHScene = HScene2.GetNum();
 		tree.data = new MyUtility.Scene[list.Count];
 		int i = 0;
@@ -189,49 +229,101 @@ public class HScenes2 : MonoBehaviour {
 		if (tree.data.Length > 0){
 			curIndex = 0;
 		}
-		failedList = tree.failedList;
+		isModified = false;
 	}
+*/
 
-	public List<MyUtility.AttemptTree> GetConvertedHScenesList(){
-		List<MyUtility.AttemptTree> atList = new List<MyUtility.AttemptTree>();
+	
+	public Dictionary<int, MyUtility.Scene> GetConvertedScenes(){
+		Dictionary<int, MyUtility.Scene> map = new Dictionary<int, MyUtility.Scene>();
 
-		foreach(string str in hScenesList){
-			atList.Add(JsonUtility.FromJson<MyUtility.AttemptTree>(str));
+		foreach(MyUtility.Scene scene in GetMasterScenes()){
+			map.Add(scene.id, scene);
 		}
-		return atList;
+		return map;
 	}
 
+/*
 	public void PrintJson(){
 		Debug.Log(ToJson());
 	}
 
-	public string HScenesListToJson(){
+	public string atListToJson(){
 		MyUtility.AttemptTrees trees = new MyUtility.AttemptTrees();
 		RegistCurHScenes();
-		trees.trees = new List<string>(hScenesList);
+		trees.trees = new List<string>(atList);
 		return JsonUtility.ToJson(trees);
 	}
 
-	public void HScenesListFromJson(string json){
+	public void atListFromJson(string json){
 		MyUtility.AttemptTrees trees = JsonUtility.FromJson<MyUtility.AttemptTrees>(json);
-		hScenesList = trees.trees;
+		atList = trees.trees;
 		FromJson(GetLatestHScenes());
-	}
+	}*/
 
 	//hScenesをlistに登録
 	//シリアライズ時とtryView.ReObs()で呼ばれる
 	public void RegistCurHScenes(){
+		List<int> ord = new List<int>();
+		MyUtility.AttemptTree tree = new MyUtility.AttemptTree();
+
 		Debug.Log("registcurhscnes");
-		if(isModified){
-			hScenesList.Add(ToJson());
+		
+		foreach(HScene2 scene in list){
+			ord.Add(scene.GetID());
+			if(masterScenes.ContainsKey(scene.GetID())){
+				Debug.Log("overwrite "+scene.GetID());
+				//masterを上書きする
+				masterScenes[scene.GetID()] = scene;
+			}else{
+				Debug.Log("add "+scene.GetID());
+				//追加
+				masterScenes.Add(scene.GetID(), scene);
+			}
 		}
-		isModified = false;
+
+		//atListの更新
+		tree.idList = ord;
+		tree.numOfCreatingHScene = HScene2.GetNum();
+		atList.Add(tree);
 	}
 
-	public string GetLatestHScenes(){
-		int n = hScenesList.Count - 1;
+	public int GetATNum(){
+		return atList.Count;
+	}
+
+	public void LoadHScenes(int index){
+		list.Clear();
+		curIndex = 0;
+		if (index < 0 || index > atList.Count - 1){
+			return ;
+		}
+		foreach(int id in atList[index].idList){
+			HScene2 master = masterScenes[id];
+			HScene2 scene = new HScene2();
+			scene.SetID(master.GetID());
+			scene.SetOnHolds(master.GetOnHolds());
+			scene.SaveComments(master.GetComments());
+			scene.SavePose(master.GetPose(), master.GetRots());
+			scene.SetFailureList(master.GetFailureList());	
+
+			list.Add(scene);	
+		}
+	}
+
+	public void LoadLatestAT(){
+		Init();
+		int n = atList.Count - 1;
 		if (n >= 0){
-			return hScenesList[n];
+			HScene2.SetNum(atList[n].numOfCreatingHScene);
+			LoadHScenes(n);
+		}
+	}
+/*
+	public string GetLatestAT(){
+		int n = atList.Count - 1;
+		if (n >= 0){
+			return atList[n];
 		}
 
 		//空のjsonを返す
@@ -241,9 +333,8 @@ public class HScenes2 : MonoBehaviour {
 	public string MakeEmptyJson(){
 		MyUtility.AttemptTree tree = new MyUtility.AttemptTree();
 		tree.data = new MyUtility.Scene[0];
-		tree.failedList = new List<string>();
 		tree.numOfCreatingHScene = 0;
 
 		return JsonUtility.ToJson(tree);
-	}
+	}*/
 }

@@ -8,6 +8,8 @@ public class PickImageView : SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
 	[SerializeField] private TwoDWallImage twoDWallImage;
 	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private BorouteLSManager2 bManager;
+
 	public override void OnPreShow(){
 		cameraManager.Active2D();
 	}
@@ -17,6 +19,7 @@ public class PickImageView : SEComponentBase{
 
 	public void ToMainView(){
 		twoDWallImage.RotateWallTexture();
+		bManager.WriteWallImage();
 		trans.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 

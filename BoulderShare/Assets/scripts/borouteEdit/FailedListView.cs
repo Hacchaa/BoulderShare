@@ -19,7 +19,7 @@ public class FailedListView: MonoBehaviour {
 	}
 
 	public void Open(){
-		Regist(hScenes.GetFailedList());
+		//Regist(hScenes.GetFailedList());
 		this.gameObject.SetActive(true);
 	}
 

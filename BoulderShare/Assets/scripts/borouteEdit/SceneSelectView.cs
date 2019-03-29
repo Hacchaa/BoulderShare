@@ -54,7 +54,6 @@ public class SceneSelectView : SEComponentBase{
 
 	public void Remove(){
 		hScenes.RemoveScene();
-		hScenes.SetIsModified(true);
 		trans.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 

@@ -25,11 +25,13 @@ public class Edit3DSceneComment : SEComponentBase{
 	}
 	public void ToATV(){
 		makeAT.SetComments(scc.GetSceneComments());
-		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.View;
+		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
-	public void ToMainView(){
+	public void ToATMenu(){
 		Submit();
-		sManager.Transition(ScreenTransitionManager.Screen.MainView);
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
+		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 	public void ToEditWallMark(){
 		MakeAttemptTree.Mode m = makeAT.GetMode();

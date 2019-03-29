@@ -39,6 +39,10 @@ public class DAG : MonoBehaviour
     	showIndex = -1;
     }
 
+    public int GetShowIndex(){
+    	return showIndex;
+    }
+
     public void ShowNext(){
     	int n = attemptTreeList.Count;
     	if (n == 0){
@@ -79,10 +83,10 @@ public class DAG : MonoBehaviour
     	return drawField.position + new Vector3(1.0f, 1.0f);
     }
 
-    public List<IBNodeData> MakeNodeData(MyUtility.AttemptTree at){
+    public List<IBNodeData> MakeNodeData(MyUtility.AttemptTree at, Dictionary<int, MyUtility.Scene> sceneMap){
     	List<IBNodeData> list = new List<IBNodeData>();
-    	foreach(MyUtility.Scene scene in at.data){
-    		list.Add(new BNodeData(scene.id));
+    	foreach(int id in at.idList){
+    		list.Add(new BNodeData(id));
     	}
     	return list;
     }
@@ -101,7 +105,7 @@ public class DAG : MonoBehaviour
 		return l;
     }
 
-    public void Construction(List<MyUtility.AttemptTree> atList){
+    public void Construction(List<MyUtility.AttemptTree> atList, Dictionary<int, MyUtility.Scene> sceneMap){
 		int atNum = atList.Count;
 		int oldCreationNumber = -1;
 		//Debug.Log("atNum="+atNum);
@@ -110,7 +114,7 @@ public class DAG : MonoBehaviour
 
 		for(int i = 0 ; i < atNum ; i++){
 			//Debug.Log("i="+i);
-			List<IBNodeData> list = MakeNodeData(atList[i]);
+			List<IBNodeData> list = MakeNodeData(atList[i], sceneMap);
 			List<IBNode> nodeList = new List<IBNode>();
 			int curCreationNumber = atList[i].numOfCreatingHScene;
 

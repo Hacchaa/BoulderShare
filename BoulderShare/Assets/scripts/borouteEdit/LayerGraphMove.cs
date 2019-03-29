@@ -9,8 +9,12 @@ public class LayerGraphMove : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
 	private float prevLength;
 	[SerializeField] private Vector2 bounds = new Vector2(10.0f, 10.0f);
 	[SerializeField] private Camera cam;
-	[SerializeField] private CameraManager cameraManager;
+	[SerializeField] private Vector3 initPos;
+
 	private const int FINGER_NONE = -10;
+    private const float CAMERA_DEPTH_UB = -1.0f;
+    private const float CAMERA_DEPTH_LB = -15.0f;
+    private const float CAMERA_DEPTH_DEF = -6.5f;
 
 	// Use this for initialization
 	void Awake () {
@@ -23,7 +27,7 @@ public class LayerGraphMove : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
 	}
 
 	public void AcceptEvents(){
-		gameObject.layer = LayerMask.NameToLayer("2D");
+		gameObject.layer = LayerMask.NameToLayer("LayerGraph");
 	}
 
 
@@ -56,19 +60,20 @@ public class LayerGraphMove : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
 			}
 		}
 
-		float depth = Mathf.Abs(cameraManager.Get2DDepth());
+		float depth = Mathf.Abs(GetDepth());
 		float length = Vector2.Distance(p1, p2);
 	
 		Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, depth));
     	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f, depth));
 
-    	cameraManager.Translate2D(wP1Old - wP1);
-    	cameraManager.Bounds2D(bounds, transform.position.x, transform.position.y);
+
+    	Translate(wP1Old - wP1);
+    	Bounds(bounds, transform.position.x, transform.position.y);
 
 		//prevLengthが設定されてしまうている場合
 		//prevLengthとlengthの比で拡大、縮小する
 		if (prevLength > 0 && length > 0){
-			cameraManager.Zoom2D(-(length/prevLength - 1));
+			Zoom(-(length/prevLength - 1));
 		}
 		prevLength = length;
 	}
@@ -81,4 +86,37 @@ public class LayerGraphMove : MonoBehaviour, IDragHandler, IPointerUpHandler, IP
 			eTouches[1] = FINGER_NONE;
 		}
 	}
+
+
+	public void Translate(Vector3 v, Space relativeTo= Space.Self){
+        cam.transform.Translate(v, relativeTo);
+    }
+
+    public float GetDepth(){
+        return cam.transform.localPosition.z;
+    }
+
+    public void Bounds(Vector2 size, float baseX = 0, float baseY = 0){
+        Vector3 p = cam.transform.localPosition;
+        float height = size.y;
+        float width = size.x;
+        p.x = Mathf.Clamp(p.x, baseX-width/2f, baseX+width/2f);
+        p.y = Mathf.Clamp(p.y, baseY-height/2f, baseY+height/2f);
+
+        cam.transform.localPosition = p;
+    }
+
+    public void Zoom(float r){
+        Vector3 p = cam.transform.localPosition;
+        float depth = Mathf.Clamp(p.z + p.z * r, CAMERA_DEPTH_LB, CAMERA_DEPTH_UB);
+        cam.transform.localPosition = new Vector3(p.x, p.y, depth);
+
+    }
+
+    public void ResetCamPosAndDepth(){
+        cam.transform.localPosition = initPos;
+    }
+    public void SetCameraActive(bool b){
+    	cam.gameObject.SetActive(b);
+    }
 }

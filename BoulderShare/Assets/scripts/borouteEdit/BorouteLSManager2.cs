@@ -9,19 +9,17 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 
 public class BorouteLSManager2 : MonoBehaviour {
-	[SerializeField]
-	private EditorManager eManager;
+	[SerializeField] private EditorManager eManager;
 	[SerializeField] private WallManager wallManager;
-	[SerializeField]
-	private TwoDWallMarks twoDWallMarks;
-	[SerializeField]
-	private HScenes2 hScenes;
-	[SerializeField]
-	private TwoDWall twoDWall;
+	[SerializeField] private HScenes2 hScenes;
+	[SerializeField] private TwoDWall twoDWall;
 	private bool isNew;
 
 	void Awake(){
 		isNew = true;
+	}
+	public void WriteWallImage(){
+		MyUtility.WriteImage(wallManager.GetMasterWallImage(), Application.persistentDataPath + EditorManager.WALLPATH + "Wall.png");
 	}
 	public void LoadBoroute(){
 		//必要な情報をBoRouteInfoオブジェから受け取る
@@ -189,16 +187,19 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 	public void BorouteFromJson(string json){
 		MyUtility.Boroute bor = JsonUtility.FromJson<MyUtility.Boroute>(json);
-		twoDWallMarks.FromJson(bor.marks);
-		hScenes.HScenesListFromJson(bor.hScenesList);
-		eManager.BorouteInfoFromJson(bor.borouteInfo);
+		wallManager.LoadMarks(bor.marks);
+		hScenes.SetATList(bor.atList);
+		hScenes.LoadMasterScenes(bor.masterScene);
+		hScenes.LoadLatestAT();
+		eManager.LoadBorouteInfo(bor.borouteInfo);
 	}
 
 	public string BorouteToJson(){
 		MyUtility.Boroute bor = new MyUtility.Boroute();
-		bor.borouteInfo = eManager.BorouteInfoToJson();
-		bor.hScenesList = hScenes.HScenesListToJson();
-		bor.marks = twoDWallMarks.ToJson();
+		bor.borouteInfo = eManager.GetBorouteInfo();
+		bor.atList = hScenes.GetATList();
+		bor.masterScene = hScenes.GetMasterScenes();
+		bor.marks = wallManager.GetMarks();
 
 		return JsonUtility.ToJson(bor);
 	}

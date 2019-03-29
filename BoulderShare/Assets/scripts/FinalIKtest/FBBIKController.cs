@@ -26,7 +26,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	}
  
     	foreach(FBBIKBase mark in markList){
-            Debug.Log("mark:"+mark.GetBodyID()+ ", "+ mark.GetWorldPosition());
+           // Debug.Log("mark:"+mark.GetBodyID()+ ", "+ mark.GetWorldPosition());
     		map.Add(mark.GetBodyID(), mark);
     		mark.Init();
     		mark.SetCamera(cam);
@@ -51,7 +51,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
         return model;
     }
     public Vector3 GetWorldPosition(MyUtility.FullBodyMark mark){
-        Debug.Log("getworldposition:"+mark+" "+map.ContainsKey(mark));
+        //Debug.Log("getworldposition:"+mark+" "+map.ContainsKey(mark));
     	if(map.ContainsKey(mark)){
     		return map[mark].GetWorldPosition();
     	}

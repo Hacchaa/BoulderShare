@@ -20,7 +20,8 @@ public class EditScene : SEComponentBase{
 
 	public void ToATV(){
 		makeAT.Set2DTouchMarks(twoDWallMarks.GetTouchInfo());
-		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.View;
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 
 	public void ToEditPose(){
@@ -48,6 +49,7 @@ public class EditScene : SEComponentBase{
 		if (scene != null){
 			twoDWallMarks.SetDummyTouchInfo(scene.GetOnHolds());
 		}
+		twoDWallMarks.IgnoreEvents();
 	}
 
 	public override void OnPreHide(){

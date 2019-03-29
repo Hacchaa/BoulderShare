@@ -33,30 +33,6 @@ public class MainView: SEComponentBase{
 		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
 	}
 
-	public void EditScene(){
-		ssView.SetMode(SceneSelectView.SelectMode.Edit);
-		ToSSV();
-	}
-
-	public void AddScene(){
-		ssView.SetMode(SceneSelectView.SelectMode.Add);
-		ToSSV();
-	}
-
-	public void RemoveScene(){
-		ssView.SetMode(SceneSelectView.SelectMode.Remove);
-		ToSSV();
-	}
-
-	private void ToSSV(){
-		trans.Transition(ScreenTransitionManager.Screen.SceneSelectView);
-	}
-
-
-	public void ToATV(){
-		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
-	}
-
 	public void ToPost(){
 		trans.Transition(ScreenTransitionManager.Screen.Post);
 	}

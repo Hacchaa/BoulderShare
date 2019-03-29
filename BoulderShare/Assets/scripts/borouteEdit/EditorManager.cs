@@ -6,7 +6,7 @@ using System;
 using Kakera;
 
 public class EditorManager : MonoBehaviour {
-	public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY, LOOK};
+	//public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY, LOOK};
 	[SerializeField]
 	private Color color;
 	public static string BOROUTEPATH = "/route/";
@@ -103,13 +103,7 @@ public class EditorManager : MonoBehaviour {
 		return boroute;
 	}
 
-	public string BorouteInfoToJson(){
-		return JsonUtility.ToJson(GetBorouteInfo());
-	}
-
-	public void BorouteInfoFromJson(string json){
-		MyUtility.BorouteInformation boroute = JsonUtility.FromJson<MyUtility.BorouteInformation>(json);
-
+	public void LoadBorouteInfo(MyUtility.BorouteInformation boroute){
 		timeStamp = boroute.timestamp;
 		post.SetDate(boroute.date);
 		post.SetPlace(boroute.place);
@@ -120,7 +114,7 @@ public class EditorManager : MonoBehaviour {
 		humanModel.SetModelSize(boroute.scaleH2M);
 		post.SetGlobalComment(boroute.globalComment);
 	}
-
+/*
 	public void PrintJson(){
 		test = BorouteInfoToJson();
 		Debug.Log(test);
@@ -128,7 +122,7 @@ public class EditorManager : MonoBehaviour {
 
 	public void apply(){
 		BorouteInfoFromJson(test);
-	}/*
+	}
 	public static string BorouteInfoForSearchingToJson(List<MyUtility.BorouteInformation> list){
 		MyUtility.BorouteInfoForSearching b = new MyUtility.BorouteInfoForSearching();
 		b.data = new List<MyUtility.BorouteInformation>(list);

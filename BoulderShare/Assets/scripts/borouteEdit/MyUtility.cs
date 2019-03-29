@@ -88,9 +88,10 @@ public class MyUtility {
 
 	[Serializable]
 	public class Boroute{
-		public string borouteInfo;
-		public string hScenesList;
-		public string marks;
+		public BorouteInformation borouteInfo;
+		public List<AttemptTree> atList;
+		public Marks marks;
+		public List<Scene> masterScene;
 	}
 
 	[Serializable]
@@ -100,9 +101,10 @@ public class MyUtility {
 
 	[Serializable]
 	public class AttemptTree{
-		public Scene[] data;
-		public List<string> failedList;
+		//public Scene[] data;
+		//public List<string> failedList;
 		//最初からこのシーンが保存されるまでに作られたシーンの数
+		public List<int> idList;
 		public int numOfCreatingHScene;
 	}
 
@@ -113,7 +115,7 @@ public class MyUtility {
 		public List<SceneCommentData3D> comments;
 		public Vector3[] pose;
 		public Quaternion[] rots;
-		public bool isLookingActivate;
+		public List<string> failureList;
 	}
 
 	[Serializable]
@@ -143,8 +145,8 @@ public class MyUtility {
 
 	[Serializable]
 	public class Mark{
-		public double x, y, z;
-		public double scale;
+		public float x, y, z;
+		public float scale;
 		public string name;
 	}
 }

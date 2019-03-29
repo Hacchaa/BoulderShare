@@ -25,8 +25,8 @@ public class TwoDWall : BaseWall{
 		incline = inc;
 	}
 
-	public override void SetWallMarks(GameObject rootMarks){
-		twoDWallMarks.Synchronize(rootMarks);
+	public override void SetWallMarks(GameObject rootMarks, int n){
+		twoDWallMarks.Synchronize(rootMarks, n);
 	}
 	public GameObject GetWallMarks(){
 		return twoDWallMarks.GetWallMarks();

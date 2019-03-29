@@ -8,7 +8,7 @@ public class HScene2{
 	private List<MyUtility.SceneCommentData3D> comments;
 	private Vector3[] pose;
 	private Quaternion[] rots;
-	private bool isLookingActivate ;
+	private List<string> failureList;
 	private int id;
 	private static int num = 0;
 	private bool isSaved;
@@ -18,8 +18,9 @@ public class HScene2{
 	public HScene2(){
 		onHolds = new string[4];
 		comments = new List<MyUtility.SceneCommentData3D>();
-		//pose = new Vector3[Enum.GetNames(typeof(EditorManager.BODYS)).Length - 1];
-		isLookingActivate = false;
+		pose = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
+		rots = new Quaternion[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
+		failureList = new List<string>();
 		isSaved = false;
 		id = num;
 		num++;
@@ -31,6 +32,18 @@ public class HScene2{
 
 	public static int GetNum(){
 		return num;
+	}
+
+	public void SetFailureList(List<string> list){
+		failureList = new List<string>(list);
+	}
+
+	public List<string> GetFailureList(){
+		return new List<string>(failureList);
+	}
+
+	public void AddFailureComment(string str){
+		failureList.Add(str);
 	}
 
 	public bool IsPoseSaved(){
@@ -56,10 +69,12 @@ public class HScene2{
 	}
 
 	public string[] GetOnHolds(){
-		return onHolds;
+		string[] copy = new string[onHolds.Length];
+		Array.Copy(onHolds, copy, onHolds.Length);
+		return copy;
 	}
 	public void SetOnHolds(String[] h){
-		onHolds = h;
+		Array.Copy(h, onHolds, onHolds.Length);
 		isSaved = true;
 	}
 
@@ -84,26 +99,21 @@ public class HScene2{
 	}
 
 	public Vector3[] GetPose(){
-		return pose;
+		Vector3[] v = new Vector3[pose.Length];
+		Array.Copy(pose, v, pose.Length);
+		return v;
 	}
 
 	public Quaternion[] GetRots(){
-		return rots;
+		Quaternion[] r = new Quaternion[rots.Length];
+		Array.Copy(rots, r, rots.Length);
+		return r;
 	}
 
 	public void SavePose(Vector3[] arr, Quaternion[] r){
-		pose = arr;
-		rots = r;
+		Array.Copy(arr, pose, pose.Length);
+		Array.Copy(r, rots, rots.Length);
 		isSaved = true;
-	}
-
-
-	public bool IsLookingActivate(){
-		return isLookingActivate;
-	}
-
-	public void SetIsLookingActivate(bool b){
-		isLookingActivate = b;
 	}
 	
 	public void Show(){

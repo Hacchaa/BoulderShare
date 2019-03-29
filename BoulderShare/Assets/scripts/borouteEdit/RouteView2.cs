@@ -105,19 +105,18 @@ public class RouteView2 : MonoBehaviour {
 			if (File.Exists(path + "temp/boroute.json")){
 				json = File.ReadAllText(path + "temp/boroute.json");
 				MyUtility.Boroute bor = JsonUtility.FromJson<MyUtility.Boroute>(json);
-				MyUtility.BorouteInformation bInfo = JsonUtility.FromJson<MyUtility.BorouteInformation>(bor.borouteInfo);
 				//ボルートをオブジェクトに表示
-				raTemp.SetTimeStamp(bInfo.timestamp);
-				raTemp.SetTimeText(bInfo.date);
-				raTemp.SetPlaceText(bInfo.place);
-				raTemp.SetGradeText(bInfo.grade + "");
+				raTemp.SetTimeStamp(bor.borouteInfo.timestamp);
+				raTemp.SetTimeText(bor.borouteInfo.date);
+				raTemp.SetPlaceText(bor.borouteInfo.place);
+				raTemp.SetGradeText(bor.borouteInfo.grade + "");
 
 				//画像を読み込む
 				if (File.Exists(path + "temp/thumbnail.png")){
 					raTemp.SetImg(MyUtility.CreateSprite(MyUtility.LoadImage(path + "temp/thumbnail.png")));
 				}
 
-				tempTS = bInfo.timestamp;
+				tempTS = bor.borouteInfo.timestamp;
 			}
 		}
 

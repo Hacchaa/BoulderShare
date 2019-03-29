@@ -31,7 +31,8 @@ public class EditPose : SEComponentBase{
 	}
 	public void ToATV(){
 		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());
-		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);		
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.View;
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);		
 	}
 	public void To3DSetting(){
 		makeAT.SetPose(humanModel.GetModelPosition(),humanModel.GetModelRotation());

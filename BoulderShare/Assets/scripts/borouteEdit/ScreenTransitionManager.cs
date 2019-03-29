@@ -27,7 +27,9 @@ public class ScreenTransitionManager : MonoBehaviour {
 		MainView,
 		EditWallMark,
 		SceneSelectView,
-		LayerGraphView
+		LayerGraphView,
+		AttemptTreeMenu,
+		ATFailureView
 	}
 
 	void Awake(){

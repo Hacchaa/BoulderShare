@@ -48,6 +48,11 @@ public class TryView : SEComponentBase{
 		stManager.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
+	public void ToATFV(){
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Failure;
+		stManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
+	}
+
 	public void ReObsProc(){
 		hScenes.RegistCurHScenes();
 
@@ -61,7 +66,7 @@ public class TryView : SEComponentBase{
 				tog.isOn = false;
 			}
 		}
-		hScenes.SetFailedList(fList);
+		//hScenes.SetFailedList(fList);
 		ToMainView();
 	}
 }

@@ -43,7 +43,6 @@ public class MakeAttemptTree : MonoBehaviour
 		SetComments(scene.GetComments());
 		SetPose(scene.GetPose(), scene.GetRots()); 
 		isPoseSet = true;
-		isWallMarkSet = true;
 	}
 	
 	public void Init(){
@@ -88,7 +87,6 @@ public class MakeAttemptTree : MonoBehaviour
 				hscenes.AddSceneAt(scene, curIndex);
 				break;
 		}
-		hscenes.SetIsModified(true);
 	}
 
 	public bool IsPoseSet(){

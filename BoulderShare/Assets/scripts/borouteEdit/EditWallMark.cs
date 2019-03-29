@@ -21,13 +21,15 @@ public class EditWallMark : SEComponentBase{
 
 	public void ToATV(){
 		wallManager.CommitWallMarks(twoDWall.GetWallMarks());
-		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeView);
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.View;
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 
 	public void Close(){
 		wallManager.CommitWallMarks(makeAT.GetWallMarks());
 		makeAT.Init();
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 
 	//画面遷移時の前処理
