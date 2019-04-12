@@ -48,7 +48,7 @@ public class ThreeDWall : BaseWall{
 	}
 
 	public Vector3 CalcWorldSubVec(Vector3 localP){
-		Debug.Log("calcWorldSubVec:"+localP+" = "+ (transform.TransformPoint(localP) - transform.position));
+		//Debug.Log("calcWorldSubVec:"+localP+" = "+ (transform.TransformPoint(localP) - transform.position));
 		return transform.TransformPoint(localP) - transform.position;
 	}
 
@@ -57,7 +57,7 @@ public class ThreeDWall : BaseWall{
 		if (angle > 180){
 			angle -= 360;
 		}
-		Debug.Log("calcIncline " + (90 - angle));
+		//Debug.Log("calcIncline " + (90 - angle));
 		return (int)Mathf.Round(90 - angle);
 	}
 

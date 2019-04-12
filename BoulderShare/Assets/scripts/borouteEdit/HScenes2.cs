@@ -13,10 +13,8 @@ public class HScenes2 : MonoBehaviour {
 	private Dictionary<int, HScene2> masterScenes;
 
 	[SerializeField] private int num;
-	void Awake(){
-		Init();
-	}
-	private void Init(){
+
+	public void Init(){
 		list = new List<HScene2>();
 		curIndex = -1;
 		atList = new List<MyUtility.AttemptTree>();
@@ -30,7 +28,9 @@ public class HScenes2 : MonoBehaviour {
 	}
 
 	void Update(){
-		num = atList.Count;
+		if (atList != null){
+			num = atList.Count;
+		}
 	}
 
 	public int GetNum(){
@@ -312,7 +312,7 @@ public class HScenes2 : MonoBehaviour {
 	}
 
 	public void LoadLatestAT(){
-		Init();
+		InitAT();
 		int n = atList.Count - 1;
 		if (n >= 0){
 			HScene2.SetNum(atList[n].numOfCreatingHScene);

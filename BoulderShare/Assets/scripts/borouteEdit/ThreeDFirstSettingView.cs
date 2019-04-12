@@ -12,7 +12,12 @@ public class ThreeDFirstSettingView : SEComponentBase
 	[SerializeField] private ModelSizeSetter modelSize;
 	[SerializeField] private CameraManager cameraManager;
 	[SerializeField] private WallManager wallManager;
+	[SerializeField] private bool isInit = false;
 	private float size;
+
+	public bool IsInit(){
+		return isInit;
+	}
 
 	public void Close(){
 		humanModel.SetModelSize(size);
@@ -20,8 +25,10 @@ public class ThreeDFirstSettingView : SEComponentBase
 		sManager.Back();
 	}
 	public void Submit(){
+		isInit = true;
 		wallManager.CommitIncline(threeDWall.GetIncline());
-		sManager.Back();
+		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
+		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 	public override void OnPreShow(){
 		size = humanModel.GetModelSize();

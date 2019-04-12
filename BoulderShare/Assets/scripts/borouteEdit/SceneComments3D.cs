@@ -12,6 +12,7 @@ public class SceneComments3D : MonoBehaviour
 	public static float ANGLE_EDIT = 90.0f;
 	private int index;
 	[SerializeField] private CameraManager cameraManager;
+
 	void Awake(){
 		list = new List<SceneComment3D>();
 		index = -1;
@@ -41,9 +42,10 @@ public class SceneComments3D : MonoBehaviour
 
 	void Update(){
 		if(isUpdateDynamically){
+			float camY = cameraManager.Get3DRotation().eulerAngles.y;
 			foreach(SceneComment3D com in list){
-				//Debug.Log(com.GetDeltaAngleToCam());
-				if (Mathf.Abs(com.GetDeltaAngleToCam()) <= showAngle){
+				float delta = Mathf.DeltaAngle(camY, com.transform.localRotation.eulerAngles.y);
+				if (Mathf.Abs(delta) <= showAngle){
 					com.ShowComment(true);
 				}else{
 					com.ShowComment(false);

@@ -15,8 +15,9 @@ public class EditPose : SEComponentBase{
 	//[SerializeField] private FaceObjSelector foSelector;
 	[SerializeField] private Transform copyModel;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private ThreeDWallMarks threeDWallMarks;
 	[SerializeField] private CameraManager cameraManager;
-	[SerializeField] private VRIKController vrIK;
+
 	private bool isShadowLoaded = false;
 
 	private int index = -1;
@@ -57,7 +58,12 @@ public class EditPose : SEComponentBase{
 
 	public override void OnPreShow(){
 		cameraManager.Active3D();
-		twoDWallMarks.SetTouchInfo(makeAT.Get2DTouchMarks());
+		string[] holds = makeAT.Get2DTouchMarks();
+		twoDWallMarks.SetTouchInfo(holds);
+		for(int i = (int)TwoDMark.HFType.RH ; i <= (int)TwoDMark.HFType.LF ; i++){
+			humanModel.SetHoldMarkInfo((TwoDMark.HFType)i, threeDWallMarks.GetMarkR(holds[i]), threeDWallMarks.GetMarkWorldPos(holds[i]));
+		}
+
 		int ind = makeAT.GetIndex();
 		if (makeAT.GetMode() == MakeAttemptTree.Mode.Edit || makeAT.GetMode() == MakeAttemptTree.Mode.Add){
 			ind--;
@@ -84,6 +90,7 @@ public class EditPose : SEComponentBase{
 	public override void OnPreHide(){
 		twoDWallMarks.ClearTouch();
 		humanModel.InitModelPose();
+		humanModel.InitHoldMarkInfo();
 		//foSelector.Init();
 		isShadowLoaded = false;
 		index = -1;

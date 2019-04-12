@@ -5,6 +5,9 @@ using DG.Tweening;
 
 public class CameraManager : MonoBehaviour
 {
+	[SerializeField] private CanvasGroup fadeCanvas2D;
+	[SerializeField] private CanvasGroup fadeCanvas3D;
+	[SerializeField] private float fadeDuration = 0.4f;
     [SerializeField] private Transform root3D;
     [SerializeField] private Transform move3D;
     [SerializeField] private Transform depth3D;
@@ -20,8 +23,85 @@ public class CameraManager : MonoBehaviour
     public const float CAMERA3D_DEPTH_DEF = -10.0f;
     private const float CAMERA3D_MOVEZ = 4.0f;
     public const float CAMERA3D_DEPTH_LOOKING = -5.0f;
-    void Start(){
-    }
+	
+	[SerializeField] private bool isFadeOut2D = false;
+	[SerializeField] private bool isFadeIn2D = false;
+	[SerializeField] private bool isFadeOut3D = false;
+	[SerializeField] private bool isFadeIn3D = false;
+	[SerializeField] private bool swithAnim = false;
+	[SerializeField] private bool fadeOutIn2D = false;
+	[SerializeField] private bool fadeOutIn3D = false;
+	void Update(){
+		if (fadeOutIn3D){
+			fadeOutIn3D = false;
+			FadeOutIn3DWithAnimation();
+		}
+		if (fadeOutIn2D){
+			fadeOutIn2D = false;
+			FadeOutIn2DWithAnimation();
+		}
+		if (swithAnim){
+			swithAnim = false;
+			SwitchDimWithAnimation();
+		}
+		if (isFadeOut2D){
+			FadeOut2D();
+			isFadeOut2D = false;
+		}
+
+		if (isFadeIn2D){
+			FadeIn2D();
+			isFadeIn2D = false;
+		}
+		if (isFadeOut3D){
+			FadeOut3D();
+			isFadeOut3D = false;
+		}
+
+		if (isFadeIn3D){
+			FadeIn3D();
+			isFadeIn3D = false;
+		}
+	}
+
+	public void FadeOutIn2DWithAnimation(){
+		Sequence seq = DOTween.Sequence();
+		seq.Append(GetFadeOut2DSeq())
+		.Append(GetFadeIn2DSeq())
+		.Play();
+	}
+
+	public void FadeOutIn3DWithAnimation(){
+		Sequence seq = DOTween.Sequence();
+		seq.Append(GetFadeOut3DSeq())
+		.Append(GetFadeIn3DSeq())
+		.Play();
+	}
+
+	public void SwitchDimWithAnimation(){
+		Sequence seq = DOTween.Sequence();
+		if (Is2DActive()){
+			seq.Append(GetFadeOut2DSeq())
+			.Append(GetFadeIn3DSeq())
+			.InsertCallback(
+				fadeDuration, 
+				() => {
+					Active3D();
+				}
+			);
+		}else{
+			seq.Append(GetFadeOut3DSeq())
+			.Append(GetFadeIn2DSeq())
+			.InsertCallback(
+				fadeDuration, 
+				() => {
+					Active2D();
+				}
+			);			
+		}
+
+		seq.Play();
+	}
 
     public List<Camera> GetCameras(){
         List<Camera> list = new List<Camera>();
@@ -38,6 +118,89 @@ public class CameraManager : MonoBehaviour
     	root3D.DORotateQuaternion(rot, duration);
     }
 
+    private Sequence GetFadeOut2DSeq(){
+    	Sequence sequence = DOTween.Sequence()
+	        .OnStart(() =>
+	        {
+	            fadeCanvas2D.alpha = 0.0f;
+	            fadeCanvas2D.blocksRaycasts = true;
+	        })
+	        .Append(fadeCanvas2D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
+	        .Join(camera2D.transform.DOMoveZ(-1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative());
+
+	    return sequence;
+    }
+
+    private Sequence GetFadeIn2DSeq(){
+ 	    Sequence sequence = DOTween.Sequence()
+	        .OnStart(() =>
+	        {
+	            fadeCanvas2D.alpha = 1.0f;
+	            fadeCanvas2D.blocksRaycasts = true;
+	            camera2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA2D_DEPTH_DEF-1.0f);
+	        })
+	        .Append(fadeCanvas2D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
+	        .Join(camera2D.transform.DOMoveZ(1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .OnComplete(() =>
+	        {
+	        	fadeCanvas2D.blocksRaycasts = false;
+	        });
+	    
+	    return sequence;   	
+    }
+
+    public void FadeOut2D(){
+	    Sequence sequence = GetFadeOut2DSeq();
+	    sequence.Play();
+    }
+
+    public void FadeIn2D(){
+	    Sequence sequence = GetFadeIn2DSeq();
+
+	    sequence.Play();
+    }
+
+    private Sequence GetFadeOut3DSeq(){
+	    Sequence sequence = DOTween.Sequence()
+	        .OnStart(() =>
+	        {
+	            fadeCanvas3D.alpha = 0.0f;
+	            fadeCanvas3D.blocksRaycasts = true;
+	        })
+	        .Append(fadeCanvas3D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
+	        .Join(depth3D.transform.DOMoveZ(-1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative());    	
+
+	    return sequence;
+	}
+
+	private Sequence GetFadeIn3DSeq(){
+	    Sequence sequence = DOTween.Sequence()
+	        .OnStart(() =>
+	        {
+	            fadeCanvas3D.alpha = 1.0f;
+	            fadeCanvas3D.blocksRaycasts = true;
+	            depth3D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA3D_DEPTH_DEF-1.0f);
+	        })
+	        .Append(fadeCanvas3D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
+	        .Join(depth3D.transform.DOMoveZ(1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .OnComplete(() =>
+	        {
+	        	fadeCanvas3D.blocksRaycasts = false;
+	        });
+	
+		return sequence;		
+	}
+
+    public void FadeOut3D(){
+	    Sequence sequence = GetFadeOut3DSeq();
+	    sequence.Play();
+    }
+
+    public void FadeIn3D(){
+	    Sequence sequence = GetFadeIn3DSeq();
+	    sequence.Play();
+    }
+
     public void Translate3D(Vector3 v, Space relativeTo= Space.Self){
         float d = move3D.localPosition.z;
         move3D.Translate(v, relativeTo);
@@ -47,6 +210,9 @@ public class CameraManager : MonoBehaviour
 
     public void Rotate3D(float x, float y, float z, Space relativeTo = Space.Self){
         root3D.Rotate(x, y, z, relativeTo);
+    }
+    public Quaternion Get3DRotation(){
+        return root3D.localRotation;
     }
     public void Translate2D(Vector3 v, Space relativeTo= Space.Self){
         camera2D.transform.Translate(v, relativeTo);

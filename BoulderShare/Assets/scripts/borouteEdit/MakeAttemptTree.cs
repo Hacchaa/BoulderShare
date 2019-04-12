@@ -10,7 +10,7 @@ public class MakeAttemptTree : MonoBehaviour
 		Add
 	}
 	[SerializeField] private GameObject rootMarks;
-	private string[] twoDTouchMarks;
+	[SerializeField] private string[] twoDTouchMarks;
 	private List<MyUtility.SceneCommentData3D> commentList;
 	private Vector3[] positions;
 	private Quaternion[] rotations;

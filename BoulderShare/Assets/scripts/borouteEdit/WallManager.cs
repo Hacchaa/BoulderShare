@@ -44,6 +44,7 @@ public class WallManager : MonoBehaviour
 		Debug.Log("wallsize:"+wallSize);
 		SyncWallImage();
 	}
+	//3d→2dはscaleがバグる
 	public void CommitWallMarks(GameObject rootMarks){
 		SyncWallMarkObjs(rootMarks);
 		SyncWallMarks();

@@ -14,10 +14,6 @@ public class SceneComment3D : MonoBehaviour
 	[SerializeField]
 	private SceneCommentController3D scController;
     [SerializeField]
-    private Camera cam;
-    [SerializeField]
-    private Transform camBase;
-    [SerializeField]
     private GameObject focusObj;
     [SerializeField]
     private Image frameImage;
@@ -27,6 +23,11 @@ public class SceneComment3D : MonoBehaviour
     private TwoDWall twoDWall;
     [SerializeField] private Transform showObj;
     [SerializeField] private Transform dontShowObj;
+    [SerializeField] private CommentExtendWidth3D cewRight;
+    [SerializeField] private CommentExtendWidth3D cewLeft;
+    [SerializeField] private SceneCommentShow scs;
+    [SerializeField] private Camera camera;
+
     private bool isShowing;
 
 	public static string INIT_STRING = "タップして編集";
@@ -34,11 +35,13 @@ public class SceneComment3D : MonoBehaviour
     private float WIDTH = 300.0f;
 
 
-    void Awake(){
+    public void Init(){
         rectT = gameObject.GetComponent<RectTransform>();
         Resize();
         ShowComment(true);
-        LookAtCamera();
+        cewLeft.SetCamera(camera);
+        cewRight.SetCamera(camera);
+        scs.SetCamera(camera);
     }
 
     public void ShowComment(bool b){
@@ -61,20 +64,9 @@ public class SceneComment3D : MonoBehaviour
         isShowing = false;
     }
 
-    public Camera GetCamera(){
-        return cam;
+    public void Look(Quaternion rot){
+        transform.localRotation = rot;
     }
-
-    public void LookAtCamera(){
-        if (camBase != null){
-            transform.localRotation = camBase.localRotation;
-        }
-    }
-
-    public float GetDeltaAngleToCam(){
-        return Mathf.DeltaAngle(transform.localRotation.eulerAngles.y, camBase.localRotation.eulerAngles.y);
-    }
- 
 
     public void Delete(){
         scController.Release();

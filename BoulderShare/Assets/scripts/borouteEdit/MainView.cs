@@ -9,6 +9,8 @@ public class MainView: SEComponentBase{
 	[SerializeField] private HScenes2 hScenes2;
 	[SerializeField] private GameObject forEdit;
 	[SerializeField] private SceneSelectView ssView;
+	[SerializeField] private ThreeDFirstSettingView threeDSettingView;
+
 	public override void OnPreShow(){
 		cameraManager.Active2D();
 		cameraManager.Reset2DCamPosAndDepth();
@@ -30,7 +32,12 @@ public class MainView: SEComponentBase{
 	public void ToMakeAT(){
 		makeAT.Init();
 		makeAT.SetMode(MakeAttemptTree.Mode.Loop);
-		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
+
+		if (threeDSettingView.IsInit()){
+			trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
+		}else{
+			trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
+		}
 	}
 
 	public void ToPost(){

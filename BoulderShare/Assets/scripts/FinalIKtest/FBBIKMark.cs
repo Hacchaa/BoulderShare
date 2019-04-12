@@ -9,7 +9,7 @@ public class FBBIKMark : FBBIKBase
     	OnPostEndDrag += MatchTargetPosition;
     }
 
-    private void MatchTargetPosition(){
+    protected void MatchTargetPosition(){
     	if (avatar != null){
     		target.position = avatar.position;
     	}

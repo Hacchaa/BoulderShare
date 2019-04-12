@@ -14,16 +14,16 @@ public class HumanModel : MonoBehaviour {
 	[SerializeField] private Vector3[] offsetFromBody;
 	[SerializeField] private Vector3[] offsetTouching;
 	[SerializeField] private Vector3 offsetFromCenterToHead;
-	[SerializeField] private GameObject marks;
+	[SerializeField] private GameObject holdMarksRoot;
 	[SerializeField] private GameObject shadowRoot;
 	[SerializeField] private GameObject shadowPrefab;
 
 	public void HideMarks(){
-		marks.SetActive(false);
+		holdMarksRoot.SetActive(false);
 	}
 
 	public void ShowMarks(){
-		marks.SetActive(true);
+		holdMarksRoot.SetActive(true);
 	}
 
 	public float GetModelSize(){
@@ -112,12 +112,22 @@ public class HumanModel : MonoBehaviour {
 	}
 
 	//MyUtility.FullBodyMarkからTwoDMark.HFTypeに変換
-	public int Convert(int type){
+	public int Convert(MyUtility.FullBodyMark type){
 		switch(type){
-			case (int)MyUtility.FullBodyMark.LeftHand : return (int)TwoDMark.HFType.LH ;
-			case (int)MyUtility.FullBodyMark.RightHand : return (int)TwoDMark.HFType.RH ;
-			case (int)MyUtility.FullBodyMark.LeftFoot : return (int)TwoDMark.HFType.LF ;
-			case (int)MyUtility.FullBodyMark.RightFoot : return (int)TwoDMark.HFType.RF ;
+			case MyUtility.FullBodyMark.LeftHand : return (int)TwoDMark.HFType.LH ;
+			case MyUtility.FullBodyMark.RightHand : return (int)TwoDMark.HFType.RH ;
+			case MyUtility.FullBodyMark.LeftFoot : return (int)TwoDMark.HFType.LF ;
+			case MyUtility.FullBodyMark.RightFoot : return (int)TwoDMark.HFType.RF ;
+		}
+		return -1;
+	}
+
+	public int Convert(TwoDMark.HFType type){
+		switch(type){
+			case TwoDMark.HFType.LH : return (int)MyUtility.FullBodyMark.LeftHand ;
+			case TwoDMark.HFType.RH : return (int)MyUtility.FullBodyMark.RightHand ;
+			case TwoDMark.HFType.LF : return (int)MyUtility.FullBodyMark.LeftFoot ;
+			case TwoDMark.HFType.RF : return (int)MyUtility.FullBodyMark.RightFoot ;
 		}
 		return -1;
 	}
@@ -134,7 +144,7 @@ public class HumanModel : MonoBehaviour {
 		int n = 0;
 		int type = -1;
 		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
-			type = Convert(i);
+			type = Convert((MyUtility.FullBodyMark)i);
 			//Debug.Log("i="+i+", type="+type);
 			if(!string.IsNullOrEmpty(onTouch[type])){
 				pos[i] = threeDWallMarks.GetMarkObj(onTouch[type]).transform.position;
@@ -193,7 +203,7 @@ public class HumanModel : MonoBehaviour {
 		//手足位置の微調整
 		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
 			//ホールドをつかんでいない手足の位置
-			type = Convert(i);
+			type = Convert((MyUtility.FullBodyMark)i);
 			if(onTouch[type] == null){
 				pos[i] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition((MyUtility.FullBodyMark)i));
 			}
@@ -223,4 +233,27 @@ public class HumanModel : MonoBehaviour {
 		SetModelPose(pos, rot);
 	}
 
+	public void SetHoldMarkInfo(TwoDMark.HFType mark, float r, Vector3 p){
+		SetHoldMarkInfo((MyUtility.FullBodyMark)Convert(mark), r, p);
+	}
+
+    public void SetHoldMarkInfo(MyUtility.FullBodyMark mark, float r, Vector3 p){
+    	if (r < 0 || p == Vector3.zero){
+    		return ;
+    	}
+    	FBBIKBase m = fIK.GetMark(mark);
+        if (m != null){
+            if (m.GetType() == typeof(FBBIKMarkHF)){
+                ((FBBIKMarkHF)m).SetHoldInfo(r, p);
+            }
+        }
+    }
+
+    public void InitHoldMarkInfo(){
+        foreach(FBBIKBase m in fIK.GetMarks()){
+            if (m.GetType() == typeof(FBBIKMarkHF)){
+                ((FBBIKMarkHF)m).InitHoldInfo();
+            }
+        }
+    }
 }

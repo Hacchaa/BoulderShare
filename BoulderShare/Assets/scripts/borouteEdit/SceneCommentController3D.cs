@@ -17,11 +17,11 @@ public class SceneCommentController3D : MonoBehaviour
     private ColorSetter3D colorSetter;
     [SerializeField]
     private CanvasGroup cg;
-
     [SerializeField]
     private SceneComment3D sc;
     [SerializeField] private SceneComments3D comments;
     [SerializeField] private Transform makeCommentPosition;
+    [SerializeField] private CameraManager cManager;
 
     public void Init(){
         foreach(Transform t in pTrans){
@@ -33,7 +33,7 @@ public class SceneCommentController3D : MonoBehaviour
     }
     public void CommentLookAtCamera(){
         if (sc != null){
-            sc.LookAtCamera();
+            sc.Look(cManager.Get3DRotation());
         }
     }
 
@@ -129,6 +129,8 @@ public class SceneCommentController3D : MonoBehaviour
     	obj.SetActive(true);
         obj.transform.position = makeCommentPosition.position;
         SceneComment3D com = obj.GetComponent<SceneComment3D>();
+        com.Init();
+        com.Look(cManager.Get3DRotation());
         com.SetText(SceneComment3D.INIT_STRING);
         com.Focus(true);
         comments.AddComment(com);

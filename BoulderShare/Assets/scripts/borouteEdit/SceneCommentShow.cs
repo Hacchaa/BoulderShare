@@ -18,12 +18,9 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     private bool isCommentEditable;
     private float baseDepth;
 
-
-    void Awake(){
-  		cam = sc.GetCamera();
+    public void SetCamera(Camera camera){
+        cam = camera;
     }
-
-
 
     public void OnPointerDown(PointerEventData data){
         if (focusObj.activeSelf){

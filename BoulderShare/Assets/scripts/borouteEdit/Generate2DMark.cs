@@ -44,7 +44,8 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 			rend.sortingLayerName = "Mark";
 			//動かすオブジェクトとして登録
 			target = obj.transform;
-			obj.layer = LayerMask.NameToLayer("Ignore Raycast");
+			//描画するカメラを変えるためレイヤーの変更
+			obj.layer = LayerMask.NameToLayer("UI");
 
 			twoDWallMarks.ReleaseFocus();
 		}
@@ -66,19 +67,17 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 				float width = size.x;
 
 				if (p.x < -width / 2 || p.x > width / 2 || p.y < -height / 2 || p.y > height / 2){
-					Destroy(target.gameObject);
+					twoDWallMarks.DeleteMark(target.gameObject.name);
 				}else{
 					twoDWallMarks.SetFocus(target.GetComponent<TwoDMark>());
 					//マークの中で一番上に表示する
 					target.SetAsFirstSibling();
 				}
 			}else{
-				Destroy(target.gameObject);
+				twoDWallMarks.DeleteMark(target.gameObject.name);
 			}
 			rend = null;
 	    	target = null;
-
-
 		}
 	}
 

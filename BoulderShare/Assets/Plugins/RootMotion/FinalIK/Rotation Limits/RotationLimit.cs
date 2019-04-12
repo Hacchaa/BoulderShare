@@ -105,7 +105,7 @@ namespace RootMotion.FinalIK {
 		 * If you need precise control over the execution order, disable this script and call Apply() whenever you need
 		 * */
 		void LateUpdate() {
-			Apply();
+			//Apply();
 		}
 		
 		/*

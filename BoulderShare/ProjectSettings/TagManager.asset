@@ -13,6 +13,8 @@ TagManager:
   - SGEdgeSet
   - 2DMark
   - DummyNode
+  - Character 1
+  - Character 2
   layers:
   - Default
   - TransparentFX
@@ -34,9 +36,9 @@ TagManager:
   - AvatarControl
   - 3DWall
   - LayerGraph
-  - 
-  - 
-  - 
+  - controller
+  - puppetmaster
+  - 3DFade
   - 
   - 
   - 
@@ -49,6 +51,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Fade
+    uniqueID: 630215409
     locked: 0
   - name: UI
     uniqueID: 1291361923

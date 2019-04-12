@@ -14,10 +14,10 @@ public class CommentExtendWidth3D : MonoBehaviour, IBeginDragHandler, IDragHandl
     private static int finger = FINGER_NONE;
     private static float WIDTH_MIN = 40.0f;
 
-    void Awake(){
-    	cam = sc.GetCamera();
-    }
 
+    public void SetCamera(Camera camera){
+    	cam = camera;
+    }
     //イベント捕捉
     public void OnPointerUp(PointerEventData data){
     }

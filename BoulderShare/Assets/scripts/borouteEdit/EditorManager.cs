@@ -26,6 +26,7 @@ public class EditorManager : MonoBehaviour {
 	[SerializeField]
 	private ScreenTransitionManager transition;
 	[SerializeField] private WallManager wallManager;
+	[SerializeField] private HScenes2 hScenes;
 
 	private string test;
 
@@ -39,6 +40,7 @@ public class EditorManager : MonoBehaviour {
 
 	//borouteeditの初期化処理
 	private void FirstProc(){
+		hScenes.Init();
 		transition.Init();
 		transition.Transition(ScreenTransitionManager.Screen.MainView);
 

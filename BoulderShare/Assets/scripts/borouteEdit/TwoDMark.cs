@@ -18,6 +18,7 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	private SpriteRenderer rend;
 	[SerializeField]
 	private Camera cam;
+	[SerializeField] private Transform anotherCam;
 	[SerializeField]
 	private TwoDWall twoDWall;
 	[SerializeField]
@@ -81,7 +82,8 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
 			//uiより前に表示させる
 			rend.sortingLayerName = "Mark";
-			gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+			gameObject.layer = LayerMask.NameToLayer("UI");
+			anotherCam.position = cam.transform.position;
 
 		}
 	}

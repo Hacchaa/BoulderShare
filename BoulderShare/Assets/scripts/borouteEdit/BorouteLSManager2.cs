@@ -28,7 +28,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 		info = obj.GetComponent<InfoFromViewToEdit>();
 		isNew = info.IsNew();
-
+		
 		//ボルートが選択されている場合（新規作成でない場合
 		if (!isNew){
 			//ボルートを読み込む

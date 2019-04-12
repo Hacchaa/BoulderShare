@@ -73,10 +73,23 @@ public class ThreeDWallMarks : MonoBehaviour {
 	}
 
 	public GameObject GetMarkObj(string name){
-		if (string.IsNullOrEmpty(name)){
+		if (string.IsNullOrEmpty(name) || !map.ContainsKey(name)){
 			return null;
 		}
-
 		return map[name];
+	}
+
+	public float GetMarkR(string name){
+		if (string.IsNullOrEmpty(name) || !map.ContainsKey(name)){
+			return -1;
+		}
+		return map[name].transform.localScale.x / (THREED_MARK_SIZE * 2);
+	}
+
+	public Vector3 GetMarkWorldPos(string name){
+		if (string.IsNullOrEmpty(name) || !map.ContainsKey(name)){
+			return Vector3.zero;
+		}
+		return map[name].transform.position;
 	}
 }

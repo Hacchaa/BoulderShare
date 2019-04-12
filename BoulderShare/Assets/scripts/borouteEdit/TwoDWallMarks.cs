@@ -44,7 +44,13 @@ public class TwoDWallMarks : MonoBehaviour {
 	}
 
 	public bool DeleteMark(string name){
-		return map.Remove(name);
+		if (map.ContainsKey(name)){
+			GameObject obj = map[name].gameObject;
+			bool b = map.Remove(name);
+			Destroy(obj.gameObject);
+			return b;
+		}
+		return false;
 	}
 
 	public GameObject MakeMark(string name = ""){

@@ -12,6 +12,8 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	protected Action OnPostBeginDrag;
 	protected Action OnPostDrag;
 	protected Action OnPostEndDrag;
+	protected Action OnPreCorrectPosition;
+	protected Action OnPostCorrectPosition;
 	[SerializeField] protected Transform target;
 	protected Transform avatar;
 	private Camera cam;
@@ -22,13 +24,15 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 
 	}
 
-	void LateUpdate(){
-		Invoke("CorrectPosition", 0.0f);
-	}
-
-	private void CorrectPosition(){
+	public void CorrectPosition(){
+		if (OnPreCorrectPosition != null){
+			OnPreCorrectPosition();
+		}
 		if (avatar != null){
 			transform.position = avatar.position;
+		}
+		if (OnPostCorrectPosition != null){
+			OnPostCorrectPosition();
 		}
 	}
 
@@ -37,6 +41,10 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	}
 	public Vector3 GetPosition(){
 		return target.localPosition;
+	}
+
+	public void SetWorldPosition(Vector3 p){
+		target.position = p;
 	}
 	public void SetPosition(Vector3 p){
 		target.localPosition = p;
@@ -59,7 +67,7 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	}
 
 	public void OnBeginDrag(PointerEventData data){
-		Debug.Log("onbeginDrag");
+		//Debug.Log("onbeginDrag");
 		if (finger == MyUtility.FINGER_NONE){
 			finger = data.pointerId;
 

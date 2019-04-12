@@ -9,7 +9,7 @@ namespace RootMotion.FinalIK {
 	[HelpURL("https://www.youtube.com/watch?v=7__IafZGwvI&index=1&list=PLVxSIA1OaTOu8Nos3CalXbJ2DrKnntMv6")]
 	[AddComponentMenu("Scripts/RootMotion.FinalIK/IK/Full Body Biped IK")]
 	public class FullBodyBipedIK : IK {
-		
+
 		// Open the User Manual URL
 		[ContextMenu("User Manual")]
 		protected override void OpenUserManual() {
