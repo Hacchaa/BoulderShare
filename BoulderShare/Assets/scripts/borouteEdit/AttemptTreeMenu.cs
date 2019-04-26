@@ -59,7 +59,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		makeAT.SetMode(MakeAttemptTree.Mode.Edit);
 		makeAT.SetIndex(hScenes.GetCurIndex());
 		makeAT.LoadScene(hScenes.GetCurScene());
-		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
+		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 	}
 
 	public void ToATMenu(){
@@ -80,16 +80,16 @@ public class AttemptTreeMenu : SEComponentBase{
 		makeAT.Init();
 		makeAT.SetMode(MakeAttemptTree.Mode.Add);
 		makeAT.SetIndex(hScenes.GetCurIndex());
-		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);		
+		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);		
 	}
 	public void AddNext(){
 		makeAT.Init();
 		makeAT.SetMode(MakeAttemptTree.Mode.Add);
 		makeAT.SetIndex(hScenes.GetCurIndex()+1);
-		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);		
+		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);		
 	}
 	public void ToRemove(){
-		popup.Open(Remove, null, warningText);
+		popup.Open(Remove, null, warningText,"", "削除", "キャンセル");
 	}
 
 	public void ToMainView(){

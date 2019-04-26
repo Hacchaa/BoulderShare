@@ -40,7 +40,7 @@ namespace Kakera
         }
 
         public void OpenImagePicker(){
-            popup.Open(OnPressShowPicker, eManager.ExitImmediately,"はじめに画像を読み込みましょう。", eManager.ExitImmediately);
+            popup.Open(OnPressShowPicker, eManager.ExitImmediately,"画像を選択","アルバムから画像を選択します。","選択","キャンセル");
         }
 
         public void OnPressShowPicker()

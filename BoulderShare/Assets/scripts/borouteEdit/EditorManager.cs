@@ -63,12 +63,9 @@ public class EditorManager : MonoBehaviour {
 	}
 
 	public void ExitEditor(){
-		string content = "編集作業を一時保存しますか？";
-		popup.Open(YesProc, ExitImmediately, content, CloseProc);
-	}
-	//何もしない
-	private void CloseProc(){
-
+		string title = "終了しますか？";
+		string content = "編集内容は一時保存されます。";
+		popup.Open(YesProc, null, title, content, "終了", "キャンセル");
 	}
 
 	private void YesProc(){

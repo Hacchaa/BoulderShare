@@ -9,6 +9,7 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	//初期カメラ深さ(10unit)でマークの大きさが1unitになるように設定
 	private const float MARK_RATE = 0.1f;
 	private Transform target;
+	private TwoDMark targetMark;
 	private Renderer rend;
 
 	[SerializeField]
@@ -44,10 +45,12 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 			rend.sortingLayerName = "Mark";
 			//動かすオブジェクトとして登録
 			target = obj.transform;
+			targetMark = obj.GetComponent<TwoDMark>();
 			//描画するカメラを変えるためレイヤーの変更
 			obj.layer = LayerMask.NameToLayer("UI");
 
-			twoDWallMarks.ReleaseFocus();
+			targetMark.SetType(TwoDMark.FocusType.NORMAL);
+			twoDWallMarks.SetFocus(targetMark);
 		}
 	}
 
@@ -65,11 +68,12 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 				Vector2 size = wallManager.GetMasterWallSize();
 				float height = size.y;
 				float width = size.x;
-
+				Debug.Log("p:"+p+" , width:"+width +" height:"+ height);
 				if (p.x < -width / 2 || p.x > width / 2 || p.y < -height / 2 || p.y > height / 2){
 					twoDWallMarks.DeleteMark(target.gameObject.name);
 				}else{
-					twoDWallMarks.SetFocus(target.GetComponent<TwoDMark>());
+					targetMark.SetType(TwoDMark.FocusType.SCALE);
+					twoDWallMarks.SetFocus(targetMark);
 					//マークの中で一番上に表示する
 					target.SetAsFirstSibling();
 				}

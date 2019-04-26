@@ -12,10 +12,7 @@ public class TwoDWallMarks : MonoBehaviour {
 	private TwoDMark[] dummyMarks;
 	private static int num = 0;
 	private Dictionary<string, TwoDMark> map;
-	[SerializeField]
-	private EditWallMark editWallMark;
-	[SerializeField]
-	private GameObject twoDMarkOrigin;
+	[SerializeField] private GameObject twoDMarkOrigin;
 	[SerializeField] private WallManager wallManager;
 
 	void Awake(){
@@ -78,12 +75,11 @@ public class TwoDWallMarks : MonoBehaviour {
 
 	public void SetFocus(TwoDMark mark){
 		if (current != null){
-			current.Focus(false);
+			current.ReleaseFocus();
 		}
 
 		current = mark;
-		current.Focus(true);
-		editWallMark.OpenMarkOptions();
+		current.Focus();
 	}
 
 	public TwoDMark GetFocus(){
@@ -92,10 +88,9 @@ public class TwoDWallMarks : MonoBehaviour {
 
 	public void ReleaseFocus(){
 		if (current != null){
-			current.Focus(false);
+			current.ReleaseFocus();
 		}
 		current = null;
-		editWallMark.CloseMarkOptions();
 	}
 
 	public void Next(){
@@ -218,7 +213,7 @@ public class TwoDWallMarks : MonoBehaviour {
 				mark.transform.localPosition = t.localPosition;
 				mark.transform.localScale = t.localScale;
 				mark.SetActive(true);
-				map[t.name].Focus(false);
+				map[t.name].ReleaseFocus();
 			}
 		}
 		num = n;

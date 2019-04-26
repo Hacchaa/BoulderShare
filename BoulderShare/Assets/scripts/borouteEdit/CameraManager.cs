@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-
+using System;
 public class CameraManager : MonoBehaviour
 {
 	[SerializeField] private CanvasGroup fadeCanvas2D;
@@ -31,58 +31,74 @@ public class CameraManager : MonoBehaviour
 	[SerializeField] private bool swithAnim = false;
 	[SerializeField] private bool fadeOutIn2D = false;
 	[SerializeField] private bool fadeOutIn3D = false;
+    [SerializeField] private bool isRight = false;
+    [SerializeField] private float dirLength = 1.0f;
+
 	void Update(){
 		if (fadeOutIn3D){
 			fadeOutIn3D = false;
-			FadeOutIn3DWithAnimation();
+			FadeOutIn3DWithAnimation(isRight, GetRootWorldPos());
 		}
 		if (fadeOutIn2D){
 			fadeOutIn2D = false;
-			FadeOutIn2DWithAnimation();
+			FadeOutIn2DWithAnimation(isRight);
 		}
 		if (swithAnim){
 			swithAnim = false;
-			SwitchDimWithAnimation();
+			SwitchDimWithAnimation(isRight, GetRootWorldPos());
 		}
 		if (isFadeOut2D){
-			FadeOut2D();
+			FadeOut2D(isRight);
 			isFadeOut2D = false;
 		}
 
 		if (isFadeIn2D){
-			FadeIn2D();
+			FadeIn2D(isRight);
 			isFadeIn2D = false;
 		}
 		if (isFadeOut3D){
-			FadeOut3D();
+			FadeOut3D(isRight);
 			isFadeOut3D = false;
 		}
 
 		if (isFadeIn3D){
-			FadeIn3D();
+			FadeIn3D(isRight, GetRootWorldPos());
 			isFadeIn3D = false;
 		}
 	}
 
-	public void FadeOutIn2DWithAnimation(){
+	public void FadeOutIn2DWithAnimation(bool isRightDir){
 		Sequence seq = DOTween.Sequence();
-		seq.Append(GetFadeOut2DSeq())
-		.Append(GetFadeIn2DSeq())
+		seq.Append(GetFadeOut2DSeq(isRightDir))
+		.Append(GetFadeIn2DSeq(!isRightDir))
 		.Play();
 	}
-
-	public void FadeOutIn3DWithAnimation(){
+    public Sequence GetFadeOutIn2DSeq(bool isRightDir){
+        Sequence seq = DOTween.Sequence();
+        seq.Append(GetFadeOut2DSeq(isRightDir))
+        .Append(GetFadeIn2DSeq(!isRightDir));
+        
+        return seq;
+    }
+	public void FadeOutIn3DWithAnimation(bool isRightDir, Vector3 pos){
 		Sequence seq = DOTween.Sequence();
-		seq.Append(GetFadeOut3DSeq())
-		.Append(GetFadeIn3DSeq())
+		seq.Append(GetFadeOut3DSeq(isRightDir))
+		.Append(GetFadeIn3DSeq(!isRightDir, pos))
 		.Play();
 	}
+    public Sequence GetFadeOutIn3DSeq(bool isRightDir, Vector3 pos){
+        Sequence seq = DOTween.Sequence();
+        seq.Append(GetFadeOut3DSeq(isRightDir))
+        .Append(GetFadeIn3DSeq(!isRightDir, pos));
 
-	public void SwitchDimWithAnimation(){
+        return seq;
+    }
+
+	public void SwitchDimWithAnimation(bool isRightDir, Vector3 pos){
 		Sequence seq = DOTween.Sequence();
 		if (Is2DActive()){
-			seq.Append(GetFadeOut2DSeq())
-			.Append(GetFadeIn3DSeq())
+			seq.Append(GetFadeOut2DSeq(isRightDir))
+			.Append(GetFadeIn3DSeq(!isRightDir, pos))
 			.InsertCallback(
 				fadeDuration, 
 				() => {
@@ -90,8 +106,8 @@ public class CameraManager : MonoBehaviour
 				}
 			);
 		}else{
-			seq.Append(GetFadeOut3DSeq())
-			.Append(GetFadeIn2DSeq())
+			seq.Append(GetFadeOut3DSeq(isRightDir))
+			.Append(GetFadeIn2DSeq(!isRightDir))
 			.InsertCallback(
 				fadeDuration, 
 				() => {
@@ -102,6 +118,31 @@ public class CameraManager : MonoBehaviour
 
 		seq.Play();
 	}
+
+    public Sequence GetSwitchDimSeq(bool isRightDir, Vector3 pos){
+        Sequence seq = DOTween.Sequence();
+        if (Is2DActive()){
+            seq.Append(GetFadeOut2DSeq(isRightDir))
+            .Append(GetFadeIn3DSeq(!isRightDir, pos))
+            .InsertCallback(
+                fadeDuration, 
+                () => {
+                    Active3D();
+                }
+            );
+        }else{
+            seq.Append(GetFadeOut3DSeq(isRightDir))
+            .Append(GetFadeIn2DSeq(!isRightDir))
+            .InsertCallback(
+                fadeDuration, 
+                () => {
+                    Active2D();
+                }
+            );          
+        }
+
+        return seq;
+    }
 
     public List<Camera> GetCameras(){
         List<Camera> list = new List<Camera>();
@@ -118,7 +159,11 @@ public class CameraManager : MonoBehaviour
     	root3D.DORotateQuaternion(rot, duration);
     }
 
-    private Sequence GetFadeOut2DSeq(){
+    public Sequence GetFadeOut2DSeq(bool isRightDir){
+        float dir = dirLength;
+        if (isRightDir){
+            dir *= -1.0f;
+        }
     	Sequence sequence = DOTween.Sequence()
 	        .OnStart(() =>
 	        {
@@ -126,41 +171,55 @@ public class CameraManager : MonoBehaviour
 	            fadeCanvas2D.blocksRaycasts = true;
 	        })
 	        .Append(fadeCanvas2D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
-	        .Join(camera2D.transform.DOMoveZ(-1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative());
-
-	    return sequence;
-    }
-
-    private Sequence GetFadeIn2DSeq(){
- 	    Sequence sequence = DOTween.Sequence()
-	        .OnStart(() =>
-	        {
-	            fadeCanvas2D.alpha = 1.0f;
-	            fadeCanvas2D.blocksRaycasts = true;
-	            camera2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA2D_DEPTH_DEF-1.0f);
-	        })
-	        .Append(fadeCanvas2D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
-	        .Join(camera2D.transform.DOMoveZ(1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .Join(camera2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
 	        .OnComplete(() =>
 	        {
 	        	fadeCanvas2D.blocksRaycasts = false;
 	        });
 	    
+	    return sequence;
+    }
+
+    public Sequence GetFadeIn2DSeq(bool isRightDir){
+        float dir = -dirLength;
+        if (isRightDir){
+            dir *= -1.0f;
+        }
+ 	    Sequence sequence = DOTween.Sequence()
+	        .OnStart(() =>
+	        {
+	            fadeCanvas2D.alpha = 1.0f;
+	            fadeCanvas2D.blocksRaycasts = true;
+	            camera2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA2D_DEPTH_DEF);
+	        })
+	        .Append(fadeCanvas2D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
+	        .Join(camera2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .OnComplete(() =>
+	        {
+	        	fadeCanvas2D.blocksRaycasts = false;
+                fadeCanvas2D.alpha = 0.0f;
+                fadeCanvas3D.alpha = 0.0f;
+	        });
+	    
 	    return sequence;   	
     }
 
-    public void FadeOut2D(){
-	    Sequence sequence = GetFadeOut2DSeq();
+    public void FadeOut2D(bool isRightDir){
+	    Sequence sequence = GetFadeOut2DSeq(isRightDir);
 	    sequence.Play();
     }
 
-    public void FadeIn2D(){
-	    Sequence sequence = GetFadeIn2DSeq();
+    public void FadeIn2D(bool isRightDir){
+	    Sequence sequence = GetFadeIn2DSeq(isRightDir);
 
 	    sequence.Play();
     }
 
-    private Sequence GetFadeOut3DSeq(){
+    public Sequence GetFadeOut3DSeq(bool isRightDir){
+        float dir = dirLength;
+        if (isRightDir){
+            dir *= -1.0f;
+        }        
 	    Sequence sequence = DOTween.Sequence()
 	        .OnStart(() =>
 	        {
@@ -168,36 +227,50 @@ public class CameraManager : MonoBehaviour
 	            fadeCanvas3D.blocksRaycasts = true;
 	        })
 	        .Append(fadeCanvas3D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
-	        .Join(depth3D.transform.DOMoveZ(-1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative());    	
-
+	        .Join(move3D.transform.DOLocalMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())    	
+			.OnComplete(() =>
+	        {
+	        	fadeCanvas3D.blocksRaycasts = false;
+	        });
+	    
 	    return sequence;
 	}
 
-	private Sequence GetFadeIn3DSeq(){
+	public Sequence GetFadeIn3DSeq(bool isRightDir, Vector3 pos){
+        float dir = -dirLength;
+        if (isRightDir){
+            dir *= -1.0f;
+        }
 	    Sequence sequence = DOTween.Sequence()
 	        .OnStart(() =>
 	        {
 	            fadeCanvas3D.alpha = 1.0f;
 	            fadeCanvas3D.blocksRaycasts = true;
-	            depth3D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA3D_DEPTH_DEF-1.0f);
+
+                Reset3DCamPosAndDepth();
+                SetRootWorldPos(pos);
+                Set3DDepth(CAMERA3D_DEPTH_LOOKING);
+                move3D.transform.localPosition = new Vector3(-dir, 0.0f, 0.0f);
 	        })
 	        .Append(fadeCanvas3D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
-	        .Join(depth3D.transform.DOMoveZ(1.0f, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .Join(move3D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
 	        .OnComplete(() =>
 	        {
 	        	fadeCanvas3D.blocksRaycasts = false;
+                fadeCanvas3D.alpha = 0.0f;
+                fadeCanvas2D.alpha = 0.0f;
 	        });
 	
 		return sequence;		
 	}
 
-    public void FadeOut3D(){
-	    Sequence sequence = GetFadeOut3DSeq();
+    public void FadeOut3D(bool isRightDir){
+	    Sequence sequence = GetFadeOut3DSeq(isRightDir);
 	    sequence.Play();
     }
 
-    public void FadeIn3D(){
-	    Sequence sequence = GetFadeIn3DSeq();
+    public void FadeIn3D(bool isRightDir, Vector3 pos){
+	    Sequence sequence = GetFadeIn3DSeq(isRightDir, pos);
 	    sequence.Play();
     }
 

@@ -3,54 +3,93 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
+
 public class EditorPopup : MonoBehaviour {
-	[SerializeField]
-	private Text textContent;
-	private Action noProc = null;
-	private Action yesProc = null;
-	private Action closeProc = null;
-	[SerializeField] private GameObject closeObj;
+	[SerializeField] private TextMeshProUGUI titleText;
+	[SerializeField] private TextMeshProUGUI supportText;
+	[SerializeField] private TextMeshProUGUI rightButtonText;
+	[SerializeField] private TextMeshProUGUI leftButtonText;
+	[SerializeField] private CanvasGroup canvasGroup;
+	[SerializeField] private float fadeInDuration = 0.15f;
+	[SerializeField] private float fadeOutDuration = 0.075f;
 
-	public void Open(Action yesAction, Action noAction, string content, Action closeAction = null){
-		this.gameObject.SetActive(true);
-		if (closeAction == null){
-			closeObj.SetActive(false);
-		}
+	private Action leftProc = null;
+	private Action rightProc = null;
 
-		noProc = noAction;
-		yesProc = yesAction;
-		textContent.text = content;
-		closeProc = closeAction ;
+	public void Open(Action rightAction, Action leftAction, string title, string support, string rightBText, string leftBText){
+		leftProc = leftAction;
+		rightProc = rightAction;
+		titleText.text = title;
+		supportText.text = support;
+		rightButtonText.text = rightBText;
+		leftButtonText.text = leftBText;
+
+		PlayOpenAnimation();
 	}
 
-
-	public void PushNoBtn(){
-		if (noProc != null){
-			noProc();
-		}
-		Close();
+	public void Close(bool isRight){
+		PlayCloseAnimation(isRight);
 	}
 
-	public void PushYesBtn(){
-		if (yesProc != null){
-			yesProc();
-		}
-		Close();
+	private void PlayOpenAnimation(){
+		Sequence seq = DOTween.Sequence();
+
+		seq.OnStart(() =>
+		{
+			gameObject.SetActive(true);
+			canvasGroup.blocksRaycasts = true;
+			canvasGroup.interactable = false;
+			canvasGroup.alpha = 0.0f;
+		})
+		.Append(canvasGroup.DOFade(1.0f, fadeInDuration).SetEase(Ease.InQuad))
+		.OnComplete(() =>
+		{
+			canvasGroup.interactable = true;
+		});
+		seq.Play();
 	}
 
-	public void PushCloseBtn(){
-		if (closeProc != null){
-			closeProc();
-		}
+	private void PlayCloseAnimation(bool isRight){
+		Sequence seq = DOTween.Sequence();
 
-		Close();
+		seq.OnStart(() =>
+		{
+			canvasGroup.blocksRaycasts = true;
+			canvasGroup.interactable = false;
+			canvasGroup.alpha = 1.0f;
+		})
+		.Append(canvasGroup.DOFade(0.0f, fadeOutDuration).SetEase(Ease.OutQuad))
+		.OnComplete(() =>
+		{
+			titleText.text = "";
+			supportText.text = "";
+			rightButtonText.text = "";
+			leftButtonText.text = "";
+
+			if (isRight){
+				if(rightProc != null){
+					rightProc();
+					rightProc = null;
+				}
+			}else{
+				if (leftProc != null){
+					leftProc();
+					leftProc = null;
+				}
+			}
+			gameObject.SetActive(false);
+		});
+
+		seq.Play();
 	}
 
-	public void Close(){
-		noProc = null;
-		yesProc = null;
-		closeProc = null;
-		textContent.text = "";
-		this.gameObject.SetActive(false);
+	public void PushLeftBtn(){
+		PlayCloseAnimation(false);
+	}
+
+	public void PushRightBtn(){
+		PlayCloseAnimation(true);
 	}
 }

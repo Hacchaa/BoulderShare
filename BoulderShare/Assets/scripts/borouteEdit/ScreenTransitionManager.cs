@@ -29,7 +29,8 @@ public class ScreenTransitionManager : MonoBehaviour {
 		SceneSelectView,
 		LayerGraphView,
 		AttemptTreeMenu,
-		ATFailureView
+		ATFailureView,
+		SceneEditor
 	}
 
 	void Awake(){

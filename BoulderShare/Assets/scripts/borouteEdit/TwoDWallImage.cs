@@ -100,10 +100,12 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	}
 
 	public void OnPointerEnter(PointerEventData data){
+		//Debug.Log("isOn");
 		isOn = true;
 	}
 
 	public void OnPointerExit(PointerEventData data){
+		//Debug.Log("isOff");
 		isOn = false;
 		offTouchPos = data.position;
 	}

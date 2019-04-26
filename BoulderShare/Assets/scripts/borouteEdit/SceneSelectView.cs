@@ -45,7 +45,7 @@ public class SceneSelectView : SEComponentBase{
 		trans.Transition(ScreenTransitionManager.Screen.EditWallMark);		
 	}
 	public void ToRemove(){
-		popup.Open(Remove, null, warningText);
+		popup.Open(Remove, null, warningText, "", "削除", "キャンセル");
 	}
 
 	public void ToMainView(){
