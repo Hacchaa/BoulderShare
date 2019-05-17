@@ -4,6 +4,7 @@ using UnityEngine;
 using SA.CrossPlatform.App;
 using SA.iOS.Photos;
 using SA.iOS.AVFoundation;
+using SA.CrossPlatform.UI;
 
 public class MainView: SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
@@ -16,6 +17,7 @@ public class MainView: SEComponentBase{
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private GameObject pickImageFrame;
 	[SerializeField] private TwoDWallImage twoDWallImage;
+	[SerializeField] private EditorManager editorManager;
 
 	public override void OnPreShow(){
 		cameraManager.Active2D();
@@ -46,17 +48,27 @@ public class MainView: SEComponentBase{
 
 	public void OpenPhotoLibrary(){
 		#if UNITY_IPHONE
-			ISN_PHAuthorizationStatus authoStatus = ISN_PHPhotoLibrary.AuthorizationStatus;
-
-			if (authoStatus == ISN_PHAuthorizationStatus.Authorized){
-				PickImageFromLibrary();
-				return ;
-			}
-
-
 			ISN_PHPhotoLibrary.RequestAuthorization((status) =>{
 				if (status == ISN_PHAuthorizationStatus.Authorized){
 					PickImageFromLibrary();
+				}else if (status == ISN_PHAuthorizationStatus.StatusDenied){
+					string title = "写真へのアクセスが拒否されています";
+					string message = "写真アクセスの権限を許可してください。";
+					var builder = new UM_NativeDialogBuilder(title, message);
+					builder.SetPositiveButton("OK", () =>{
+						editorManager.ExitImmediately();
+					});
+					var dialog = builder.Build();
+					dialog.Show();
+				}else if (status == ISN_PHAuthorizationStatus.Restricted){
+					string title = "写真へのアクセスが制限されています";
+					string message = "";
+					var builder = new UM_NativeDialogBuilder(title, message);
+					builder.SetPositiveButton("OK", () =>{
+						editorManager.ExitImmediately();
+					});
+					var dialog = builder.Build();
+					dialog.Show();
 				}
 			});
 			return ;
@@ -66,17 +78,27 @@ public class MainView: SEComponentBase{
 
 	public void TakePictureFromNativeCamera(){
 		#if UNITY_IPHONE
-			ISN_AVAuthorizationStatus authoStatus = ISN_AVCaptureDevice.GetAuthorizationStatus(ISN_AVMediaType.Video);
-
-			if (authoStatus == ISN_AVAuthorizationStatus.Authorized){
-				PickImageFromCamera();
-				return ;
-			}
-
-
 			ISN_AVCaptureDevice.RequestAccess(ISN_AVMediaType.Video, (status) => {
 				if (status == ISN_AVAuthorizationStatus.Authorized){
 					PickImageFromCamera();
+				}else if (status == ISN_AVAuthorizationStatus.Denied){
+					string title = "カメラへのアクセスが拒否されています";
+					string message = "カメラアクセスの権限を許可してください。";
+					var builder = new UM_NativeDialogBuilder(title, message);
+					builder.SetPositiveButton("OK", () =>{
+						editorManager.ExitImmediately();
+					});
+					var dialog = builder.Build();
+					dialog.Show();
+				}else if (status == ISN_AVAuthorizationStatus.Restricted){
+					string title = "カメラへのアクセスが制限されています";
+					string message = "";
+					var builder = new UM_NativeDialogBuilder(title, message);
+					builder.SetPositiveButton("OK", () =>{
+						editorManager.ExitImmediately();
+					});
+					var dialog = builder.Build();
+					dialog.Show();					
 				}
 			});
 			return ;
