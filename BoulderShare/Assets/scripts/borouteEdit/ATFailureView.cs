@@ -20,6 +20,8 @@ public class ATFailureView : SEComponentBase{
 	[SerializeField] private TMP_InputField inputField;
 	[SerializeField] private List<GameObject> failureObjects;
 	[SerializeField] private FailureCommentController fcc;
+	[SerializeField] private TwoDWallImage twoDWallImage;
+	[SerializeField] private ThreeDWall threeDWall;
 
 	public void AddFailureComment(){
 		string inputText = inputField.text;
@@ -102,6 +104,8 @@ public class ATFailureView : SEComponentBase{
 		//failedListButton.SetActive(failedListView.IsExist());
 		comments.ShowDynamically();
 		Switch2D3D(true);
+		twoDWallImage.ShowTranslucentWall();
+		threeDWall.ShowTranslucentWall();
 	}
 
 	public override void OnPreHide(){

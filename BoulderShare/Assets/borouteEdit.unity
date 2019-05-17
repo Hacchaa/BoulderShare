@@ -6281,6 +6281,7 @@ MonoBehaviour:
   threeDSettingView: {fileID: 313267627}
   wallManager: {fileID: 1554466168}
   pickImageFrame: {fileID: 77821129}
+  twoDWallImage: {fileID: 1933457108}
 --- !u!1 &113615657
 GameObject:
   m_ObjectHideFlags: 0
@@ -34065,7 +34066,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 113003784}
-        m_MethodName: PickImageFromCamera
+        m_MethodName: TakePictureFromNativeCamera
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -36022,6 +36023,8 @@ MonoBehaviour:
   - {fileID: 392985886}
   - {fileID: 426786813}
   fcc: {fileID: 495483594}
+  twoDWallImage: {fileID: 1933457108}
+  threeDWall: {fileID: 2058460124}
 --- !u!1 &645660008
 GameObject:
   m_ObjectHideFlags: 0
@@ -98561,7 +98564,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1670136694
 Transform:
   m_ObjectHideFlags: 0
@@ -109615,6 +109618,8 @@ MonoBehaviour:
   - {fileID: 838427373}
   inputField: {fileID: 1224804625}
   fcc: {fileID: 1918597565}
+  twoDWallImage: {fileID: 1933457108}
+  threeDWall: {fileID: 2058460124}
 --- !u!1 &1861522577
 GameObject:
   m_ObjectHideFlags: 0

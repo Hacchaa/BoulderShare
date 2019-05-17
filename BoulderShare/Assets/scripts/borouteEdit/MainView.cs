@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SA.CrossPlatform.App;
-
+using SA.iOS.Photos;
+using SA.iOS.AVFoundation;
 
 public class MainView: SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
@@ -14,6 +15,7 @@ public class MainView: SEComponentBase{
 	[SerializeField] private ThreeDFirstSettingView threeDSettingView;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private GameObject pickImageFrame;
+	[SerializeField] private TwoDWallImage twoDWallImage;
 
 	public override void OnPreShow(){
 		cameraManager.Active2D();
@@ -25,6 +27,7 @@ public class MainView: SEComponentBase{
 		}
 
 		pickImageFrame.SetActive(!wallManager.IsWallImagePrepared());
+		twoDWallImage.HideTranslucentWall();
 	}
 
 	public override void OnPreHide(){
@@ -42,21 +45,43 @@ public class MainView: SEComponentBase{
 	}
 
 	public void OpenPhotoLibrary(){
-		/*
-		ISN_PHAuthorizationStatus authoStatus = ISN_PHPhotoLibrary.AuthorizationStatus;
+		#if UNITY_IPHONE
+			ISN_PHAuthorizationStatus authoStatus = ISN_PHPhotoLibrary.AuthorizationStatus;
 
-		if (authoStatus == ISN_PHAuthorizationStatus.Authorized){
-			PickImageFromLibrary();
-			return ;
-		}
-
-
-		ISN_PHPhotoLibrary.RequestAuthorization((status) =>{
-			if (status == ISN_PHAuthorizationStatus.Authorized){
+			if (authoStatus == ISN_PHAuthorizationStatus.Authorized){
 				PickImageFromLibrary();
+				return ;
 			}
-		});*/
+
+
+			ISN_PHPhotoLibrary.RequestAuthorization((status) =>{
+				if (status == ISN_PHAuthorizationStatus.Authorized){
+					PickImageFromLibrary();
+				}
+			});
+			return ;
+		#endif
 		PickImageFromLibrary();
+	}
+
+	public void TakePictureFromNativeCamera(){
+		#if UNITY_IPHONE
+			ISN_AVAuthorizationStatus authoStatus = ISN_AVCaptureDevice.GetAuthorizationStatus(ISN_AVMediaType.Video);
+
+			if (authoStatus == ISN_AVAuthorizationStatus.Authorized){
+				PickImageFromCamera();
+				return ;
+			}
+
+
+			ISN_AVCaptureDevice.RequestAccess(ISN_AVMediaType.Video, (status) => {
+				if (status == ISN_AVAuthorizationStatus.Authorized){
+					PickImageFromCamera();
+				}
+			});
+			return ;
+		#endif
+		PickImageFromCamera();
 	}
 
 
@@ -74,14 +99,14 @@ public class MainView: SEComponentBase{
 		        Debug.Log("mdeia.Path: " + media.Path);
 
 		        wallManager.CommitWallImage(image);
-		        trans.Transition(ScreenTransitionManager.Screen.PickImageView);
+		        trans.Transition(ScreenTransitionManager.Screen.MainView);
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
 		});
 	}
 
-	public void PickImageFromCamera(){
+	private void PickImageFromCamera(){
 		var camera = UM_Application.CameraService;
 
 		int maxThumbnailSize = 1024;
@@ -94,7 +119,7 @@ public class MainView: SEComponentBase{
 		        Debug.Log("mdeia.Type: " + mdeia.Type);
 		        Debug.Log("mdeia.Path: " + mdeia.Path);
 		       	wallManager.CommitWallImage(image);
-		        trans.Transition(ScreenTransitionManager.Screen.PickImageView);
+		        trans.Transition(ScreenTransitionManager.Screen.MainView);
 		    } else {
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }

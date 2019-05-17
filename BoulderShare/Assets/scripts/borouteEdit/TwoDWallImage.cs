@@ -29,6 +29,14 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	}
 
 
+	public void ShowTranslucentWall(){
+		translucentWall.gameObject.SetActive(true);
+	}
+
+	public void HideTranslucentWall(){
+		translucentWall.gameObject.SetActive(false);
+	}
+
 	public void LateUpdate(){
 		isUpdate = false;
 	}

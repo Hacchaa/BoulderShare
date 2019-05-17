@@ -27,6 +27,8 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private List<GameObject> failureObjects;
 	[SerializeField] private TMP_InputField inputField;
 	[SerializeField] private FailureCommentController fcc;
+	[SerializeField] private TwoDWallImage twoDWallImage;
+	[SerializeField] private ThreeDWall threeDWall;
 
 	private string warningText = "本当に削除しますか？";
 
@@ -186,6 +188,8 @@ public class AttemptTreeMenu : SEComponentBase{
 			case Mode.Failure: ActivateList(forFailure, true); break;
 			default: ActivateList(forMenu, true); break;
 		}
+		twoDWallImage.ShowTranslucentWall();
+		threeDWall.ShowTranslucentWall();
 	}
 
 	private void ActivateList(List<GameObject> list, bool b){

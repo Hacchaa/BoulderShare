@@ -11,6 +11,12 @@ public class ThreeDWall : BaseWall{
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private int wallDegOffset = 90;
 
+	public void ShowTranslucentWall(){
+		grayWall.SetActive(true);
+	}
+	public void HideTranslucentWall(){
+		grayWall.SetActive(false);
+	}
 	public override void SetWallImage(Texture2D tex){
 		Vector2 wallSize = wallManager.GetMasterWallSize();
 

@@ -38,6 +38,7 @@ public class ThreeDFirstSettingView : SEComponentBase
 		cameraManager.Active3D();
 		cameraManager.Reset3DCamPosAndDepth();
 		modelSize.SyncModelSize();
+		threeDWall.HideTranslucentWall();
 	}
 
 	public override void OnPreHide(){
