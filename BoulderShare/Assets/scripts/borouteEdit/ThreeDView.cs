@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System;
 
 public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler{
 	private int[] eTouches;
@@ -17,6 +18,8 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	private Bounds bounds;
 	private const float WEIGHT = 0.2f;
 	[SerializeField] private CameraManager cameraManager;
+	private Action focusOutAction;
+
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
@@ -27,6 +30,10 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 
 	void LateUpdate(){
 		isUpdate = false;
+	}
+
+	public void SetFocusOutAction(Action action){
+		focusOutAction = action;
 	}
 
 	public void OnPointerDown(PointerEventData data){
@@ -45,6 +52,10 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 				}
 			}
 			bounds = threeDWall.Get3DWallBounds();
+		}
+
+		if (focusOutAction != null){
+			focusOutAction();
 		}
 	}
 

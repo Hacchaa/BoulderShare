@@ -13,7 +13,9 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	private float offsetRate;
 	[SerializeField] private Camera cam;
 	[SerializeField] private CameraManager cManager;
-	[SerializeField] private Transform root;
+	[SerializeField] private Vector3 fixedScale = Vector3.one;
+	[SerializeField] private TwoDMark twoDMark;
+	[SerializeField] private float defaultR = 0.2f;
 
 	//rayをブロックして親に伝えないようにする
 	public void OnPointerUp(PointerEventData data){
@@ -32,11 +34,11 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 					data.position.y, 
 					-cManager.Get2DDepth()));
 
-			offset = offset - root.position;
+			offset = offset - twoDMark.transform.position;
 			baseR = offset.magnitude;
 			baseR = Mathf.Sqrt(baseR * baseR - Mathf.Pow(offset.x + offset.y, 2) / 2);
 			
-			offsetRate = root.localScale.x;
+			offsetRate = twoDMark.transform.localScale.x;
 		}
 	}
 	public void OnDrag(PointerEventData data){
@@ -47,7 +49,7 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 					data.position.y, 
 					-cam.transform.position.z));
 
-			p = p - root.position - offset;
+			p = p - twoDMark.transform.position - offset;
 			float r = p.magnitude;
 			r = Mathf.Sqrt(r * r - Mathf.Pow(p.x + p.y, 2) / 2);
 			float rate ;
@@ -60,14 +62,14 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			}
 
 	        if (offsetRate * rate > SCALE_MIN && offsetRate * rate < SCALE_MAX){
-	        	root.localScale = Vector3.one * offsetRate * rate;
+	        	twoDMark.transform.localScale = Vector3.one * offsetRate * rate;
 	        }else if (offsetRate * rate <= SCALE_MIN){
-	        	root.localScale = Vector3.one * SCALE_MIN;
+	        	twoDMark.transform.localScale = Vector3.one * SCALE_MIN;
 	        }else if (offsetRate * rate >= SCALE_MAX){
-	        	root.localScale = Vector3.one * SCALE_MAX;
+	        	twoDMark.transform.localScale = Vector3.one * SCALE_MAX;
 	        }
 
-
+	        FixScale();
 	    }
 	}
 	public void OnEndDrag(PointerEventData data){
@@ -76,4 +78,20 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 		}
 	}
 
+	public void FixScale(){
+		Vector3 lossy = transform.lossyScale;
+		Vector3 local = transform.localScale;
+
+		transform.localScale = new Vector3(
+			local.x / lossy.x * fixedScale.x,
+			local.y / lossy.y * fixedScale.y,
+			local.z / lossy.z * fixedScale.z);
+
+		float r = defaultR / twoDMark.transform.localScale.x;
+		float parentR = twoDMark.GetR();
+		Debug.Log("parentR:"+parentR);
+		Debug.Log("r:"+r);
+		float rad = 2*Mathf.PI * 45f / 360f;
+		transform.localPosition = new Vector3(Mathf.Cos(rad)*(parentR + r), -(Mathf.Sin(rad)*(parentR + r)), 0.0f);
+	}
 }

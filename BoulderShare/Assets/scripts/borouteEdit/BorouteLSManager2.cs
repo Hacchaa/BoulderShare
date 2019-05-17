@@ -177,6 +177,10 @@ public class BorouteLSManager2 : MonoBehaviour {
 		try{
 			//tempディレクトリが存在する場合
 			if (Directory.Exists(direcPath)){
+				string path = direcPath + "/Wall.png";
+				if (File.Exists(path)){
+					wallManager.CommitWallImage(MyUtility.LoadImage(path));
+				}
             	//ディレクトリの削除
 				Directory.Delete(direcPath, true);
 			}

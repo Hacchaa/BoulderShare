@@ -11,6 +11,7 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	private Transform target;
 	private TwoDMark targetMark;
 	private Renderer rend;
+	private Renderer renderOverUI;
 
 	[SerializeField]
 	private Camera cam;
@@ -29,6 +30,7 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 
 	public void OnPointerDown(PointerEventData data){
 		if (finger == FINGER_NONE){
+			twoDWallMarks.IgnoreFocusAction();
 			finger = data.pointerId;
 			Vector3 p = cam.ScreenToWorldPoint(
 				new Vector3(
@@ -43,11 +45,15 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 			rend = obj.GetComponent<SpriteRenderer>();
 			//uiより前に表示させる
 			rend.sortingLayerName = "Mark";
+			rend.gameObject.layer = LayerMask.NameToLayer("MarkOverUI");
 			//動かすオブジェクトとして登録
 			target = obj.transform;
 			targetMark = obj.GetComponent<TwoDMark>();
+
 			//描画するカメラを変えるためレイヤーの変更
-			obj.layer = LayerMask.NameToLayer("UI");
+			renderOverUI = targetMark.GetRenderOverUI();
+			renderOverUI.gameObject.layer = LayerMask.NameToLayer("MarkOverUI");
+			renderOverUI.sortingLayerName = "Mark";
 
 			targetMark.SetType(TwoDMark.FocusType.NORMAL);
 			twoDWallMarks.SetFocus(targetMark);
@@ -55,20 +61,23 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	}
 
 	public void OnPointerUp(PointerEventData data){
+		//Debug.Log("OnpointerUp"+ data.pointerId + " "+ finger);
 		if (data.pointerId == finger){
+			twoDWallMarks.AcceptFocusAction();
 			finger = FINGER_NONE;
 
 			if (twoDWallImage.IsOnPointerEnter()){
 				rend.sortingLayerName = "2D";
-				target.gameObject.layer = LayerMask.NameToLayer("2D");
-
+				rend.gameObject.layer = LayerMask.NameToLayer("2D");
+				renderOverUI.gameObject.layer = LayerMask.NameToLayer("2D");
+				renderOverUI.sortingLayerName = "2D";
 				//bounds
 				Vector3 p = target.position;
 				//wallの幅とサイズを取得
 				Vector2 size = wallManager.GetMasterWallSize();
 				float height = size.y;
 				float width = size.x;
-				Debug.Log("p:"+p+" , width:"+width +" height:"+ height);
+				//Debug.Log("p:"+p+" , width:"+width +" height:"+ height);
 				if (p.x < -width / 2 || p.x > width / 2 || p.y < -height / 2 || p.y > height / 2){
 					twoDWallMarks.DeleteMark(target.gameObject.name);
 				}else{
@@ -88,6 +97,7 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	//マークを動かす
 	public void OnDrag(PointerEventData data){
 		if (data.pointerId == finger){
+			//Debug.Break();
 			Vector3 p = cam.ScreenToWorldPoint(
 				new Vector3(
 				data.position.x, 

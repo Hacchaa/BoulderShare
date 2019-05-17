@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class MakeAttemptTree : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MakeAttemptTree : MonoBehaviour
 	}
 	[SerializeField] private GameObject rootMarks;
 	[SerializeField] private string[] twoDTouchMarks;
+	[SerializeField] private List<string> markDiffList;
 	private List<MyUtility.SceneCommentData3D> commentList;
 	private Vector3[] positions;
 	private Quaternion[] rotations;
@@ -55,6 +57,7 @@ public class MakeAttemptTree : MonoBehaviour
 		mode = Mode.Loop;
 		loadedScene = null;
 		curIndex = hscenes.GetNum() - 1;
+		markDiffList = null;
 	}
 
 	private void InitWallMarks(){
@@ -141,5 +144,25 @@ public class MakeAttemptTree : MonoBehaviour
 
 	public Quaternion[] GetRotations(){
 		return rotations;
+	}
+
+	//rootmarksとanotherRootのマークを比べて差分を保存
+	public void StoreDiffMarks(GameObject anotherRoot){
+		List<string> rList = new List<string>();
+		List<string> aList = new List<string>();
+
+		foreach(Transform t in rootMarks.transform){
+			rList.Add(t.gameObject.name);
+		}
+
+		foreach(Transform t in anotherRoot.transform){
+			aList.Add(t.gameObject.name);
+		}
+
+		markDiffList = new List<string>(aList.Except<string>(rList));
+	}
+
+	public List<string> GetDiffMarks(){
+		return markDiffList;
 	}
 }

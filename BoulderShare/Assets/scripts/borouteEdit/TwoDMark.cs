@@ -4,17 +4,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 
-public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler {
+public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler {
 	public enum HFType {NONE = -1, RH, LH, RF, LF};
 	public enum FocusType {NORMAL, SCALE};
 	[SerializeField] private Transform touchInfo;
 	[SerializeField] private Transform dummy;
+	[SerializeField] private GameObject noActiveObj;
 	private static int finger = FINGER_NONE;
 	private const int FINGER_NONE = -10;
 	private static float SCALE_MIN = 0.12f;
 	private static float SCALE_MAX = 1.5f;
-	private static float BASEALPHA = 80.0f / 255.0f;
-	private static float FOCUSALPHA = 200.0f / 255.0f;
+	private static Action OnBeginDragAction;
+	private static Action OnPointerUpAction;
+
 	[SerializeField] private SpriteRenderer rend;
 	[SerializeField] private Camera cam;
 	[SerializeField] private Transform anotherCam;
@@ -23,7 +25,14 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	[SerializeField] private TwoDWallImage twoDWallImage;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private TwoDMarkScale markScale;
+	[SerializeField] private CameraManager cManager;
+	[SerializeField] private float defaultR = 0.5f;
+	private bool isDragging = false;
 	private FocusType type = FocusType.NORMAL;
+
+	public SpriteRenderer GetRenderOverUI(){
+		return rend;
+	}
 
 	public void SetType(FocusType t){
 		type = t;
@@ -36,6 +45,17 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 		foreach(Transform t in dummy){
 			t.gameObject.SetActive(false);
 		}
+	}
+	public static void SetOnPointerUpAction(Action a){
+		OnPointerUpAction = a;
+	}
+
+	public static void SetOnBeginDragAction(Action a){
+		OnBeginDragAction = a;
+	}
+
+	public void ActivateNoActiveObj(bool b){
+		noActiveObj.SetActive(b);
 	}
 /*
 	public void SetScale(float r){
@@ -54,7 +74,51 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 	public void OnPointerUp(PointerEventData data){
 		//Debug.Log("OnPointerUp");
 		type = FocusType.SCALE;
-		twoDWallMarks.SetFocus(this);		
+		twoDWallMarks.SetFocus(this);	
+		if (OnPointerUpAction != null){
+			OnPointerUpAction();
+		}
+
+		if (isDragging){
+			isDragging = false;
+
+			if (data.pointerId == finger){
+				finger = FINGER_NONE;
+
+				Vector3 p = transform.position;
+				/*
+				if (!twoDWallImage.IsOnPointerEnter()){
+					Vector2 off = twoDWallImage.GetOffTouchPos();
+					p = cam.ScreenToWorldPoint(
+					new Vector3(
+						off.x, 
+						off.y, 
+						-cam.transform.position.z));
+				}else{
+					p = transform.position;
+				}
+				Debug.Log("p:"+p);*/
+
+
+				//bounds
+				//wallの幅とサイズを取得
+				//高さは4units
+				Vector2 size = wallManager.GetMasterWallSize();
+				float height = size.y;
+				float width = size.x;
+				p.x = Mathf.Min(p.x, width/2);
+		    	p.x = Mathf.Max(p.x, -width/2);
+		    	p.y = Mathf.Min(p.y, height/2);
+		    	p.y = Mathf.Max(p.y, -height/2);
+
+		    	transform.position = p;
+		    	//Debug.Log("After p:"+p);
+		    	//Debug.Log("size:"+size);
+		    	//描画順を元に戻す
+				rend.sortingLayerName = "Default";
+				rend.gameObject.layer = LayerMask.NameToLayer("2D");
+			}			
+		}
 	}
 
 	public void OnPointerDown(PointerEventData data){
@@ -63,38 +127,42 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 		type = FocusType.NORMAL;
 		twoDWallMarks.SetFocus(this);
 
+		//cManager.LookAt2D(transform);
+
 		//マークの中で一番上に表示する
 		transform.SetAsFirstSibling();
 	}
 
-	public void Focus(){
-		Color c = rend.color;
-		
-		c.a = FOCUSALPHA;
-		rend.color = c;
+	public float GetR(){
+		return defaultR;
+	}
 
+	public void Focus(){
+		rend.gameObject.SetActive(true);
 		if (type == FocusType.SCALE){
 			markScale.gameObject.SetActive(true);
+			markScale.FixScale();
 		}
 	}
 
 	public void ReleaseFocus(){
-		Color c = rend.color;
-		c.a = BASEALPHA;
-		rend.color = c;
+		rend.gameObject.SetActive(false);
 		markScale.gameObject.SetActive(false);
 	}
 
 	public void OnBeginDrag(PointerEventData data){
-		//Debug.Log("OnBeginDrag");
 		if (finger == FINGER_NONE){
 			finger = data.pointerId;
+			isDragging = true;
 
 			//uiより前に表示させる
 			rend.sortingLayerName = "Mark";
-			gameObject.layer = LayerMask.NameToLayer("MarkOverUI");
+			rend.gameObject.layer = LayerMask.NameToLayer("MarkOverUI");
 			anotherCam.position = cam.transform.position;
 
+			if (OnBeginDragAction != null){
+				OnBeginDragAction();
+			}
 		}
 	}
 
@@ -114,42 +182,6 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 					-cam.transform.position.z));
 
         	transform.Translate(p - oldP);
-		}
-	}
-
-	public void OnEndDrag(PointerEventData data){
-		Debug.Log("OnEndDrag");
-		if (data.pointerId == finger){
-			finger = FINGER_NONE;
-
-			Vector3 p ;
-			if (!twoDWallImage.IsOnPointerEnter()){
-				Vector2 off = twoDWallImage.GetOffTouchPos();
-				p = cam.ScreenToWorldPoint(
-				new Vector3(
-					off.x, 
-					off.y, 
-					-cam.transform.position.z));
-			}else{
-				p = transform.position;
-			}
-
-			//bounds
-			//wallの幅とサイズを取得
-			//高さは4units
-			Vector2 size = wallManager.GetMasterWallSize();
-			float height = size.y;
-			float width = size.x;
-			p.x = Mathf.Min(p.x, width/2);
-	    	p.x = Mathf.Max(p.x, -width/2);
-	    	p.y = Mathf.Min(p.y, height/2);
-	    	p.y = Mathf.Max(p.y, -height/2);
-
-	    	transform.position = p;
-
-	    	//描画順を元に戻す
-			rend.sortingLayerName = "Default";
-			gameObject.layer = LayerMask.NameToLayer("2D");
 		}
 	}
 }

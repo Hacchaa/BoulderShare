@@ -15,7 +15,6 @@ public class GarbageFor2DMark : MonoBehaviour , IDropHandler, IPointerEnterHandl
 		if (data.pointerDrag != null && data.pointerDrag.tag == "2DMark"){
 			GameObject obj = data.pointerDrag;
 			twoDWallMarks.DeleteMark(obj.name);
-			Destroy(obj);
 			PointerExitAnimation();
 		}
 	}

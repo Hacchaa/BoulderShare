@@ -39,6 +39,14 @@ public class MyUtility {
 		return a;
 	}
 
+	public static void SetLayerRecursively(GameObject self, int layer){
+		self.layer = layer;
+
+		foreach(Transform t in self.transform){
+			SetLayerRecursively(t.gameObject, layer);
+		}
+	}
+
 	public static void WriteImage(Texture2D tex, string filepath){
 		byte[] pngData = tex.EncodeToPNG();
         Debug.Log("copy texture at "+ filepath);

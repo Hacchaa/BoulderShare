@@ -9,7 +9,6 @@ public class CommentExtendWidth3D : MonoBehaviour, IBeginDragHandler, IDragHandl
     private SceneComment3D sc;
     private Camera cam;
     private float baseDepth;
-
     private static int FINGER_NONE = -10;
     private static int finger = FINGER_NONE;
     private static float WIDTH_MIN = 40.0f;
@@ -18,6 +17,7 @@ public class CommentExtendWidth3D : MonoBehaviour, IBeginDragHandler, IDragHandl
     public void SetCamera(Camera camera){
     	cam = camera;
     }
+    
     //イベント捕捉
     public void OnPointerUp(PointerEventData data){
     }
@@ -50,7 +50,7 @@ public class CommentExtendWidth3D : MonoBehaviour, IBeginDragHandler, IDragHandl
         	float length = Mathf.Abs(p.x);
 
         	if (length < WIDTH_MIN){
-        		length = WIDTH_MIN;
+        		//length = WIDTH_MIN;
         	}
 
         	sc.UpdateWidth(length*2);

@@ -14,7 +14,7 @@ public class SceneCommentController3D : MonoBehaviour
     [SerializeField]
     private FontSizeSlider3D fss;
     [SerializeField]
-    private ColorSetter3D colorSetter;
+    private ColorSetter3DComment colorSetter;
     [SerializeField]
     private CanvasGroup cg;
     [SerializeField]
@@ -22,14 +22,15 @@ public class SceneCommentController3D : MonoBehaviour
     [SerializeField] private SceneComments3D comments;
     [SerializeField] private Transform makeCommentPosition;
     [SerializeField] private CameraManager cManager;
+    [SerializeField] private SceneEditorComment sceneEditorComment;
+    public static float DEF_DEPTH = 4.0f;
 
     public void Init(){
         foreach(Transform t in pTrans){
             Destroy(t.gameObject);
         }
         comments.Init();
-        Release();
-        sc = null;
+        Release(false);
     }
     public void CommentLookAtCamera(){
         if (sc != null){
@@ -63,6 +64,7 @@ public class SceneCommentController3D : MonoBehaviour
             obj.SetActive(true);
             SceneComment3D sceneComment = obj.GetComponent<SceneComment3D>();
             //Debug.Log("data.text= "+ data.text);
+            sceneComment.Init();
             sceneComment.SetText(data.text);
             sceneComment.SetFontSize(data.fontSize);
             sceneComment.SetColor(data.color);
@@ -79,19 +81,22 @@ public class SceneCommentController3D : MonoBehaviour
     
 
     public void SetActiveText(SceneComment3D com){
+        bool isAlreadyFocused = false;
+
     	if (sc == com){
     		return ;
     	}
     	if(sc != null){
     		sc.Focus(false);
+            isAlreadyFocused = true;
     	}
 
     	sc = com;
     	fss.SetFontSizeSliderVal(sc.GetFontSize());
     	colorSetter.SetAlphaSliderVal(sc.GetAlpha());
 
-    	fss.gameObject.SetActive(true);
-    	colorSetter.gameObject.SetActive(true);
+    	sceneEditorComment.OpenFocusField(isAlreadyFocused);
+        cManager.Transform3DWithAnim(sc.transform.position, sc.transform.rotation, DEF_DEPTH);
     }
 
     public void ActiveIF(){
@@ -108,14 +113,14 @@ public class SceneCommentController3D : MonoBehaviour
     	sc.Resize();
     }
 
-    public void Release(){
+    public void Release(bool isWithAnimation = true){
     	if(sc != null){
     		sc.Focus(false);
+            if (isWithAnimation){   
+                sceneEditorComment.CloseFocusField();
+            }
     	}
     	sc = null;
-
-    	fss.gameObject.SetActive(false);
-    	colorSetter.gameObject.SetActive(false);
     }
 
     public void CheckText(){
@@ -142,16 +147,22 @@ public class SceneCommentController3D : MonoBehaviour
     }
 
     public void ChangeFontSize(float v){
-    	sc.SetFontSize(v);
-    	sc.Resize();
+        if (sc != null){
+        	sc.SetFontSize(v);
+        	//sc.Resize();
+        }
     }
 
     public void ChangeAlpha(float v){
-    	sc.SetAlpha(v);
+        if (sc != null){
+    	   sc.SetAlpha(v);
+        }
     }
 
     public void ChangeColor(Color c){
-    	sc.SetColor(c);
+        if (sc != null){
+            sc.SetColor(c);
+        }
     }
 
     public void IgnoreEvents(){

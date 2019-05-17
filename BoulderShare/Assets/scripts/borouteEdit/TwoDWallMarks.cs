@@ -14,6 +14,9 @@ public class TwoDWallMarks : MonoBehaviour {
 	private Dictionary<string, TwoDMark> map;
 	[SerializeField] private GameObject twoDMarkOrigin;
 	[SerializeField] private WallManager wallManager;
+	private Action focusOnAction;
+	private Action focusOffAction;
+	private bool isIgnoreAction;
 
 	void Awake(){
 		touchMarks = new TwoDMark[4];
@@ -42,6 +45,7 @@ public class TwoDWallMarks : MonoBehaviour {
 
 	public bool DeleteMark(string name){
 		if (map.ContainsKey(name)){
+			ReleaseFocus();
 			GameObject obj = map[name].gameObject;
 			bool b = map.Remove(name);
 			Destroy(obj.gameObject);
@@ -73,6 +77,21 @@ public class TwoDWallMarks : MonoBehaviour {
 		return transform.childCount > 0 ;
 	}
 
+	public void SetFocusOnAction(Action action){
+		focusOnAction = action;
+	}
+
+	public void SetFocusOffAction(Action action){
+		focusOffAction = action;
+	}
+
+	public void IgnoreFocusAction(){
+		isIgnoreAction = true;
+	}
+	public void AcceptFocusAction(){
+		isIgnoreAction = false;
+	}
+
 	public void SetFocus(TwoDMark mark){
 		if (current != null){
 			current.ReleaseFocus();
@@ -80,6 +99,9 @@ public class TwoDWallMarks : MonoBehaviour {
 
 		current = mark;
 		current.Focus();
+		if (!isIgnoreAction && focusOnAction != null){
+			focusOnAction();
+		}
 	}
 
 	public TwoDMark GetFocus(){
@@ -89,6 +111,9 @@ public class TwoDWallMarks : MonoBehaviour {
 	public void ReleaseFocus(){
 		if (current != null){
 			current.ReleaseFocus();
+			if (!isIgnoreAction && focusOffAction != null){
+				focusOffAction();
+			}
 		}
 		current = null;
 	}
@@ -127,6 +152,40 @@ public class TwoDWallMarks : MonoBehaviour {
 		foreach(Transform child in transform){
 			child.gameObject.layer = LayerMask.NameToLayer("2D");
 		}
+	}
+
+	public void AcceptEvents(List<string> list){
+		if (list == null){
+			return ;
+		}
+		foreach(string id in list){
+			if (map.ContainsKey(id)){
+				map[id].gameObject.layer = LayerMask.NameToLayer("2D");
+			}			
+		}
+	}
+
+	public void MakeMarksActive(){
+		foreach(TwoDMark mark in map.Values){
+			mark.ActivateNoActiveObj(false);
+		}		
+	}
+
+	public void MakeMarksActive(List<string> list){
+		if (list == null){
+			return ;
+		}
+		foreach(string id in list){
+			if (map.ContainsKey(id)){
+				map[id].ActivateNoActiveObj(false);
+			}			
+		}
+	}
+
+	public void MakeMarksNoActive(){
+		foreach(TwoDMark mark in map.Values){
+			mark.ActivateNoActiveObj(true);
+		}	
 	}
 
 	public TwoDMark CalcNearestMark(Vector2 v){

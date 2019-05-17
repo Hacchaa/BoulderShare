@@ -13,6 +13,10 @@ public class WallManager : MonoBehaviour
 	private Vector2 wallSize;
 	private int numOfMark;
 
+	public bool IsWallImagePrepared(){
+		return masterWallImage != null;
+	}
+
 	public Texture2D GetMasterWallImage(){
 		return masterWallImage;
 	}

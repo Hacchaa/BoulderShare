@@ -10,14 +10,16 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	private bool isUpdate;
 	private Vector2 bounds;
 	private bool isOn = false;
-	private Vector2 offTouchPos ;
+	[SerializeField] private Vector2 offTouchPos = Vector2.zero;
 	private int wallRotTarget;
 	[SerializeField] private Camera cam;
-	[SerializeField] private TwoDWall twoDWall;
-	[SerializeField] private Transform wallTrans;
+	[SerializeField] private SpriteRenderer wall;
+	[SerializeField] private SpriteRenderer translucentWall;
 	[SerializeField] private CameraManager cameraManager;
 	private const int FINGER_NONE = -10;
 	[SerializeField] private WallManager wallManager;
+	[SerializeField] private float rotDuration = 0.2f;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
 
 	// Use this for initialization
 	void Awake () {
@@ -39,10 +41,27 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 		gameObject.layer = LayerMask.NameToLayer("2D");
 	}
 
+	public  void SetWallImage(Texture2D texture){
+		Vector2 size = wallManager.GetMasterWallSize();
+		Rect rect = new Rect(0.0f, 0.0f, texture.width, texture.height);
+		Vector2 pivot = new Vector2(0.5f, 0.5f);
+		float ppu = texture.height/size.y;
+
+       	wall.sprite = Sprite.Create(
+	        texture, 
+		    rect,
+		    pivot,
+		    ppu);
+
+       	rect = translucentWall.sprite.rect;
+       	ppu = translucentWall.sprite.pixelsPerUnit;
+       	translucentWall.transform.localScale = new Vector3(size.x / (rect.width / ppu), size.y / (rect.height / ppu), 1.0f);
+	}
+
 
 	public void OnPointerDown(PointerEventData data){
 		bounds = wallManager.GetMasterWallSize();
-		
+		twoDWallMarks.ReleaseFocus();
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
 		}else if(eTouches[1] == FINGER_NONE){
@@ -113,10 +132,10 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	public bool IsOnPointerEnter(){
 		return isOn;
 	}
-
+/*
 	public Vector2 GetOffTouchPos(){
 		return offTouchPos;
-	}
+	}*/
 
 	public void RotWall(bool isClockwise){
 		if(isClockwise){
@@ -131,12 +150,14 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 			}
 		}
 		float ang = 90.0f * wallRotTarget;
-		wallTrans.DOLocalRotate(new Vector3(0.0f, 0.0f, ang), 0.25f);
+		wall.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, ang), rotDuration);
+		translucentWall.transform.DOLocalRotate(new Vector3(0.0f, 0.0f, ang), rotDuration);
 	}
 
 	public void RotateWallTexture(){
-		wallTrans.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-		Texture2D texture = twoDWall.GetWallImage();
+		wall.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+		translucentWall.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+		Texture2D texture = wall.sprite.texture;
 
 		if(wallRotTarget > 0 && wallRotTarget <= 3){
 			RotTexture(texture, wallRotTarget);

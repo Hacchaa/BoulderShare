@@ -61,6 +61,9 @@ public class AttemptTreeMenu : SEComponentBase{
 		makeAT.LoadScene(hScenes.GetCurScene());
 		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 	}
+	public void ToModifyMarks(){
+		trans.Transition(ScreenTransitionManager.Screen.ModifyMarks);
+	}
 
 	public void ToATMenu(){
 		mode = Mode.Menu;

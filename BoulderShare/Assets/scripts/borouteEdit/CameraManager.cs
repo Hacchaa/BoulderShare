@@ -13,7 +13,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform depth3D;
     [SerializeField] private List<Camera> cameras3D;
     [SerializeField] private Camera camera2D;
-    [SerializeField] private float duration = 0.5f;
+    [SerializeField] private float duration = 0.3f;
     [SerializeField] private HumanModel humanModel;
     private const float CAMERA2D_DEPTH_UB = -1.0f;
     private const float CAMERA2D_DEPTH_LB = -15.0f;
@@ -159,6 +159,23 @@ public class CameraManager : MonoBehaviour
     	root3D.DORotateQuaternion(rot, duration);
     }
 
+    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, float dur = 0.0f){
+        if (dur == 0.0f){
+            dur = duration;
+        }
+        float dep = -d;
+        Vector3 v = new Vector3(vec.x, vec.y, 0.0f);
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(root3D.DORotateQuaternion(rot, dur).SetEase(Ease.OutQuad))
+        .Join(root3D.DOMove(vec, dur).SetEase(Ease.OutQuad))
+        .Join(move3D.DOLocalMove(Vector3.zero, dur).SetEase(Ease.OutQuad))
+        .Join(depth3D.DOLocalMoveZ(dep, dur).SetEase(Ease.OutQuad));
+
+        seq.Play();
+    }
+
     public Sequence GetFadeOut2DSeq(bool isRightDir){
         float dir = dirLength;
         if (isRightDir){
@@ -168,6 +185,7 @@ public class CameraManager : MonoBehaviour
 	        .OnStart(() =>
 	        {
 	            fadeCanvas2D.alpha = 0.0f;
+                fadeCanvas3D.alpha = 0.0f;
 	            fadeCanvas2D.blocksRaycasts = true;
 	        })
 	        .Append(fadeCanvas2D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
@@ -189,6 +207,7 @@ public class CameraManager : MonoBehaviour
 	        .OnStart(() =>
 	        {
 	            fadeCanvas2D.alpha = 1.0f;
+                fadeCanvas3D.alpha = 0.0f;
 	            fadeCanvas2D.blocksRaycasts = true;
 	            camera2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA2D_DEPTH_DEF);
 	        })
@@ -223,6 +242,7 @@ public class CameraManager : MonoBehaviour
 	    Sequence sequence = DOTween.Sequence()
 	        .OnStart(() =>
 	        {
+                fadeCanvas2D.alpha = 0.0f;
 	            fadeCanvas3D.alpha = 0.0f;
 	            fadeCanvas3D.blocksRaycasts = true;
 	        })
@@ -244,6 +264,7 @@ public class CameraManager : MonoBehaviour
 	    Sequence sequence = DOTween.Sequence()
 	        .OnStart(() =>
 	        {
+                fadeCanvas2D.alpha = 0.0f;
 	            fadeCanvas3D.alpha = 1.0f;
 	            fadeCanvas3D.blocksRaycasts = true;
 
@@ -291,6 +312,12 @@ public class CameraManager : MonoBehaviour
         camera2D.transform.Translate(v, relativeTo);
     }
 
+    public void LookAt2D(Transform target){
+        Vector3 p = target.position;
+        float depth = target.localScale.x * CAMERA2D_DEPTH_DEF;
+        camera2D.transform.position = new Vector3(p.x, p.y, depth);
+    }
+
     public void SetRootWorldPos(Vector3 v){
         root3D.position = v;
         //SetPosWithFixedHierarchyPos(root3D, v);
@@ -319,7 +346,9 @@ public class CameraManager : MonoBehaviour
     public float Get2DDepth(){
         return camera2D.transform.localPosition.z;
     }
-
+    public float Get2DDepthRate(){
+        return camera2D.transform.localPosition.z / CAMERA2D_DEPTH_DEF;
+    }
     public float Get3DDepth(){
         return depth3D.localPosition.z;
     }

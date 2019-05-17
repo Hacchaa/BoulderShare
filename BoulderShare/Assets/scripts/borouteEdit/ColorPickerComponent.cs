@@ -9,7 +9,7 @@ public class ColorPickerComponent : MonoBehaviour, IPointerClickHandler
 	[SerializeField]
     private Image image;
     [SerializeField]
-    private ColorSetter3D colorSetter;
+    private ColorSetter3DComment colorSetter;
 
     public void OnPointerClick(PointerEventData data){
     	colorSetter.SetColor(image.color);

@@ -30,7 +30,8 @@ public class ScreenTransitionManager : MonoBehaviour {
 		LayerGraphView,
 		AttemptTreeMenu,
 		ATFailureView,
-		SceneEditor
+		SceneEditor,
+		ModifyMarks
 	}
 
 	void Awake(){

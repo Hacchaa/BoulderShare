@@ -45,9 +45,9 @@ public class ThreeDWallMarks : MonoBehaviour {
 		obj.SetActive(true);
 		obj.name = name;
 		obj.transform.position = vec;
-		obj.transform.localScale = Vector3.one * scale;
+		obj.transform.localScale = new Vector3(scale, scale, 1.0f);
 		//obj.transform.localRotation = Quaternion.Euler(new Vector3(90.0f, 180.0f, 0.0f));
-		SetLayerRecursively(gameObject, LayerMask.NameToLayer("3D"));
+		//SetLayerRecursively(gameObject, LayerMask.NameToLayer("3D"));
 		map.Add(name, obj);
 	}
 

@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class ThreeDWall : BaseWall{
 	[SerializeField] private GameObject wall;
+	[SerializeField] private GameObject grayWall;
 	[SerializeField] private ThreeDWallMarks threeDWallMarks;
 	[SerializeField] private ThreeDView view;
 	[SerializeField] private Collider collider;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private int wallDegOffset = 90;
+
 	public override void SetWallImage(Texture2D tex){
 		Vector2 wallSize = wallManager.GetMasterWallSize();
+
+		//graywallのサイズの変更
+		grayWall.transform.localScale = new Vector3(wallSize.x * 0.1f+0.01f, 0.1f, wallSize.y * 0.1f+0.01f);
+		
 		wall.transform.localScale = new Vector3(wallSize.x * 0.1f, 0.1f, wallSize.y * 0.1f);
 		wall.transform.parent.localPosition = new Vector3(0.0f, wallSize.y/2, 0.0f);
+
 
 		//3Dモデルの壁のテクスチャーを設定
 		Renderer rend = wall.GetComponent<Renderer>();

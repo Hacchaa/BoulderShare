@@ -11,11 +11,13 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 	[SerializeField] private SceneComment3D sc;
 	[SerializeField] private GameObject focusObj;
 	[SerializeField] private Transform parent;
+    [SerializeField] private CameraManager cManager;
     private Camera cam;
     private static int FINGER_NONE = -10;
     private static int finger = FINGER_NONE;
     private Vector3 baseP;
     private bool isCommentEditable;
+    private bool isMovable = false;
     private float baseDepth;
 
     public void SetCamera(Camera camera){
@@ -25,8 +27,7 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     public void OnPointerDown(PointerEventData data){
         if (focusObj.activeSelf){
         	isCommentEditable = true;
-    	}else{
-    		sc.Focus(true);
+            isMovable = true;
     	}
 	}	
 
@@ -34,11 +35,18 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         if(isCommentEditable){
             scController.ActiveIF();
         }
+        if (!focusObj.activeSelf){
+            sc.Focus(true);
+        }
         isCommentEditable = false;
+        isMovable = false;
     }
 
     public void OnBeginDrag(PointerEventData data){
         isCommentEditable = false;
+        if (!isMovable){
+            return ;
+        }
         if (finger == FINGER_NONE){
             finger = data.pointerId;
             baseDepth = cam.gameObject.transform.InverseTransformPoint(parent.position).z;
@@ -62,6 +70,8 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
                     baseDepth));
             
             parent.position = p - baseP;
+            cManager.SetRootPosWithFixedHierarchyPos(parent.position);
+            //cManager.SetRootWorldPos(parent.position);
         }
     }
 

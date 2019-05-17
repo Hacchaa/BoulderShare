@@ -31,6 +31,14 @@ public class SceneEditor : SEComponentBase{
 	[SerializeField] private RectTransform iconParent;
 	[SerializeField] private List<Image> headExitIcons;
 	[SerializeField] private List<Image> headSubmitIcons;
+	[SerializeField] private ThreeDView threeDView;
+	[SerializeField] private SceneCommentController3D scc;
+	[SerializeField] private Image fadeCover;
+	[SerializeField] private Transform prevButton;
+	[SerializeField] private Transform nextButton;
+	[SerializeField] private Image submitButton;
+	[SerializeField] private Image cancelButton;
+
 	private int maxIndex;
 
 	public void Init(){
@@ -41,6 +49,7 @@ public class SceneEditor : SEComponentBase{
 			com.SetMakeAT(makeAT);
 		}
 		iconParent.sizeDelta = new Vector2(iconWidth, iconParent.sizeDelta.y);
+		uiComs[curIndex].OnPreShow();
 		uiComs[curIndex].Show();
 		cManager.Active2D();
 
@@ -48,6 +57,11 @@ public class SceneEditor : SEComponentBase{
 	//画面遷移時の前処理
 	public override void OnPreShow(){
 		Init();
+		threeDView.SetFocusOutAction(ReleaseFocus3D);
+	}
+
+	private void ReleaseFocus3D(){
+		scc.Release();
 	}
 
 	//画面遷移でこの画面を消す時の後処理
@@ -56,7 +70,7 @@ public class SceneEditor : SEComponentBase{
 		for(int i = 0 ; i < n ; i++){
 			syncImages[i].localPosition = icons[0].localPosition - icons[i].localPosition;
 		}
-		wallManager.CommitWallMarks(makeAT.GetWallMarks());
+		threeDView.SetFocusOutAction(null);
 	}
 
 	public void RegistCurComponent(){
@@ -80,6 +94,12 @@ public class SceneEditor : SEComponentBase{
 	public void Submit(){
 		RegistCurComponent();
 		makeAT.Make();
+		makeAT.Init();
+		ToATMenu();
+	}
+
+	public void EditCancel(){
+		wallManager.CommitWallMarks(makeAT.GetWallMarks());
 		makeAT.Init();
 		ToATMenu();
 	}
@@ -193,6 +213,39 @@ public class SceneEditor : SEComponentBase{
 		return seq;
 	}
 
+	private Sequence GetFadeCoverSeq(bool isFadeOut){
+		Sequence seq = DOTween.Sequence();
+		float distAlpha, startAlpha;
+
+		if (isFadeOut){
+			distAlpha = 1.0f;
+			startAlpha = 0.0f;
+		}else{
+			distAlpha = 0.0f;
+			startAlpha = 1.0f;
+		}
+		seq.OnStart(()=>
+		{
+			Color c = fadeCover.color;
+			c = new Color(c.r, c.g, c.b, startAlpha);
+
+			fadeCover.color = c;
+			fadeCover.gameObject.SetActive(true);
+		});
+		if (isFadeOut){
+			seq.Append(fadeCover.DOFade(distAlpha, fadeDuration).SetEase(Ease.OutQuad));
+		}else{
+			seq.Append(fadeCover.DOFade(distAlpha, fadeDuration).SetEase(Ease.InQuad));
+		}
+
+		seq.OnComplete(()=>
+		{
+			fadeCover.gameObject.SetActive(false);
+		});
+
+		return seq;
+	}
+
 	private Sequence GetIconsWidthSeq(float endWidth){
 		Sequence seq = DOTween.Sequence();
 
@@ -206,10 +259,14 @@ public class SceneEditor : SEComponentBase{
 
 		if (index < curIndex){
 			seq.Append(uiComs[curIndex].GetHideToRightSeq())
-			.Append(uiComs[index].GetShowFromLeftSeq());
+			.Join(GetFadeCoverSeq(true))
+			.Append(uiComs[index].GetShowFromLeftSeq())
+			.Join(GetFadeCoverSeq(false));
 		}else if(index > curIndex){
 			seq.Append(uiComs[curIndex].GetHideToLeftSeq())
-			.Append(uiComs[index].GetShowFromRightSeq());
+			.Join(GetFadeCoverSeq(true))
+			.Append(uiComs[index].GetShowFromRightSeq())
+			.Join(GetFadeCoverSeq(false));
 		}
 
 		return seq;
@@ -219,9 +276,11 @@ public class SceneEditor : SEComponentBase{
 		Sequence seq = DOTween.Sequence();
 
 		if (index < curIndex){
-			seq.Append(uiComs[curIndex].GetHideToRightSeq());
+			seq.Append(uiComs[curIndex].GetHideToRightSeq())
+			.Join(GetFadeCoverSeq(true));
 		}else if(index > curIndex){
-			seq.Append(uiComs[curIndex].GetHideToLeftSeq());
+			seq.Append(uiComs[curIndex].GetHideToLeftSeq())
+			.Join(GetFadeCoverSeq(true));
 		}
 
 		return seq;		
@@ -231,9 +290,11 @@ public class SceneEditor : SEComponentBase{
 		Sequence seq = DOTween.Sequence();
 
 		if (index < curIndex){
-			seq.Append(uiComs[index].GetShowFromLeftSeq());
+			seq.Append(uiComs[index].GetShowFromLeftSeq())
+			.Join(GetFadeCoverSeq(false));
 		}else if(index > curIndex){
-			seq.Append(uiComs[index].GetShowFromRightSeq());
+			seq.Append(uiComs[index].GetShowFromRightSeq())
+			.Join(GetFadeCoverSeq(false));
 		}
 
 		return seq;		
@@ -246,6 +307,7 @@ public class SceneEditor : SEComponentBase{
 		{
 			uiComs[hideIndex].OnPreHide();
 			uiComs[showIndex].OnPreShow();
+
 			if (isSwitch){
 				if(cManager.Is2DActive()){
 					cManager.Active3D();
@@ -258,34 +320,17 @@ public class SceneEditor : SEComponentBase{
 		return seq;
 	}
 
-	private Sequence GetHeadNavigationSeq(bool isArrowShow, bool isExit){
-		Sequence seqOut = DOTween.Sequence();
-		Sequence seqIn = DOTween.Sequence();
+	private Sequence GetHeadNavigationOutSeq(Image targetImage){
+		Sequence seq = DOTween.Sequence();
 
-		Image from, to;
+		Image from = targetImage;
 
-		if (isExit){
-			if (isArrowShow){
-				from = headExitIcons[0];
-				to = headExitIcons[1];
-			}else{
-				from = headExitIcons[1];
-				to = headExitIcons[0];
-			}
-		}else{
-			if (isArrowShow){
-				from = headSubmitIcons[0];
-				to = headSubmitIcons[1];
-			}else{
-				from = headSubmitIcons[1];
-				to = headSubmitIcons[0];
-			}
-		}
-
-		seqOut.OnStart(() =>
+		seq.OnStart(() =>
 		{
 			from.gameObject.SetActive(true);
-			to.gameObject.SetActive(false);
+			from.transform.localScale = Vector3.one;
+			Color c = from.color;
+			from.color = new Color(c.r, c.g, c.b, 1.0f);
 		})
 		.Append(from.DOFade(0.0f, fadeDuration)).SetEase(Ease.InQuad)
 		.Join(from.transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.InQuad)
@@ -294,11 +339,21 @@ public class SceneEditor : SEComponentBase{
 			from.transform.localScale = Vector3.one;
 			Color c = from.color;
 			from.color = new Color(c.r, c.g, c.b, 1.0f);
+			from.gameObject.SetActive(false);
 		});
 
-		seqIn.OnStart(() =>
+		return seq;
+	}
+	private Sequence GetHeadNavigationInSeq(Image targetImage){
+		Sequence seq = DOTween.Sequence();
+
+		Image to;
+
+		to = targetImage;
+
+
+		seq.OnStart(() =>
 		{
-			from.gameObject.SetActive(false);
 			to.gameObject.SetActive(true);
 			Color c = to.color;
 			to.color = new Color(c.r, c.g, c.b, 0.0f);
@@ -306,12 +361,98 @@ public class SceneEditor : SEComponentBase{
 			to.transform.localScale = Vector3.zero;
 		})
 		.Append(to.DOFade(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
-		.Join(to.transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.OutQuad);
+		.Join(to.transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
+		.OnComplete(() =>
+		{
+			to.transform.localScale = Vector3.one;
+			Color c = to.color;
+			to.color = new Color(c.r, c.g, c.b, 1.0f);
+		});
+		return seq;
+	}
 
+	private Sequence GetFootNavigationOutSeq(int index){
 		Sequence seq = DOTween.Sequence();
 
-		seq.Append(seqOut)
-		.Append(seqIn);
+		if (index != 0){
+			Sequence seqPrev = DOTween.Sequence();
+			seqPrev.OnStart(() =>
+			{
+				prevButton.gameObject.SetActive(true);
+				prevButton.transform.localScale = Vector3.one;
+			})
+			.Append(prevButton.transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.OutQuad)
+			.OnComplete(() =>
+			{
+				prevButton.transform.localScale = Vector3.one;
+				prevButton.gameObject.SetActive(false);
+			});
+
+			seq.Append(seqPrev);
+		}
+
+		if (index != uiComs.Length - 1){
+			Sequence seqNext = DOTween.Sequence();
+			seqNext.OnStart(() =>
+			{
+				nextButton.gameObject.SetActive(true);
+				nextButton.transform.localScale = Vector3.zero;
+			})
+			.Append(nextButton.transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.OutQuad)
+			.OnComplete(() =>
+			{
+				nextButton.transform.localScale = Vector3.one;
+				nextButton.gameObject.SetActive(false);
+			});
+
+			if (index != 0){
+				seq.Join(seqNext);
+			}else{
+				seq.Append(seqNext);
+			}
+		}
+
+		return seq;
+	}
+
+	private Sequence GetFootNavigationInSeq(int index){
+		Sequence seq = DOTween.Sequence();
+
+		if (index != 0){
+			Sequence seqPrev = DOTween.Sequence();
+			seqPrev.OnStart(() =>
+			{
+				prevButton.gameObject.SetActive(true);
+				prevButton.transform.localScale = Vector3.zero;
+			})
+			.Append(prevButton.transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
+			.OnComplete(() =>
+			{
+				prevButton.transform.localScale = Vector3.one;
+			});
+
+			seq.Append(seqPrev);
+		}
+
+		if (index != uiComs.Length - 1){
+			Sequence seqNext = DOTween.Sequence();
+			seqNext.OnStart(() =>
+			{
+				nextButton.gameObject.SetActive(true);
+				nextButton.transform.localScale = Vector3.zero;
+			})
+			.Append(nextButton.transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
+			.OnComplete(() =>
+			{
+				nextButton.transform.localScale = Vector3.one;
+			});
+
+			if (index != 0){
+				seq.Join(seqNext);
+			}else{
+				seq.Append(seqNext);
+			}
+		}
 
 		return seq;
 	}
@@ -347,18 +488,6 @@ public class SceneEditor : SEComponentBase{
 			maxIndex = index;
 		}
 
-		if (curIndex == 0){
-			seq.Join(GetHeadNavigationSeq(false, true));
-		}else if(curIndex == uiComs.Length - 1){
-			seq.Join(GetHeadNavigationSeq(false, false));
-		}
-
-		if (index == 0){
-			seq.Join(GetHeadNavigationSeq(true, true));
-		}else if(index == uiComs.Length - 1){
-			seq.Join(GetHeadNavigationSeq(true, false));
-		}
-
 		//fadeout処理
 		seq.Join(GetUIOutSeq(index));
 		if (isCur2D){
@@ -366,18 +495,35 @@ public class SceneEditor : SEComponentBase{
 		}else{
 			seq.Join(cManager.GetFadeOut3DSeq(isRight));
 		}
+		if (curIndex == uiComs.Length - 1){
+			seq.Join(GetHeadNavigationOutSeq(submitButton));
+		}
+		seq.Join(GetFootNavigationOutSeq(curIndex));
+
 
 		//interverl処理
 		seq.Append(GetIntervalProcSeq(curIndex, index, isCur2D ^ isTo2D));
 		
 		//fadeIn処理
-		Vector3 pos = humanModel.GetModelBodyPosition();
 		seq.Join(GetUIInSeq(index));
-		if (isCur2D){
+		if (isTo2D){
 			seq.Join(cManager.GetFadeIn2DSeq(!isRight));
 		}else{
+			Vector3 pos ;
+			if (isCur2D){
+				if(makeAT.IsPoseSet()){
+					humanModel.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations());
+				}else{
+					humanModel.CorrectModelPose();
+				}
+			}
+			pos = humanModel.GetModelBodyPosition();
 			seq.Join(cManager.GetFadeIn3DSeq(!isRight, pos));
 		}
+		if (index == uiComs.Length - 1){
+			seq.Join(GetHeadNavigationInSeq(submitButton));
+		}
+		seq.Join(GetFootNavigationInSeq(index));
 
 		seq.Play();
 		curIndex = index;
