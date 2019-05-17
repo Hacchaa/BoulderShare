@@ -163,8 +163,10 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 		if (pauseStatus){
 			//アプリ中断
-			//現在のボルートを一時フォルダに書き込む
-			SaveTemporary();
+			if (wallManager.IsWallImagePrepared()){
+				//現在のボルートを一時フォルダに書き込む
+				SaveTemporary();				
+			}
 		}else{
 			//アプリ復帰
 			//一時フォルダの削除

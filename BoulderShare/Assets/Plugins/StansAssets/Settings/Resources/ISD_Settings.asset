@@ -55,6 +55,16 @@ MonoBehaviour:
     FloatValue: 0
     BooleanValue: 1
     ChildrensIds: []
+  - IsOpen: 1
+    IsListOpen: 1
+    Name: NSAppleMusicUsageDescription
+    Type: 0
+    StringValue: Please change 'Media Library Usage Description' with IOS Native Media
+      Player Editor Settings
+    IntegerValue: 0
+    FloatValue: 0
+    BooleanValue: 1
+    ChildrensIds: []
   VariableDictionary: []
   Languages: []
   ShellScripts: []
