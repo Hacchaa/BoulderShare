@@ -15,6 +15,7 @@ public class SceneEditorMark : SceneEditorComponent
 	[SerializeField] private List<Image> makeMarkFadeList;
 	[SerializeField] private float duration = 0.2f;
 	[SerializeField] private Generate2DMark generator;
+
 	private Sequence openSeq;
 	private Sequence closeSeq;
 
@@ -52,8 +53,11 @@ public class SceneEditorMark : SceneEditorComponent
 		garbageArea.gameObject.SetActive(false);
 		makeMarkButton.SetActive(true);
 
-		TwoDMark.SetOnBeginDragAction(OpenGarbage);
-		TwoDMark.SetOnPointerUpAction(CloseGarbage);
+		TwoDMark.AddOnBeginDragAction(OpenGarbage);
+		TwoDMark.AddOnBeginDragAction(sceneEditor.MoveHeadIconsWidthWithAnim);
+		TwoDMark.AddOnPointerUpAction(CloseGarbage);
+
+		generator.AddOnGenerateMarkAction(sceneEditor.MoveHeadIconsWidthWithAnim);
 	}
 
 	//画面遷移でこの画面を消す時の後処理
@@ -67,8 +71,10 @@ public class SceneEditorMark : SceneEditorComponent
 		garbageArea.gameObject.SetActive(false);
 		makeMarkButton.SetActive(true);
 
-		TwoDMark.SetOnPointerUpAction(null);
-		TwoDMark.SetOnBeginDragAction(null);
+		TwoDMark.ResetOnPointerUpAction();
+		TwoDMark.ResetOnBeginDragAction();
+
+		generator.ResetOnGenerateMarkAction();
 	}
 
 	public override void Regist(){

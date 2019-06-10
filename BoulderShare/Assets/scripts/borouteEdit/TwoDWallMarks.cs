@@ -34,6 +34,13 @@ public class TwoDWallMarks : MonoBehaviour {
 		current = null;
 		index = 0;
 	}
+
+	public static int GetNum(){
+		return num;
+	}
+	public static void SetNum(int n){
+		num = n;
+	}
 	public GameObject GetWallMarks(){
 		return this.gameObject;
 	}
@@ -78,11 +85,22 @@ public class TwoDWallMarks : MonoBehaviour {
 	}
 
 	public void SetFocusOnAction(Action action){
-		focusOnAction = action;
+		if (action != null){
+			focusOnAction += action;
+		}
 	}
 
 	public void SetFocusOffAction(Action action){
-		focusOffAction = action;
+		if (action != null){
+			focusOffAction += action;
+		}
+	}
+
+	public void ResetFocusOnAction(){
+		focusOnAction = null;
+	}
+	public void ResetFocusOffAction(){
+		focusOffAction = null;
 	}
 
 	public void IgnoreFocusAction(){
@@ -264,7 +282,7 @@ public class TwoDWallMarks : MonoBehaviour {
 		}
 	}
 
-	public void Synchronize(GameObject rootMarks, int n){
+	public void Synchronize(GameObject rootMarks){
 		Init();
 		foreach(Transform t in rootMarks.transform){
 			if(!string.IsNullOrEmpty(t.name)){
@@ -275,6 +293,5 @@ public class TwoDWallMarks : MonoBehaviour {
 				map[t.name].ReleaseFocus();
 			}
 		}
-		num = n;
 	}
 }

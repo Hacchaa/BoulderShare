@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FBBIKMarkHF : FBBIKMark
+public class FBBIKMarkHF : FBBIKMarkBounded
 {
 	[SerializeField] private float holdMarkR;
 	[SerializeField] private Vector3 holdMarkPos;

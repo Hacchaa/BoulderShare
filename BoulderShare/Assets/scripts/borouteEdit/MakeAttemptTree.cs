@@ -16,13 +16,15 @@ public class MakeAttemptTree : MonoBehaviour
 	private List<MyUtility.SceneCommentData3D> commentList;
 	private Vector3[] positions;
 	private Quaternion[] rotations;
+	private FBBIKController.HandAnim leftHandAnim;
+	private FBBIKController.HandAnim rightHandAnim;
 	private bool isPoseSet = false;
 	[SerializeField] private bool isWallMarkSet = false;
 	[SerializeField] private HScenes2 hscenes;
 	private HScene2 loadedScene;
 	private int curIndex;
 	private Mode mode;
-
+	
 	public void SetMode(Mode m){
 		mode = m;
 	}
@@ -43,7 +45,7 @@ public class MakeAttemptTree : MonoBehaviour
 		loadedScene = scene;
 		Set2DTouchMarks(scene.GetOnHolds());
 		SetComments(scene.GetComments());
-		SetPose(scene.GetPose(), scene.GetRots()); 
+		SetPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim()); 
 		isPoseSet = true;
 	}
 	
@@ -74,19 +76,21 @@ public class MakeAttemptTree : MonoBehaviour
 				scene = new HScene2();
 				scene.SetOnHolds(twoDTouchMarks);
 				scene.SaveComments(commentList);
-				scene.SavePose(positions, rotations);
+				scene.SavePose(positions, rotations, rightHandAnim, leftHandAnim);
 				hscenes.AddSceneLast(scene);
 				break;
 			case Mode.Edit :
 				loadedScene.SetOnHolds(twoDTouchMarks);
 				loadedScene.SaveComments(commentList);
-				loadedScene.SavePose(positions, rotations);
+				loadedScene.SavePose(positions, rotations, rightHandAnim, leftHandAnim);
+				//ワーニングを削除
+				loadedScene.ClearWarning();
 				break;
 			case Mode.Add :
 				scene = new HScene2();
 				scene.SetOnHolds(twoDTouchMarks);
 				scene.SaveComments(commentList);
-				scene.SavePose(positions, rotations);
+				scene.SavePose(positions, rotations, rightHandAnim, leftHandAnim);
 				hscenes.AddSceneAt(scene, curIndex);
 				break;
 		}
@@ -136,9 +140,11 @@ public class MakeAttemptTree : MonoBehaviour
 		return positions;
 	}
 
-	public void SetPose(Vector3[] arr, Quaternion[] rot){
+	public void SetPose(Vector3[] arr, Quaternion[] rot, FBBIKController.HandAnim rightHand, FBBIKController.HandAnim leftHand){
 		positions = arr;
 		rotations = rot;
+		rightHandAnim = rightHand;
+		leftHandAnim = leftHand;
 		isPoseSet = true;
 	}
 
@@ -164,5 +170,12 @@ public class MakeAttemptTree : MonoBehaviour
 
 	public List<string> GetDiffMarks(){
 		return markDiffList;
+	}
+
+	public FBBIKController.HandAnim GetLeftHandAnim(){
+		return leftHandAnim;
+	}
+	public FBBIKController.HandAnim GetRightHandAnim(){
+		return rightHandAnim;
 	}
 }

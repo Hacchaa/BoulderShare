@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using System;
 
@@ -8,12 +9,16 @@ public class HScene2{
 	private List<MyUtility.SceneCommentData3D> comments;
 	private Vector3[] pose;
 	private Quaternion[] rots;
+	private FBBIKController.HandAnim lHandAnim;
+	private FBBIKController.HandAnim rHandAnim;
 	private List<string> failureList;
 	private int id;
 	private static int num = 0;
 	private bool isSaved;
 	//シーンを読み込んでからポーズを保存したかどうか
 	private bool isPoseSaved = false;
+	private bool hasWarning = false;
+	private int[] warningType;
 
 	public HScene2(){
 		onHolds = new string[4];
@@ -22,6 +27,8 @@ public class HScene2{
 		rots = new Quaternion[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
 		failureList = new List<string>();
 		isSaved = false;
+		hasWarning = false;
+		warningType = Enumerable.Repeat<int>(-1, 4).ToArray();
 		id = num;
 		num++;
 	}
@@ -32,6 +39,14 @@ public class HScene2{
 
 	public static int GetNum(){
 		return num;
+	}
+
+
+	public FBBIKController.HandAnim GetLeftHandAnim(){
+		return lHandAnim;
+	}
+	public FBBIKController.HandAnim GetRightHandAnim(){
+		return rHandAnim;
 	}
 
 	public void SetFailureList(List<string> list){
@@ -110,10 +125,42 @@ public class HScene2{
 		return r;
 	}
 
-	public void SavePose(Vector3[] arr, Quaternion[] r){
+	public void SavePose(Vector3[] arr, Quaternion[] r, FBBIKController.HandAnim rightHand, FBBIKController.HandAnim leftHand){
 		Array.Copy(arr, pose, pose.Length);
 		Array.Copy(r, rots, rots.Length);
+		rHandAnim = rightHand;
+		lHandAnim = leftHand;
 		isSaved = true;
+	}
+
+	public bool HasWarning(){
+		return hasWarning;
+	}
+
+	public void SetWarningType(int[] type){
+		bool hasWar = false;
+		foreach(int t in type){
+			if (t != -1){
+				hasWar = true;
+				break;
+			}
+		}
+		if (!hasWar){
+			return ;
+		}
+
+		hasWarning = true;
+		warningType = type;
+	}
+
+
+	public int[] GetWarningType(){
+		return warningType;
+	}
+
+	public void ClearWarning(){
+		warningType = Enumerable.Repeat<int>(-1, 4).ToArray();
+		hasWarning = false;
 	}
 	
 	public void Show(){

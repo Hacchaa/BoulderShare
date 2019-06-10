@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public abstract class SceneEditorComponent : MonoBehaviour
 {
 	[SerializeField] private RectTransform rectTransform;
-	[SerializeField] private float animDuration = 0.1f;
+	[SerializeField] protected float animDuration = 0.1f;
 	[SerializeField] private bool is2D;
+    [SerializeField] protected SceneEditor sceneEditor;
     protected MakeAttemptTree makeAT;
 
     public void SetMakeAT(MakeAttemptTree m){

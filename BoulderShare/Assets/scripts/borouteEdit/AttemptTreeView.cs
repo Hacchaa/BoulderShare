@@ -88,7 +88,7 @@ public class AttemptTreeView : SEComponentBase{
 	public void Load(HScene2 scene){
 		twoDWallMarks.ClearTouch();
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
-		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
+		humanModel.SetModelPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim());
 		humanModel.SetCamAxisAsModelPos();
 		scc.SetSceneComments(scene.GetComments());
 	}

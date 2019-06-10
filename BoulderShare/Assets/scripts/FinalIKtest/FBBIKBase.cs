@@ -6,9 +6,9 @@ using System;
 
 public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, IEndDragHandler, IBeginDragHandler{
 	private static int finger = MyUtility.FINGER_NONE;
-
+	public enum MoveType {Delta, Point};
 	[SerializeField] private MyUtility.FullBodyMark bodyID;
-	[SerializeField] private List<Transform> relativePosList;
+	[SerializeField] protected List<Transform> relativePosList;
 	protected Action OnPostBeginDrag;
 	protected Action OnPostDrag;
 	protected Action OnPostEndDrag;
@@ -16,12 +16,24 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	protected Action OnPostCorrectPosition;
 	[SerializeField] protected Transform target;
 	protected Transform avatar;
-	private Camera cam;
+	[SerializeField] private Camera cam;
 	private float baseDepth;
 	[SerializeField] private Vector3 initPos;
+	protected MoveType moveType = MoveType.Delta;
 
 	public virtual void Init(){
+	}
 
+	public void AddOnPostBeginDragAction(Action a){
+		if (a != null){
+			OnPostBeginDrag += a;
+		}
+	}
+
+	public void RemoveOnPostBeginDragAction(Action a){
+		if (a != null){
+			OnPostBeginDrag -= a;
+		}
 	}
 
 	public void CorrectPosition(){
@@ -80,27 +92,49 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 
 	public virtual void OnDrag(PointerEventData data){
 		if (finger == data.pointerId){
-			Vector3 p = cam.ScreenToWorldPoint(
-				new Vector3(
-					data.position.x, 
-					data.position.y, 
-					baseDepth));
-			Vector3 pOld = cam.ScreenToWorldPoint(
-				new Vector3(
-					data.position.x - data.delta.x, 
-					data.position.y - data.delta.y, 
-					baseDepth));
-
-			Vector3 v = p - pOld;
-			target.Translate(v, Space.World);
-
-			foreach(Transform t in relativePosList){
-				t.Translate(v, Space.World);
+			if (moveType == MoveType.Delta){
+				MoveDelta(data);
+			}else if (moveType == MoveType.Point){
+				MovePoint(data);
 			}
 			if (OnPostDrag != null){
 				OnPostDrag();
 			}
 		}
+	}
+
+	private void MoveDelta(PointerEventData data){
+		Vector3 p = cam.ScreenToWorldPoint(
+			new Vector3(
+				data.position.x, 
+				data.position.y, 
+				baseDepth));
+		Vector3 pOld = cam.ScreenToWorldPoint(
+			new Vector3(
+				data.position.x - data.delta.x, 
+				data.position.y - data.delta.y, 
+				baseDepth));
+
+		Vector3 v = p - pOld;
+		target.Translate(v, Space.World);
+
+		foreach(Transform t in relativePosList){
+			t.Translate(v, Space.World);
+		}		
+	}
+	private void MovePoint(PointerEventData data){
+		Vector3 p = cam.ScreenToWorldPoint(
+			new Vector3(
+				data.position.x, 
+				data.position.y, 
+				baseDepth));
+
+		Vector3 v = p - target.position;
+		target.Translate(v, Space.World);
+
+		foreach(Transform t in relativePosList){
+			t.Translate(v, Space.World);
+		}		
 	}
 
 	public void OnEndDrag(PointerEventData data){

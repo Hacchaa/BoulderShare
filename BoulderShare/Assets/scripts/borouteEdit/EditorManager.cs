@@ -20,8 +20,6 @@ public class EditorManager : MonoBehaviour {
 	[SerializeField]
 	private string timeStamp ;
 	[SerializeField]
-	private PickerController2 pc;
-	[SerializeField]
 	private BorouteLSManager2 bManager;
 	[SerializeField]
 	private ScreenTransitionManager transition;
@@ -46,12 +44,10 @@ public class EditorManager : MonoBehaviour {
 
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
-			//pc.OpenImagePicker();
 		}else{
 			InfoFromViewToEdit info = obj.GetComponent<InfoFromViewToEdit>();
 			SetPList(info.GetPlaceList());
 			if (info.IsNew()){
-				//pc.OpenImagePicker();
 			}else{
 				bManager.LoadBoroute();
 			}

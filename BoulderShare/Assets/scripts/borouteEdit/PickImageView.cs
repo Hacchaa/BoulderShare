@@ -4,7 +4,6 @@ using UnityEngine;
 using Kakera;
 
 public class PickImageView : SEComponentBase{
-	[SerializeField] private PickerController2 pc;
 	[SerializeField] private ScreenTransitionManager trans;
 	[SerializeField] private TwoDWallImage twoDWallImage;
 	[SerializeField] private CameraManager cameraManager;
@@ -19,7 +18,8 @@ public class PickImageView : SEComponentBase{
 
 	public void ToMainView(){
 		twoDWallImage.RotateWallTexture();
-		bManager.WriteWallImage();
+		//ファイルに書き込まないように仕様変更
+		//bManager.WriteWallImage();
 		trans.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 

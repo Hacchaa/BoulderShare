@@ -14,27 +14,18 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 	private int wallRotTarget;
 	[SerializeField] private Camera cam;
 	[SerializeField] private SpriteRenderer wall;
-	[SerializeField] private SpriteRenderer translucentWall;
 	[SerializeField] private CameraManager cameraManager;
 	private const int FINGER_NONE = -10;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private float rotDuration = 0.2f;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private SpriteRenderer translucentWall;
 
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
 		wallRotTarget = 0;
 		eTouches = new int[] {FINGER_NONE,FINGER_NONE};
-	}
-
-
-	public void ShowTranslucentWall(){
-		translucentWall.gameObject.SetActive(true);
-	}
-
-	public void HideTranslucentWall(){
-		translucentWall.gameObject.SetActive(false);
 	}
 
 	public void LateUpdate(){

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RootMotion.FinalIK;
 
-public class FBBIKMarkSP : FBBIKMark
+public class FBBIKMarkSP : FBBIKMarkBounded
 {
 	[SerializeField] private Transform limitAvatar;
 	[SerializeField] private float limitLength = 1.0f;
@@ -12,6 +12,7 @@ public class FBBIKMarkSP : FBBIKMark
 
 
     public override void Init(){
+        base.Init();
     	OnPostDrag += LimitTargetPosition;
         OnPostEndDrag += FitPositions;
     }

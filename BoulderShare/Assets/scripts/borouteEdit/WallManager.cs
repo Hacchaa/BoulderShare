@@ -11,7 +11,8 @@ public class WallManager : MonoBehaviour
 	public static float WALL_H = 4.0f;
 	public static float WALL_MIN = 4.0f;
 	private Vector2 wallSize;
-	private int numOfMark;
+	private bool isShowTranslucentWall = false;
+
 
 	public bool IsWallImagePrepared(){
 		return masterWallImage != null;
@@ -59,7 +60,6 @@ public class WallManager : MonoBehaviour
 			t.name ="";
 			Destroy(t.gameObject);
 		}
-		int max = -1;
 
 		foreach(Transform t in rootMarks.transform){
 			GameObject obj = new GameObject(t.name);
@@ -67,13 +67,7 @@ public class WallManager : MonoBehaviour
 			obj.transform.localPosition = t.localPosition;
 			obj.transform.localRotation = t.localRotation;
 			obj.transform.localScale = t.localScale;
-
-			int n = int.Parse(t.name);
-			if (n > max){
-				max = n;
-			}
 		}
-		numOfMark = max+1;
 	}
 
 	public void SyncIncline(){
@@ -88,7 +82,7 @@ public class WallManager : MonoBehaviour
 	}
 	public void SyncWallMarks(){
 		foreach(BaseWall w in walls){
-			w.SetWallMarks(masterWallMarks, numOfMark);
+			w.SetWallMarks(masterWallMarks);
 		}
 	}
 
@@ -111,7 +105,7 @@ public class WallManager : MonoBehaviour
 				max = n;
 			}
 		}
-		numOfMark = max+1;
+		TwoDWallMarks.SetNum(max+1);
 		SyncWallMarks();
 	}
 
@@ -132,5 +126,22 @@ public class WallManager : MonoBehaviour
 			i++;
 		}
 		return marks;
+	}
+
+	public void ShowTranslucentWall(){
+		foreach(BaseWall wall in walls){
+			wall.ShowTranslucentWall();
+		}
+		isShowTranslucentWall = true;
+	}
+	public void HideTranslucentWall(){
+		foreach(BaseWall wall in walls){
+			wall.HideTranslucentWall();
+		}
+		isShowTranslucentWall = false;
+	}
+
+	public bool IsShowTranslucentWall(){
+		return isShowTranslucentWall;
 	}
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CanvasResolutionManager : MonoBehaviour
 {
@@ -14,19 +15,24 @@ public class CanvasResolutionManager : MonoBehaviour
     void Start()
     {	
     	Rect safe = Screen.safeArea;
-    	float width, topHeight, botHeight;
+    	float width, topHeight, botHeight, retina;
         # if UNITY_EDITOR
     	   safe = SimulateIPhoneSafeArea(Screen.width, Screen.height);
         # endif
 
+    	retina = GetRetina(Screen.width, Screen.height);
     	width = Screen.width;
     	topHeight = safe.y;
+    	topHeight /= retina;
     	botHeight = Screen.height - (safe.y + safe.height);
-    	Debug.Log("width:"+width);
-    	Debug.Log("topHeight:"+topHeight);
-    	Debug.Log("botHeight:"+botHeight);
-    	Debug.Log("safeRect:"+safe);
+    	botHeight /= retina;
+
+    	//Debug.Log("width:"+width);
+    	//Debug.Log("topHeight:"+topHeight);
+    	//Debug.Log("botHeight:"+botHeight);
+    	//Debug.Log("safeRect:"+safe);
     	foreach(Transform t in canvasList){
+    		t.GetComponent<CanvasScaler>().scaleFactor = retina;
     		RectTransform top = t.Find("Top").GetComponent<RectTransform>();
     		RectTransform bot = t.Find("Bot").GetComponent<RectTransform>();
     		RectTransform content = t.Find("Content").GetComponent<RectTransform>();
@@ -63,7 +69,8 @@ public class CanvasResolutionManager : MonoBehaviour
             t.localScale = Vector3.one;
     	}
 
-    	float mar = CalcCanvasMargin(Screen.width, Screen.height);
+    	//float mar = CalcCanvasMargin(Screen.width, Screen.height);
+    	float mar = GetMarginPt(Screen.width, Screen.height);
     	foreach(SEComponentBase com in sManager.GetUIList()){
     		foreach(RectTransform rect in com.GetMarginList()){
     			rect.anchorMin = new Vector2(0.0f, 0.0f);
@@ -152,7 +159,7 @@ public class CanvasResolutionManager : MonoBehaviour
             return 16.0f;
         }else if(width == 1242 && height == 2688){
             //iPhoneXSMax
-            return 16.0f;
+            return 20.0f;
         }
         return 16.0f;
     }

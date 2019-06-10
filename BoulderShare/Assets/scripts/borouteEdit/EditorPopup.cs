@@ -11,6 +11,7 @@ public class EditorPopup : MonoBehaviour {
 	[SerializeField] private TextMeshProUGUI supportText;
 	[SerializeField] private TextMeshProUGUI rightButtonText;
 	[SerializeField] private TextMeshProUGUI leftButtonText;
+	[SerializeField] private GameObject leftButtonField;
 	[SerializeField] private CanvasGroup canvasGroup;
 	[SerializeField] private float fadeInDuration = 0.15f;
 	[SerializeField] private float fadeOutDuration = 0.075f;
@@ -25,6 +26,12 @@ public class EditorPopup : MonoBehaviour {
 		supportText.text = support;
 		rightButtonText.text = rightBText;
 		leftButtonText.text = leftBText;
+
+		if (string.IsNullOrEmpty(leftBText)){
+			leftButtonField.SetActive(false);
+		}else{
+			leftButtonField.SetActive(true);
+		}
 
 		PlayOpenAnimation();
 	}

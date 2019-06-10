@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,9 +24,21 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	private TwoDWallImage twoDWallImage;
 	[SerializeField] private WallManager wallManager;
 
+	private Action OnGenerateMarkAction = null;
+
 	// Use this for initialization
 	void Awake () {
 		finger = FINGER_NONE;
+	}
+
+	public void AddOnGenerateMarkAction(Action action){
+		if (action != null){
+			OnGenerateMarkAction += action;
+		}
+	}
+
+	public void ResetOnGenerateMarkAction(){
+		OnGenerateMarkAction = null;
 	}
 
 	public void OnPointerDown(PointerEventData data){
@@ -85,6 +98,10 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 					twoDWallMarks.SetFocus(targetMark);
 					//マークの中で一番上に表示する
 					target.SetAsFirstSibling();
+
+					if (OnGenerateMarkAction != null){
+						OnGenerateMarkAction();
+					}
 				}
 			}else{
 				twoDWallMarks.DeleteMark(target.gameObject.name);

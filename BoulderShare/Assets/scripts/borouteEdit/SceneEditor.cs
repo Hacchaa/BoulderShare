@@ -6,25 +6,16 @@ using DG.Tweening;
 using System;
 
 public class SceneEditor : SEComponentBase{
-	enum UI {Mark, TwoDPose, ThreeDPose, Comment};
 	[SerializeField] private CameraManager cManager;
 	[SerializeField] private ScreenTransitionManager sManager;
 	[SerializeField] private SceneEditorComponent[] uiComs;
 	[SerializeField] private int curIndex;
-	[SerializeField] private int toIndex;
-	[SerializeField] private bool isHide = false;
-	[SerializeField] private bool isShow = false;
-	[SerializeField] private bool isTrans = false;
-	[SerializeField] private bool isRight = false;
 	[SerializeField] private List<RectTransform> syncImages;
 	[SerializeField] private List<RectTransform> icons;
 	[SerializeField] private float moveDuration = 0.2f;
 	[SerializeField] private float fadeDuration = 0.1f;
-	[SerializeField] private bool isIconMove = false;
-	[SerializeField] private bool initICons = false;
 	[SerializeField] private MakeAttemptTree makeAT;
 	[SerializeField] private WallManager wallManager;
-	[SerializeField] private bool init = false;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private float iconWidth = 80.0f;
 	[SerializeField] private float iconSpace = 20.0f;
@@ -58,6 +49,13 @@ public class SceneEditor : SEComponentBase{
 	public override void OnPreShow(){
 		Init();
 		threeDView.SetFocusOutAction(ReleaseFocus3D);
+
+		if (makeAT.GetMode() == MakeAttemptTree.Mode.Edit){
+			maxIndex = uiComs.Length - 1;
+			MoveHeadIconsWidthWithAnim(maxIndex);
+		}
+
+		wallManager.ShowTranslucentWall();
 	}
 
 	private void ReleaseFocus3D(){
@@ -89,6 +87,14 @@ public class SceneEditor : SEComponentBase{
 	public void ToATMenu(){
 		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
 		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
+	}
+
+	public void SwitchTranslucentWall(){
+		if (wallManager.IsShowTranslucentWall()){
+			wallManager.HideTranslucentWall();
+		}else{
+			wallManager.ShowTranslucentWall();
+		}
 	}
 
 	public void Submit(){
@@ -136,55 +142,11 @@ public class SceneEditor : SEComponentBase{
 		Transition(index);
 	}
 
-	void Update(){
-		if (isTrans){
-			isTrans = false;
-			Transition(toIndex);
-		}
-
-		if (isHide){
-			isHide = false;
-			if (isRight){
-				uiComs[toIndex].GetHideToRightSeq().Play();
-			}else{
-				uiComs[toIndex].GetHideToLeftSeq().Play();
-			}
-		}
-		if (isShow){
-			isShow = false;
-			if (isRight){
-				uiComs[toIndex].GetShowFromRightSeq().Play();
-			}else{
-				uiComs[toIndex].GetShowFromLeftSeq().Play();
-			}
-		}
-
-		if (isIconMove){
-			isIconMove = false;
-			IconMove();
-		}
-		if (initICons){
-			initICons = false;
-			InitIcon();
-		}
-	}
-
 	private void InitIcon(){
 		int n = icons.Count;
 		for(int i = 0 ; i < n ; i++){
 			syncImages[i].localPosition = icons[0].localPosition - icons[i].localPosition;
 		}
-	}
-
-	private void IconMove(){
-		Vector3 start, end;
-
-		start = icons[curIndex].localPosition;
-		end = icons[toIndex].localPosition;
-		//Debug.Log("Start:"+ start);
-		//Debug.Log("end:"+end);
-		Sequence seq = GetSyncMove(start, end);
-		seq.Play();
 	}
 
 	private Sequence GetSyncMove(int index){
@@ -254,6 +216,22 @@ public class SceneEditor : SEComponentBase{
 		return seq;
 	}
 
+	private void MoveHeadIconsWidthWithAnim(int index){
+		Sequence seq = DOTween.Sequence();
+		float width = GetHeadIconsWidth(index);
+		maxIndex = index;
+		
+		seq.Append(iconParent.DOSizeDelta(new Vector2(width, iconParent.sizeDelta.y), moveDuration).SetEase(Ease.InQuad));
+
+		seq.Play();
+	}
+
+	public void MoveHeadIconsWidthWithAnim(){
+		if (maxIndex != curIndex){
+			MoveHeadIconsWidthWithAnim(curIndex);
+		}
+	}
+
 	private Sequence GetUIMove(int index){
 		Sequence seq = DOTween.Sequence();
 
@@ -304,7 +282,7 @@ public class SceneEditor : SEComponentBase{
 		Sequence seq = DOTween.Sequence();
 
 		seq.OnStart(() =>
-		{
+		{	
 			uiComs[hideIndex].OnPreHide();
 			uiComs[showIndex].OnPreShow();
 
@@ -457,6 +435,10 @@ public class SceneEditor : SEComponentBase{
 		return seq;
 	}
 
+	private float GetHeadIconsWidth(int index){
+		return (index*2 + 1) * iconWidth + index * iconSpace * 2;
+	}
+
 	private void Transition(int index){
 		Sequence seq = DOTween.Sequence();
 
@@ -470,7 +452,7 @@ public class SceneEditor : SEComponentBase{
 
 		uiComs[curIndex].Regist();
 
-		float width = (index*2 + 1) * iconWidth + index * iconSpace * 2;
+		float width = GetHeadIconsWidth(index);
 		bool isCur2D = uiComs[curIndex].Is2D();
 		bool isTo2D = uiComs[index].Is2D();
 		bool isRight ;
@@ -500,7 +482,6 @@ public class SceneEditor : SEComponentBase{
 		}
 		seq.Join(GetFootNavigationOutSeq(curIndex));
 
-
 		//interverl処理
 		seq.Append(GetIntervalProcSeq(curIndex, index, isCur2D ^ isTo2D));
 		
@@ -510,9 +491,10 @@ public class SceneEditor : SEComponentBase{
 			seq.Join(cManager.GetFadeIn2DSeq(!isRight));
 		}else{
 			Vector3 pos ;
+			//posの取得
 			if (isCur2D){
 				if(makeAT.IsPoseSet()){
-					humanModel.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations());
+					humanModel.SetModelPose(makeAT.GetPositions(), makeAT.GetRotations(), makeAT.GetRightHandAnim(), makeAT.GetLeftHandAnim());
 				}else{
 					humanModel.CorrectModelPose();
 				}

@@ -17,10 +17,10 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 	void Awake(){
 		isNew = true;
-	}
+	}/*
 	public void WriteWallImage(){
 		MyUtility.WriteImage(wallManager.GetMasterWallImage(), Application.persistentDataPath + EditorManager.WALLPATH + "Wall.png");
-	}
+	}*/
 	public void LoadBoroute(){
 		//必要な情報をBoRouteInfoオブジェから受け取る
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
@@ -79,12 +79,17 @@ public class BorouteLSManager2 : MonoBehaviour {
 			File.WriteAllText(filepath, json);
 
 			//画像を保存する
-			string wallpath = Application.persistentDataPath + EditorManager.WALLPATH + "Wall.png";
-			string toPath = dicPath + "Wall.png";
+			//string wallpath = Application.persistentDataPath + EditorManager.WALLPATH + "Wall.png";
+			//string toPath = dicPath + "Wall.png";
 
-           	if (File.Exists(wallpath)){
-            	File.Copy(wallpath, toPath, true);
-			}
+           	//if (File.Exists(wallpath)){
+            //	File.Copy(wallpath, toPath, true);
+			//}
+			string toPath = dicPath + "Wall.png";
+			Texture2D tex = wallManager.GetMasterWallImage();
+			File.Delete(toPath);
+			MyUtility.WriteImage(tex, filepath);
+
 			//サムネイル画像を保存
         	toPath = dicPath + "thumbnail.png";
         	File.Delete(toPath);

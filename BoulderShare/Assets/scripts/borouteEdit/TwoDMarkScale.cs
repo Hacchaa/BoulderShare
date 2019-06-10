@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,6 +17,17 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	[SerializeField] private Vector3 fixedScale = Vector3.one;
 	[SerializeField] private TwoDMark twoDMark;
 	[SerializeField] private float defaultR = 0.2f;
+
+	private static Action OnBeginDragAction;
+
+	public static void AddOnBeginDragAction(Action a){
+		if (a != null){
+			OnBeginDragAction += a;
+		}
+	}
+	public static void ResetOnBeginDragAction(){
+		OnBeginDragAction = null;
+	}
 
 	//rayをブロックして親に伝えないようにする
 	public void OnPointerUp(PointerEventData data){
@@ -39,6 +51,10 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			baseR = Mathf.Sqrt(baseR * baseR - Mathf.Pow(offset.x + offset.y, 2) / 2);
 			
 			offsetRate = twoDMark.transform.localScale.x;
+
+			if (OnBeginDragAction != null){
+				OnBeginDragAction();
+			}
 		}
 	}
 	public void OnDrag(PointerEventData data){

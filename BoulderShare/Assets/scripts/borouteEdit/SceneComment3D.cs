@@ -23,6 +23,7 @@ public class SceneComment3D : MonoBehaviour
     [SerializeField] private Transform showObj;
     [SerializeField] private Transform dontShowObj;
     [SerializeField] private CommentExtendWidth3D cewRight;
+    [SerializeField] private CommentExtendWidth3D cewLeft;
     [SerializeField] private SceneCommentShow scs;
     [SerializeField] private Camera camera;
     [SerializeField] private EditorPopup popup;
@@ -42,6 +43,7 @@ public class SceneComment3D : MonoBehaviour
         Resize();
         ShowComment(true);
         cewRight.SetCamera(camera);
+        cewLeft.SetCamera(camera);
         scs.SetCamera(camera);
     }
 

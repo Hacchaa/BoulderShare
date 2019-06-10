@@ -16,6 +16,7 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 	private static float SCALE_MAX = 1.5f;
 	private static Action OnBeginDragAction;
 	private static Action OnPointerUpAction;
+	private static Action OnPointerDownAction;
 
 	[SerializeField] private SpriteRenderer rend;
 	[SerializeField] private Camera cam;
@@ -46,12 +47,34 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 			t.gameObject.SetActive(false);
 		}
 	}
-	public static void SetOnPointerUpAction(Action a){
-		OnPointerUpAction = a;
+	public static void AddOnPointerUpAction(Action a){
+		if (a != null){
+			OnPointerUpAction += a;
+		}
 	}
 
-	public static void SetOnBeginDragAction(Action a){
-		OnBeginDragAction = a;
+	public static void AddOnBeginDragAction(Action a){
+		if (a != null){
+			OnBeginDragAction += a;
+		}
+	}
+
+	public static void AddOnPointerDownAction(Action a){
+		if (a != null){
+			OnPointerDownAction += a;
+		}
+	}
+
+	public static void ResetOnPointerUpAction(){
+		OnPointerUpAction = null;
+	}
+
+	public static void ResetOnBeginDragAction(){
+		OnBeginDragAction = null;
+	}
+
+	public static void ResetOnPointerDownAction(){
+		OnPointerDownAction = null;
 	}
 
 	public void ActivateNoActiveObj(bool b){
@@ -123,6 +146,9 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
 	public void OnPointerDown(PointerEventData data){
 		//Debug.Log("OnPointerDown");
+		if (OnPointerDownAction != null){
+			OnPointerDownAction();
+		}
 		//フォーカスをあてる
 		type = FocusType.NORMAL;
 		twoDWallMarks.SetFocus(this);

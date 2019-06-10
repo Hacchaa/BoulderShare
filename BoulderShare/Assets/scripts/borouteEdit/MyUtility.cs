@@ -23,8 +23,10 @@ public class MyUtility {
         LeftKnee,
         RightKnee,
         Head,
-        Look
+        Look,
+        Other
     }
+
 	public static int Gcd(int a, int b){
 		if (a < b){
 			return Gcd(b, a);
@@ -124,6 +126,8 @@ public class MyUtility {
 		public Vector3[] pose;
 		public Quaternion[] rots;
 		public List<string> failureList;
+		public int leftHandAnim;
+		public int rightHandAnim;
 	}
 
 	[Serializable]

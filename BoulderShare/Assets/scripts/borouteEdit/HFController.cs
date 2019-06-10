@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -18,10 +19,22 @@ public class HFController : MonoBehaviour{
 	[SerializeField]
 	private TwoDWallMarks twoDWallMarks;
 
+	private Action OnTouchMarkAction = null;
+
 	void Awake(){
 		arrowDWidth = arrow.size.x;
 		selectedMark = null;
 		selectedBodyInfo = TwoDMark.HFType.NONE;
+	}
+
+	public void AddOnTouchMarkAction(Action action){
+		if (action != null){
+			OnTouchMarkAction += action;
+		}
+	}
+
+	public void ResetOnTouchMarkAction(){
+		OnTouchMarkAction = null;
 	}
 
 	public void SetBodyType(TwoDMark.HFType type){
@@ -88,6 +101,9 @@ public class HFController : MonoBehaviour{
 		}
 		if(twoDWallImage.IsOnPointerEnter() && selectedMark != null){
 			twoDWallMarks.Touch(selectedMark, selectedBodyInfo);
+			if (OnTouchMarkAction != null){
+				OnTouchMarkAction();
+			}
 			arrow.gameObject.SetActive(false);
 			twoDWallMarks.ReleaseFocus();
 			selectedMark = null;

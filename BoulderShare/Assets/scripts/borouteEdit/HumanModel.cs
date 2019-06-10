@@ -18,6 +18,17 @@ public class HumanModel : MonoBehaviour {
 	[SerializeField] private GameObject shadowRoot;
 	[SerializeField] private GameObject shadowPrefab;
 
+	public void AddOnPostBeginDragActionWithMarks(Action a){
+		if (a != null){
+			fIK.AddOnPostBeginDragAction(a);
+		}
+	}
+	public void RemoveOnPostBeginDragActionWithMarks(Action a){
+		if (a != null){
+			fIK.RemoveOnPostBeginDragAction(a);
+		}
+	}
+
 	public void HideMarks(){
 		holdMarksRoot.SetActive(false);
 	}
@@ -47,6 +58,13 @@ public class HumanModel : MonoBehaviour {
 		cameraManager.SetRootPosWithFixedHierarchyPos(body);
 	}
 
+	public FBBIKController.HandAnim GetLeftHandAnim(){
+		return fIK.GetHandAnim(false);
+	}
+	public FBBIKController.HandAnim GetRightHandAnim(){
+		return fIK.GetHandAnim(true);
+	}
+
 	public Vector3[] GetModelPosition(){
 		return fIK.GetPositions();
 	}
@@ -58,7 +76,7 @@ public class HumanModel : MonoBehaviour {
 	public Vector3 GetModelBodyPosition(){
 		return fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
 	}
-
+/*
 	public void DeleteShadows(){
 		foreach(Transform t in shadowRoot.transform){
 			Destroy(t.gameObject);
@@ -75,19 +93,23 @@ public class HumanModel : MonoBehaviour {
 		}
 
 		SetModelPose(positionsArr[positionsArr.Length - 1], rotationsArr[rotationsArr.Length - 1]);
-	}
+	}*/
 
-	public void CopyModelPose(Transform copyTo, Vector3[] positions, Quaternion[] rotations){
+	public void CopyModelPose(Transform copyTo, Vector3[] positions, Quaternion[] rotations
+			, FBBIKController.HandAnim rightHand, FBBIKController.HandAnim LeftHand){
+
 		Vector3[] posOrigin = GetModelPosition();
 		Quaternion[] rotOrigin = GetModelRotation();
+		FBBIKController.HandAnim rHandOri = GetRightHandAnim();
+		FBBIKController.HandAnim lHandOri = GetLeftHandAnim();
 
-		SetModelPose(positions, rotations);
+		SetModelPose(positions, rotations, rightHand, LeftHand);
 
 		fIK.DoVRIK();
 
 		CopyRecursively(fIK.GetModelRoot() , copyTo);
 
-		SetModelPose(posOrigin, rotOrigin);
+		SetModelPose(posOrigin, rotOrigin, rHandOri, lHandOri);
 	}
 
 	private void CopyRecursively(Transform from, Transform to){
@@ -102,8 +124,10 @@ public class HumanModel : MonoBehaviour {
 		}
 	}
 
-	public void SetModelPose(Vector3[] pos, Quaternion[] rots){
+	public void SetModelPose(Vector3[] pos, Quaternion[] rots, FBBIKController.HandAnim rightHand, FBBIKController.HandAnim LeftHand){
 		fIK.SetPose(pos, rots);
+		fIK.SetHandAnim(rightHand, true);
+		fIK.SetHandAnim(LeftHand, false);
 	}
 
 	public void InitModelPose(){
@@ -230,7 +254,7 @@ public class HumanModel : MonoBehaviour {
 				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
 				//pos[i].z = 0.0f;
 		}*/
-		SetModelPose(pos, rot);
+		SetModelPose(pos, rot, FBBIKController.HandAnim.Default, FBBIKController.HandAnim.Default);
 	}
 
 	public void SetHoldMarkInfo(TwoDMark.HFType mark, float r, Vector3 p){

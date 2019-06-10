@@ -13,33 +13,28 @@ public class MainView: SEComponentBase{
 	[SerializeField] private MakeAttemptTree makeAT;
 	[SerializeField] private CameraManager cameraManager;
 	[SerializeField] private HScenes2 hScenes2;
-	[SerializeField] private GameObject forEdit;
-	[SerializeField] private SceneSelectView ssView;
 	[SerializeField] private ThreeDFirstSettingView threeDSettingView;
 	[SerializeField] private WallManager wallManager;
-	[SerializeField] private TwoDWallImage twoDWallImage;
 	[SerializeField] private EditorManager editorManager;
 	[SerializeField] private Image wallImageOnUI;
 	[SerializeField] private GameObject noImageContent;
+	[SerializeField] private Button makeButton;
 
 	public override void OnPreShow(){
 		cameraManager.Active2D();
 		cameraManager.Reset2DCamPosAndDepth();
-		if (hScenes2.GetNum() == 0){
-			forEdit.SetActive(false);
-		}else{
-			forEdit.SetActive(true);
-		}
 
 		if (wallManager.IsWallImagePrepared()){
 			wallImageOnUI.gameObject.SetActive(true);
 			noImageContent.SetActive(false);
+			makeButton.interactable = true;
 		}else{
 			wallImageOnUI.gameObject.SetActive(false);
 			noImageContent.SetActive(true);
+			makeButton.interactable = false;
 		}
 
-		twoDWallImage.HideTranslucentWall();
+		wallManager.HideTranslucentWall();
 	}
 
 	public override void OnPreHide(){
@@ -140,7 +135,7 @@ public class MainView: SEComponentBase{
 	}
 
 	private void PickImageFromCamera(){
-				Debug.Log("PickImage");
+		//Debug.Log("PickImage");
 		var camera = UM_Application.CameraService;
 
 		int maxThumbnailSize = 1024;
@@ -181,7 +176,13 @@ public class MainView: SEComponentBase{
 		makeAT.SetMode(MakeAttemptTree.Mode.Loop);
 
 		if (threeDSettingView.IsInit()){
-			trans.Transition(ScreenTransitionManager.Screen.EditWallMark);
+			if (hScenes2.IsEmpty()){
+				trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
+			}else{
+				hScenes2.LoadLatestAT();
+				AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
+				trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
+			}
 		}else{
 			trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
 		}
@@ -189,10 +190,6 @@ public class MainView: SEComponentBase{
 
 	public void ToPost(){
 		trans.Transition(ScreenTransitionManager.Screen.Post);
-	}
-
-	public void ToTry(){
-		trans.Transition(ScreenTransitionManager.Screen.TryView);
 	}
 
 	public void To3DSetting(){

@@ -6,6 +6,7 @@ public class SceneEditor2DPose : SceneEditorComponent
 {
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private HScenes2 hScenes;
+	[SerializeField] private HFController hfController;
 
 	public override void OnPreShow(){
 		twoDWallMarks.ClearTouch();
@@ -22,10 +23,12 @@ public class SceneEditor2DPose : SceneEditorComponent
 			twoDWallMarks.SetDummyTouchInfo(scene.GetOnHolds());
 		}
 		twoDWallMarks.IgnoreEvents();
+		hfController.AddOnTouchMarkAction(sceneEditor.MoveHeadIconsWidthWithAnim);
 	}
 
 	public override void OnPreHide(){
 		twoDWallMarks.ClearTouch();
+		hfController.ResetOnTouchMarkAction();
 	}
 
 	public override void Regist(){

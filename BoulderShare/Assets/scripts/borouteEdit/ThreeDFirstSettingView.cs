@@ -27,8 +27,7 @@ public class ThreeDFirstSettingView : SEComponentBase
 	public void Submit(){
 		isInit = true;
 		wallManager.CommitIncline(threeDWall.GetIncline());
-		AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
-		sManager.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
+		sManager.Transition(ScreenTransitionManager.Screen.SceneEditor);
 	}
 	public override void OnPreShow(){
 		size = humanModel.GetModelSize();
@@ -38,7 +37,7 @@ public class ThreeDFirstSettingView : SEComponentBase
 		cameraManager.Active3D();
 		cameraManager.Reset3DCamPosAndDepth();
 		modelSize.SyncModelSize();
-		threeDWall.HideTranslucentWall();
+		wallManager.HideTranslucentWall();
 	}
 
 	public override void OnPreHide(){

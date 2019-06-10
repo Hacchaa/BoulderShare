@@ -12,6 +12,7 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 	[SerializeField] private GameObject focusObj;
 	[SerializeField] private Transform parent;
     [SerializeField] private CameraManager cManager;
+    [SerializeField] private GameObject grid;
     private Camera cam;
     private static int FINGER_NONE = -10;
     private static int finger = FINGER_NONE;
@@ -40,6 +41,7 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         }
         isCommentEditable = false;
         isMovable = false;
+        grid.SetActive(false);
     }
 
     public void OnBeginDrag(PointerEventData data){
@@ -57,6 +59,9 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
                     baseDepth));
 
             baseP = baseP - parent.position;
+
+            grid.SetActive(true);
+            grid.transform.position = parent.position;
         }
     }
 

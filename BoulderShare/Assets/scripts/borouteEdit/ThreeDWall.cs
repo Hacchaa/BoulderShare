@@ -11,10 +11,10 @@ public class ThreeDWall : BaseWall{
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private int wallDegOffset = 90;
 
-	public void ShowTranslucentWall(){
+	public override void ShowTranslucentWall(){
 		grayWall.SetActive(true);
 	}
-	public void HideTranslucentWall(){
+	public override void HideTranslucentWall(){
 		grayWall.SetActive(false);
 	}
 	public override void SetWallImage(Texture2D tex){
@@ -44,7 +44,7 @@ public class ThreeDWall : BaseWall{
 	public int GetIncline(){
 		return CalcIncline();
 	}
-	public override void SetWallMarks(GameObject rootMarks, int n){
+	public override void SetWallMarks(GameObject rootMarks){
 		threeDWallMarks.Synchronize(rootMarks);
 	}
 
@@ -84,6 +84,7 @@ public class ThreeDWall : BaseWall{
 		return -(p.y - wall.transform.localPosition.y) * Mathf.Tan(Mathf.Deg2Rad * (incline-wallDegOffset)) + wall.transform.localPosition.z; 
 	}
 
+	//p:position in world .
 	public Vector3 CalcWallPoint(Vector3 p){
 		//Debug.Log("input "+ p);
 		p = threeDWallMarks.transform.InverseTransformPoint(p);

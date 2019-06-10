@@ -6,16 +6,29 @@ using RootMotion.FinalIK;
 
 public class FBBIKController : MonoBehaviour, IHumanModelController
 {
+	public enum HandAnim{Default, Kachi, Pinch, Pocket, Sloper};
+	[SerializeField] private Animator animator;
 	[SerializeField] private Transform[] avatarReferences;
     [SerializeField] private List<FBBIKBase> markList;
     [SerializeField] private Camera cam;
     private Dictionary<MyUtility.FullBodyMark, FBBIKBase> map;
-    [SerializeField] private AimIK aimIK;
+    private Dictionary<MyUtility.FullBodyMark, FBBAimIKComponent> aimMap;
+    private Dictionary<HandAnim, string> handAnimMap;
+    [SerializeField] private List<FBBAimIKComponent> aimIKComponents;
     [SerializeField] private FullBodyBipedIK ik;
     [SerializeField] private Transform model;
     [SerializeField] private LineRenderer hfLinePrefab;
     [SerializeField] private BoxCollider hipCollider;
     [SerializeField] private BoxCollider spineCollider;
+    [SerializeField] private bool switchAimIKActivate = false;
+
+    [SerializeField] private bool isRight = false;
+    [SerializeField] private bool isKachi = false;
+    [SerializeField] private bool isDefault = false;
+    [SerializeField] private bool handAnimTrriger = false;
+
+    private HandAnim lHandAnim;
+    private HandAnim rHandAnim;
 
     public void Start(){
     	Init();
@@ -27,6 +40,13 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	}else{
     		map.Clear();
     	}
+    	if (aimMap == null){
+    		aimMap = new Dictionary<MyUtility.FullBodyMark, FBBAimIKComponent>();
+    	}else{
+    		aimMap.Clear();
+    	}
+
+    	InitHandAnimator();
  
     	foreach(FBBIKBase mark in markList){
            // Debug.Log("mark:"+mark.GetBodyID()+ ", "+ mark.GetWorldPosition());
@@ -41,12 +61,109 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
                 ((FBBIKMarkHF)mark).SetLine(line);
             }
     	}
+
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+    		aimMap.Add(com.GetTargetAvatarBodyID(), com);
+    		com.Init();
+    		com.SetCamera(cam);
+    		com.SetAvatar(avatarReferences[(int)com.GetTargetAvatarBodyID()]);
+    	}
+    }
+
+    public void InitHandAnimator(){
+    	if (handAnimMap == null){
+    		handAnimMap = new Dictionary<HandAnim, string>();
+    	}else{
+    		handAnimMap.Clear();
+    	}
+
+		handAnimMap.Add(HandAnim.Default, "Default");
+		handAnimMap.Add(HandAnim.Kachi, "Kachi");
+		handAnimMap.Add(HandAnim.Pinch, "Pinch");
+		handAnimMap.Add(HandAnim.Pocket, "Pocket");
+		handAnimMap.Add(HandAnim.Sloper, "Sloper");
     }
     void Update(){
+    	if (handAnimTrriger){
+    		handAnimTrriger = false;
+
+    		HandAnim hand = HandAnim.Default;
+    		if (isDefault){
+    			hand = HandAnim.Default;
+    		}
+    		if (isKachi){
+    			hand = HandAnim.Kachi;
+    		}
+
+    		SetHandAnim(hand, isRight);
+    	}
+    /*
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+	    	if (switchAimIKActivate ^ com.IsActive()){
+	    		if(com.IsActive()){
+	    			com.Deactivate();
+	    		}else{
+	    			com.Activate();
+	    		}
+	    	}
+    	}*/
         //BoundMark(hipCollider);
         //BoundMark(spineCollider);
     }
 
+    public void ActiveMarks(){
+    	foreach(FBBIKBase m in markList){
+    		m.gameObject.SetActive(true);
+    	}
+    }
+
+    public void DeactiveMarks(){
+    	foreach(FBBIKBase m in markList){
+    		m.gameObject.SetActive(false);
+    	}
+    }
+
+    public void ActiveAimMark(MyUtility.FullBodyMark mark){
+    	Debug.Log("mark:"+mark);
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+    		if (com.GetTargetAvatarBodyID() == mark){
+    			Debug.Log("Active:"+com.GetTargetAvatarBodyID());
+    			com.Activate();
+    		}else{
+    			Debug.Log("Deactivate:"+com.GetTargetAvatarBodyID());
+    			com.Deactivate();
+    		}
+    	}
+    }
+
+    public void DeactiveAimMarks(){
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+    		com.Deactivate();
+    	}
+    }
+
+    public void AddOnPostBeginDragAction(Action a){
+        if (a != null){
+            foreach(FBBIKBase m in markList){
+                m.AddOnPostBeginDragAction(a);
+            }
+
+            foreach(FBBAimIKComponent com in aimIKComponents){
+            	com.AddOnPostBeginDragAction(a);
+            }
+        }
+    }
+    public void RemoveOnPostBeginDragAction(Action a){
+        if (a != null){
+            foreach(FBBIKBase m in markList){
+                m.RemoveOnPostBeginDragAction(a);
+            }
+            foreach(FBBAimIKComponent com in aimIKComponents){
+            	com.RemoveOnPostBeginDragAction(a);
+            }
+        }
+    }
+/*
     private void BoundMark(BoxCollider bodyCollider){
         Transform bodyTrans = bodyCollider.transform;
         Quaternion localRot = bodyTrans.localRotation;
@@ -109,7 +226,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
                 }
             }
         }
-    }
+    }*/
     void LateUpdate(){
         Invoke("UpdateAimIK", 0.0f);
         Invoke("ApplyRotationLimits", 0.0f);
@@ -131,18 +248,44 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     }
     public void DoVRIK(){
         ik.GetIKSolver().Update();
+        LateUpdate();
     }
     private void UpdateAimIK(){
+
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+    		com.UpdateManually();
+    	}/*
        aimIK.GetIKSolver().Update();
+       if (aimLHIK != null){
+        aimLHIK.GetIKSolver().Update();
+       }*/
     }
     public void InitMarks(){
     	foreach(FBBIKBase mark in map.Values){
     		mark.InitPosition();
     	}
+
+    	foreach(FBBAimIKComponent com in aimIKComponents){
+	    	com.Deactivate();
+    	}
+    	switchAimIKActivate = false;
+
+    	SetHandAnim(HandAnim.Default, true);
+    	SetHandAnim(HandAnim.Default, false);
+
     }
     public Transform GetModelRoot(){
         return model;
     }
+   	public Transform GetAvatar(MyUtility.FullBodyMark mark){
+   		int index = (int)mark;
+
+   		if (index >= 0 && index < avatarReferences.Length){
+   			return avatarReferences[index];
+   		}
+
+   		return null;
+   	}
     public Vector3 GetWorldPosition(MyUtility.FullBodyMark mark){
         //Debug.Log("getworldposition:"+mark+" "+map.ContainsKey(mark));
     	if(map.ContainsKey(mark)){
@@ -175,6 +318,9 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     public Quaternion[] GetRotations(){
 	 	Quaternion[] rots = new Quaternion[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
 
+	 	foreach(FBBAimIKComponent com in aimMap.Values){
+	 		rots[(int)com.GetTargetAvatarBodyID()] = com.GetRotation();
+	 	}
 		return rots;   	
     }
 
@@ -201,6 +347,37 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     		if (map.ContainsKey(mark)){
     			map[mark].SetPosition(pos[i]);
     		}
+
+    		if (aimMap.ContainsKey(mark)){
+    			aimMap[mark].SetRotation(rot[i]);
+    		}
+    	}
+    }
+
+    public void SetHandAnim(HandAnim hand, bool isRight){
+    	Debug.Log("SetHand:"+hand+" "+isRight);
+    	string prefix = "";
+    	if (isRight){
+    		prefix = "R";
+    	}else{
+    		prefix = "L";
+    	}
+
+    	if(handAnimMap.ContainsKey(hand)){
+    		animator.SetTrigger(prefix+ handAnimMap[hand]);
+    		if (isRight){
+    			rHandAnim = hand;
+    		}else{
+    			lHandAnim = hand;
+    		}
+    	}
+    }
+
+    public HandAnim GetHandAnim(bool isRight){
+    	if (isRight){
+    		return rHandAnim;
+    	}else{
+    		return lHandAnim;
     	}
     }
 }

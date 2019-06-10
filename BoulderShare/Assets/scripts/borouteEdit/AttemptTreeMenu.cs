@@ -12,8 +12,6 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private HumanModel humanModel;
-	[SerializeField] private FailedListView failedListView;
-	[SerializeField] private GameObject failedListButton;
 	[SerializeField] private SceneCommentController3D scc;
 	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private Text dimText;
@@ -26,11 +24,34 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private List<GameObject> forFailure;
 	[SerializeField] private List<GameObject> failureObjects;
 	[SerializeField] private TMP_InputField inputField;
-	[SerializeField] private FailureCommentController fcc;
-	[SerializeField] private TwoDWallImage twoDWallImage;
-	[SerializeField] private ThreeDWall threeDWall;
+	[SerializeField] private WallManager wallManager;
+	[SerializeField] private ModifyMarks modifyMarks;
+	[SerializeField] private ATWarning atWarning;
 
-	private string warningText = "本当に削除しますか？";
+	private string warningWithRemove = "現在のシーンを削除しますか？";
+
+	public void UpdateWarning(Dictionary<string, int> modMap){
+
+		foreach(HScene2 scene in hScenes.GetScenes()){
+
+			string[] hold = scene.GetOnHolds();
+			int[] types = scene.GetWarningType();
+
+			//Debug.Log("scene.name:"+scene.GetID());
+			for(int i = 0 ; i < hold.Length ; i++){
+				//Debug.Log("i="+i);
+				if (!string.IsNullOrEmpty(hold[i]) && modMap.ContainsKey(hold[i])){
+					if (types[i] != -1){
+						types[i] = types[i] | modMap[hold[i]];
+					}else{
+						types[i] = modMap[hold[i]];
+					}
+					Debug.Log("type "+types[i]);
+				}
+			}
+			scene.SetWarningType(types);
+		}
+	}
 
 	public void AddFailureComment(){
 		string inputText = inputField.text;
@@ -72,12 +93,9 @@ public class AttemptTreeMenu : SEComponentBase{
 		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 
-	public void ToTry(){
-		trans.Transition(ScreenTransitionManager.Screen.TryView);
-	}
-
 	public void SaveAT(){
 		hScenes.RegistCurHScenes();
+		hScenes.InitAT();
 		ToMainView();
 	}
 
@@ -94,7 +112,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);		
 	}
 	public void ToRemove(){
-		popup.Open(Remove, null, warningText,"", "削除", "キャンセル");
+		popup.Open(Remove, null, warningWithRemove,"", "削除", "キャンセル");
 	}
 
 	public void ToMainView(){
@@ -174,7 +192,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		cameraManager.Reset2DCamPosAndDepth();
 		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
 		humanModel.HideMarks();
-		//failedListButton.SetActive(failedListView.IsExist());
+
 		comments.ShowDynamically();
 		Switch2D3D(true);
 
@@ -188,8 +206,7 @@ public class AttemptTreeMenu : SEComponentBase{
 			case Mode.Failure: ActivateList(forFailure, true); break;
 			default: ActivateList(forMenu, true); break;
 		}
-		twoDWallImage.ShowTranslucentWall();
-		threeDWall.ShowTranslucentWall();
+		wallManager.ShowTranslucentWall();
 	}
 
 	private void ActivateList(List<GameObject> list, bool b){
@@ -214,10 +231,44 @@ public class AttemptTreeMenu : SEComponentBase{
 	public void Load(HScene2 scene){
 		twoDWallMarks.ClearTouch();
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
-		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
+		humanModel.SetModelPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim());
 		humanModel.SetCamAxisAsModelPos();
 		scc.SetSceneComments(scene.GetComments());
-		fcc.SetFailureComments(scene.GetFailureList());
+
+		//ワーニングテキストがある場合、表示
+		if(scene.HasWarning()){
+			atWarning.gameObject.SetActive(true);
+
+			string title = "このシーンで使用しているマークが変更されました。";
+			string sup = "";
+			int[] types = scene.GetWarningType();
+			for(int i = 0 ; i < types.Length ; i++){
+				if (types[i] != -1){
+					string line = "";
+					if (i == (int)TwoDMark.HFType.RH){
+						line += "右手のマーク";
+					}else if (i == (int)TwoDMark.HFType.LH){
+						line += "左手のマーク";
+					}else if (i == (int)TwoDMark.HFType.RF){
+						line += "右足のマーク";
+					}else if (i == (int)TwoDMark.HFType.LF){
+						line += "左足のマーク";
+					}
+					if (!string.IsNullOrEmpty(sup)){
+						sup += "\r\n";
+					}
+					sup += line + modifyMarks.GetWarningTailText(types[i]);
+				}
+			}
+			atWarning.SetWarning(title, sup);
+		}else{
+			atWarning.gameObject.SetActive(false);
+			atWarning.Clear();
+		}
+	}
+
+	public void OpenWarning(){
+		atWarning.OpenWarning();
 	}
 
 	public void NextComment(){

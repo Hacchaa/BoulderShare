@@ -30,7 +30,7 @@ public class LayerGraphView : SEComponentBase{
 		isLoop = false;
 		lgController.ResetViewportRect();
 		lgController.SetCameraActive(false);
-		humanModel.DeleteShadows();
+		//humanModel.DeleteShadows();
 	}
 
 	public void Construction(){
@@ -92,7 +92,7 @@ public class LayerGraphView : SEComponentBase{
 
 		//twoDWallMarks.ClearTouch();
 		///twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
-		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
+		humanModel.SetModelPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim());
 		//humanModel.SetCamAxisAsModelPos();
 		//scc.SetSceneComments(scene.GetComments());
 		//fcc.SetFailureComments(scene.GetFailureList());
@@ -115,7 +115,7 @@ public class LayerGraphView : SEComponentBase{
 			i++;
 		}
 
-		humanModel.ShowShadows(pos, rots);
+		//humanModel.ShowShadows(pos, rots);
 	}
 
 	public void LoadAT(){

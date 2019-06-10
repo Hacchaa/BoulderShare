@@ -6,7 +6,16 @@ public class TwoDWall : BaseWall{
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private TwoDWallImage twoDWallImage;
+	[SerializeField] private SpriteRenderer translucentWall;
 	private int incline;
+
+	public override void ShowTranslucentWall(){
+		translucentWall.gameObject.SetActive(true);
+	}
+
+	public override void HideTranslucentWall(){
+		translucentWall.gameObject.SetActive(false);
+	}
 
 	public override void SetWallImage(Texture2D texture){
 		twoDWallImage.SetWallImage(texture);
@@ -16,8 +25,8 @@ public class TwoDWall : BaseWall{
 		incline = inc;
 	}
 
-	public override void SetWallMarks(GameObject rootMarks, int n){
-		twoDWallMarks.Synchronize(rootMarks, n);
+	public override void SetWallMarks(GameObject rootMarks){
+		twoDWallMarks.Synchronize(rootMarks);
 	}
 	public GameObject GetWallMarks(){
 		return twoDWallMarks.GetWallMarks();

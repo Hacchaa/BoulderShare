@@ -20,8 +20,7 @@ public class ATFailureView : SEComponentBase{
 	[SerializeField] private TMP_InputField inputField;
 	[SerializeField] private List<GameObject> failureObjects;
 	[SerializeField] private FailureCommentController fcc;
-	[SerializeField] private TwoDWallImage twoDWallImage;
-	[SerializeField] private ThreeDWall threeDWall;
+	[SerializeField] private WallManager wallManager;
 
 	public void AddFailureComment(){
 		string inputText = inputField.text;
@@ -104,8 +103,7 @@ public class ATFailureView : SEComponentBase{
 		//failedListButton.SetActive(failedListView.IsExist());
 		comments.ShowDynamically();
 		Switch2D3D(true);
-		twoDWallImage.ShowTranslucentWall();
-		threeDWall.ShowTranslucentWall();
+		wallManager.ShowTranslucentWall();
 	}
 
 	public override void OnPreHide(){
@@ -120,7 +118,7 @@ public class ATFailureView : SEComponentBase{
 	public void Load(HScene2 scene){
 		twoDWallMarks.ClearTouch();
 		twoDWallMarks.SetTouchInfo(scene.GetOnHolds());
-		humanModel.SetModelPose(scene.GetPose(), scene.GetRots());
+		humanModel.SetModelPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim());
 		humanModel.SetCamAxisAsModelPos();
 		scc.SetSceneComments(scene.GetComments());
 		fcc.SetFailureComments(scene.GetFailureList());

@@ -22,6 +22,10 @@ public class HScenes2 : MonoBehaviour {
 		num = -1;
 	}
 
+	public bool IsEmpty(){
+		return !atList.Any();
+	}
+
 	public void InitAT(){
 		list.Clear();
 		curIndex = -1;
@@ -48,10 +52,10 @@ public class HScenes2 : MonoBehaviour {
 		}
 		curIndex = index ;
 	}
-/*
-	public List<HScene2> GetSceneas(){
+
+	public List<HScene2> GetScenes(){
 		return new List<HScene2>(list);
-	}*/
+	}
 
 	public HScene2 GetScene(int index){
 		if (index < 0 || index > list.Count - 1){
@@ -162,7 +166,7 @@ public class HScenes2 : MonoBehaviour {
 			scene.SetID(data.id);
 			scene.SetOnHolds(data.holdsOnHand);
 			scene.SaveComments(data.comments);
-			scene.SavePose(data.pose, data.rots);
+			scene.SavePose(data.pose, data.rots, (FBBIKController.HandAnim)data.rightHandAnim, (FBBIKController.HandAnim)data.leftHandAnim);
 			scene.SetFailureList(data.failureList);
 
 			masterScenes.Add(scene.GetID(), scene);
@@ -182,6 +186,8 @@ public class HScenes2 : MonoBehaviour {
 			data.pose = scene.GetPose();
 			data.rots = scene.GetRots();
 			data.failureList = scene.GetFailureList();
+			data.rightHandAnim = (int)scene.GetRightHandAnim();
+			data.leftHandAnim = (int)scene.GetLeftHandAnim();
 
 			l.Add(data);
 		}
@@ -304,7 +310,7 @@ public class HScenes2 : MonoBehaviour {
 			scene.SetID(master.GetID());
 			scene.SetOnHolds(master.GetOnHolds());
 			scene.SaveComments(master.GetComments());
-			scene.SavePose(master.GetPose(), master.GetRots());
+			scene.SavePose(master.GetPose(), master.GetRots(), master.GetRightHandAnim(), master.GetLeftHandAnim());
 			scene.SetFailureList(master.GetFailureList());	
 
 			list.Add(scene);	

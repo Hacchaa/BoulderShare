@@ -16,20 +16,11 @@ public class ScreenTransitionManager : MonoBehaviour {
 	[SerializeField] Image botSareArea;
 
 	public enum Screen {
-		AttemptTreeView,
-		EditScene,
-		TryView,
 		Post,
-		EditPose,
-		PickImageView,
 		ThreeDFirstSettingView,
-		Edit3DSceneComment,
 		MainView,
-		EditWallMark,
-		SceneSelectView,
 		LayerGraphView,
 		AttemptTreeMenu,
-		ATFailureView,
 		SceneEditor,
 		ModifyMarks
 	}

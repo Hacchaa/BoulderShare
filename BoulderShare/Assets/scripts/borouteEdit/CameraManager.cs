@@ -156,10 +156,12 @@ public class CameraManager : MonoBehaviour
     }
 
     public void Rotate3DWithAnim(Quaternion rot){
-    	root3D.DORotateQuaternion(rot, duration);
+        Sequence seq = DOTween.Sequence();
+    	seq.Append(root3D.DORotateQuaternion(rot, duration).SetEase(Ease.OutQuad));
+        seq.Play();
     }
 
-    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, float dur = 0.0f){
+    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, Vector3 movePos, float dur = 0.0f){
         if (dur == 0.0f){
             dur = duration;
         }
@@ -170,13 +172,17 @@ public class CameraManager : MonoBehaviour
 
         seq.Append(root3D.DORotateQuaternion(rot, dur).SetEase(Ease.OutQuad))
         .Join(root3D.DOMove(vec, dur).SetEase(Ease.OutQuad))
-        .Join(move3D.DOLocalMove(Vector3.zero, dur).SetEase(Ease.OutQuad))
+        .Join(move3D.DOLocalMove(movePos, dur).SetEase(Ease.OutQuad))
         .Join(depth3D.DOLocalMoveZ(dep, dur).SetEase(Ease.OutQuad));
 
         seq.Play();
     }
+    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, float dur = 0.0f){
+        Transform3DWithAnim(vec, rot, d, Vector3.zero, dur);
+    }
 
     public Sequence GetFadeOut2DSeq(bool isRightDir){
+        Debug.Log("GetFadeOut2DSeq");
         float dir = dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -199,6 +205,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public Sequence GetFadeIn2DSeq(bool isRightDir){
+        Debug.Log("GetFadeIn2DSeq");
         float dir = -dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -235,6 +242,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public Sequence GetFadeOut3DSeq(bool isRightDir){
+        Debug.Log("GetFadeOut3DSeq");
         float dir = dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -257,6 +265,7 @@ public class CameraManager : MonoBehaviour
 	}
 
 	public Sequence GetFadeIn3DSeq(bool isRightDir, Vector3 pos){
+        Debug.Log("GetFadeIn3DSeq");
         float dir = -dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -323,6 +332,10 @@ public class CameraManager : MonoBehaviour
         //SetPosWithFixedHierarchyPos(root3D, v);
     }
 
+    public Vector3 GetMovePos(){
+        return move3D.localPosition;
+    }
+
     public Vector3 GetRootWorldPos(){
         return root3D.position;
     }
@@ -331,10 +344,12 @@ public class CameraManager : MonoBehaviour
         return camera2D.gameObject.activeSelf;
     }
     public void Active2D(){
+        //Debug.Log("Active2D");
         camera2D.transform.gameObject.SetActive(true);
         root3D.gameObject.SetActive(false);
     }
     public void Active3D(){
+        //Debug.Log("active3D");
         camera2D.transform.gameObject.SetActive(false);
         root3D.gameObject.SetActive(true);
     }
@@ -397,6 +412,12 @@ public class CameraManager : MonoBehaviour
         move3D.localPosition = Vector3.zero;
         //move3D.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
         depth3D.localPosition = new Vector3(0.0f, 0.0f, CAMERA3D_DEPTH_DEF);
+    }
+
+    public void Reset3DCamPosAndDepthWithAnim(){
+        Vector3 v = humanModel.GetModelBodyPosition();
+        Quaternion rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
+        Transform3DWithAnim(v, rot, -CAMERA3D_DEPTH_LOOKING);
     }
 
     public void SetRootPosWithFixedHierarchyPos(Vector3 pos){

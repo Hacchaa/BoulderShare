@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
@@ -9,11 +10,33 @@ public class GarbageFor2DMark : MonoBehaviour , IDropHandler, IPointerEnterHandl
 	[SerializeField] private Transform garbageIcon;
 	[SerializeField] private float moveDist = 20.0f;
 	[SerializeField] private float animDuration = 0.1f;
+	private int latestRemovedID = -1;
+	private Action OnRemoveAction = null;
 
+	public void AddOnRemoveAction(Action a){
+		if(a != null){
+			OnRemoveAction += a;
+		}
+	}
+
+	public int GetLatestRemovedID(){
+		if (latestRemovedID >= 0){
+			return latestRemovedID;
+		}
+		return -1;
+	}
+
+	public void ResetOnRemoveAction(){
+		OnRemoveAction = null;
+	}
 	public void OnDrop(PointerEventData data){
 		//Debug.Log("OnDrop");
 		if (data.pointerDrag != null && data.pointerDrag.tag == "2DMark"){
+			if (OnRemoveAction != null){
+				OnRemoveAction();
+			}
 			GameObject obj = data.pointerDrag;
+			latestRemovedID = int.Parse(obj.name);
 			twoDWallMarks.DeleteMark(obj.name);
 			PointerExitAnimation();
 		}
