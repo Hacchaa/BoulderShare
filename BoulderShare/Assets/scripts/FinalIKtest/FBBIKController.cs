@@ -64,9 +64,9 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     	foreach(FBBAimIKComponent com in aimIKComponents){
     		aimMap.Add(com.GetTargetAvatarBodyID(), com);
-    		com.Init();
     		com.SetCamera(cam);
     		com.SetAvatar(avatarReferences[(int)com.GetTargetAvatarBodyID()]);
+            com.Init();
     	}
     }
 
@@ -266,9 +266,8 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	}
 
     	foreach(FBBAimIKComponent com in aimIKComponents){
-	    	com.Deactivate();
+            com.Reset();
     	}
-    	switchAimIKActivate = false;
 
     	SetHandAnim(HandAnim.Default, true);
     	SetHandAnim(HandAnim.Default, false);

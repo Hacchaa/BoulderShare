@@ -176,7 +176,7 @@ public class MainView: SEComponentBase{
 		makeAT.SetMode(MakeAttemptTree.Mode.Loop);
 
 		if (threeDSettingView.IsInit()){
-			if (hScenes2.IsEmpty()){
+			if (hScenes2.IsATListEmpty()){
 				trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 			}else{
 				hScenes2.LoadLatestAT();

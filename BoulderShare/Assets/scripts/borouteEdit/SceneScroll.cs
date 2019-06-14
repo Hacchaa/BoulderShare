@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class SceneScroll : MonoBehaviour {
 	[SerializeField]
@@ -14,7 +15,7 @@ public class SceneScroll : MonoBehaviour {
 	private float space;
 	private int num = 0;
 	[SerializeField]
-	private Text text;
+	private TextMeshProUGUI text;
 
 	void Awake(){
 		//num = 0;

@@ -10,106 +10,66 @@ public class SceneEditorComment : SceneEditorComponent
 	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private Transform focusField;
-	[SerializeField] private Image focusFieldCover;
 	[SerializeField] private Transform addCommentField;
-	[SerializeField] private Transform navigation;
-	[SerializeField] private float moveDist = 50.0f;
+	[SerializeField] private float moveFF = 220.0f;
+	[SerializeField] private float offset = -60.0f;
 	[SerializeField] private float innerFadeDuration = 0.1f;
 	[SerializeField] private ScrollRect focusSR;
 
-	private Sequence GetHideSeq(bool isFocused){
+	private Sequence GetHideSeq(){
     	Sequence seq = DOTween.Sequence();
-    	Transform target = null;
-
-    	if (isFocused){
-			target = focusField;
-    	}else{
-			target = addCommentField;   			
-    	}
 
     	seq.OnStart(() =>
     	{	
-    		if (isFocused){
-    			addCommentField.gameObject.SetActive(false);
-    			focusField.gameObject.SetActive(true);
-    			navigation.gameObject.SetActive(false);
-    		}else{
-     			addCommentField.gameObject.SetActive(true);
-    			focusField.gameObject.SetActive(false);
-    			navigation.gameObject.SetActive(true);   			
-    		}
+			addCommentField.gameObject.SetActive(true);
+			focusField.gameObject.SetActive(true);
     		
-			Color c = focusFieldCover.color;
-			c = new Color(c.r, c.g, c.b, 0.0f);
-			focusFieldCover.color = c;
-			focusFieldCover.gameObject.SetActive(true);
-
-			target.localPosition = Vector3.zero;
-			navigation.localPosition = Vector3.zero;
+			focusField.localPosition = new Vector3(0.0f, moveFF/2.0f+offset, 0.0f);
 
     	})
-    	.Append(target.DOLocalMoveY(-moveDist, innerFadeDuration).SetEase(Ease.InQuad).SetRelative())
-    	.Join(navigation.DOLocalMoveY(-moveDist, innerFadeDuration).SetEase(Ease.InQuad).SetRelative())
-    	.Join(focusFieldCover.DOFade(1.0f, innerFadeDuration));
+    	.Append(focusField.DOLocalMoveY(-moveFF, innerFadeDuration).SetEase(Ease.InQuad).SetRelative())
+    	.OnComplete(()=>
+    	{
+    		focusField.gameObject.SetActive(false);
+    	});
 
     	return seq;
 	}
 
-	private Sequence GetShowSeq(bool isFocused){
+	private Sequence GetShowSeq(){
     	Sequence seq = DOTween.Sequence();
-    	Transform target = null;
-
-    	if (isFocused){
-			target = addCommentField;
-    	}else{
-			target = focusField;   			
-    	}
 
     	seq.OnStart(() =>
     	{	
-    		if (isFocused){
-    			addCommentField.gameObject.SetActive(true);
-    			focusField.gameObject.SetActive(false);
-    			navigation.gameObject.SetActive(true);
-    		}else{
-     			addCommentField.gameObject.SetActive(false);
-    			focusField.gameObject.SetActive(true);
-    			navigation.gameObject.SetActive(false);   			
-    		}
-    		
-			Color c = focusFieldCover.color;
-			c = new Color(c.r, c.g, c.b, 1.0f);
-			focusFieldCover.color = c;
-			focusFieldCover.gameObject.SetActive(true);
+			addCommentField.gameObject.SetActive(true);
+			focusField.gameObject.SetActive(true);
 
-			target.localPosition = new Vector3(0.0f, -moveDist, 0.0f);
-			navigation.localPosition = new Vector3(0.0f, -moveDist, 0.0f);
+			focusField.localPosition = new Vector3(0.0f, -moveFF/2.0f+offset, 0.0f);
 			focusSR.verticalNormalizedPosition = 1.0f;
     	})
-    	.Append(target.DOLocalMoveY(moveDist, innerFadeDuration).SetEase(Ease.OutQuad).SetRelative())
-    	.Join(navigation.DOLocalMoveY(moveDist, innerFadeDuration).SetEase(Ease.OutQuad).SetRelative())
-    	.Join(focusFieldCover.DOFade(0.0f, innerFadeDuration))
+    	.Append(focusField.DOLocalMoveY(moveFF, innerFadeDuration).SetEase(Ease.OutQuad).SetRelative())
     	.OnComplete(()=>
     	{
-    		focusFieldCover.gameObject.SetActive(false);
+    		addCommentField.gameObject.SetActive(false);
     	});
 
     	return seq;
 	}
 
 	public void OpenFocusField(bool isAlreadyFocused){
+		if (isAlreadyFocused){
+			return ;
+		}
 		Sequence seq = DOTween.Sequence();
 
-		seq.Append(GetHideSeq(isAlreadyFocused));
-		seq.Append(GetShowSeq(false));
+		seq.Append(GetShowSeq());
 		seq.Play();
 	}
 
 	public void CloseFocusField(){
 		Sequence seq = DOTween.Sequence();
 
-		seq.Append(GetHideSeq(true));
-		seq.Append(GetShowSeq(true));
+		seq.Append(GetHideSeq());
 		seq.Play();
 	}
 	
@@ -142,7 +102,6 @@ public class SceneEditorComment : SceneEditorComponent
 		humanModel.InitModelPose();
 		addCommentField.gameObject.SetActive(true);
 		focusField.gameObject.SetActive(false);
-		navigation.gameObject.SetActive(true);
 	}
 
 	public override void Regist(){

@@ -13,6 +13,7 @@ public class FBBAimIKComponent : MonoBehaviour
 	bool isActive = false;
 	private Transform avatar;
 	private Quaternion storedRot;
+	private Quaternion initStoredRot;
 
 	public void Init(){
 		aimedMark.Init();
@@ -21,6 +22,7 @@ public class FBBAimIKComponent : MonoBehaviour
 		}
 
 		isActive = false;
+		initStoredRot = avatar.localRotation;
 	}
 	public void AddOnPostBeginDragAction(Action a){
 		aimedMark.AddOnPostBeginDragAction(a);
@@ -40,6 +42,11 @@ public class FBBAimIKComponent : MonoBehaviour
 
 	public void DeterminePolePosition(){
 		pole.DeterminePosition(aimIK.solver.poleAxis);
+	}
+
+	public void Reset(){
+		Deactivate();
+		storedRot = initStoredRot;
 	}
 
 	public void Activate(){

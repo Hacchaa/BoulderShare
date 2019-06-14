@@ -23,10 +23,13 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private List<GameObject> forMenu;
 	[SerializeField] private List<GameObject> forFailure;
 	[SerializeField] private List<GameObject> failureObjects;
+	[SerializeField] private List<GameObject> forEmpty;
 	[SerializeField] private TMP_InputField inputField;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private ModifyMarks modifyMarks;
 	[SerializeField] private ATWarning atWarning;
+
+	[SerializeField] private Slider sceneSlider;
 
 	private string warningWithRemove = "現在のシーンを削除しますか？";
 
@@ -99,6 +102,11 @@ public class AttemptTreeMenu : SEComponentBase{
 		ToMainView();
 	}
 
+	public void AddFirst(){
+		makeAT.Init();
+		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
+	}
+
 	public void AddPrev(){
 		makeAT.Init();
 		makeAT.SetMode(MakeAttemptTree.Mode.Add);
@@ -128,14 +136,16 @@ public class AttemptTreeMenu : SEComponentBase{
 			twoDWallMarks.ClearTouch();
 			humanModel.InitModelPose();
 			ss.Delete();			
-		}else{
+		}else{/*
 			hScenes.SetCurIndex(0);
 			Load(hScenes.GetCurScene());
 			ss.SetTotalNum(hScenes.GetNum()-1);
 			ss.Focus(0);
-			cameraManager.Reset2DCamPosAndDepth();
+			cameraManager.Reset2DCamPosAndDepth();*/
 		}
 		hScenes.RemoveScene();
+
+		trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 	}
 
 	public void Switch2D3D(){
@@ -155,10 +165,15 @@ public class AttemptTreeMenu : SEComponentBase{
 		}		
 	}
 	private void SyncSceneScroll(){
+		int n = hScenes.GetNum();
 		ss.Delete();
 		int index = 0;
-		ss.SetTotalNum(hScenes.GetNum());
+		ss.SetTotalNum(n);
 		ss.Focus(0);
+
+		sceneSlider.minValue = 1;
+		sceneSlider.maxValue = n;
+		sceneSlider.value = 1;
 	}
 
 	public void NextScene(){
@@ -167,6 +182,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		if (index >= 0){
 			Load(scene);
 			ss.Focus(index);
+			sceneSlider.value = index;
 		}
 	}
 
@@ -176,7 +192,23 @@ public class AttemptTreeMenu : SEComponentBase{
 		if (index >= 0){
 			Load(scene);
 			ss.Focus(index);
+			sceneSlider.value = index;
 		}
+	}
+
+	public void ChangeSceneSliderVal(float val){
+		ShowSceneAt((int)val-1);
+	}
+
+	public void ShowSceneAt(int index){
+		HScene2 scene = hScenes.GetScene(index);
+
+		if (scene == null){
+			return ;
+		}
+		hScenes.SetCurIndex(index);
+		Load(scene);
+		ss.Focus(index);
 	}
 
 	public override void OnPreShow(){
@@ -199,10 +231,17 @@ public class AttemptTreeMenu : SEComponentBase{
 		ActivateList(forView, false);
 		ActivateList(forMenu, false);
 		ActivateList(forFailure, false);
+		ActivateList(forEmpty, false);
 
 		switch(mode){
 			case Mode.View: ActivateList(forView, true); break;
-			case Mode.Menu: ActivateList(forMenu, true); break;
+			case Mode.Menu:
+				if (hScenes.IsATEmpty()){
+					ActivateList(forEmpty, true);
+				}else{
+					ActivateList(forMenu, true); 
+				}
+				break;
 			case Mode.Failure: ActivateList(forFailure, true); break;
 			default: ActivateList(forMenu, true); break;
 		}

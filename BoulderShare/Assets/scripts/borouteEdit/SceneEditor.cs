@@ -25,8 +25,8 @@ public class SceneEditor : SEComponentBase{
 	[SerializeField] private ThreeDView threeDView;
 	[SerializeField] private SceneCommentController3D scc;
 	[SerializeField] private Image fadeCover;
-	[SerializeField] private Transform prevButton;
-	[SerializeField] private Transform nextButton;
+	[SerializeField] private Image prevButton;
+	[SerializeField] private Image nextButton;
 	[SerializeField] private Image submitButton;
 	[SerializeField] private Image cancelButton;
 
@@ -237,14 +237,14 @@ public class SceneEditor : SEComponentBase{
 
 		if (index < curIndex){
 			seq.Append(uiComs[curIndex].GetHideToRightSeq())
-			.Join(GetFadeCoverSeq(true))
-			.Append(uiComs[index].GetShowFromLeftSeq())
-			.Join(GetFadeCoverSeq(false));
+			//.Join(GetFadeCoverSeq(true))
+			.Append(uiComs[index].GetShowFromLeftSeq());
+			//.Join(GetFadeCoverSeq(false));
 		}else if(index > curIndex){
 			seq.Append(uiComs[curIndex].GetHideToLeftSeq())
-			.Join(GetFadeCoverSeq(true))
-			.Append(uiComs[index].GetShowFromRightSeq())
-			.Join(GetFadeCoverSeq(false));
+			//.Join(GetFadeCoverSeq(true))
+			.Append(uiComs[index].GetShowFromRightSeq());
+			//.Join(GetFadeCoverSeq(false));
 		}
 
 		return seq;
@@ -254,11 +254,11 @@ public class SceneEditor : SEComponentBase{
 		Sequence seq = DOTween.Sequence();
 
 		if (index < curIndex){
-			seq.Append(uiComs[curIndex].GetHideToRightSeq())
-			.Join(GetFadeCoverSeq(true));
+			seq.Append(uiComs[curIndex].GetHideToRightSeq());
+			//.Join(GetFadeCoverSeq(true));
 		}else if(index > curIndex){
-			seq.Append(uiComs[curIndex].GetHideToLeftSeq())
-			.Join(GetFadeCoverSeq(true));
+			seq.Append(uiComs[curIndex].GetHideToLeftSeq());
+			//.Join(GetFadeCoverSeq(true));
 		}
 
 		return seq;		
@@ -268,11 +268,11 @@ public class SceneEditor : SEComponentBase{
 		Sequence seq = DOTween.Sequence();
 
 		if (index < curIndex){
-			seq.Append(uiComs[index].GetShowFromLeftSeq())
-			.Join(GetFadeCoverSeq(false));
+			seq.Append(uiComs[index].GetShowFromLeftSeq());
+			//.Join(GetFadeCoverSeq(false));
 		}else if(index > curIndex){
-			seq.Append(uiComs[index].GetShowFromRightSeq())
-			.Join(GetFadeCoverSeq(false));
+			seq.Append(uiComs[index].GetShowFromRightSeq());
+			//.Join(GetFadeCoverSeq(false));
 		}
 
 		return seq;		
@@ -298,57 +298,93 @@ public class SceneEditor : SEComponentBase{
 		return seq;
 	}
 
-	private Sequence GetHeadNavigationOutSeq(Image targetImage){
+	private Sequence GetHeadNavigationOutSeq(int index){
 		Sequence seq = DOTween.Sequence();
+		Image[] fadeOutArr = new Image[2];
 
-		Image from = targetImage;
+		if (index == 0){
+			fadeOutArr[0] = cancelButton;
+		}else{
+			fadeOutArr[0] = prevButton;
+		}
+
+		if (index == uiComs.Length - 1){
+			fadeOutArr[1] = submitButton;
+		}else{
+			fadeOutArr[1] = nextButton;
+		}
 
 		seq.OnStart(() =>
 		{
-			from.gameObject.SetActive(true);
-			from.transform.localScale = Vector3.one;
-			Color c = from.color;
-			from.color = new Color(c.r, c.g, c.b, 1.0f);
+			fadeOutArr[0].gameObject.SetActive(true);
+			fadeOutArr[0].transform.localScale = Vector3.one;
+			Color c = fadeOutArr[0].color;
+			fadeOutArr[0].color = new Color(c.r, c.g, c.b, 1.0f);
+
+			fadeOutArr[1].gameObject.SetActive(true);
+			fadeOutArr[1].transform.localScale = Vector3.one;
+			c = fadeOutArr[1].color;
+			fadeOutArr[1].color = new Color(c.r, c.g, c.b, 1.0f);
 		})
-		.Append(from.DOFade(0.0f, fadeDuration)).SetEase(Ease.InQuad)
-		.Join(from.transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Append(fadeOutArr[0].DOFade(0.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeOutArr[0].transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeOutArr[1].DOFade(0.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeOutArr[1].transform.DOScale(0.0f, fadeDuration)).SetEase(Ease.InQuad)
 		.OnComplete(() =>
 		{
-			from.transform.localScale = Vector3.one;
-			Color c = from.color;
-			from.color = new Color(c.r, c.g, c.b, 1.0f);
-			from.gameObject.SetActive(false);
+			fadeOutArr[0].transform.localScale = Vector3.one;
+			Color c = fadeOutArr[0].color;
+			fadeOutArr[0].color = new Color(c.r, c.g, c.b, 1.0f);
+			fadeOutArr[0].gameObject.SetActive(false);
+
+			fadeOutArr[1].transform.localScale = Vector3.one;
+			c = fadeOutArr[1].color;
+			fadeOutArr[1].color = new Color(c.r, c.g, c.b, 1.0f);
+			fadeOutArr[1].gameObject.SetActive(false);
 		});
 
 		return seq;
 	}
-	private Sequence GetHeadNavigationInSeq(Image targetImage){
+	private Sequence GetHeadNavigationInSeq(int index){
 		Sequence seq = DOTween.Sequence();
+		Image[] fadeInArr = new Image[2];
 
-		Image to;
+		if (index == 0){
+			fadeInArr[0] = cancelButton;
+		}else{
+			fadeInArr[0] = prevButton;
+		}
 
-		to = targetImage;
-
+		if (index == uiComs.Length - 1){
+			fadeInArr[1] = submitButton;
+		}else{
+			fadeInArr[1] = nextButton;
+		}
 
 		seq.OnStart(() =>
 		{
-			to.gameObject.SetActive(true);
-			Color c = to.color;
-			to.color = new Color(c.r, c.g, c.b, 0.0f);
+			fadeInArr[0].gameObject.SetActive(true);
+			fadeInArr[0].transform.localScale = Vector3.zero;
+			Color c = fadeInArr[0].color;
+			fadeInArr[0].color = new Color(c.r, c.g, c.b, 0.0f);
 
-			to.transform.localScale = Vector3.zero;
+			fadeInArr[1].gameObject.SetActive(true);
+			fadeInArr[1].transform.localScale = Vector3.zero;
+			c = fadeInArr[1].color;
+			fadeInArr[1].color = new Color(c.r, c.g, c.b, 0.0f);
 		})
-		.Append(to.DOFade(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
-		.Join(to.transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.OutQuad)
+		.Append(fadeInArr[0].DOFade(1.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeInArr[0].transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeInArr[1].DOFade(1.0f, fadeDuration)).SetEase(Ease.InQuad)
+		.Join(fadeInArr[1].transform.DOScale(1.0f, fadeDuration)).SetEase(Ease.InQuad)
 		.OnComplete(() =>
 		{
-			to.transform.localScale = Vector3.one;
-			Color c = to.color;
-			to.color = new Color(c.r, c.g, c.b, 1.0f);
 		});
+
 		return seq;
 	}
-
+	
+/*
 	private Sequence GetFootNavigationOutSeq(int index){
 		Sequence seq = DOTween.Sequence();
 
@@ -433,7 +469,7 @@ public class SceneEditor : SEComponentBase{
 		}
 
 		return seq;
-	}
+	}*/
 
 	private float GetHeadIconsWidth(int index){
 		return (index*2 + 1) * iconWidth + index * iconSpace * 2;
@@ -477,10 +513,8 @@ public class SceneEditor : SEComponentBase{
 		}else{
 			seq.Join(cManager.GetFadeOut3DSeq(isRight));
 		}
-		if (curIndex == uiComs.Length - 1){
-			seq.Join(GetHeadNavigationOutSeq(submitButton));
-		}
-		seq.Join(GetFootNavigationOutSeq(curIndex));
+
+		seq.Join(GetHeadNavigationOutSeq(curIndex));
 
 		//interverl処理
 		seq.Append(GetIntervalProcSeq(curIndex, index, isCur2D ^ isTo2D));
@@ -502,10 +536,8 @@ public class SceneEditor : SEComponentBase{
 			pos = humanModel.GetModelBodyPosition();
 			seq.Join(cManager.GetFadeIn3DSeq(!isRight, pos));
 		}
-		if (index == uiComs.Length - 1){
-			seq.Join(GetHeadNavigationInSeq(submitButton));
-		}
-		seq.Join(GetFootNavigationInSeq(index));
+
+		seq.Join(GetHeadNavigationInSeq(index));
 
 		seq.Play();
 		curIndex = index;

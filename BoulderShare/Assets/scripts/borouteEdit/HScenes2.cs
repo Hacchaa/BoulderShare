@@ -22,8 +22,11 @@ public class HScenes2 : MonoBehaviour {
 		num = -1;
 	}
 
-	public bool IsEmpty(){
+	public bool IsATListEmpty(){
 		return !atList.Any();
+	}
+	public bool IsATEmpty(){
+		return !list.Any();
 	}
 
 	public void InitAT(){
