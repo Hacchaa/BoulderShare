@@ -20,6 +20,7 @@ public class SceneComment3D : MonoBehaviour
     private GameObject frame;
     [SerializeField]
     private TwoDWall twoDWall;
+    [SerializeField] private Button focusTarget;
     [SerializeField] private Transform showObj;
     [SerializeField] private Transform dontShowObj;
     [SerializeField] private CommentExtendWidth3D cewRight;
@@ -90,11 +91,13 @@ public class SceneComment3D : MonoBehaviour
             //c.a = 20.0f / 255.0f;
             focusObj.SetActive(true);
             frame.SetActive(true);
+            focusTarget.gameObject.SetActive(false);
             scController.SetActiveText(this);
         }else{
             //c.a = 0.0f;
             focusObj.SetActive(false);
             frame.SetActive(false);
+            focusTarget.gameObject.SetActive(true);
         }
         colorSetter.InitObjs();
         //frameImage.color = c;
@@ -181,5 +184,14 @@ public class SceneComment3D : MonoBehaviour
         rectT.sizeDelta = new Vector2(frameW , rectT.sizeDelta.y);
         textRect.offsetMin = new Vector2(diff/2.0f, 0.0f);
         textRect.offsetMax = new Vector2(-diff/2.0f, 0.0f);
+    }
+
+
+    public void AcceptEvent(){
+        focusTarget.enabled = true;
+    }
+
+    public void IgnoreEvent(){
+        focusTarget.enabled = false;
     }
 }

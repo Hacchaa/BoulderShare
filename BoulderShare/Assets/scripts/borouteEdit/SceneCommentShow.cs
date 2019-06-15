@@ -8,8 +8,6 @@ using UnityEngine.UI;
 public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
 	[SerializeField] private SceneCommentController3D scController;
-	[SerializeField] private SceneComment3D sc;
-	[SerializeField] private GameObject focusObj;
 	[SerializeField] private Transform parent;
     [SerializeField] private CameraManager cManager;
     [SerializeField] private GameObject grid;
@@ -17,8 +15,8 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     private static int FINGER_NONE = -10;
     private static int finger = FINGER_NONE;
     private Vector3 baseP;
-    private bool isCommentEditable;
-    private bool isMovable = false;
+    private bool isCommentEditable = false;
+
     private float baseDepth;
 
     public void SetCamera(Camera camera){
@@ -26,29 +24,22 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     }
 
     public void OnPointerDown(PointerEventData data){
-        if (focusObj.activeSelf){
-        	isCommentEditable = true;
-            isMovable = true;
-    	}
+    	isCommentEditable = true;
+
 	}	
 
     public void OnPointerUp(PointerEventData data){
         if(isCommentEditable){
             scController.ActiveIF();
         }
-        if (!focusObj.activeSelf){
-            sc.Focus(true);
-        }
+
         isCommentEditable = false;
-        isMovable = false;
         grid.SetActive(false);
     }
 
     public void OnBeginDrag(PointerEventData data){
         isCommentEditable = false;
-        if (!isMovable){
-            return ;
-        }
+
         if (finger == FINGER_NONE){
             finger = data.pointerId;
             baseDepth = cam.gameObject.transform.InverseTransformPoint(parent.position).z;
@@ -61,7 +52,7 @@ public class SceneCommentShow : MonoBehaviour, IPointerDownHandler, IPointerUpHa
             baseP = baseP - parent.position;
 
             grid.SetActive(true);
-            grid.transform.position = parent.position;
+            //grid.transform.position = parent.position;
         }
     }
 

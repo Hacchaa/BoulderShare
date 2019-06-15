@@ -13,7 +13,6 @@ public class ATFailureView : SEComponentBase{
 	[SerializeField] private FailedListView failedListView;
 	[SerializeField] private GameObject failedListButton;
 	[SerializeField] private SceneCommentController3D scc;
-	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private Text dimText;
 	[SerializeField] private GameObject for3D;
 	[SerializeField] private CameraManager cameraManager;
@@ -101,7 +100,7 @@ public class ATFailureView : SEComponentBase{
 		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
 		humanModel.HideMarks();
 		//failedListButton.SetActive(failedListView.IsExist());
-		comments.ShowDynamically();
+		scc.ShowDynamically();
 		Switch2D3D(true);
 		wallManager.ShowTranslucentWall();
 	}
@@ -112,7 +111,7 @@ public class ATFailureView : SEComponentBase{
 		cameraManager.Reset2DCamPosAndDepth();
 		humanModel.InitModelPose();
 		scc.Init();
-		comments.DontShowAll();
+		scc.DontShowAll();
 	}
 
 	public void Load(HScene2 scene){
@@ -125,6 +124,6 @@ public class ATFailureView : SEComponentBase{
 	}
 
 	public void NextComment(){
-		comments.Next();
+		scc.Next();
 	}
 }

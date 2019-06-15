@@ -13,7 +13,6 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private SceneCommentController3D scc;
-	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private Text dimText;
 	[SerializeField] private GameObject for3D;
 	[SerializeField] private CameraManager cameraManager;
@@ -225,7 +224,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
 		humanModel.HideMarks();
 
-		comments.ShowDynamically();
+		scc.ShowDynamically();
 		Switch2D3D(true);
 
 		ActivateList(forView, false);
@@ -260,7 +259,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		cameraManager.Reset2DCamPosAndDepth();
 		humanModel.InitModelPose();
 		scc.Init();
-		comments.DontShowAll();
+		scc.DontShowAll();
 
 		ActivateList(forView, false);
 		ActivateList(forMenu, false);
@@ -311,6 +310,6 @@ public class AttemptTreeMenu : SEComponentBase{
 	}
 
 	public void NextComment(){
-		comments.Next();
+		scc.Next();
 	}
 }

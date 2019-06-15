@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 
 public class CommentDepth : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
-    [SerializeField] private SceneComment3D sc;
     [SerializeField] private ThreeDWall threeDWall;
     [SerializeField] private Transform root;
     [SerializeField] private CameraManager cManager;

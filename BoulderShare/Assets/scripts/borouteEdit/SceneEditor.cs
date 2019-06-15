@@ -99,6 +99,7 @@ public class SceneEditor : SEComponentBase{
 
 	public void Submit(){
 		RegistCurComponent();
+		uiComs[curIndex].OnPreHide();
 		makeAT.Make();
 		makeAT.Init();
 		ToATMenu();
@@ -106,6 +107,7 @@ public class SceneEditor : SEComponentBase{
 
 	public void EditCancel(){
 		wallManager.CommitWallMarks(makeAT.GetWallMarks());
+		uiComs[curIndex].OnPreHide();
 		makeAT.Init();
 		ToATMenu();
 	}

@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class SceneEditorComment : SceneEditorComponent
 {
 	[SerializeField] private SceneCommentController3D scc;
-	[SerializeField] private SceneComments3D comments;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private Transform focusField;
 	[SerializeField] private Transform addCommentField;
@@ -89,8 +88,8 @@ public class SceneEditorComment : SceneEditorComponent
 		//humanModel.LookAtModel();
 		humanModel.HideMarks();
 		scc.AcceptEvents();
-		comments.ShowDynamically();
-		comments.SetShowAngle(SceneComments3D.ANGLE_EDIT);
+		scc.ShowDynamically();
+		scc.SetShowAngle(SceneCommentController3D.ANGLE_EDIT);
 		addCommentField.gameObject.SetActive(true);
 		focusField.gameObject.SetActive(false);
 	}
@@ -98,7 +97,7 @@ public class SceneEditorComment : SceneEditorComponent
 	public override void OnPreHide(){
 		scc.IgnoreEvents();
 		scc.Init();
-		comments.DontShowAll();
+		scc.DontShowAll();
 		humanModel.InitModelPose();
 		addCommentField.gameObject.SetActive(true);
 		focusField.gameObject.SetActive(false);

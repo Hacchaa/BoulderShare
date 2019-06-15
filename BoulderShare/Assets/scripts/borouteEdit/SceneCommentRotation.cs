@@ -7,7 +7,6 @@ public class SceneCommentRotation :MonoBehaviour, IDragHandler, IPointerDownHand
 {
 	private static int FINGER_NONE = -10;
 	private int finger = FINGER_NONE;
-	[SerializeField] private SceneComment3D sceneComment;
 	[SerializeField] private ThreeDWall threeDWall;
 	[SerializeField] private float WEIGHT = 0.5f;
 	[SerializeField] private CameraManager cManager;

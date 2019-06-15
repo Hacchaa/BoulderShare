@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class SceneCommentController3D : MonoBehaviour
 {
@@ -19,17 +20,28 @@ public class SceneCommentController3D : MonoBehaviour
     private CanvasGroup cg;
     [SerializeField]
     private SceneComment3D sc;
-    [SerializeField] private SceneComments3D comments;
+
     [SerializeField] private Transform makeCommentPosition;
     [SerializeField] private CameraManager cManager;
     [SerializeField] private SceneEditorComment sceneEditorComment;
+
+    private List<SceneComment3D> commentList;
+    private bool isUpdateDynamically;
+    private int index;
+    [SerializeField] private float showAngle = 90.0f;
+    public static float ANGLE_VIEW = 30.0f;
+    public static float ANGLE_EDIT = 90.0f;
     public static float DEF_DEPTH = 4.0f;
 
     public void Init(){
         foreach(Transform t in pTrans){
             Destroy(t.gameObject);
         }
-        comments.Init();
+
+        commentList = new List<SceneComment3D>();
+        index = -1;
+        isUpdateDynamically = false;
+
         Release(false);
     }
     public void CommentLookAtCamera(){
@@ -41,13 +53,12 @@ public class SceneCommentController3D : MonoBehaviour
     public List<MyUtility.SceneCommentData3D> GetSceneComments(){
         List<MyUtility.SceneCommentData3D> list = new List<MyUtility.SceneCommentData3D>();
 
-        foreach(Transform t in pTrans){
-            SceneComment3D sceneComment = t.GetComponent<SceneComment3D>();
+        foreach(SceneComment3D sceneComment in commentList){
             MyUtility.SceneCommentData3D data = new MyUtility.SceneCommentData3D();
             data.text = sceneComment.GetText();
             data.fontSize = sceneComment.GetFontSize();
-            data.pos = t.position;
-            data.rot = t.localRotation;
+            data.pos = sceneComment.transform.position;
+            data.rot = sceneComment.transform.localRotation;
             data.color = sceneComment.GetColor();
             data.width = sceneComment.GetWidth();
 
@@ -74,9 +85,9 @@ public class SceneCommentController3D : MonoBehaviour
 
             sceneComment.Focus(false);
 
-            comments.AddComment(sceneComment);
+            AddComment(sceneComment);
         }
-        comments.ShowDynamically();
+        ShowDynamically();
     }
     
 
@@ -138,12 +149,8 @@ public class SceneCommentController3D : MonoBehaviour
         com.Look(cManager.Get3DRotation());
         com.SetText(SceneComment3D.INIT_STRING);
         com.Focus(true);
-        comments.AddComment(com);
+        AddComment(com);
     	ActiveIF();
-    }
-
-    public void DeleteComment(SceneComment3D com){
-        comments.DeleteComment(com);
     }
 
     public void ChangeFontSize(float v){
@@ -167,9 +174,79 @@ public class SceneCommentController3D : MonoBehaviour
 
     public void IgnoreEvents(){
 		cg.blocksRaycasts = false;
+        foreach(SceneComment3D com in commentList){
+            com.IgnoreEvent();
+        }
 	}
 
 	public void AcceptEvents(){
 		cg.blocksRaycasts = true;
+        foreach(SceneComment3D com in commentList){
+            com.AcceptEvent();
+        }
 	}
+
+    public void Next(){
+        if (!commentList.Any()){
+            return ;
+        }
+
+        index++;
+        if (index >= commentList.Count){
+            index = 0;
+        }
+
+        cManager.Rotate3DWithAnim(commentList[index].transform.localRotation);
+    }
+
+    public void SetShowAngle(float f){
+        showAngle = f;
+    }
+
+    void Update(){
+        if(isUpdateDynamically){
+            float camY = cManager.Get3DRotation().eulerAngles.y;
+            foreach(SceneComment3D com in commentList){
+                float delta = Mathf.DeltaAngle(camY, com.transform.localRotation.eulerAngles.y);
+                if (Mathf.Abs(delta) <= showAngle){
+                    com.ShowComment(true);
+                }else{
+                    com.ShowComment(false);
+                }
+            }
+        }
+    }
+
+    public void AddComment(SceneComment3D com){
+        commentList.Add(com);
+    }
+
+    public void DeleteComment(SceneComment3D com){
+        if (com != null){
+            commentList.Remove(com);
+            Destroy(com.gameObject);
+        }
+        if (index >= commentList.Count){
+            index = -1;
+        }
+    }
+    
+    public void ShowAll(){
+        foreach(SceneComment3D com in commentList){
+            com.ShowComment(true);
+        }
+        isUpdateDynamically = false;
+    }
+
+    public void DontShowAll(){
+        foreach(SceneComment3D com in commentList){
+            com.ShowComment(false);
+        }
+        isUpdateDynamically = false;
+    }
+
+    public void ShowDynamically(){
+        SetShowAngle(ANGLE_VIEW);
+        isUpdateDynamically = true;
+    }
 }

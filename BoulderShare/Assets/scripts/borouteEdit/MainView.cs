@@ -7,6 +7,8 @@ using SA.CrossPlatform.App;
 using SA.iOS.Photos;
 using SA.iOS.AVFoundation;
 using SA.CrossPlatform.UI;
+using SA.iOS.UIKit;
+
 
 public class MainView: SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
@@ -39,6 +41,20 @@ public class MainView: SEComponentBase{
 
 	public override void OnPreHide(){
 
+	}
+
+	public void OpenMediaActiveSheet(){
+		#if UNITY_IPHONE
+			ISN_UIAlertController alert = new ISN_UIAlertController("メディア", "メディア選択", ISN_UIAlertControllerStyle.ActionSheet);
+			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, TakePictureFromNativeCamera);
+			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibrary);
+			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});
+
+			alert.AddAction(cameraAction);
+			alert.AddAction(libAction);
+			alert.AddAction(cancelAction);
+			alert.Present();
+		#endif
 	}
 
 	public void OpenPhotoLibrary(){
