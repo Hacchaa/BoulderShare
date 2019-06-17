@@ -45,7 +45,11 @@ public class MainView: SEComponentBase{
 
 	public void OpenMediaActiveSheet(){
 		#if UNITY_IPHONE
-			ISN_UIAlertController alert = new ISN_UIAlertController("メディア", "メディア選択", ISN_UIAlertControllerStyle.ActionSheet);
+		if (Application.platform != RuntimePlatform.IPhonePlayer){
+			PickImageFromLibrary();
+			return ;
+		}
+			ISN_UIAlertController alert = new ISN_UIAlertController(null, null, ISN_UIAlertControllerStyle.ActionSheet);
 			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, TakePictureFromNativeCamera);
 			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibrary);
 			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});
@@ -132,7 +136,7 @@ public class MainView: SEComponentBase{
 	private void PickImageFromLibrary(){
 		var gallery = UM_Application.GalleryService;
 
-		int maxThumbnailSize = 1024;
+		int maxThumbnailSize = 4096;
 		gallery.PickImage(maxThumbnailSize, (result) => {
 		    if (result.IsSucceeded) {
 		        UM_Media media = result.Media;

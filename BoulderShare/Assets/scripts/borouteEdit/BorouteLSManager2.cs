@@ -88,7 +88,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 			string toPath = dicPath + "Wall.png";
 			Texture2D tex = wallManager.GetMasterWallImage();
 			File.Delete(toPath);
-			MyUtility.WriteImage(tex, filepath);
+			MyUtility.WriteImage(tex, toPath);
 
 			//サムネイル画像を保存
         	toPath = dicPath + "thumbnail.png";

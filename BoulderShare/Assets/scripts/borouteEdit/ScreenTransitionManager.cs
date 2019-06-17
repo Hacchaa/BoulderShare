@@ -14,6 +14,7 @@ public class ScreenTransitionManager : MonoBehaviour {
 	private string curName;
 	[SerializeField] Image topSafeArea;
 	[SerializeField] Image botSareArea;
+	[SerializeField] private CanvasResolutionManager canResManager;
 
 	public enum Screen {
 		Post,
@@ -76,8 +77,34 @@ public class ScreenTransitionManager : MonoBehaviour {
 			current = map[name];
 			current.Show();
 			curName = name;
+
 			topSafeArea.color = current.GetTopSEColor();
-			botSareArea.color = current.GetBotSEColor();
+
+			List<Transform> l = canResManager.GetCanvasList();
+			foreach(Transform t in l){
+				t.gameObject.SetActive(true);
+			}
+
+			Canvas[] canvasArr = current.GetComponentsInParent<Canvas>();
+			canvasArr[canvasArr.Length - 1].gameObject.SetActive(true);
+			RectTransform bot = canvasArr[canvasArr.Length - 1].transform.Find("Bot").GetComponent<RectTransform>();
+			RectTransform content = canvasArr[canvasArr.Length - 1].transform.Find("Content").GetComponent<RectTransform>();
+			float botHeight = canResManager.CalcBotSize();
+			if (current.IsBotNeed()){
+				bot.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
+				bot.sizeDelta = new Vector2(0.0f, botHeight);
+				content.offsetMin = new Vector2(0.0f, botHeight);
+				botSareArea.color = current.GetBotSEColor();
+			}else{
+				bot.anchoredPosition = new Vector2(0.0f, 0.0f);
+				bot.sizeDelta = new Vector2(0.0f, 0.0f);
+				content.offsetMin = new Vector2(0.0f, 0.0f);
+			}
+
+			foreach(Transform t in l){
+				t.gameObject.SetActive(false);
+			}
+			canvasArr[canvasArr.Length - 1].gameObject.SetActive(true);
 		}		
 	}
 

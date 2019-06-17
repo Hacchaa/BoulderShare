@@ -23,6 +23,13 @@ extern "C" {
             return;
         }
         
+        if ([request.m_title length] == 0){
+            request.m_title = nil;
+        }
+        if ([request.m_message length] == 0){
+            request.m_message = nil;
+        }
+
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:request.m_title  message:request.m_message  preferredStyle:request.m_preferredStyle];
         for(ISN_UIAlertAction* actionRequest in request.m_actions) {
             UIAlertAction* uiAction = [UIAlertAction actionWithTitle:actionRequest.m_title style:actionRequest.m_style handler:^(UIAlertAction * _Nonnull action) {

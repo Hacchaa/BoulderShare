@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponent
 {
+    [SerializeField] private bool needBot = true;
 	[SerializeField] private Image topSERef;
 	[SerializeField] private Image botSERef;
 	[SerializeField] private List<RectTransform> needMarginList;
@@ -13,6 +14,9 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
 	[SerializeField] private List<GameObject> ExternalShowObjects;
 	[SerializeField] private List<GameObject> ExternalHideObjects;
 
+    public bool IsBotNeed(){
+        return needBot;
+    }
     public Color GetTopSEColor(){
         if (topSERef == null){
             return new Color(0.0f, 0.0f, 0.0f, 0.0f);

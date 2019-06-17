@@ -11,10 +11,11 @@ public class CanvasResolutionManager : MonoBehaviour
 	[SerializeField] private float margin = 16.0f;
     [SerializeField] private float marginXSMAX = 20.0f;
 	[SerializeField] private ScreenTransitionManager sManager;
+    private Rect safe;
 
     void Start()
     {	
-    	Rect safe = Screen.safeArea;
+    	safe = Screen.safeArea;
     	float width, topHeight, botHeight, retina;
         # if UNITY_EDITOR
     	   safe = SimulateIPhoneSafeArea(Screen.width, Screen.height);
@@ -22,15 +23,14 @@ public class CanvasResolutionManager : MonoBehaviour
 
     	retina = GetRetina(Screen.width, Screen.height);
     	width = Screen.width;
-    	topHeight = safe.y;
-    	topHeight /= retina;
-    	botHeight = Screen.height - (safe.y + safe.height);
-    	botHeight /= retina;
-
-    	//Debug.Log("width:"+width);
-    	//Debug.Log("topHeight:"+topHeight);
-    	//Debug.Log("botHeight:"+botHeight);
-    	//Debug.Log("safeRect:"+safe);
+    	topHeight = CalcTopSize();
+    	botHeight = CalcBotSize();
+/*
+    	Debug.Log("width:"+width);
+        Debug.Log("height:"+Screen.height);
+    	Debug.Log("topHeight:"+topHeight);
+    	Debug.Log("botHeight:"+botHeight);
+    	Debug.Log("safeRect:"+safe);*/
     	foreach(Transform t in canvasList){
     		t.GetComponent<CanvasScaler>().scaleFactor = retina;
     		RectTransform top = t.Find("Top").GetComponent<RectTransform>();
@@ -79,6 +79,17 @@ public class CanvasResolutionManager : MonoBehaviour
 	    		rect.offsetMax = new Vector2(-mar, rect.offsetMax.y);
     		}
     	}
+    }
+
+    public List<Transform> GetCanvasList(){
+        return new List<Transform>(canvasList);
+    }
+
+    public float CalcTopSize(){
+        return safe.y / GetRetina(Screen.width, Screen.height);     
+    }
+    public float CalcBotSize(){
+        return (Screen.height - (safe.y + safe.height)) / GetRetina(Screen.width, Screen.height);
     }
 
     private Rect SimulateIPhoneSafeArea(int width, int height){
