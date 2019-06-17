@@ -136,8 +136,10 @@ public class MainView: SEComponentBase{
 	private void PickImageFromLibrary(){
 		var gallery = UM_Application.GalleryService;
 
-		int maxThumbnailSize = 4096;
+		UM_Preloader.LockScreen();
+		int maxThumbnailSize = 8192;
 		gallery.PickImage(maxThumbnailSize, (result) => {
+			UM_Preloader.UnlockScreen();
 		    if (result.IsSucceeded) {
 		        UM_Media media = result.Media;
 		        
@@ -157,9 +159,10 @@ public class MainView: SEComponentBase{
 	private void PickImageFromCamera(){
 		//Debug.Log("PickImage");
 		var camera = UM_Application.CameraService;
-
-		int maxThumbnailSize = 1024;
+		UM_Preloader.LockScreen();
+		int maxThumbnailSize = 8192;
 		camera.TakePicture(maxThumbnailSize, (result) => {
+			UM_Preloader.UnlockScreen();
 		   if(result.IsSucceeded) {
 		        UM_Media mdeia = result.Media;
 

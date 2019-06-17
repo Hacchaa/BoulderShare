@@ -32,7 +32,9 @@ public class SceneCommentController3D : MonoBehaviour
     public static float ANGLE_VIEW = 30.0f;
     public static float ANGLE_EDIT = 90.0f;
     public static float DEF_DEPTH = 4.0f;
-
+    void Start(){
+        Init();
+    }
     public void Init(){
         foreach(Transform t in pTrans){
             Destroy(t.gameObject);
