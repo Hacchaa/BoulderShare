@@ -21,6 +21,7 @@ public class MainView: SEComponentBase{
 	[SerializeField] private Image wallImageOnUI;
 	[SerializeField] private GameObject noImageContent;
 	[SerializeField] private Button makeButton;
+	[SerializeField] private PreLoader loadingScreen;
 
 	public override void OnPreShow(){
 		cameraManager.Active2D();
@@ -135,11 +136,11 @@ public class MainView: SEComponentBase{
 
 	private void PickImageFromLibrary(){
 		var gallery = UM_Application.GalleryService;
-
-		UM_Preloader.LockScreen();
 		int maxThumbnailSize = 8192;
+
+		loadingScreen.LockScreen();
+
 		gallery.PickImage(maxThumbnailSize, (result) => {
-			UM_Preloader.UnlockScreen();
 		    if (result.IsSucceeded) {
 		        UM_Media media = result.Media;
 		        
@@ -153,16 +154,18 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
+		    loadingScreen.UnLockScreen();
 		});
 	}
 
 	private void PickImageFromCamera(){
 		//Debug.Log("PickImage");
 		var camera = UM_Application.CameraService;
-		UM_Preloader.LockScreen();
 		int maxThumbnailSize = 8192;
+
+		loadingScreen.LockScreen();
+
 		camera.TakePicture(maxThumbnailSize, (result) => {
-			UM_Preloader.UnlockScreen();
 		   if(result.IsSucceeded) {
 		        UM_Media mdeia = result.Media;
 
@@ -176,6 +179,8 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }
+
+		    loadingScreen.UnLockScreen();
 		});
 	}
 
