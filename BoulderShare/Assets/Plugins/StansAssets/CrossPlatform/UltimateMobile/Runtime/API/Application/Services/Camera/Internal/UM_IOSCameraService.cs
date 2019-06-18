@@ -39,7 +39,6 @@ namespace SA.CrossPlatform.App
             UM_MediaResult pickResult;
             picker.Present((result) => 
             {
-                Debug.Log("isn_uiimagepickercontroller present callback");
                 if (result.IsSucceeded) 
                 {
                     UM_Media media = null;

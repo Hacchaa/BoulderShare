@@ -138,7 +138,7 @@ public class MainView: SEComponentBase{
 		var gallery = UM_Application.GalleryService;
 		int maxThumbnailSize = 8192;
 
-		loadingScreen.LockScreen();
+		//loadingScreen.LockScreen();
 
 		gallery.PickImage(maxThumbnailSize, (result) => {
 			Debug.Log("um_application pickimage callback");
@@ -155,7 +155,7 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
-		    loadingScreen.UnLockScreen();
+		    ISN_Preloader.UnlockScreen();
 		});
 	}
 
@@ -164,7 +164,7 @@ public class MainView: SEComponentBase{
 		var camera = UM_Application.CameraService;
 		int maxThumbnailSize = 8192;
 
-		loadingScreen.LockScreen();
+		//loadingScreen.LockScreen();
 
 		camera.TakePicture(maxThumbnailSize, (result) => {
 		   if(result.IsSucceeded) {
@@ -181,7 +181,7 @@ public class MainView: SEComponentBase{
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }
 
-		    loadingScreen.UnLockScreen();
+		    //loadingScreen.UnLockScreen();
 		});
 	}
 
