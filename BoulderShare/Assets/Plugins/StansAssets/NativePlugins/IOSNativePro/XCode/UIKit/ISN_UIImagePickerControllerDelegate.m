@@ -20,6 +20,8 @@
 
 
 -(void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    ISN_SendMessage(UNITY_UI_LISTENER, "PreloaderLockScreen", "");
+
     UIViewController *vc =  UnityGetGLViewController();
     [vc dismissViewControllerAnimated:YES completion:nil];
     

@@ -68,12 +68,12 @@ public class MainView: SEComponentBase{
 		#if UNITY_IPHONE
 			ISN_PHAuthorizationStatus s = ISN_PHPhotoLibrary.AuthorizationStatus;
 			if (s == ISN_PHAuthorizationStatus.Authorized){
-				PickImageFromLibraryAsync();
+				PickImageFromLibrary();
 				return ;
 			}
 			ISN_PHPhotoLibrary.RequestAuthorization((status) =>{
 				if (status == ISN_PHAuthorizationStatus.Authorized){
-					PickImageFromLibraryAsync();
+					PickImageFromLibrary();
 				}else if (status == ISN_PHAuthorizationStatus.StatusDenied){
 					string title = "写真へのアクセスが拒否されています";
 					string message = "写真アクセスの権限を許可してください。";
@@ -96,14 +96,9 @@ public class MainView: SEComponentBase{
 			});
 			return ;
 		#endif
-		PickImageFromLibraryAsync();
+		PickImageFromLibrary();
 	}
 
-	public async Task PickImageFromLibraryAsync(){
-		loadingScreen.LockScreen();
-		await PickImageFromLibrary();
-		loadingScreen.UnLockScreen();
-	}
 
 	public void TakePictureFromNativeCamera(){
 		#if UNITY_IPHONE
@@ -164,6 +159,7 @@ public class MainView: SEComponentBase{
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
 		    //ISN_Preloader.UnlockScreen();
+		    //loadingScreen.UnLockScreen();
 		});
 	}
 
