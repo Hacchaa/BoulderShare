@@ -9,6 +9,8 @@ using SA.iOS.AVFoundation;
 using SA.CrossPlatform.UI;
 using SA.iOS.UIKit;
 
+using System.Threading.Tasks;
+using System.Threading;
 
 public class MainView: SEComponentBase{
 	[SerializeField] private ScreenTransitionManager trans;
@@ -52,7 +54,7 @@ public class MainView: SEComponentBase{
 		}
 			ISN_UIAlertController alert = new ISN_UIAlertController(null, null, ISN_UIAlertControllerStyle.ActionSheet);
 			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, TakePictureFromNativeCamera);
-			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibrary);
+			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibraryAsync);
 			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});
 
 			alert.AddAction(cameraAction);
@@ -62,16 +64,16 @@ public class MainView: SEComponentBase{
 		#endif
 	}
 
-	public void OpenPhotoLibrary(){
+	public void OpenPhotoLibraryAsync(){
 		#if UNITY_IPHONE
 			ISN_PHAuthorizationStatus s = ISN_PHPhotoLibrary.AuthorizationStatus;
 			if (s == ISN_PHAuthorizationStatus.Authorized){
-				PickImageFromLibrary();
+				PickImageFromLibraryAsync();
 				return ;
 			}
 			ISN_PHPhotoLibrary.RequestAuthorization((status) =>{
 				if (status == ISN_PHAuthorizationStatus.Authorized){
-					PickImageFromLibrary();
+					PickImageFromLibraryAsync();
 				}else if (status == ISN_PHAuthorizationStatus.StatusDenied){
 					string title = "写真へのアクセスが拒否されています";
 					string message = "写真アクセスの権限を許可してください。";
@@ -94,7 +96,13 @@ public class MainView: SEComponentBase{
 			});
 			return ;
 		#endif
-		PickImageFromLibrary();
+		PickImageFromLibraryAsync();
+	}
+
+	public async Task PickImageFromLibraryAsync(){
+		loadingScreen.LockScreen();
+		await PickImageFromLibrary();
+		loadingScreen.UnLockScreen();
 	}
 
 	public void TakePictureFromNativeCamera(){
@@ -134,7 +142,7 @@ public class MainView: SEComponentBase{
 	}
 
 
-	private void PickImageFromLibrary(){
+	private async Task PickImageFromLibrary(){
 		var gallery = UM_Application.GalleryService;
 		int maxThumbnailSize = 8192;
 
@@ -155,7 +163,7 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
-		    ISN_Preloader.UnlockScreen();
+		    //ISN_Preloader.UnlockScreen();
 		});
 	}
 
