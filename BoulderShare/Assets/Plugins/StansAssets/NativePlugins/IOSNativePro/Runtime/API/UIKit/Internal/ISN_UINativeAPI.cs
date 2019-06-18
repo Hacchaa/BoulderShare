@@ -89,6 +89,7 @@ namespace SA.iOS.UIKit.Internal
 
 
         void didFinishPickingMedia(string data) {
+            Debug.Log("didFinishPickingMedia");
             ISN_UIPickerControllerResult result = JsonUtility.FromJson<ISN_UIPickerControllerResult>(data);
             m_didFinishPickingMedia.Invoke(result);
         }

@@ -141,6 +141,7 @@ public class MainView: SEComponentBase{
 		loadingScreen.LockScreen();
 
 		gallery.PickImage(maxThumbnailSize, (result) => {
+			Debug.Log("um_application pickimage callback");
 		    if (result.IsSucceeded) {
 		        UM_Media media = result.Media;
 		        
