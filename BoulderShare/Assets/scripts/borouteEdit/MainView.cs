@@ -141,7 +141,7 @@ public class MainView: SEComponentBase{
 		var gallery = UM_Application.GalleryService;
 		int maxThumbnailSize = 8192;
 
-		//loadingScreen.LockScreen();
+		loadingScreen.LockScreen();
 
 		gallery.PickImage(maxThumbnailSize, (result) => {
 			Debug.Log("um_application pickimage callback");
