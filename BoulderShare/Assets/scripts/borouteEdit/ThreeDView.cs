@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 
 public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler{
+	public enum DragType{Normal, NoMove};
 	private int[] eTouches;
 	private const int FINGER_NONE = -10;
 	private float prevLength;
@@ -20,6 +21,8 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	[SerializeField] private CameraManager cameraManager;
 	private Action focusOutAction;
 
+	private DragType dragType = DragType.Normal;
+
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
@@ -31,6 +34,11 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	void LateUpdate(){
 		isUpdate = false;
 	}
+
+	public void SetDragType(DragType t){
+		dragType = t;
+	}
+
 
 	public void SetFocusOutAction(Action action){
 		focusOutAction = action;
@@ -116,14 +124,16 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 
 
 		if(isMove){
-			//壁を移動させる
-			Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
-				cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
-	    	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f,
-	    		cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
+			if (dragType == DragType.Normal){
+				//壁を移動させる
+				Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
+					cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
+		    	Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f,
+		    		cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
 
-	    	cameraManager.Translate3D(wP1Old - wP1, Space.World);
-	    	cameraManager.Bounds3D(bounds);
+		    	cameraManager.Translate3D(wP1Old - wP1, Space.World);
+		    	cameraManager.Bounds3D(bounds);
+		    }
 		}else{
 			//prevLengthとlengthの比で拡大、縮小する
 			if (prevLength > 0 && length > 0){

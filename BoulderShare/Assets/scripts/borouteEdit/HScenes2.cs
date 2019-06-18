@@ -6,13 +6,13 @@ using System.Linq;
 using System;
 
 public class HScenes2 : MonoBehaviour {
-	[SerializeField]
-	private int curIndex;
+	[SerializeField] private int curIndex;
 	private List<HScene2> list ;
 	private List<MyUtility.AttemptTree> atList;
 	private Dictionary<int, HScene2> masterScenes;
 
 	[SerializeField] private int num;
+	[SerializeField] private int sceneNum;
 
 	public void Init(){
 		list = new List<HScene2>();
@@ -37,6 +37,10 @@ public class HScenes2 : MonoBehaviour {
 	void Update(){
 		if (atList != null){
 			num = atList.Count;
+		}
+
+		if (list != null){
+			sceneNum = list.Count;
 		}
 	}
 

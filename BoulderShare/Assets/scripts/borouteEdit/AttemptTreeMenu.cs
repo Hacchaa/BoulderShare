@@ -176,23 +176,13 @@ public class AttemptTreeMenu : SEComponentBase{
 	}
 
 	public void NextScene(){
-		HScene2 scene = hScenes.NextScene();
 		int index = hScenes.GetCurIndex();
-		if (index >= 0){
-			Load(scene);
-			ss.Focus(index);
-			sceneSlider.value = index;
-		}
+		ShowSceneAt(index + 1);
 	}
 
 	public void PrevScene(){
-		HScene2 scene = hScenes.PrevScene();
 		int index = hScenes.GetCurIndex();
-		if (index >= 0){
-			Load(scene);
-			ss.Focus(index);
-			sceneSlider.value = index;
-		}
+		ShowSceneAt(index - 1);
 	}
 
 	public void ChangeSceneSliderVal(float val){
@@ -200,6 +190,7 @@ public class AttemptTreeMenu : SEComponentBase{
 	}
 
 	public void ShowSceneAt(int index){
+		//Debug.Log("show at " + index);
 		HScene2 scene = hScenes.GetScene(index);
 
 		if (scene == null){
@@ -208,6 +199,16 @@ public class AttemptTreeMenu : SEComponentBase{
 		hScenes.SetCurIndex(index);
 		Load(scene);
 		ss.Focus(index);
+		sceneSlider.value = index + 1;
+	}
+
+	public void ShowFirstScene(){
+		ShowSceneAt(0);
+	}
+
+	public void ShowLastScene(){
+		//Debug.Log("hSCenes.Getnum "+hScenes.GetNum());
+		ShowSceneAt(hScenes.GetNum() - 1);
 	}
 
 	public override void OnPreShow(){

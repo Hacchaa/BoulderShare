@@ -54,7 +54,7 @@ public class MainView: SEComponentBase{
 		}
 			ISN_UIAlertController alert = new ISN_UIAlertController(null, null, ISN_UIAlertControllerStyle.ActionSheet);
 			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, TakePictureFromNativeCamera);
-			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibraryAsync);
+			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, OpenPhotoLibrary);
 			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});
 
 			alert.AddAction(cameraAction);
@@ -64,7 +64,7 @@ public class MainView: SEComponentBase{
 		#endif
 	}
 
-	public void OpenPhotoLibraryAsync(){
+	public void OpenPhotoLibrary(){
 		#if UNITY_IPHONE
 			ISN_PHAuthorizationStatus s = ISN_PHPhotoLibrary.AuthorizationStatus;
 			if (s == ISN_PHAuthorizationStatus.Authorized){
@@ -137,14 +137,16 @@ public class MainView: SEComponentBase{
 	}
 
 
-	private async Task PickImageFromLibrary(){
+	private void PickImageFromLibrary(){
 		var gallery = UM_Application.GalleryService;
 		int maxThumbnailSize = 8192;
 
-		loadingScreen.LockScreen();
-
+		//loadingScreen.LockScreen();
+		if (Application.platform == RuntimePlatform.IPhonePlayer){
+ 			ISN_Preloader.LockScreen();
+ 		}
 		gallery.PickImage(maxThumbnailSize, (result) => {
-			Debug.Log("um_application pickimage callback");
+			//Debug.Log("um_application pickimage callback");
 		    if (result.IsSucceeded) {
 		        UM_Media media = result.Media;
 		        
@@ -158,7 +160,10 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
-		    //ISN_Preloader.UnlockScreen();
+
+		    if (Application.platform == RuntimePlatform.IPhonePlayer){
+		    	ISN_Preloader.UnlockScreen();
+		    }
 		    //loadingScreen.UnLockScreen();
 		});
 	}

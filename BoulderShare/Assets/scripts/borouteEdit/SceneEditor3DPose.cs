@@ -10,6 +10,7 @@ public class SceneEditor3DPose : SceneEditorComponent
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private Transform copyModel;
 	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private ThreeDView threeDView;
 	[SerializeField] private ThreeDWallMarks threeDWallMarks;
 	[SerializeField] private Image headCover;
 	[SerializeField] private Image headSubmitImage;
@@ -110,6 +111,8 @@ public class SceneEditor3DPose : SceneEditorComponent
 	}	
 
 	public void OpenHFEditField(MyUtility.FullBodyMark mark){
+		threeDView.SetDragType(ThreeDView.DragType.NoMove);
+
 		ikController.DeactiveMarks();
 		ikController.ActiveAimMark(mark);
 
@@ -132,6 +135,8 @@ public class SceneEditor3DPose : SceneEditorComponent
 	}
 
 	public void CloseHFEditField(){
+		threeDView.SetDragType(ThreeDView.DragType.Normal);
+
 		ikController.ActiveMarks();
 		ikController.DeactiveAimMarks();
 
