@@ -68,6 +68,53 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 	}
 
 	public void OnDrag(PointerEventData data){
+		if (dragType == DragType.Normal){
+			DragNormal(data);
+		}else if(dragType == DragType.NoMove){
+			DragNoMove(data);
+		}
+	}
+
+	public void DragNoMove(PointerEventData data){
+		Vector2 p1, p2, dP1, dP2;
+		p1 = p2 = dP1 = dP2 = Vector2.zero;
+
+		//このイベントが発生した指が扱っている指かどうか
+		if (isUpdate || (data.pointerId != eTouches[0] && data.pointerId != eTouches[1])){
+			return ;
+		}
+
+		//扱っている指の情報を取得する
+		foreach(Touch touch in Input.touches){
+			if (touch.fingerId == eTouches[0]){
+				p1 = touch.position;
+				dP1 = touch.deltaPosition;
+			}else if (touch.fingerId == eTouches[1]){
+				p2 = touch.position;
+				dP2 = touch.deltaPosition;
+			}
+		}
+
+		//一本指の場合
+		if (eTouches[1] == FINGER_NONE){
+			//y軸に回転させる
+			cameraManager.Rotate3D(0, data.delta.x * WEIGHT, 0);
+			isUpdate = true;
+			return;
+		}
+
+		float length = Vector2.Distance(p1, p2);
+
+		//prevLengthとlengthの比で拡大、縮小する
+		if (prevLength > 0 && length > 0){
+			cameraManager.Zoom3D(-(length/prevLength - 1));
+		}
+		
+		prevLength = length;
+		isUpdate = true;
+
+    }
+	public void DragNormal(PointerEventData data){
 		Vector2 p1, p2, dP1, dP2;
 		p1 = p2 = dP1 = dP2 = Vector2.zero;
 /*
@@ -124,7 +171,6 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 
 
 		if(isMove){
-			if (dragType == DragType.Normal){
 				//壁を移動させる
 				Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
 					cam.gameObject.transform.InverseTransformPoint(cameraManager.GetRootWorldPos()).z));
@@ -133,7 +179,6 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 
 		    	cameraManager.Translate3D(wP1Old - wP1, Space.World);
 		    	cameraManager.Bounds3D(bounds);
-		    }
 		}else{
 			//prevLengthとlengthの比で拡大、縮小する
 			if (prevLength > 0 && length > 0){

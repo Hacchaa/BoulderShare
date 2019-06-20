@@ -14,14 +14,11 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 	private Renderer rend;
 	private Renderer renderOverUI;
 
-	[SerializeField]
-	private Camera cam;
-	[SerializeField]
-	private TwoDWall twoDWall;
-	[SerializeField]
-	private TwoDWallMarks twoDWallMarks;
-	[SerializeField]
-	private TwoDWallImage twoDWallImage;
+	[SerializeField] private Camera cam;
+	[SerializeField] private Transform anotherCam;
+	[SerializeField] private TwoDWall twoDWall;
+	[SerializeField] private TwoDWallMarks twoDWallMarks;
+	[SerializeField] private TwoDWallImage twoDWallImage;
 	[SerializeField] private WallManager wallManager;
 
 	private Action OnGenerateMarkAction = null;
@@ -70,6 +67,8 @@ public class Generate2DMark : MonoBehaviour, IDragHandler, IPointerDownHandler, 
 
 			targetMark.SetType(TwoDMark.FocusType.NORMAL);
 			twoDWallMarks.SetFocus(targetMark);
+
+			anotherCam.position = cam.transform.position;
 		}
 	}
 

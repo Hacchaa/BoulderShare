@@ -12,9 +12,9 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	private Vector3 offset ;
 	private float baseR;
 	private float offsetRate;
+	private Vector3 fixedScale = Vector3.one;
 	[SerializeField] private Camera cam;
 	[SerializeField] private CameraManager cManager;
-	[SerializeField] private Vector3 fixedScale = Vector3.one;
 	[SerializeField] private TwoDMark twoDMark;
 	[SerializeField] private float defaultR = 0.2f;
 
@@ -51,7 +51,6 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 			baseR = Mathf.Sqrt(baseR * baseR - Mathf.Pow(offset.x + offset.y, 2) / 2);
 			
 			offsetRate = twoDMark.transform.localScale.x;
-
 			if (OnBeginDragAction != null){
 				OnBeginDragAction();
 			}
@@ -95,19 +94,31 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	}
 
 	public void FixScale(){
+		float rate = cManager.Get2DDepthRate();
 		Vector3 lossy = transform.lossyScale;
 		Vector3 local = transform.localScale;
 
 		transform.localScale = new Vector3(
-			local.x / lossy.x * fixedScale.x,
-			local.y / lossy.y * fixedScale.y,
-			local.z / lossy.z * fixedScale.z);
+			local.x / lossy.x * fixedScale.x * rate,
+			local.y / lossy.y * fixedScale.y * rate,
+			local.z / lossy.z * fixedScale.z * rate);
 
-		float r = defaultR / twoDMark.transform.localScale.x;
+		float r = defaultR * rate / twoDMark.transform.localScale.x;
 		float parentR = twoDMark.GetR();
 		Debug.Log("parentR:"+parentR);
 		Debug.Log("r:"+r);
 		float rad = 2*Mathf.PI * 45f / 360f;
 		transform.localPosition = new Vector3(Mathf.Cos(rad)*(parentR + r), -(Mathf.Sin(rad)*(parentR + r)), 0.0f);
 	}
+/*
+	public void FixScale(){
+		transform.localScale = Vector3.one * cManager.Get2DDepthRate();
+
+		float r = defaultR * cManager.Get2DDepthRate() / twoDMark.transform.localScale.x;
+		float parentR = twoDMark.GetR();
+		Debug.Log("parentR:"+parentR);
+		Debug.Log("r:"+r);
+		float rad = 2*Mathf.PI * 45f / 360f;
+		transform.localPosition = new Vector3(Mathf.Cos(rad)*(parentR + r), -(Mathf.Sin(rad)*(parentR + r)), 0.0f);
+	}*/
 }

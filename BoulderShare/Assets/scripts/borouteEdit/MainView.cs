@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,8 @@ public class MainView: SEComponentBase{
 	[SerializeField] private GameObject noImageContent;
 	[SerializeField] private Button makeButton;
 	[SerializeField] private PreLoader loadingScreen;
+	[SerializeField] private Text dateText;
+
 
 	public override void OnPreShow(){
 		cameraManager.Active2D();
@@ -97,6 +100,14 @@ public class MainView: SEComponentBase{
 			return ;
 		#endif
 		PickImageFromLibrary();
+	}
+
+	public void PickDate(){
+		ISN_UIDateTimePicker picker = new ISN_UIDateTimePicker();
+		picker.Show((DateTime date) => {
+   		 	Debug.Log("User picked date: " + date.ToLongDateString());
+   		 	dateText.text = date.ToLongDateString();
+		});
 	}
 
 
@@ -173,7 +184,9 @@ public class MainView: SEComponentBase{
 		var camera = UM_Application.CameraService;
 		int maxThumbnailSize = 8192;
 
-		//loadingScreen.LockScreen();
+		if (Application.platform == RuntimePlatform.IPhonePlayer){
+ 			ISN_Preloader.LockScreen();
+ 		}
 
 		camera.TakePicture(maxThumbnailSize, (result) => {
 		   if(result.IsSucceeded) {
@@ -190,7 +203,9 @@ public class MainView: SEComponentBase{
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }
 
-		    //loadingScreen.UnLockScreen();
+		    if (Application.platform == RuntimePlatform.IPhonePlayer){
+		    	ISN_Preloader.UnlockScreen();
+		    }
 		});
 	}
 
