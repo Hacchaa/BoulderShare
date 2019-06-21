@@ -8,6 +8,7 @@ using System;
 public class SceneEditor : SEComponentBase{
 	[SerializeField] private CameraManager cManager;
 	[SerializeField] private ScreenTransitionManager sManager;
+	[SerializeField] private AttemptTreeMenu atMenuView;
 	[SerializeField] private SceneEditorComponent[] uiComs;
 	[SerializeField] private int curIndex;
 	[SerializeField] private List<RectTransform> syncImages;
@@ -101,6 +102,7 @@ public class SceneEditor : SEComponentBase{
 		RegistCurComponent();
 		uiComs[curIndex].OnPreHide();
 		makeAT.Make();
+		atMenuView.SetFirstShowScene(makeAT.GetIndex());
 		makeAT.Init();
 		ToATMenu();
 	}

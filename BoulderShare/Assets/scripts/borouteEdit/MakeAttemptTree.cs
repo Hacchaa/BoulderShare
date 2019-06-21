@@ -41,12 +41,16 @@ public class MakeAttemptTree : MonoBehaviour
 		return curIndex;
 	}
 
-	public void LoadScene(HScene2 scene){
-		loadedScene = scene;
-		Set2DTouchMarks(scene.GetOnHolds());
-		SetComments(scene.GetComments());
-		SetPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim()); 
-		isPoseSet = true;
+	public void LoadScene(int index){
+		HScene2 scene = hscenes.GetScene(index);
+		if (scene != null){
+			curIndex = index;
+			loadedScene = scene;
+			Set2DTouchMarks(scene.GetOnHolds());
+			SetComments(scene.GetComments());
+			SetPose(scene.GetPose(), scene.GetRots(), scene.GetRightHandAnim(), scene.GetLeftHandAnim()); 
+			isPoseSet = true;		
+		}
 	}
 	
 	public void Init(){

@@ -37,6 +37,7 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	}
 
 	public void CorrectPosition(){
+		//Debug.Log("correctPosition target:"+target.position);
 		if (OnPreCorrectPosition != null){
 			OnPreCorrectPosition();
 		}
@@ -79,7 +80,6 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	}
 
 	public void OnBeginDrag(PointerEventData data){
-		//Debug.Log("onbeginDrag");
 		if (finger == MyUtility.FINGER_NONE){
 			finger = data.pointerId;
 
@@ -129,8 +129,11 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 				data.position.y, 
 				baseDepth));
 
+		Debug.Log("target:"+ target.position + ", p:"+p);
+
 		Vector3 v = p - target.position;
-		target.Translate(v, Space.World);
+		target.position = p;
+		//target.Translate(v, Space.World);
 
 		foreach(Transform t in relativePosList){
 			t.Translate(v, Space.World);
@@ -145,5 +148,6 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 				OnPostEndDrag();
 			}
 		}
+		Debug.Log("onendDrag target:"+ target.localPosition);
 	}
 }

@@ -196,6 +196,6 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		}else if(eTouches[1] == data.pointerId){
 			eTouches[1] = FINGER_NONE;
 		}
-
+		cameraManager.SetRootPosToMovePosWithFixedHierarchyPos();
 	}
 }

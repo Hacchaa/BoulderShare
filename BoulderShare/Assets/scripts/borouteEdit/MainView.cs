@@ -183,10 +183,10 @@ public class MainView: SEComponentBase{
 		//Debug.Log("PickImage");
 		var camera = UM_Application.CameraService;
 		int maxThumbnailSize = 8192;
-
+		/*
 		if (Application.platform == RuntimePlatform.IPhonePlayer){
  			ISN_Preloader.LockScreen();
- 		}
+ 		}*/
 
 		camera.TakePicture(maxThumbnailSize, (result) => {
 		   if(result.IsSucceeded) {
@@ -202,10 +202,10 @@ public class MainView: SEComponentBase{
 		    } else {
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }
-
+		    /*
 		    if (Application.platform == RuntimePlatform.IPhonePlayer){
 		    	ISN_Preloader.UnlockScreen();
-		    }
+		    }*/
 		});
 	}
 

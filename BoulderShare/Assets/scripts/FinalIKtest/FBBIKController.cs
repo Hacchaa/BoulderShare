@@ -29,6 +29,8 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     private HandAnim lHandAnim;
     private HandAnim rHandAnim;
+    [SerializeField] private bool ikInit = false;
+
 
     public void Start(){
     	Init();
@@ -97,6 +99,11 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     		SetHandAnim(hand, isRight);
     	}
+
+        if (ikInit){
+            ikInit = false;
+            ik.GetIKSolver().Initiate(ik.transform);
+        }
     /*
     	foreach(FBBAimIKComponent com in aimIKComponents){
 	    	if (switchAimIKActivate ^ com.IsActive()){

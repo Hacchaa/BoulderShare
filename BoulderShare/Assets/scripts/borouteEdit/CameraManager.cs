@@ -423,6 +423,10 @@ public class CameraManager : MonoBehaviour
     public void SetRootPosWithFixedHierarchyPos(Vector3 pos){
         SetPosWithFixedHierarchyPos(root3D, pos);
     }
+
+    public void SetRootPosToMovePosWithFixedHierarchyPos(){
+        SetPosWithFixedHierarchyPos(root3D, move3D.position);
+    }
     
     private void SetPosWithFixedHierarchyPos(Transform target, Vector3 pos){
         List<Vector3> fixPosTmp = new List<Vector3>();

@@ -13,6 +13,7 @@ public class FBBIKMarkHF : FBBIKMarkBounded
     	InitHoldInfo();
     	OnPostDrag += LimitTargetPosition;
     	OnPostCorrectPosition += UpdateLine;
+        moveType = FBBIKBase.MoveType.Point;
     }
 
     public void SetLine(LineRenderer l){

@@ -29,8 +29,13 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private ATWarning atWarning;
 
 	[SerializeField] private Slider sceneSlider;
+	private int firstShowIndex = -1;
 
 	private string warningWithRemove = "現在のシーンを削除しますか？";
+
+	public void SetFirstShowScene(int index){
+		firstShowIndex = index;
+	}
 
 	public void UpdateWarning(Dictionary<string, int> modMap){
 
@@ -82,8 +87,7 @@ public class AttemptTreeMenu : SEComponentBase{
 	public void ToEdit(){
 		makeAT.Init();
 		makeAT.SetMode(MakeAttemptTree.Mode.Edit);
-		makeAT.SetIndex(hScenes.GetCurIndex());
-		makeAT.LoadScene(hScenes.GetCurScene());
+		makeAT.LoadScene(hScenes.GetCurIndex());
 		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 	}
 	public void ToModifyMarks(){
@@ -99,11 +103,6 @@ public class AttemptTreeMenu : SEComponentBase{
 		hScenes.RegistCurHScenes();
 		hScenes.InitAT();
 		ToMainView();
-	}
-
-	public void AddFirst(){
-		makeAT.Init();
-		trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 	}
 
 	public void AddPrev(){
@@ -214,11 +213,16 @@ public class AttemptTreeMenu : SEComponentBase{
 	public override void OnPreShow(){
 		SyncSceneScroll();
 		int index = 0;
+		if (firstShowIndex >= 0){
+			index = firstShowIndex;
+			firstShowIndex = -1;
+		}
 		hScenes.SetCurIndex(index);
 		HScene2 scene = hScenes.GetCurScene();
 		if (scene != null){
 			Load(scene);
 			ss.Focus(index);
+			sceneSlider.value = index + 1;
 		}
 		cameraManager.Active3D();
 		cameraManager.Reset2DCamPosAndDepth();
