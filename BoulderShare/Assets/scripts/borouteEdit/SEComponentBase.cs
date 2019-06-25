@@ -5,29 +5,28 @@ using UnityEngine.UI;
 
 public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponent
 {
-    [SerializeField] private bool needBot = true;
-	[SerializeField] private Image topSERef;
-	[SerializeField] private Image botSERef;
+    [SerializeField] private bool hasBot;
+    [SerializeField] private RectTransform head;
+    [SerializeField] private RectTransform foot;
 	[SerializeField] private List<RectTransform> needMarginList;
 	[SerializeField] private List<GameObject> InternalShowObjects;
 	[SerializeField] private List<GameObject> InternalHideObjects;
-	[SerializeField] private List<GameObject> ExternalShowObjects;
-	[SerializeField] private List<GameObject> ExternalHideObjects;
 
-    public bool IsBotNeed(){
-        return needBot;
+    public bool HasBot(){
+        return hasBot;
     }
-    public Color GetTopSEColor(){
-        if (topSERef == null){
-            return new Color(0.0f, 0.0f, 0.0f, 0.0f);
+    public float GetHeadHeight(){
+        if (head == null){
+            return 0.0f;
         }
-    	return topSERef.color;
+        return head.rect.height;
     }
-    public Color GetBotSEColor(){
-        if (botSERef == null){
-            return new Color(0.0f, 0.0f, 0.0f, 0.0f);
+
+    public float GetFootHeight(){
+        if (foot == null){
+            return 0.0f;
         }
-    	return botSERef.color;
+        return foot.rect.height;
     }
 
     public List<RectTransform> GetMarginList(){
@@ -39,18 +38,12 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
     		OnPreHide();    		
     	}
     	InitializeArrangement();
-    	foreach(GameObject obj in ExternalHideObjects){
-    		obj.SetActive(true);
-    	}
     	gameObject.SetActive(false);
     }
 
     public void Show(){
     	OnPreShow();
     	InitializeArrangement();
-    	foreach(GameObject obj in ExternalHideObjects){
-    		obj.SetActive(false);
-    	}
     	gameObject.SetActive(true);
     }
 
@@ -60,9 +53,6 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
     	}
     	foreach(GameObject obj in InternalHideObjects){
     		obj.SetActive(false);
-    	}
-    	foreach(GameObject obj in ExternalShowObjects){
-    		obj.SetActive(true);
     	}
     }
 

@@ -32,46 +32,71 @@ public class CanvasResolutionManager : MonoBehaviour
     	Debug.Log("botHeight:"+botHeight);
     	Debug.Log("safeRect:"+safe);*/
     	foreach(Transform t in canvasList){
-    		t.GetComponent<CanvasScaler>().scaleFactor = retina;
-    		RectTransform top = t.Find("Top").GetComponent<RectTransform>();
-    		RectTransform bot = t.Find("Bot").GetComponent<RectTransform>();
-    		RectTransform content = t.Find("Content").GetComponent<RectTransform>();
-
-    		if(topHeight <= 0.0f){
-    			top.gameObject.SetActive(false);
-    		}else{
-    			top.gameObject.SetActive(true);
-    		}
-		    top.anchorMin = new Vector2(0.0f, 1.0f);
-			top.anchorMax = new Vector2(1.0f, 1.0f);
-			top.anchoredPosition = new Vector2(0.0f, -topHeight/2.0f);
-			top.sizeDelta = new Vector2(0.0f, topHeight);
-            top.localScale = Vector3.one;
-
-    		if(botHeight <= 0.0f){
-    			bot.gameObject.SetActive(false);
-    		}else{
-    			bot.gameObject.SetActive(true);
-    		}
-		    bot.anchorMin = new Vector2(0.0f, 0.0f);
-			bot.anchorMax = new Vector2(1.0f, 0.0f);
-			bot.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
-			bot.sizeDelta = new Vector2(0.0f, botHeight);
-            bot.localScale = Vector3.one;
-
-			content.gameObject.SetActive(true);
-    		content.anchorMin = new Vector2(0.0f, 0.0f);
-    		content.anchorMax = new Vector2(1.0f, 1.0f);
-    		content.offsetMin = new Vector2(0.0f, botHeight);
-    		content.offsetMax = new Vector2(0.0f, -topHeight);
-            content.localScale = Vector3.one;
-
+    		t.GetComponent<CanvasScaler>().scaleFactor = retina;		
             t.localScale = Vector3.one;
     	}
 
-    	//float mar = CalcCanvasMargin(Screen.width, Screen.height);
     	float mar = GetMarginPt(Screen.width, Screen.height);
     	foreach(SEComponentBase com in sManager.GetUIList()){
+            RectTransform top = null;
+            RectTransform bot = null;
+            RectTransform content = null;
+            Transform t = null;
+            t = com.transform.Find("Top");
+            if (t != null){
+                top = t.GetComponent<RectTransform>();
+            }
+            t = com.transform.Find("Bot");
+            if (t != null){
+                bot = t.GetComponent<RectTransform>();
+            }  
+            t = com.transform.Find("Content");
+            if (t != null){
+                content = t.GetComponent<RectTransform>();
+            }
+
+            if (top != null){
+                if(topHeight <= 0.0f){
+                    top.gameObject.SetActive(false);
+                }else{
+                    top.gameObject.SetActive(true);
+                }
+            
+                top.anchorMin = new Vector2(0.0f, 1.0f);
+                top.anchorMax = new Vector2(1.0f, 1.0f);
+                top.anchoredPosition = new Vector2(0.0f, -topHeight/2.0f);
+                top.sizeDelta = new Vector2(0.0f, topHeight);
+                top.localScale = Vector3.one;
+            }
+            if (bot != null){
+                if(botHeight <= 0.0f){
+                    bot.gameObject.SetActive(false);
+                }else{
+                    bot.gameObject.SetActive(true);
+                }
+                bot.anchorMin = new Vector2(0.0f, 0.0f);
+                bot.anchorMax = new Vector2(1.0f, 0.0f);
+                bot.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
+                bot.sizeDelta = new Vector2(0.0f, botHeight);
+                bot.localScale = Vector3.one;
+            }
+            if (content != null){
+                content.gameObject.SetActive(true);
+                content.anchorMin = new Vector2(0.0f, 0.0f);
+                content.anchorMax = new Vector2(1.0f, 1.0f);
+                if (bot != null){
+                    content.offsetMin = new Vector2(0.0f, botHeight);
+                }else{
+                    content.offsetMin = new Vector2(0.0f, 0.0f);
+                }
+                if (top != null){
+                    content.offsetMax = new Vector2(0.0f, -topHeight);
+                }else{
+                    content.offsetMax = new Vector2(0.0f, 0.0f);
+                }
+                content.localScale = Vector3.one;
+            }
+
     		foreach(RectTransform rect in com.GetMarginList()){
     			rect.anchorMin = new Vector2(0.0f, 0.0f);
 	    		rect.anchorMax = new Vector2(1.0f, 1.0f);
@@ -81,7 +106,7 @@ public class CanvasResolutionManager : MonoBehaviour
     	}
     }
 
-    public List<Transform> GetCanvasList(){
+    public List<Transform> GetCanvasLisat(){
         return new List<Transform>(canvasList);
     }
 

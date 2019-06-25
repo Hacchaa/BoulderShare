@@ -5,7 +5,5 @@ using UnityEngine.UI;
 
 interface ISEComponent
 {
-    Color GetTopSEColor();
-    Color GetBotSEColor();
 	List<RectTransform> GetMarginList();
 }

@@ -29,8 +29,7 @@ public class MainView: SEComponentBase{
 
 
 	public override void OnPreShow(){
-		cameraManager.Active2D();
-		cameraManager.Reset2DCamPosAndDepth();
+		cameraManager.DontShow();
 
 		if (wallManager.IsWallImagePrepared()){
 			wallImageOnUI.gameObject.SetActive(true);
@@ -167,7 +166,6 @@ public class MainView: SEComponentBase{
 		        Debug.Log("mdeia.Path: " + media.Path);
 
 		        ApplyWallImage(image);
-		        trans.Transition(ScreenTransitionManager.Screen.MainView);
 		    } else {
 		        Debug.Log("failed to pick an image: " + result.Error.FullMessage);
 		    }
@@ -198,7 +196,6 @@ public class MainView: SEComponentBase{
 		        Debug.Log("mdeia.Path: " + mdeia.Path);
 
 		       	ApplyWallImage(image);
-		        trans.Transition(ScreenTransitionManager.Screen.MainView);
 		    } else {
 		        Debug.Log("failed to take a picture: " + result.Error.FullMessage);
 		    }
@@ -218,6 +215,12 @@ public class MainView: SEComponentBase{
 		        new Rect(0.0f, 0.0f, texture.width, texture.height), 
 		        new Vector2(0.5f, 0.5f)
 		    );
+
+
+		//
+		wallImageOnUI.gameObject.SetActive(true);
+		noImageContent.SetActive(false);
+		makeButton.interactable = true;
 	}
 
 	public void ToLayerGraph(){
@@ -247,5 +250,9 @@ public class MainView: SEComponentBase{
 
 	public void To3DSetting(){
 		trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
+	}
+
+	public void ToEditInfo(){
+		trans.Transition(ScreenTransitionManager.Screen.EditInfoView);
 	}
 }

@@ -1,0 +1,4 @@
+﻿interface ISTAnimation
+{
+    void Play();
+}

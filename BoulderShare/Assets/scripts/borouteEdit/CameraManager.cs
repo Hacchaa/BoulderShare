@@ -13,8 +13,16 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform depth3D;
     [SerializeField] private List<Camera> cameras3D;
     [SerializeField] private Camera camera2D;
+    [SerializeField] private Transform camera3D;
+    [SerializeField] private Transform root2D;
     [SerializeField] private float duration = 0.3f;
     [SerializeField] private HumanModel humanModel;
+    [SerializeField] private Camera ss2DCameraFrom;
+    [SerializeField] private Camera ss2DCameraTo;
+    [SerializeField] private Camera ss3DCameraFrom;
+    [SerializeField] private Camera ss3DCameraTo;
+
+
     private const float CAMERA2D_DEPTH_UB = -1.0f;
     private const float CAMERA2D_DEPTH_LB = -15.0f;
     private const float CAMERA2D_DEPTH_DEF = -10.0f;
@@ -66,6 +74,11 @@ public class CameraManager : MonoBehaviour
 			isFadeIn3D = false;
 		}
 	}
+
+    public void DontShow(){
+        camera3D.gameObject.SetActive(false);
+        camera2D.gameObject.SetActive(false);
+    }
 
 	public void FadeOutIn2DWithAnimation(bool isRightDir){
 		Sequence seq = DOTween.Sequence();
@@ -152,7 +165,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public void Set2DCamPos(Vector3 v){
-        camera2D.transform.position = v;
+        root2D.transform.position = v;
     }
 
     public void Rotate3DWithAnim(Quaternion rot){
@@ -195,7 +208,7 @@ public class CameraManager : MonoBehaviour
 	            fadeCanvas2D.blocksRaycasts = true;
 	        })
 	        .Append(fadeCanvas2D.DOFade(1.0f, fadeDuration).SetEase(Ease.InQuad))
-	        .Join(camera2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .Join(root2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
 	        .OnComplete(() =>
 	        {
 	        	fadeCanvas2D.blocksRaycasts = false;
@@ -216,10 +229,10 @@ public class CameraManager : MonoBehaviour
 	            fadeCanvas2D.alpha = 1.0f;
                 fadeCanvas3D.alpha = 0.0f;
 	            fadeCanvas2D.blocksRaycasts = true;
-	            camera2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA2D_DEPTH_DEF);
+	            root2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA2D_DEPTH_DEF);
 	        })
 	        .Append(fadeCanvas2D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
-	        .Join(camera2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
+	        .Join(root2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
 	        .OnComplete(() =>
 	        {
 	        	fadeCanvas2D.blocksRaycasts = false;
@@ -318,13 +331,13 @@ public class CameraManager : MonoBehaviour
         return root3D.localRotation;
     }
     public void Translate2D(Vector3 v, Space relativeTo= Space.Self){
-        camera2D.transform.Translate(v, relativeTo);
+        root2D.transform.Translate(v, relativeTo);
     }
 
     public void LookAt2D(Transform target){
         Vector3 p = target.position;
         float depth = target.localScale.x * CAMERA2D_DEPTH_DEF;
-        camera2D.transform.position = new Vector3(p.x, p.y, depth);
+        root2D.transform.position = new Vector3(p.x, p.y, depth);
     }
 
     public void SetRootWorldPos(Vector3 v){
@@ -346,12 +359,12 @@ public class CameraManager : MonoBehaviour
     public void Active2D(){
         //Debug.Log("Active2D");
         camera2D.transform.gameObject.SetActive(true);
-        root3D.gameObject.SetActive(false);
+        camera3D.gameObject.SetActive(false);
     }
     public void Active3D(){
         //Debug.Log("active3D");
         camera2D.transform.gameObject.SetActive(false);
-        root3D.gameObject.SetActive(true);
+        camera3D.gameObject.SetActive(true);
     }
 
     public Camera Get2DCamera(){
@@ -359,10 +372,10 @@ public class CameraManager : MonoBehaviour
     }
     //
     public float Get2DDepth(){
-        return camera2D.transform.localPosition.z;
+        return root2D.transform.localPosition.z;
     }
     public float Get2DDepthRate(){
-        return camera2D.transform.localPosition.z / CAMERA2D_DEPTH_DEF;
+        return root2D.transform.localPosition.z / CAMERA2D_DEPTH_DEF;
     }
     public float Get3DDepth(){
         return depth3D.localPosition.z;
@@ -372,13 +385,13 @@ public class CameraManager : MonoBehaviour
         depth3D.localPosition = new Vector3(p.x, p.y, d);
     }
     public void Bounds2D(Vector2 size, float baseX = 0, float baseY = 0){
-        Vector3 p = camera2D.transform.localPosition;
+        Vector3 p = root2D.transform.localPosition;
         float height = size.y;
         float width = size.x;
         p.x = Mathf.Clamp(p.x, baseX-width/2f, baseX+width/2f);
         p.y = Mathf.Clamp(p.y, baseY-height/2f, baseY+height/2f);
 
-        camera2D.transform.localPosition = p;
+        root2D.transform.localPosition = p;
     }
     public void Bounds3D(Bounds b){
         Vector3 p = move3D.localPosition;
@@ -391,9 +404,9 @@ public class CameraManager : MonoBehaviour
         move3D.localPosition = p;
     }
     public void Zoom2D(float r){
-        Vector3 p = camera2D.transform.localPosition;
+        Vector3 p = root2D.transform.localPosition;
         float depth = Mathf.Clamp(p.z + p.z * r, CAMERA2D_DEPTH_LB, CAMERA2D_DEPTH_UB);
-        camera2D.transform.localPosition = new Vector3(p.x, p.y, depth);
+        root2D.transform.localPosition = new Vector3(p.x, p.y, depth);
 
     }
     public void Zoom3D(float r){
@@ -403,7 +416,7 @@ public class CameraManager : MonoBehaviour
 
     }
     public void Reset2DCamPosAndDepth(){
-        camera2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA2D_DEPTH_DEF);
+        root2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA2D_DEPTH_DEF);
     }
     public void Reset3DCamPosAndDepth(){
         Vector3 v = humanModel.GetModelBodyPosition();
@@ -456,5 +469,34 @@ public class CameraManager : MonoBehaviour
         foreach(Transform child in t){
             RestorePos(child, false, fixPosTmp);
         }
+    }
+
+    public void StartSS2DFrom(){
+    	ss2DCameraFrom.gameObject.SetActive(true);
+    }
+
+    public void EndSS2DFrom(){
+    	ss2DCameraFrom.gameObject.SetActive(false);
+    }
+    public void StartSS2DTo(){
+    	ss2DCameraTo.gameObject.SetActive(true);
+    }
+
+    public void EndSS2DTo(){
+    	ss2DCameraTo.gameObject.SetActive(false);
+    }
+    public void StartSS3DFrom(){
+    	ss3DCameraFrom.gameObject.SetActive(true);
+    }
+
+    public void EndSS3DFrom(){
+    	ss3DCameraFrom.gameObject.SetActive(false);
+    }
+    public void StartSS3DTo(){
+    	ss3DCameraTo.gameObject.SetActive(true);
+    }
+
+    public void EndSS3DTo(){
+    	ss3DCameraTo.gameObject.SetActive(false);
     }
 }

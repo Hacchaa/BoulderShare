@@ -5,16 +5,19 @@ using UnityEngine.UI;
 using System;
 
 public class ScreenTransitionManager : MonoBehaviour {
-	[SerializeField]
 	private List<SEComponentBase> uiList;
-	[SerializeField]
+	[SerializeField] private Transform stAnimationRoot;
+	[SerializeField] private Canvas uiCanvas;
+	private STAnimationBase[,] stAnimations;
 	private Dictionary<string, SEComponentBase> map;
 	private SEComponentBase current = null;
 	private string prev;
 	private string curName;
-	[SerializeField] Image topSafeArea;
-	[SerializeField] Image botSareArea;
+	private Screen prevScreen;
+	private Screen curScreen;
+
 	[SerializeField] private CanvasResolutionManager canResManager;
+	[SerializeField] private List<RenderTexture> rtList;
 
 	public enum Screen {
 		Post,
@@ -24,14 +27,16 @@ public class ScreenTransitionManager : MonoBehaviour {
 		AttemptTreeMenu,
 		SceneEditor,
 		ModifyMarks,
-		EditInfoView
+		EditInfoView,
+		InputTextView
 	}
-
+/*
 	void Awake(){
 		map = new Dictionary<string, SEComponentBase>();
+		uiList = new List<SEComponentBase>();
 		prev = "";
 		curName = "";
-	}
+	}*/
 
 	void Start(){
 		/*
@@ -48,11 +53,40 @@ public class ScreenTransitionManager : MonoBehaviour {
 	}
 
 	public void Init(){
-		foreach(SEComponentBase com in uiList){
-			if (IsScreenVaild(com.name)){
+		map = new Dictionary<string, SEComponentBase>();
+		uiList = new List<SEComponentBase>();
+		prev = "";
+		curName = "";
+		foreach(Transform t in uiCanvas.transform){
+			SEComponentBase com = t.GetComponent<SEComponentBase>();
+			if (com != null && IsScreenVaild(com.name)){
 				map.Add(com.name, com);
-				com.Hide(false);				
+				com.Hide(false);
+				uiList.Add(com);				
 			}
+		}
+		int n = Enum.GetNames(typeof(Screen)).Length;
+		stAnimations = new STAnimationBase[n,n];
+		CanvasGroup cg = uiCanvas.GetComponent<CanvasGroup>();
+
+		foreach(Transform t in stAnimationRoot){
+			STAnimationBase anim = t.GetComponent<STAnimationBase>();
+			if (anim != null){
+				ScreenTransitionManager.Screen from = anim.GetFrom();
+				ScreenTransitionManager.Screen to = anim.GetTo();
+
+				stAnimations[(int)from, (int)to] = anim;
+
+				if (map.ContainsKey(from.ToString()) && map.ContainsKey(to.ToString())){
+					anim.Init(map[from.ToString()], map[to.ToString()], cg);
+				}
+			}
+		}
+
+		//setting renderTexture
+		foreach(RenderTexture rt in rtList){
+			rt.width = UnityEngine.Screen.width;
+			rt.height = UnityEngine.Screen.height;			
 		}
 	}
 	//nameがenum.Screenに含まれているかどうか
@@ -66,53 +100,38 @@ public class ScreenTransitionManager : MonoBehaviour {
 	}
 	
 	public void Transition(Screen screen){
-		TransitionByName(screen.ToString());
+		TransitionByName(screen);
 	}
 
-	private void TransitionByName(string name){
+	private void TransitionByName(Screen screen){
+		string name = screen.ToString();
 		if (map.ContainsKey(name)){
 			if (current != null){
 				prev = curName;
-				current.Hide();
+				prevScreen = curScreen;
 			}
 			current = map[name];
-			current.Show();
 			curName = name;
+			curScreen = screen;
 
-			topSafeArea.color = current.GetTopSEColor();
-
-			List<Transform> l = canResManager.GetCanvasList();
-			foreach(Transform t in l){
-				t.gameObject.SetActive(true);
-			}
-
-			Canvas[] canvasArr = current.GetComponentsInParent<Canvas>();
-			canvasArr[canvasArr.Length - 1].gameObject.SetActive(true);
-			RectTransform bot = canvasArr[canvasArr.Length - 1].transform.Find("Bot").GetComponent<RectTransform>();
-			RectTransform content = canvasArr[canvasArr.Length - 1].transform.Find("Content").GetComponent<RectTransform>();
-			float botHeight = canResManager.CalcBotSize();
-			if (current.IsBotNeed()){
-				bot.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
-				bot.sizeDelta = new Vector2(0.0f, botHeight);
-				content.offsetMin = new Vector2(0.0f, botHeight);
-				botSareArea.color = current.GetBotSEColor();
+			if (!string.IsNullOrEmpty(prev) && stAnimations[(int)prevScreen, (int)curScreen] != null){
+				//Debug.Log("animatioN");
+				stAnimations[(int)prevScreen, (int)curScreen].Play();
 			}else{
-				bot.anchoredPosition = new Vector2(0.0f, 0.0f);
-				bot.sizeDelta = new Vector2(0.0f, 0.0f);
-				content.offsetMin = new Vector2(0.0f, 0.0f);
-			}
+				//Debug.Log("no animation");
+				current.Show();
+				if (!string.IsNullOrEmpty(prev)){
+					map[prev].Hide();
+				}
 
-			foreach(Transform t in l){
-				t.gameObject.SetActive(false);
 			}
-			canvasArr[canvasArr.Length - 1].gameObject.SetActive(true);
 		}		
 	}
 
 	//ひとつ前限定
 	public void Back(){
 		if (!string.IsNullOrEmpty(prev)){
-			TransitionByName(prev);
+			TransitionByName(prevScreen);
 			prev = "";
 		}
 	}
