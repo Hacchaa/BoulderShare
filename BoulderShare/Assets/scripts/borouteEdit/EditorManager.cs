@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
-using Kakera;
+
 
 public class EditorManager : MonoBehaviour {
 	//public enum BODYS{NONE=-1,RH,LH,RF,LF,RE,LE,RK,LK,BODY, LOOK};
@@ -25,7 +26,13 @@ public class EditorManager : MonoBehaviour {
 	private ScreenTransitionManager transition;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private HScenes2 hScenes;
-
+	[SerializeField] private bool isCalcFPS = false;
+	private float fps;
+	[SerializeField] private float updateInterval = 0.5f;
+	private float fpsSum;
+	private int frames;
+	private float leftTime;
+	[SerializeField] private Text fpsText;
 	private string test;
 
 	void Awake(){
@@ -34,6 +41,26 @@ public class EditorManager : MonoBehaviour {
 
 	void Start(){
 		FirstProc();
+	}
+	void Update(){
+		if (isCalcFPS){
+			leftTime -= Time.deltaTime;
+			fpsSum += Time.timeScale / Time.deltaTime;
+			frames++;
+
+			if (0 < leftTime){
+				return ;
+			}
+			fps = fpsSum / frames;
+			leftTime = updateInterval;
+			fpsSum = 0;
+			frames = 0;
+			fpsText.text = "" + fps;
+		}
+	}
+
+	public float GetFPS(){
+		return fps;
 	}
 
 	//borouteeditの初期化処理
