@@ -198,7 +198,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 	public void BorouteFromJson(string json){
 		MyUtility.Boroute bor = JsonUtility.FromJson<MyUtility.Boroute>(json);
-		wallManager.LoadMarks(bor.marks);
+		//wallManager.LoadMarks(bor.marks);
 		hScenes.SetATList(bor.atList);
 		hScenes.LoadMasterScenes(bor.masterScene);
 		hScenes.LoadLatestAT();
@@ -210,7 +210,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 		bor.borouteInfo = eManager.GetBorouteInfo();
 		bor.atList = hScenes.GetATList();
 		bor.masterScene = hScenes.GetMasterScenes();
-		bor.marks = wallManager.GetMarks();
+		//bor.marks = wallManager.GetMarks();
 
 		return JsonUtility.ToJson(bor);
 	}

@@ -102,6 +102,15 @@ public class AttemptTreeMenu : SEComponentBase{
 	public void SaveAT(){
 		hScenes.RegistCurHScenes();
 		hScenes.InitAT();
+		//wallManager.InitMarks();
+
+		ToMainView();
+	}
+
+	public void ExitWithNoSave(){
+		hScenes.InitAT();
+		//wallManager.InitMarks();
+
 		ToMainView();
 	}
 
@@ -153,7 +162,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		if(isActive3D){
 			dimText.text = "3D";
 			cameraManager.Active3D();	
-			humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
+			humanModel.LookAtModel();
 			for3D.SetActive(true);
 		}else{
 			dimText.text = "2D";
@@ -226,7 +235,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		}
 		cameraManager.Active3D();
 		cameraManager.Reset2DCamPosAndDepth();
-		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
+		humanModel.LookAtModel();
 		humanModel.HideMarks();
 
 		scc.ShowDynamically();

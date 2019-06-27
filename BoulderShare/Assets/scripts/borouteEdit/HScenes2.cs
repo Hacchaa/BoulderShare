@@ -13,6 +13,7 @@ public class HScenes2 : MonoBehaviour {
 
 	[SerializeField] private int num;
 	[SerializeField] private int sceneNum;
+	[SerializeField] private WallManager wallManager;
 
 	public void Init(){
 		list = new List<HScene2>();
@@ -20,6 +21,7 @@ public class HScenes2 : MonoBehaviour {
 		atList = new List<MyUtility.AttemptTree>();
 		masterScenes = new Dictionary<int, HScene2>();
 		num = -1;
+		sceneNum = -1;
 	}
 
 	public bool IsATListEmpty(){
@@ -298,6 +300,7 @@ public class HScenes2 : MonoBehaviour {
 		//atListの更新
 		tree.idList = ord;
 		tree.numOfCreatingHScene = HScene2.GetNum();
+		tree.marks = wallManager.GetMarks();
 		atList.Add(tree);
 	}
 
@@ -306,11 +309,13 @@ public class HScenes2 : MonoBehaviour {
 	}
 
 	public void LoadHScenes(int index){
-		list.Clear();
-		curIndex = 0;
+		InitAT();
 		if (index < 0 || index > atList.Count - 1){
 			return ;
 		}
+		curIndex = 0;
+		HScene2.SetNum(atList[index].numOfCreatingHScene);
+		wallManager.LoadMarks(atList[index].marks);
 		foreach(int id in atList[index].idList){
 			HScene2 master = masterScenes[id];
 			HScene2 scene = new HScene2();
@@ -328,7 +333,6 @@ public class HScenes2 : MonoBehaviour {
 		InitAT();
 		int n = atList.Count - 1;
 		if (n >= 0){
-			HScene2.SetNum(atList[n].numOfCreatingHScene);
 			LoadHScenes(n);
 		}
 	}

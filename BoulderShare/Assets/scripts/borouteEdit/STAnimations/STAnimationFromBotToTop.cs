@@ -23,7 +23,7 @@ public abstract class STAnimationFromBotToTop : STAnimationBase
 				OnPostStartAction();
 			}
 		})
-		.Append(toRect.DOLocalMoveY(height,duration).SetEase(Ease.OutQuad).SetRelative())
+		.Append(toRect.DOLocalMoveY(height,duration).SetEase(Ease.OutQuart).SetRelative())
 		.OnComplete( () =>
 		{
 			canvasGroup.blocksRaycasts = true;

@@ -15,7 +15,7 @@ public class ThreeD : MonoBehaviour {
 	[SerializeField] private Vector3[] offsetTouching;
 	[SerializeField] private Vector3 offsetFromCenterToHead;
 	[SerializeField] private Vector3[] pastPos;
-	private const float DEPTH3D_LOOKING = -5.0f;
+	private const float FOV3D_LOOKING = 30.0f;
 
 
 	public float GetModelSize(){
@@ -31,7 +31,7 @@ public class ThreeD : MonoBehaviour {
 		Vector3 body = fIK.GetBodyPosition();
 		cameraManager.Reset3DCamPosAndDepth();
 		cameraManager.SetRootWorldPos(body);
-		cameraManager.Set3DDepth(DEPTH3D_LOOKING);
+		cameraManager.Set3DFOV(FOV3D_LOOKING);
 	}
 
 	public Vector3[] GetModelPosition(){

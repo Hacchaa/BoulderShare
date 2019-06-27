@@ -45,12 +45,12 @@ public class HumanModel : MonoBehaviour {
 		modelRootObj.localScale = Vector3.one * value;
 	}
 
-	public void LookAtModel(float depth = CameraManager.CAMERA3D_DEPTH_LOOKING){
+	public void LookAtModel(float fov = CameraManager.FOV3D_DEF){
 		Vector3 body = fIK.GetWorldPosition(MyUtility.FullBodyMark.Body);
 		//Debug.Log("lookat body:"+body);
 		cameraManager.Reset3DCamPosAndDepth();
 		cameraManager.SetRootWorldPos(body);
-		cameraManager.Set3DDepth(depth);
+		cameraManager.Set3DFOV(fov);
 	}
 
 	public void SetCamAxisAsModelPos(){

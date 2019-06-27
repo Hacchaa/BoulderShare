@@ -31,7 +31,7 @@ public class SceneCommentController3D : MonoBehaviour
     [SerializeField] private float showAngle = 90.0f;
     public static float ANGLE_VIEW = 30.0f;
     public static float ANGLE_EDIT = 90.0f;
-    public static float DEF_DEPTH = 4.0f;
+    public static float FOV = 30.0f;
     void Start(){
         Init();
     }
@@ -109,7 +109,7 @@ public class SceneCommentController3D : MonoBehaviour
     	colorSetter.SetAlphaSliderVal(sc.GetAlpha());
 
     	sceneEditorComment.OpenFocusField(isAlreadyFocused);
-        cManager.Transform3DWithAnim(sc.transform.position, sc.transform.rotation, DEF_DEPTH);
+        cManager.Transform3DWithAnim(sc.transform.position, sc.transform.rotation, FOV);
     }
 
     public void ActiveIF(){

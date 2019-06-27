@@ -23,7 +23,7 @@ public class AttemptTreeView : SEComponentBase{
 		if(isActive3D){
 			dimText.text = "3D";
 			cameraManager.Active3D();	
-			humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
+			humanModel.LookAtModel();
 			for3D.SetActive(true);
 		}else{
 			dimText.text = "2D";
@@ -68,7 +68,7 @@ public class AttemptTreeView : SEComponentBase{
 		}
 		cameraManager.Active3D();
 		cameraManager.Reset2DCamPosAndDepth();
-		humanModel.LookAtModel(CameraManager.CAMERA3D_DEPTH_DEF);
+		humanModel.LookAtModel();
 		humanModel.HideMarks();
 		failedListButton.SetActive(failedListView.IsExist());
 		scc.ShowDynamically();

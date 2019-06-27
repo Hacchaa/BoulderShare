@@ -15,7 +15,7 @@ public class SceneCommentRotation :MonoBehaviour, IDragHandler, IPointerDownHand
     private Vector3 startMovePos;
     private Vector3 startRootPos;
     private Quaternion startRot;
-    private float startDepth;
+    private float startFOV;
 
 	public void OnPointerDown(PointerEventData data){
 		if (finger == FINGER_NONE){
@@ -25,9 +25,9 @@ public class SceneCommentRotation :MonoBehaviour, IDragHandler, IPointerDownHand
 	    	startMovePos = cManager.GetMovePos();
 	    	startRot = cManager.Get3DRotation();
 
-	    	startDepth = cManager.Get3DDepth();
+	    	startFOV = cManager.Get3DFOV();
 	   
-	    	cManager.Transform3DWithAnim(root.position, startRot, startDepth*-1);
+	    	cManager.Transform3DWithAnim(root.position, startRot, startFOV);
 	    	grid.SetActive(true); 
 	    	grid.transform.position = root.position;
 
@@ -39,7 +39,7 @@ public class SceneCommentRotation :MonoBehaviour, IDragHandler, IPointerDownHand
 		if (data.pointerId == finger){
 			finger = FINGER_NONE;
 
-			//cManager.Transform3DWithAnim(startRootPos, startRot, startDepth*-1, startMovePos);
+			//cManager.Transform3DWithAnim(startRootPos, startRot, startFOV, startMovePos);
 
 	    	grid.SetActive(false); 
 	    	threeDWall.ShowTranslucentWall();

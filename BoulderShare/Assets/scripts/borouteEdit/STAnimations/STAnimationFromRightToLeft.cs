@@ -7,9 +7,11 @@ using DG.Tweening;
 public abstract class STAnimationFromRightToLeft : STAnimationBase
 {
 	[SerializeField] private float duration = 0.25f;
+	[SerializeField] private float fromWidthRate = 0.3f;
 
 	public override void Animate(){
 		float width = fromRect.rect.width;
+		float widthFrom = width * fromWidthRate;
 		//Debug.Log("width:" + width);
 		Sequence seq = DOTween.Sequence();
 		seq.OnStart( () =>
@@ -23,7 +25,8 @@ public abstract class STAnimationFromRightToLeft : STAnimationBase
 				OnPostStartAction();
 			}
 		})
-		.Append(toRect.DOLocalMoveX(-width,duration).SetEase(Ease.OutQuad).SetRelative())
+		.Append(toRect.DOLocalMoveX(-width,duration).SetEase(Ease.OutQuart).SetRelative())
+		.Join(fromRect.DOLocalMoveX(-widthFrom, duration).SetEase(Ease.OutQuart).SetRelative())
 		.OnComplete( () =>
 		{
 			canvasGroup.blocksRaycasts = true;

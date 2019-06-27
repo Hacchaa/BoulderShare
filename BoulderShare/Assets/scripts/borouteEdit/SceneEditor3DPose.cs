@@ -21,6 +21,7 @@ public class SceneEditor3DPose : SceneEditorComponent
 	[SerializeField] private FBBIKController ikController;
 	[SerializeField] private CameraManager cManager;
 	[SerializeField] private float dur = 0.15f;
+	[SerializeField] private float hfEditorFOV = 15.0f;
 
 	private bool isHandEnable = false;
 	private bool isRightHand = false;
@@ -118,9 +119,8 @@ public class SceneEditor3DPose : SceneEditorComponent
 
 		Quaternion rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
 		Vector3 pos = ikController.GetAvatar(mark).position;
-		float depth = 2.0f;
 
-		cManager.Transform3DWithAnim(pos, rot, depth);
+		cManager.Transform3DWithAnim(pos, rot, hfEditorFOV);
 
 		if (mark == MyUtility.FullBodyMark.LeftHand){
 			isHandEnable = true;

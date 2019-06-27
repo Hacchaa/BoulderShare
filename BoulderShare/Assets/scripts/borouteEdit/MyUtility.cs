@@ -100,7 +100,7 @@ public class MyUtility {
 	public class Boroute{
 		public BorouteInformation borouteInfo;
 		public List<AttemptTree> atList;
-		public Marks marks;
+		//public Marks marks;
 		public List<Scene> masterScene;
 	}
 
@@ -116,6 +116,7 @@ public class MyUtility {
 		//最初からこのシーンが保存されるまでに作られたシーンの数
 		public List<int> idList;
 		public int numOfCreatingHScene;
+		public Marks marks;
 	}
 
 	[Serializable]

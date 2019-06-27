@@ -44,6 +44,7 @@ public class SceneEditorMark : SceneEditorComponent
 
 		twoDWallMarks.IgnoreEvents();
 		twoDWallMarks.MakeMarksNoActive();
+		twoDWallMarks.ClearTouch();
 
 		if (makeAT.IsWallMarkSet()){
 			List<string> list = makeAT.GetDiffMarks();

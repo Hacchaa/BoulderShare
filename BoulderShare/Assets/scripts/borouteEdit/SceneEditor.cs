@@ -44,6 +44,7 @@ public class SceneEditor : SEComponentBase{
 		uiComs[curIndex].OnPreShow();
 		uiComs[curIndex].Show();
 		cManager.Active2D();
+		cManager.Reset2DFOV();
 
 	}
 	//画面遷移時の前処理

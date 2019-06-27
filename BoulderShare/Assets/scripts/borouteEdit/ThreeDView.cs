@@ -107,7 +107,7 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 
 		//prevLengthとlengthの比で拡大、縮小する
 		if (prevLength > 0 && length > 0){
-			cameraManager.Zoom3D(-(length/prevLength - 1));
+			cameraManager.Zoom3DFOV(length/prevLength);
 		}
 		
 		prevLength = length;
@@ -182,7 +182,7 @@ public class ThreeDView : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoint
 		}else{
 			//prevLengthとlengthの比で拡大、縮小する
 			if (prevLength > 0 && length > 0){
-				cameraManager.Zoom3D(-(length/prevLength - 1));
+				cameraManager.Zoom3DFOV(length/prevLength);
 			}
 			prevLength = length;
 		}

@@ -37,6 +37,7 @@ public class EditorManager : MonoBehaviour {
 
 	void Awake(){
 		timeStamp = "";
+		Application.targetFrameRate = 60;
 	}
 
 	void Start(){

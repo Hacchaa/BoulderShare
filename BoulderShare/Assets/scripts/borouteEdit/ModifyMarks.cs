@@ -37,6 +37,8 @@ public class ModifyMarks : SEComponentBase
 		garbageFor2DMark.AddOnRemoveAction(UpdateRemoveMarkList);
 
 		modifiedMap = new Dictionary<string, int>();
+
+		twoDWallMarks.ClearTouch();
 	}
 
 	//画面遷移でこの画面を消す時の後処理

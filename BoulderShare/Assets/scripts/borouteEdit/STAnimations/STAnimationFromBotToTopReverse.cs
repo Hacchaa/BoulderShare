@@ -24,7 +24,7 @@ public abstract class STAnimationFromBotToTopReverse : STAnimationBase
 				OnPostStartAction();
 			}
 		})
-		.Append(fromRect.DOLocalMoveY(-height,duration).SetEase(Ease.OutQuad).SetRelative())
+		.Append(fromRect.DOLocalMoveY(-height,duration).SetEase(Ease.OutQuart).SetRelative())
 		.OnComplete( () =>
 		{
 			canvasGroup.blocksRaycasts = true;

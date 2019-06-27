@@ -86,6 +86,15 @@ public class WallManager : MonoBehaviour
 		}
 	}
 
+	public void InitMarks(){
+		foreach(Transform t in masterWallMarks.transform){
+			t.name ="";
+			Destroy(t.gameObject);
+		}
+		TwoDWallMarks.SetNum(0);
+		SyncWallMarks();		
+	}
+
 	public void LoadMarks(MyUtility.Marks marks){
 		foreach(Transform t in masterWallMarks.transform){
 			t.name ="";

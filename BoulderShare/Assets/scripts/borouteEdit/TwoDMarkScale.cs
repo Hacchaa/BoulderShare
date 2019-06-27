@@ -44,7 +44,7 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 				new Vector3(
 					data.position.x, 
 					data.position.y, 
-					-cManager.Get2DDepth()));
+					-cManager.GetDepth()));
 
 			offset = offset - twoDMark.transform.position;
 			baseR = offset.magnitude;
@@ -94,7 +94,8 @@ public class TwoDMarkScale : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 	}
 
 	public void FixScale(){
-		float rate = cManager.Get2DDepthRate();
+		float rate = cManager.Get2DZoomRate();
+		Debug.Log("rate:"+rate);
 		Vector3 lossy = transform.lossyScale;
 		Vector3 local = transform.localScale;
 

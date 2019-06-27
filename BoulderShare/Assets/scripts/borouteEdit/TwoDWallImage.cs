@@ -89,7 +89,7 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 			}
 		}
 
-		float depth = Mathf.Abs(cameraManager.Get2DDepth());
+		float depth = Mathf.Abs(cameraManager.GetDepth());
 		float length = Vector2.Distance(p1, p2);
 	
 		isUpdate = true;
@@ -102,7 +102,7 @@ public class TwoDWallImage : MonoBehaviour, IDragHandler, IPointerUpHandler, IPo
 		//prevLengthが設定されてしまうている場合
 		//prevLengthとlengthの比で拡大、縮小する
 		if (prevLength > 0 && length > 0){
-			cameraManager.Zoom2D(-(length/prevLength - 1));
+			cameraManager.Zoom2DFOV(length/prevLength);
 		}
 		prevLength = length;
 		isUpdate = true;

@@ -13,7 +13,7 @@ public class CommentDepth : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
     private Vector3 startMovePos ;
     private Vector3 startRootPos;
     private Quaternion startRot;
-    private float startDepth;
+    private float startFOV;
     private static int FINGER_NONE = -10;
     private static int finger = FINGER_NONE;
     private float weight = 0.01f;
@@ -27,11 +27,11 @@ public class CommentDepth : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
 	    	startRootPos = cManager.GetRootWorldPos();
 	    	startMovePos = cManager.GetMovePos();
 	    	startRot = cManager.Get3DRotation();
-	    	startDepth = cManager.Get3DDepth();
+	    	startFOV = cManager.Get3DFOV();
 
 	    	Quaternion rot = Quaternion.AngleAxis(lookInAngle,  root.rotation * Vector3.right) * root.rotation;
 	   
-	    	cManager.Transform3DWithAnim(root.position, rot, startDepth*-1);
+	    	cManager.Transform3DWithAnim(root.position, rot, startFOV);
 
 	    	grid.transform.position = root.position;
 	    	grid.SetActive(true);
@@ -44,7 +44,7 @@ public class CommentDepth : MonoBehaviour, IDragHandler, IPointerUpHandler, IPoi
 		if (data.pointerId == finger){
 			finger = FINGER_NONE;
 
-			cManager.Transform3DWithAnim(root.position, startRot, startDepth*-1, startMovePos);
+			cManager.Transform3DWithAnim(root.position, startRot, startFOV, startMovePos);
 			grid.SetActive(false);
 		}
     }

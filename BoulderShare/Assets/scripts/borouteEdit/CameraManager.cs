@@ -12,6 +12,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Transform move3D;
     [SerializeField] private Transform depth3D;
     [SerializeField] private List<Camera> cameras3D;
+    [SerializeField] private List<Camera> cameras2D;
     [SerializeField] private Camera camera2D;
     [SerializeField] private Transform camera3D;
     [SerializeField] private Transform root2D;
@@ -22,7 +23,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private Camera ss3DCameraFrom;
     [SerializeField] private Camera ss3DCameraTo;
 
-
+/*
     private const float CAMERA2D_DEPTH_UB = -1.0f;
     private const float CAMERA2D_DEPTH_LB = -15.0f;
     private const float CAMERA2D_DEPTH_DEF = -10.0f;
@@ -30,7 +31,16 @@ public class CameraManager : MonoBehaviour
     private const float CAMERA3D_DEPTH_LB = -15.0f;
     public const float CAMERA3D_DEPTH_DEF = -10.0f;
     private const float CAMERA3D_MOVEZ = 4.0f;
-    public const float CAMERA3D_DEPTH_LOOKING = -5.0f;
+    public const float CAMERA3D_DEPTH_LOOKING = -5.0f;*/
+    private const float CAMERA3D_MOVEZ = 4.0f;
+    public const float CAMERA_DEPTH = -10.0f;
+
+    private const float FOV2D_MIN = 10.0f;
+    private const float FOV2D_MAX = 110.0f;
+    public const float FOV2D_DEF = 60.0f;
+    private const float FOV3D_MIN = 2.0f;
+    private const float FOV3D_MAX = 60.0f;
+    public const float FOV3D_DEF = 45.0f;
 	
 	[SerializeField] private bool isFadeOut2D = false;
 	[SerializeField] private bool isFadeIn2D = false;
@@ -160,7 +170,7 @@ public class CameraManager : MonoBehaviour
     public List<Camera> GetCameras(){
         List<Camera> list = new List<Camera>();
         list.AddRange(cameras3D);
-        list.Add(camera2D);
+        list.AddRange(cameras2D);
         return list;
     }
 
@@ -174,28 +184,31 @@ public class CameraManager : MonoBehaviour
         seq.Play();
     }
 
-    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, Vector3 movePos, float dur = 0.0f){
+    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float fov, Vector3 movePos, float dur = 0.0f){
         if (dur == 0.0f){
             dur = duration;
         }
-        float dep = -d;
-        Vector3 v = new Vector3(vec.x, vec.y, 0.0f);
+        //float dep = -d;
+        //Vector3 v = new Vector3(vec.x, vec.y, 0.0f);
 
         Sequence seq = DOTween.Sequence();
 
         seq.Append(root3D.DORotateQuaternion(rot, dur).SetEase(Ease.OutQuad))
         .Join(root3D.DOMove(vec, dur).SetEase(Ease.OutQuad))
-        .Join(move3D.DOLocalMove(movePos, dur).SetEase(Ease.OutQuad))
-        .Join(depth3D.DOLocalMoveZ(dep, dur).SetEase(Ease.OutQuad));
+        .Join(move3D.DOLocalMove(movePos, dur).SetEase(Ease.OutQuad));
+        foreach(Camera c in cameras3D){
+            seq.Join(c.DOFieldOfView(fov, dur).SetEase(Ease.OutQuad));
+        }
+        //.Join(depth3D.DOLocalMoveZ(dep, dur).SetEase(Ease.OutQuad));
 
         seq.Play();
     }
-    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float d, float dur = 0.0f){
-        Transform3DWithAnim(vec, rot, d, Vector3.zero, dur);
+    public void Transform3DWithAnim(Vector3 vec, Quaternion rot, float fov, float dur = 0.0f){
+        Transform3DWithAnim(vec, rot, fov, Vector3.zero, dur);
     }
 
     public Sequence GetFadeOut2DSeq(bool isRightDir){
-        Debug.Log("GetFadeOut2DSeq");
+        //Debug.Log("GetFadeOut2DSeq");
         float dir = dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -218,7 +231,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public Sequence GetFadeIn2DSeq(bool isRightDir){
-        Debug.Log("GetFadeIn2DSeq");
+        //Debug.Log("GetFadeIn2DSeq");
         float dir = -dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -229,7 +242,8 @@ public class CameraManager : MonoBehaviour
 	            fadeCanvas2D.alpha = 1.0f;
                 fadeCanvas3D.alpha = 0.0f;
 	            fadeCanvas2D.blocksRaycasts = true;
-	            root2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA2D_DEPTH_DEF);
+	            root2D.transform.localPosition = new Vector3(-dir, 0.0f, CAMERA_DEPTH);
+                Reset2DFOV();
 	        })
 	        .Append(fadeCanvas2D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
 	        .Join(root2D.transform.DOMoveX(dir, fadeDuration).SetEase(Ease.OutQuad).SetRelative())
@@ -255,7 +269,7 @@ public class CameraManager : MonoBehaviour
     }
 
     public Sequence GetFadeOut3DSeq(bool isRightDir){
-        Debug.Log("GetFadeOut3DSeq");
+        //Debug.Log("GetFadeOut3DSeq");
         float dir = dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -278,7 +292,7 @@ public class CameraManager : MonoBehaviour
 	}
 
 	public Sequence GetFadeIn3DSeq(bool isRightDir, Vector3 pos){
-        Debug.Log("GetFadeIn3DSeq");
+        //Debug.Log("GetFadeIn3DSeq");
         float dir = -dirLength;
         if (isRightDir){
             dir *= -1.0f;
@@ -292,7 +306,7 @@ public class CameraManager : MonoBehaviour
 
                 Reset3DCamPosAndDepth();
                 SetRootWorldPos(pos);
-                Set3DDepth(CAMERA3D_DEPTH_LOOKING);
+                //Set3DDepth(CAMERA3D_DEPTH_LOOKING);
                 move3D.transform.localPosition = new Vector3(-dir, 0.0f, 0.0f);
 	        })
 	        .Append(fadeCanvas3D.DOFade(0.0f, fadeDuration).SetEase(Ease.OutQuad))
@@ -317,6 +331,57 @@ public class CameraManager : MonoBehaviour
 	    sequence.Play();
     }
 
+/////////////Start of FOV/////////////
+    public float Get3DFOV(){
+        return cameras3D[0].fieldOfView;
+    }
+    public float Get2DFOV(){
+        return cameras2D[0].fieldOfView;
+    }
+
+    public void Set3DFOV(float a){
+        float angle = Mathf.Clamp(a, FOV3D_MIN, FOV3D_MAX);
+        foreach(Camera c in cameras3D){
+            c.fieldOfView = angle;
+        }
+    }
+
+    public void Set2DFOV(float a){
+        float angle = Mathf.Clamp(a, FOV2D_MIN, FOV2D_MAX);
+        foreach(Camera c in cameras2D){
+            c.fieldOfView = angle;
+        }
+    }
+
+    public void Zoom2DFOV(float r){
+        float rad = (Get2DFOV() / 2.0f) * Mathf.Deg2Rad;
+        float newFOV = Mathf.Atan(Mathf.Tan(rad)) / r * Mathf.Rad2Deg * 2.0f;
+
+        Set2DFOV(newFOV);
+    }
+    public void Zoom3DFOV(float r){
+        float rad = (Get3DFOV() / 2.0f) * Mathf.Deg2Rad;
+        float newFOV = Mathf.Atan(Mathf.Tan(rad)) / r * Mathf.Rad2Deg * 2.0f;
+
+        Set3DFOV(newFOV);
+    }
+
+    public float Get3DZoomRate(){
+        return Mathf.Tan(Get3DFOV() / 2.0f * Mathf.Deg2Rad) / Mathf.Tan(FOV3D_DEF / 2.0f * Mathf.Deg2Rad);
+    }
+
+    public float Get2DZoomRate(){
+        return Mathf.Tan(Get2DFOV() / 2.0f * Mathf.Deg2Rad) / Mathf.Tan(FOV2D_DEF / 2.0f * Mathf.Deg2Rad);
+    }
+
+    public void Reset2DFOV(){
+        Set2DFOV(FOV2D_DEF);
+    }
+    public void Reset3DFOV(){
+        Set3DFOV(FOV3D_DEF);
+    }
+/////////////End of FOV///////////////
+
     public void Translate3D(Vector3 v, Space relativeTo= Space.Self){
         float d = move3D.localPosition.z;
         move3D.Translate(v, relativeTo);
@@ -333,12 +398,12 @@ public class CameraManager : MonoBehaviour
     public void Translate2D(Vector3 v, Space relativeTo= Space.Self){
         root2D.transform.Translate(v, relativeTo);
     }
-
+/*
     public void LookAt2D(Transform target){
         Vector3 p = target.position;
         float depth = target.localScale.x * CAMERA2D_DEPTH_DEF;
         root2D.transform.position = new Vector3(p.x, p.y, depth);
-    }
+    }*/
 
     public void SetRootWorldPos(Vector3 v){
         root3D.position = v;
@@ -370,7 +435,11 @@ public class CameraManager : MonoBehaviour
     public Camera Get2DCamera(){
         return camera2D;
     }
-    //
+
+    public float GetDepth(){
+        return CAMERA_DEPTH;
+    }
+    /*
     public float Get2DDepth(){
         return root2D.transform.localPosition.z;
     }
@@ -383,7 +452,7 @@ public class CameraManager : MonoBehaviour
     public void Set3DDepth(float d){
         Vector3 p = depth3D.localPosition;
         depth3D.localPosition = new Vector3(p.x, p.y, d);
-    }
+    }*/
     public void Bounds2D(Vector2 size, float baseX = 0, float baseY = 0){
         Vector3 p = root2D.transform.localPosition;
         float height = size.y;
@@ -402,7 +471,7 @@ public class CameraManager : MonoBehaviour
         p.y = Mathf.Clamp(p.y, -height/2f, height/2f);
         p.z = Mathf.Clamp(p.z, -depth/2f, depth/2f);
         move3D.localPosition = p;
-    }
+    }/*
     public void Zoom2D(float r){
         Vector3 p = root2D.transform.localPosition;
         float depth = Mathf.Clamp(p.z + p.z * r, CAMERA2D_DEPTH_LB, CAMERA2D_DEPTH_UB);
@@ -414,9 +483,10 @@ public class CameraManager : MonoBehaviour
         float depth = Mathf.Clamp(p.z + p.z * r, CAMERA3D_DEPTH_LB, CAMERA3D_DEPTH_UB);
         depth3D.localPosition = new Vector3(0.0f, 0.0f, depth);
 
-    }
+    }*/
     public void Reset2DCamPosAndDepth(){
-        root2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA2D_DEPTH_DEF);
+        root2D.transform.localPosition = new Vector3(0.0f, 0.0f, CAMERA_DEPTH);
+        Reset2DFOV();
     }
     public void Reset3DCamPosAndDepth(){
         Vector3 v = humanModel.GetModelBodyPosition();
@@ -424,13 +494,15 @@ public class CameraManager : MonoBehaviour
         root3D.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
         move3D.localPosition = Vector3.zero;
         //move3D.localRotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        depth3D.localPosition = new Vector3(0.0f, 0.0f, CAMERA3D_DEPTH_DEF);
+        depth3D.localPosition = new Vector3(0.0f, 0.0f, CAMERA_DEPTH);
+
+        Reset3DFOV();
     }
 
     public void Reset3DCamPosAndDepthWithAnim(){
         Vector3 v = humanModel.GetModelBodyPosition();
         Quaternion rot = Quaternion.Euler(0.0f, 0.0f, 0.0f);
-        Transform3DWithAnim(v, rot, -CAMERA3D_DEPTH_LOOKING);
+        Transform3DWithAnim(v, rot, FOV3D_DEF);
     }
 
     public void SetRootPosWithFixedHierarchyPos(Vector3 pos){
