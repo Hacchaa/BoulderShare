@@ -111,6 +111,7 @@ public class TwoDWallMarks : MonoBehaviour {
 	}
 
 	public void SetFocus(TwoDMark mark){
+		Debug.Log("SerFOcus");
 		if (current != null){
 			current.ReleaseFocus();
 		}
@@ -127,6 +128,7 @@ public class TwoDWallMarks : MonoBehaviour {
 	}
 
 	public void ReleaseFocus(){
+		Debug.Log("ReleaseFocus");
 		if (current != null){
 			current.ReleaseFocus();
 			if (!isIgnoreAction && focusOffAction != null){

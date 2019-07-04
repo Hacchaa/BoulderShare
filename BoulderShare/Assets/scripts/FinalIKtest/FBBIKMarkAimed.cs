@@ -9,6 +9,7 @@ public class FBBIKMarkAimed : FBBIKBase
 	[SerializeField] private FBBAimIKComponent aimIKCom;
 
 	public override void Init(){
+        base.Init();
     	OnPostDrag += LimitTargetPosition;
     	OnPostBeginDrag += HidePole;
     	OnPostEndDrag += ShowPole;

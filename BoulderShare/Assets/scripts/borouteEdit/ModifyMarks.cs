@@ -165,13 +165,17 @@ public class ModifyMarks : SEComponentBase
 	}
 
 	private void UpdateMovementMarkList(){
+		Debug.Log("UpdateMovementMarkList");
 		TwoDMark mark = twoDWallMarks.GetFocus();
 		int type = 1;
 		if (mark != null){
 			string name = mark.gameObject.name;
+			Debug.Log("name:"+name);
 			if (!modifiedMap.ContainsKey(name)){
+				Debug.Log("add to modmap");
 				modifiedMap.Add(name, type);
 			}else{
+				Debug.Log("override");
 				int cur = modifiedMap[name];
 				modifiedMap[name] = cur | type;
 			}

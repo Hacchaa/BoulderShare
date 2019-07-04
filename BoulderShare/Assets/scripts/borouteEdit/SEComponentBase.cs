@@ -32,13 +32,18 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
     public List<RectTransform> GetMarginList(){
     	return needMarginList;
     }
-
+/*
     public void Hide(bool isPreProcExecution = true){
     	if (isPreProcExecution){
     		OnPreHide();    		
     	}
     	InitializeArrangement();
     	gameObject.SetActive(false);
+    }*/
+
+    public void HideUI(){
+        InitializeArrangement();
+        gameObject.SetActive(false);       
     }
 
     public void Show(){

@@ -57,7 +57,7 @@ public class FBBIKMarkHF : FBBIKMarkBounded
     	if(IsHoldMarkValid()){
 	    	Vector3[] p = new Vector3[2];
 	    	p[0] = holdMarkPos;
-	    	p[1] = avatar.position;
+	    	p[1] = GetAvatarOffsetPos();
 	    	line.SetPositions(p);
     	}	
     }

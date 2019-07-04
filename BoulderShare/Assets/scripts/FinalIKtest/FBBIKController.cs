@@ -13,22 +13,21 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     [SerializeField] private Camera cam;
     private Dictionary<MyUtility.FullBodyMark, FBBIKBase> map;
     private Dictionary<MyUtility.FullBodyMark, FBBAimIKComponent> aimMap;
-    private Dictionary<HandAnim, string> handAnimMap;
+    private Dictionary<string, Transform> handPoseMap;
+    [SerializeField] private Transform lHPoseRoot;
+    [SerializeField] private Transform rHPoseRoot;
     [SerializeField] private List<FBBAimIKComponent> aimIKComponents;
-    [SerializeField] private FullBodyBipedIK ik;
+    [SerializeField] private VRIK ik;
+    [SerializeField] private List<LegIK> legIKList;
     [SerializeField] private Transform model;
     [SerializeField] private LineRenderer hfLinePrefab;
-    [SerializeField] private BoxCollider hipCollider;
-    [SerializeField] private BoxCollider spineCollider;
     [SerializeField] private bool switchAimIKActivate = false;
-
-    [SerializeField] private bool isRight = false;
-    [SerializeField] private bool isKachi = false;
-    [SerializeField] private bool isDefault = false;
-    [SerializeField] private bool handAnimTrriger = false;
 
     private HandAnim lHandAnim;
     private HandAnim rHandAnim;
+
+    [SerializeField] private HandPoser lhp;
+    [SerializeField] private HandPoser rhp;
     [SerializeField] private bool ikInit = false;
 
 
@@ -36,6 +35,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	Init();
     	InitMarks();
     }
+   
     public void Init(){
     	if (map == null){
     		map = new Dictionary<MyUtility.FullBodyMark, FBBIKBase>();
@@ -53,10 +53,9 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	foreach(FBBIKBase mark in markList){
            // Debug.Log("mark:"+mark.GetBodyID()+ ", "+ mark.GetWorldPosition());
     		map.Add(mark.GetBodyID(), mark);
-    		mark.Init();
     		mark.SetCamera(cam);
     		mark.SetAvatar(avatarReferences[(int)mark.GetBodyID()]);
-
+            mark.Init();
             //lineの設定
             if (mark.GetType() == typeof(FBBIKMarkHF)){
                 LineRenderer line = Instantiate(hfLinePrefab, mark.transform) as LineRenderer;
@@ -73,32 +72,38 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     }
 
     public void InitHandAnimator(){
-    	if (handAnimMap == null){
-    		handAnimMap = new Dictionary<HandAnim, string>();
+    	if (handPoseMap == null){
+            handPoseMap = new Dictionary<string, Transform>();
     	}else{
-    		handAnimMap.Clear();
+            handPoseMap.Clear();
     	}
 
-		handAnimMap.Add(HandAnim.Default, "Default");
-		handAnimMap.Add(HandAnim.Kachi, "Kachi");
-		handAnimMap.Add(HandAnim.Pinch, "Pinch");
-		handAnimMap.Add(HandAnim.Pocket, "Pocket");
-		handAnimMap.Add(HandAnim.Sloper, "Sloper");
+        string prefix = "L";
+
+        handPoseMap.Add(prefix + HandAnim.Default.ToString(), lHPoseRoot.Find(HandAnim.Default.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Kachi.ToString(), lHPoseRoot.Find(HandAnim.Kachi.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Pinch.ToString(), lHPoseRoot.Find(HandAnim.Pinch.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Pocket.ToString(), lHPoseRoot.Find(HandAnim.Pocket.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Sloper.ToString(), lHPoseRoot.Find(HandAnim.Sloper.ToString()));
+
+        prefix = "R";
+
+        handPoseMap.Add(prefix + HandAnim.Default.ToString(), rHPoseRoot.Find(HandAnim.Default.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Kachi.ToString(), rHPoseRoot.Find(HandAnim.Kachi.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Pinch.ToString(), rHPoseRoot.Find(HandAnim.Pinch.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Pocket.ToString(), rHPoseRoot.Find(HandAnim.Pocket.ToString()));
+        handPoseMap.Add(prefix + HandAnim.Sloper.ToString(), rHPoseRoot.Find(HandAnim.Sloper.ToString()));
+    }
+
+    public void ReInitIK(){
+        ik.GetIKSolver().Initiate(ik.transform);
+    }
+    public void SetIKEnable(bool b){
+        ik.enabled = b;
+        rhp.enabled = b;
+        lhp.enabled = b;
     }
     void Update(){
-    	if (handAnimTrriger){
-    		handAnimTrriger = false;
-
-    		HandAnim hand = HandAnim.Default;
-    		if (isDefault){
-    			hand = HandAnim.Default;
-    		}
-    		if (isKachi){
-    			hand = HandAnim.Kachi;
-    		}
-
-    		SetHandAnim(hand, isRight);
-    	}
 
         if (ikInit){
             ikInit = false;
@@ -235,9 +240,15 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
         }
     }*/
     void LateUpdate(){
+       //Invoke("UpdateLegIK", 0.0f);
         Invoke("UpdateAimIK", 0.0f);
         Invoke("ApplyRotationLimits", 0.0f);
         Invoke("CorrectPositions", 0.0f);
+    }
+    private void UpdateLegIK(){
+        foreach(LegIK legIK in legIKList){
+            legIK.GetIKSolver().Update();
+        }
     }
     private void ApplyRotationLimits(){
         foreach(FBBIKBase mark in map.Values){
@@ -293,6 +304,9 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
    		return null;
    	}
     public Vector3 GetWorldPosition(MyUtility.FullBodyMark mark){
+        if (mark == MyUtility.FullBodyMark.Body){
+            return avatarReferences[(int)mark].position;
+        }
         //Debug.Log("getworldposition:"+mark+" "+map.ContainsKey(mark));
     	if(map.ContainsKey(mark)){
     		return map[mark].GetWorldPosition();
@@ -362,18 +376,22 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     public void SetHandAnim(HandAnim hand, bool isRight){
     	Debug.Log("SetHand:"+hand+" "+isRight);
-    	string prefix = "";
+    	string key = "";
+
     	if (isRight){
-    		prefix = "R";
+    		key = "R";
     	}else{
-    		prefix = "L";
+    		key = "L";
     	}
 
-    	if(handAnimMap.ContainsKey(hand)){
-    		animator.SetTrigger(prefix+ handAnimMap[hand]);
+        key += hand.ToString();
+
+    	if(handPoseMap.ContainsKey(key)){
     		if (isRight){
+                rhp.poseRoot = handPoseMap[key];
     			rHandAnim = hand;
     		}else{
+                lhp.poseRoot = handPoseMap[key];
     			lHandAnim = hand;
     		}
     	}

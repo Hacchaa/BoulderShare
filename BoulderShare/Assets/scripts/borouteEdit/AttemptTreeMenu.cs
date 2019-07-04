@@ -27,6 +27,7 @@ public class AttemptTreeMenu : SEComponentBase{
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private ModifyMarks modifyMarks;
 	[SerializeField] private ATWarning atWarning;
+	[SerializeField] private BorouteAndInformation borAndInfo;
 
 	[SerializeField] private Slider sceneSlider;
 	private int firstShowIndex = -1;
@@ -44,9 +45,12 @@ public class AttemptTreeMenu : SEComponentBase{
 			string[] hold = scene.GetOnHolds();
 			int[] types = scene.GetWarningType();
 
-			//Debug.Log("scene.name:"+scene.GetID());
+			Debug.Log("scene.name:"+scene.GetID());
 			for(int i = 0 ; i < hold.Length ; i++){
-				//Debug.Log("i="+i);
+				Debug.Log("i="+i+ " hold[i]="+hold[i]);
+				if (!string.IsNullOrEmpty(hold[i])){
+					Debug.Log(" map.ContainsKey:"+modMap.ContainsKey(hold[i]) );
+				}
 				if (!string.IsNullOrEmpty(hold[i]) && modMap.ContainsKey(hold[i])){
 					if (types[i] != -1){
 						types[i] = types[i] | modMap[hold[i]];
@@ -101,15 +105,21 @@ public class AttemptTreeMenu : SEComponentBase{
 
 	public void SaveAT(){
 		hScenes.RegistCurHScenes();
-		hScenes.InitAT();
-		//wallManager.InitMarks();
+		if(borAndInfo.IsLending()){
+			borAndInfo.UpdateLendingRecord(hScenes.GetATList(), wallManager.GetMarks(), hScenes.GetMasterScenes());
+		}else{
+			borAndInfo.AddRecord(hScenes.GetATList(), wallManager.GetMarks(), hScenes.GetMasterScenes());
+		}
+		borAndInfo.Write();
+		hScenes.Init();
+		wallManager.InitMarks();
 
 		ToMainView();
 	}
 
 	public void ExitWithNoSave(){
-		hScenes.InitAT();
-		//wallManager.InitMarks();
+		hScenes.Init();
+		wallManager.InitMarks();
 
 		ToMainView();
 	}
@@ -224,7 +234,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		int index = 0;
 		if (firstShowIndex >= 0){
 			index = firstShowIndex;
-			firstShowIndex = -1;
+			//firstShowIndex = -1;
 		}
 		hScenes.SetCurIndex(index);
 		HScene2 scene = hScenes.GetCurScene();
@@ -274,10 +284,6 @@ public class AttemptTreeMenu : SEComponentBase{
 		humanModel.InitModelPose();
 		scc.Init();
 		scc.DontShowAll();
-
-		ActivateList(forView, false);
-		ActivateList(forMenu, false);
-		ActivateList(forFailure, false);
 	}
 
 	public void Load(HScene2 scene){
@@ -288,6 +294,7 @@ public class AttemptTreeMenu : SEComponentBase{
 		scc.SetSceneComments(scene.GetComments());
 
 		//ワーニングテキストがある場合、表示
+		//Debug.Log("HasWarning:"+scene.HasWarning());
 		if(scene.HasWarning()){
 			atWarning.gameObject.SetActive(true);
 

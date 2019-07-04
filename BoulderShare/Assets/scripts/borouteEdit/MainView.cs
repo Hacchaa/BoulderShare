@@ -26,12 +26,14 @@ public class MainView: SEComponentBase{
 	[SerializeField] private Button makeButton;
 	[SerializeField] private PreLoader loadingScreen;
 	[SerializeField] private Text dateText;
-
+	[SerializeField] private BorouteAndInformation borAndInfo;
 
 	public override void OnPreShow(){
 		cameraManager.DontShow();
+		LoadBorouteInfo();
 
 		if (wallManager.IsWallImagePrepared()){
+			wallImageOnUI.sprite = MyUtility.CreateSprite(wallManager.GetMasterWallImage());
 			wallImageOnUI.gameObject.SetActive(true);
 			noImageContent.SetActive(false);
 			makeButton.interactable = true;
@@ -42,10 +44,25 @@ public class MainView: SEComponentBase{
 		}
 
 		wallManager.HideTranslucentWall();
+
+		//borouteandinformation から壁情報を受け取って表示
 	}
 
 	public override void OnPreHide(){
 
+	}
+
+	public void LoadBorouteInfo(){
+		MyUtility.BorouteInformation info = borAndInfo.GetInfo();
+
+		if (string.IsNullOrEmpty(info.timestamp)){
+			info.timestamp = System.DateTime.Now.ToString("yyyyMMddHHmmss");
+			info.date = System.DateTime.Now.ToString("yyyyMMdd");
+			//borAndInfo.Write();
+		}else{
+			//ローディング
+			threeDSettingView.Init(info.incline, info.scaleH2M);
+		}
 	}
 
 	public void OpenMediaActiveSheet(){
@@ -232,10 +249,12 @@ public class MainView: SEComponentBase{
 		makeAT.SetMode(MakeAttemptTree.Mode.Loop);
 
 		if (threeDSettingView.IsInit()){
-			if (hScenes2.IsATListEmpty()){
+			if (borAndInfo.IsRecordEmpty()){
 				trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
 			}else{
-				hScenes2.LoadLatestAT();
+				MyUtility.ClimbRecord rec = borAndInfo.LendLatesteRecord();
+				hScenes2.LoadRecord(rec);
+				wallManager.LoadMarks(rec.marks);
 				AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
 				trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 			}
@@ -254,5 +273,9 @@ public class MainView: SEComponentBase{
 
 	public void ToEditInfo(){
 		trans.Transition(ScreenTransitionManager.Screen.EditInfoView);
+	}
+
+	public void ToEditModelFigure(){
+		trans.Transition(ScreenTransitionManager.Screen.EditModelFigureView);
 	}
 }

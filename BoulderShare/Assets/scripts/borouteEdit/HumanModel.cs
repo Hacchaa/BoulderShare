@@ -18,6 +18,79 @@ public class HumanModel : MonoBehaviour {
 	[SerializeField] private GameObject shadowRoot;
 	[SerializeField] private GameObject shadowPrefab;
 
+	[SerializeField] private float defaultHeight = 150.0f;
+	[SerializeField] private float defaultReach = 127.0f;
+	[SerializeField] private float defaultLeg = 80.5f;
+	[SerializeField] private float handStretchRate = 0.2f;
+	[SerializeField] private Vector3[] avatarDefaultPos;
+
+	private bool isStoredDef = false;
+
+	public MyUtility.ModelFigure GetDefaultModelFigure(){
+		MyUtility.ModelFigure fig = new MyUtility.ModelFigure();
+		fig.height = defaultHeight;
+		fig.leg = defaultLeg;
+		fig.reach = defaultReach;
+
+		return fig;
+	}
+	public void SetIKEnable(bool b){
+        fIK.SetIKEnable(b);
+    }
+    public void ReInitIK(){
+        fIK.ReInitIK();
+    }
+
+	private void StoreDef(){/*
+		avatarDefaultPos = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
+
+		foreach(MyUtility.FullBodyMark mark in Enum.GetValues(typeof(MyUtility.FullBodyMark))){
+			if (MyUtility.IsMFMark(mark)){
+				avatarDefaultPos[(int)mark] = fIK.GetAvatar(mark).localPosition;
+			}
+		}
+
+		isStoredDef = true;*/
+	}
+
+	public void UpdateFigure(float height, float reach, float leg){
+		/*if (!isStoredDef){
+			StoreDef();
+		}
+		float rate = height / defaultHeight;
+
+		float actualReach = reach / rate;
+		float actualLeg = leg / rate;
+
+		//手はx軸方向に動かすと伸びる
+		float reachDef = -(actualReach - defaultReach) * 0.01f;
+		//足は-x方向に動かすと伸びる
+		float legDef = -(actualLeg - defaultLeg) * 0.01f;
+		Debug.Log("rate:"+ rate);
+		Debug.Log("actualReach:"+actualReach);
+		Debug.Log("actualLeg:"+ actualLeg);
+		Debug.Log("reachDef:"+ reachDef);
+		Debug.Log("legDef:"+legDef);
+		foreach(MyUtility.FullBodyMark mark in Enum.GetValues(typeof(MyUtility.FullBodyMark))){
+			float del;
+			if (MyUtility.IsMFHandMark(mark)){
+				del = reachDef / 2.0f;
+			}else if (MyUtility.IsMFFootMark(mark)){
+				del = legDef / 4.0f;
+				if (mark == MyUtility.FullBodyMark.LeftPelvis || mark == MyUtility.FullBodyMark.RightPelvis){
+					del *= -1;
+				}
+			}else{
+				continue;
+			}
+			Debug.Log("del:"+del);
+			Debug.Log("before "+mark.ToString()+ " :"+fIK.GetAvatar(mark).localPosition);
+			fIK.GetAvatar(mark).localPosition = avatarDefaultPos[(int)mark] + Vector3.right * del;
+			Debug.Log("after "+mark.ToString()+ " :"+fIK.GetAvatar(mark).localPosition);
+		}*/
+	}
+	
+
 	public void AddOnPostBeginDragActionWithMarks(Action a){
 		if (a != null){
 			fIK.AddOnPostBeginDragAction(a);
@@ -158,7 +231,7 @@ public class HumanModel : MonoBehaviour {
 
 
 	public void CorrectModelPose(){
-		
+/*//		
 		Vector3[] pos = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
 		Quaternion[] rot = fIK.GetRotations();
 		string[] onTouch = twoDWallMarks.GetTouchInfo();
@@ -212,7 +285,7 @@ public class HumanModel : MonoBehaviour {
 		//Debug.Log("lp:"+pos[(int)MyUtility.FullBodyMark.LeftPelvis]);
 
 		pos[(int)MyUtility.FullBodyMark.RightPelvis] = modelCenter + threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.RightPelvis));
-		//Debug.Log("rp:"+pos[(int)MyUtility.FullBodyMark.RightPelvis]);
+		//Debug.Log("rp:"+pos[(int)MyUtility.FullBodyMark.RightPelvis]);//*/
 /*
 		pos[(int)MyUtility.FullBodyMark.Head] = pivot + threeDWall.CalcWorldSubVec(centerPos[index] + offsetFromCenterToHead);
 		pos[(int)MyUtility.FullBodyMark.Look] = pos[(int)MyUtility.FullBodyMark.Head] 
@@ -223,7 +296,7 @@ public class HumanModel : MonoBehaviour {
 			+ threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Chest) + Vector3.forward * 0.5f);
 		pos[(int)MyUtility.FullBodyMark.Pelvis] = pos[(int)MyUtility.FullBodyMark.Body] 
 			+ threeDWall.CalcWorldSubVec(fIK.GetInitPosition(MyUtility.FullBodyMark.Pelvis) - Vector3.up * 0.1f);*/
-		
+/*//		
 		//手足位置の微調整
 		for(int i = (int)MyUtility.FullBodyMark.LeftHand ; i <= (int)MyUtility.FullBodyMark.RightFoot ; i++){
 			//ホールドをつかんでいない手足の位置
@@ -242,7 +315,7 @@ public class HumanModel : MonoBehaviour {
 		pos[(int)MyUtility.FullBodyMark.LeftKnee] = (pos[(int)MyUtility.FullBodyMark.LeftPelvis] + pos[(int)MyUtility.FullBodyMark.LeftFoot]) / 2f 
 			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
 		pos[(int)MyUtility.FullBodyMark.RightKnee] = (pos[(int)MyUtility.FullBodyMark.RightPelvis] + pos[(int)MyUtility.FullBodyMark.RightFoot]) / 2f 
-			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);
+			+ threeDWall.CalcWorldSubVec(Vector3.forward * 0.5f);//*/
 		
 		/*for(int i = (int)MyUtility.FullBodyMark.LeftElbow ; i <= (int)MyUtility.FullBodyMark.RightElbow ; i++){
 				pos[i] = (pos[(int)MyUtility.FullBodyMark.Pelvis] + pos[(int)MyUtility.FullBodyMark.LeftHand]) / 2f + Vector3.forward * 0.5f;
@@ -254,7 +327,9 @@ public class HumanModel : MonoBehaviour {
 				pos[i] = (pos[i-4] + pos[(int)EditorManager.BODYS.BODY]) / 2;
 				//pos[i].z = 0.0f;
 		}*/
+		/*//
 		SetModelPose(pos, rot, FBBIKController.HandAnim.Default, FBBIKController.HandAnim.Default);
+		//*/
 	}
 
 	public void SetHoldMarkInfo(TwoDMark.HFType mark, float r, Vector3 p){

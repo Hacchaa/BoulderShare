@@ -146,9 +146,6 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
 	public void OnPointerDown(PointerEventData data){
 		//Debug.Log("OnPointerDown");
-		if (OnPointerDownAction != null){
-			OnPointerDownAction();
-		}
 		//フォーカスをあてる
 		type = FocusType.NORMAL;
 		twoDWallMarks.SetFocus(this);
@@ -157,6 +154,9 @@ public class TwoDMark : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
 		//マークの中で一番上に表示する
 		transform.SetAsFirstSibling();
+		if (OnPointerDownAction != null){
+			OnPointerDownAction();
+		}
 	}
 
 	public float GetR(){

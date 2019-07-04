@@ -28,7 +28,8 @@ public class ScreenTransitionManager : MonoBehaviour {
 		SceneEditor,
 		ModifyMarks,
 		EditInfoView,
-		InputTextView
+		InputTextView,
+		EditModelFigureView
 	}
 /*
 	void Awake(){
@@ -61,7 +62,8 @@ public class ScreenTransitionManager : MonoBehaviour {
 			SEComponentBase com = t.GetComponent<SEComponentBase>();
 			if (com != null && IsScreenVaild(com.name)){
 				map.Add(com.name, com);
-				com.Hide(false);
+				//com.OnPreHide();
+				com.HideUI();
 				uiList.Add(com);				
 			}
 		}
@@ -121,7 +123,8 @@ public class ScreenTransitionManager : MonoBehaviour {
 				//Debug.Log("no animation");
 				current.Show();
 				if (!string.IsNullOrEmpty(prev)){
-					map[prev].Hide();
+					map[prev].OnPreHide();
+					map[prev].HideUI();
 				}
 
 			}

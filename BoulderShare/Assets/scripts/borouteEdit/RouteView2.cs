@@ -136,12 +136,22 @@ public class RouteView2 : MonoBehaviour {
 			ra.SetGradeText(gm.GetGradeName(data.grade));
 
 			//最も古い日を更新する
-			int date = int.Parse(data.date);
-			if (oldestDate == -1 || oldestDate > date){
+			int date = -1;
+			bool ignoreDate = false;
+			try{
+				date = int.Parse(data.date);
+			}catch(Exception e){
+				Debug.Log("The process failed: " + e.ToString());
+			}finally{
+				if (date == -1){
+					ignoreDate = true;
+				}
+			}
+			if (!ignoreDate && (oldestDate == -1 || oldestDate > date)){
 				oldestDate = date;
 			}
 			//最も新しい日を更新する
-			if (latestDate == -1 || latestDate < date){
+			if (!ignoreDate && (latestDate == -1 || latestDate < date)){
 				latestDate = date;
 			}
 

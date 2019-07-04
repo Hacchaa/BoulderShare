@@ -9,6 +9,7 @@ public class FBBIKPoleAimed : FBBIKBase
 	private Plane plane ;
 
 	public override void Init(){
+        base.Init();
 		OnPostBeginDrag += DeterminePlane;
 		OnPostBeginDrag += HideAimTarget;
     	OnPostDrag += LimitTargetPosition;

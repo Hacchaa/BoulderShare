@@ -13,7 +13,6 @@ public class HScenes2 : MonoBehaviour {
 
 	[SerializeField] private int num;
 	[SerializeField] private int sceneNum;
-	[SerializeField] private WallManager wallManager;
 
 	public void Init(){
 		list = new List<HScene2>();
@@ -300,7 +299,7 @@ public class HScenes2 : MonoBehaviour {
 		//atListの更新
 		tree.idList = ord;
 		tree.numOfCreatingHScene = HScene2.GetNum();
-		tree.marks = wallManager.GetMarks();
+		//tree.marks = wallManager.GetMarks();
 		atList.Add(tree);
 	}
 
@@ -315,7 +314,7 @@ public class HScenes2 : MonoBehaviour {
 		}
 		curIndex = 0;
 		HScene2.SetNum(atList[index].numOfCreatingHScene);
-		wallManager.LoadMarks(atList[index].marks);
+		//wallManager.LoadMarks(atList[index].marks);
 		foreach(int id in atList[index].idList){
 			HScene2 master = masterScenes[id];
 			HScene2 scene = new HScene2();
@@ -335,6 +334,13 @@ public class HScenes2 : MonoBehaviour {
 		if (n >= 0){
 			LoadHScenes(n);
 		}
+	}
+
+	public void LoadRecord(MyUtility.ClimbRecord rec){
+		Init();
+		LoadMasterScenes(rec.masterScenes);
+		SetATList(rec.attempts);
+		LoadLatestAT();
 	}
 /*
 	public string GetLatestAT(){

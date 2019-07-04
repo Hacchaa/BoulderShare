@@ -13,6 +13,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private HScenes2 hScenes;
 	[SerializeField] private TwoDWall twoDWall;
+	[SerializeField] private BorouteAndInformation borAndInfo;
 	private bool isNew;
 
 	void Awake(){
@@ -40,6 +41,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 			//画像を読み込む
 			path = Application.persistentDataPath + EditorManager.BOROUTEPATH + info.GetDirName() + "/Wall.png";
 			if (File.Exists(path)){
+				//Debug.Log("image path is exist.");
 				wallManager.CommitWallImage(MyUtility.LoadImage(path));
 			}
 
@@ -64,7 +66,7 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 			//ボルートを保存する
 			string json = BorouteToJson();
-			ts = eManager.GetTimestamp();
+			ts = borAndInfo.GetInfo().timestamp;
 			string dicPath = path;
 			if (isTemp){
 				dicPath += "temp/";
@@ -87,14 +89,16 @@ public class BorouteLSManager2 : MonoBehaviour {
 			//}
 			string toPath = dicPath + "Wall.png";
 			Texture2D tex = wallManager.GetMasterWallImage();
-			File.Delete(toPath);
-			MyUtility.WriteImage(tex, toPath);
+			if (tex != null){
+				File.Delete(toPath);
+				MyUtility.WriteImage(tex, toPath);	
 
-			//サムネイル画像を保存
-        	toPath = dicPath + "thumbnail.png";
-        	File.Delete(toPath);
-        	WriteThumbnail(toPath);
-
+				//サムネイル画像を保存
+	        	toPath = dicPath + "thumbnail.png";
+	        	File.Delete(toPath);
+	        	WriteThumbnail(toPath);			
+			}
+			
         	//一時保存でない場合
 			if (!isTemp){
 				//検索用データ構造を書き込む
@@ -109,19 +113,21 @@ public class BorouteLSManager2 : MonoBehaviour {
 					list = new List<MyUtility.BorouteInformation>();
 				}
 
-				//リストに追加
-				if (!isNew){
-					//上書き保存
-					int num = list.Count;
-					for(int i = 0 ; i < num ; i++){
-						if (list[i].timestamp.Equals(ts)){
-							list[i] = eManager.GetBorouteInfo();
-							break;
-						}
+				bool isWrite = false;
+
+				//上書き保存
+				int num = list.Count;
+				for(int i = 0 ; i < num ; i++){
+					Debug.Log("conpare:"+list[i].timestamp + ", "+ts);
+					if (list[i].timestamp.Equals(ts)){
+						list[i] = borAndInfo.GetInfo();
+						isWrite = true;
+						break;
 					}
-				}else{
+				}
+				if (!isWrite){
 					//新規作成
-					list.Add(eManager.GetBorouteInfo());
+					list.Add(borAndInfo.GetInfo());
 				}
 				MyUtility.BorouteInfoForSearching b = new MyUtility.BorouteInfoForSearching();
 				b.data = new List<MyUtility.BorouteInformation>(list);
@@ -198,20 +204,16 @@ public class BorouteLSManager2 : MonoBehaviour {
 
 	public void BorouteFromJson(string json){
 		MyUtility.Boroute bor = JsonUtility.FromJson<MyUtility.Boroute>(json);
+		borAndInfo.Init(bor);
+		/*
 		//wallManager.LoadMarks(bor.marks);
 		hScenes.SetATList(bor.atList);
 		hScenes.LoadMasterScenes(bor.masterScene);
 		hScenes.LoadLatestAT();
-		eManager.LoadBorouteInfo(bor.borouteInfo);
+		eManager.LoadBorouteInfo(bor.borouteInfo);*/
 	}
 
 	public string BorouteToJson(){
-		MyUtility.Boroute bor = new MyUtility.Boroute();
-		bor.borouteInfo = eManager.GetBorouteInfo();
-		bor.atList = hScenes.GetATList();
-		bor.masterScene = hScenes.GetMasterScenes();
-		//bor.marks = wallManager.GetMarks();
-
-		return JsonUtility.ToJson(bor);
+		return JsonUtility.ToJson(borAndInfo.GetBoroute());
 	}
 }

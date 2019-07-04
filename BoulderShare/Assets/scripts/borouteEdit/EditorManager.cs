@@ -34,6 +34,7 @@ public class EditorManager : MonoBehaviour {
 	private float leftTime;
 	[SerializeField] private Text fpsText;
 	private string test;
+	[SerializeField] private BorouteAndInformation borAndInfo;
 
 	void Awake(){
 		timeStamp = "";
@@ -68,18 +69,20 @@ public class EditorManager : MonoBehaviour {
 	private void FirstProc(){
 		hScenes.Init();
 		transition.Init();
-		transition.Transition(ScreenTransitionManager.Screen.MainView);
-
+		wallManager.InitMarks();
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
+			borAndInfo.Init();
 		}else{
 			InfoFromViewToEdit info = obj.GetComponent<InfoFromViewToEdit>();
 			SetPList(info.GetPlaceList());
 			if (info.IsNew()){
+				borAndInfo.Init();
 			}else{
 				bManager.LoadBoroute();
 			}
 		}
+		transition.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 
 	public void SetPList(List<string> list){

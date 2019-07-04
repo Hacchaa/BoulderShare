@@ -11,10 +11,11 @@ public class STAnimation_EditInfo_InputText : STAnimationFromRightToLeft
     }
 
     private void StartAction(){
+        from.OnPreHide();
     	to.Show();
     }
 
     private void CompleteAction(){
-    	from.Hide();
+    	from.HideUI();
     }
 }

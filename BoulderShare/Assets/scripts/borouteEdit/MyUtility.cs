@@ -10,10 +10,8 @@ public class MyUtility {
 	[System.Serializable]
     public enum FullBodyMark {
         Body = 0,
-        LeftShoulder,
-        RightShoulder,
-        LeftPelvis,
-        RightPelvis,
+        Chest,
+        Pelvis,
         LeftHand,
         RightHand,
         LeftFoot,
@@ -26,6 +24,34 @@ public class MyUtility {
         Look,
         Other
     }
+/*
+    public static bool IsMFMark(FullBodyMark mark){
+    	return IsMFHandMark(mark) || IsMFFootMark(mark);
+    }
+
+    public static bool IsMFHandMark(FullBodyMark mark){
+		return mark == FullBodyMark.LeftHand ||
+			mark == FullBodyMark.RightHand ||
+			mark == FullBodyMark.LeftElbow || 
+			mark == FullBodyMark.RightElbow ;
+	}
+
+   	public static bool IsMFHandMark(FullBodyMark mark){
+		return mark == FullBodyMark.LeftElbow || 
+			mark == FullBodyMark.RightElbow ;
+	}
+	public static bool IsMFFootMark(FullBodyMark mark){
+		return mark == FullBodyMark.LeftPelvis ||
+			mark == FullBodyMark.RightPelvis ||
+			mark == FullBodyMark.LeftKnee || 
+			mark == FullBodyMark.RightKnee ;
+	}
+	public static bool IsMFRightMark(FullBodyMark mark){
+		return mark == FullBodyMark.RightHand ||
+			mark == FullBodyMark.RightPelvis ||
+			mark == FullBodyMark.RightElbow || 
+			mark == FullBodyMark.RightKnee ;
+	}*/
 
 	public static int Gcd(int a, int b){
 		if (a < b){
@@ -99,9 +125,25 @@ public class MyUtility {
 	[Serializable]
 	public class Boroute{
 		public BorouteInformation borouteInfo;
-		public List<AttemptTree> atList;
-		//public Marks marks;
-		public List<Scene> masterScene;
+		public List<ClimbRecord> records;
+
+		public Boroute(){
+			borouteInfo = new BorouteInformation();
+			records = new List<ClimbRecord>();
+		}
+	}
+
+	[Serializable]
+	public class ClimbRecord{
+		public List<AttemptTree> attempts;
+		public List<Mark> marks;
+		public List<Scene> masterScenes;
+
+		public ClimbRecord(){
+			attempts = new List<AttemptTree>();
+			marks = new List<Mark>();
+			masterScenes = new List<Scene>();
+		}
 	}
 
 	[Serializable]
@@ -116,7 +158,6 @@ public class MyUtility {
 		//最初からこのシーンが保存されるまでに作られたシーンの数
 		public List<int> idList;
 		public int numOfCreatingHScene;
-		public Marks marks;
 	}
 
 	[Serializable]
@@ -161,5 +202,12 @@ public class MyUtility {
 		public float x, y, z;
 		public float scale;
 		public string name;
+	}
+
+	[Serializable]
+	public class ModelFigure{
+		public float height;
+		public float reach;
+		public float leg;
 	}
 }

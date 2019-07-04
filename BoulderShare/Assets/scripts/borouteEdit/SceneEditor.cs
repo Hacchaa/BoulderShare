@@ -66,6 +66,7 @@ public class SceneEditor : SEComponentBase{
 
 	//画面遷移でこの画面を消す時の後処理
 	public override void OnPreHide(){
+		uiComs[curIndex].OnPreHide();
 		int n = syncImages.Count;
 		for(int i = 0 ; i < n ; i++){
 			syncImages[i].localPosition = icons[0].localPosition - icons[i].localPosition;
@@ -101,7 +102,6 @@ public class SceneEditor : SEComponentBase{
 
 	public void Submit(){
 		RegistCurComponent();
-		uiComs[curIndex].OnPreHide();
 		makeAT.Make();
 		atMenuView.SetFirstShowScene(makeAT.GetIndex());
 		makeAT.Init();

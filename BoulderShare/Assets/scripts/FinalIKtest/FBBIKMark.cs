@@ -5,6 +5,7 @@ using UnityEngine;
 public class FBBIKMark : FBBIKBase
 {
     public override void Init(){
+    	base.Init();
     	OnPostBeginDrag += MatchTargetPosition;
     	OnPostEndDrag += MatchTargetPosition;
     }

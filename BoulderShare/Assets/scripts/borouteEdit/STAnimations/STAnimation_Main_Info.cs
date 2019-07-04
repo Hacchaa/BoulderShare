@@ -11,10 +11,11 @@ public class STAnimation_Main_Info :STAnimationFromBotToTop
     }
 
     private void StartAction(){
+        from.OnPreHide();
     	to.Show();
     }
 
     private void CompleteAction(){
-    	from.Hide();
+    	from.HideUI();
     }
 }

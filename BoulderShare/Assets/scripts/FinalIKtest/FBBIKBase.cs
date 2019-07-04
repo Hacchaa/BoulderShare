@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 
 public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, IEndDragHandler, IBeginDragHandler{
-	private static int finger = MyUtility.FINGER_NONE;
+	protected static int finger = MyUtility.FINGER_NONE;
 	public enum MoveType {Delta, Point};
 	[SerializeField] private MyUtility.FullBodyMark bodyID;
 	[SerializeField] protected List<Transform> relativePosList;
@@ -16,12 +16,15 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	protected Action OnPostCorrectPosition;
 	[SerializeField] protected Transform target;
 	protected Transform avatar;
-	[SerializeField] private Camera cam;
+	protected Camera cam;
 	private float baseDepth;
 	[SerializeField] private Vector3 initPos;
+	[SerializeField] private Vector3 avatarOffset;
 	protected MoveType moveType = MoveType.Delta;
+	protected bool isInit = false;
 
 	public virtual void Init(){
+		isInit = true;
 	}
 
 	public void AddOnPostBeginDragAction(Action a){
@@ -42,11 +45,16 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 			OnPreCorrectPosition();
 		}
 		if (avatar != null){
-			transform.position = avatar.position;
+			transform.position = GetAvatarOffsetPos();
 		}
 		if (OnPostCorrectPosition != null){
 			OnPostCorrectPosition();
 		}
+	}
+
+	protected Vector3 GetAvatarOffsetPos(){
+		//return avatar.position;
+		return avatar.TransformPoint(avatarOffset);
 	}
 
 	public Vector3 GetWorldPosition(){

@@ -95,14 +95,14 @@ public class WallManager : MonoBehaviour
 		SyncWallMarks();		
 	}
 
-	public void LoadMarks(MyUtility.Marks marks){
+	public void LoadMarks(List<MyUtility.Mark> marks){
 		foreach(Transform t in masterWallMarks.transform){
 			t.name ="";
 			Destroy(t.gameObject);
 		}
 
 		int max = -1;
-		foreach(MyUtility.Mark mark in marks.data){
+		foreach(MyUtility.Mark mark in marks){
 			GameObject obj = new GameObject(mark.name);
 			obj.transform.parent = masterWallMarks.transform;
 			obj.transform.localPosition = new Vector3(mark.x, mark.y, mark.z);
@@ -118,11 +118,10 @@ public class WallManager : MonoBehaviour
 		SyncWallMarks();
 	}
 
-	public MyUtility.Marks GetMarks(){
+	public List<MyUtility.Mark> GetMarks(){
 		MyUtility.Mark mark;
-		MyUtility.Marks marks = new MyUtility.Marks();
-		marks.data = new MyUtility.Mark[masterWallMarks.transform.childCount];
-		int i = 0;
+		List<MyUtility.Mark> marks = new List<MyUtility.Mark>();
+
 		foreach(Transform child in masterWallMarks.transform){
 			mark = new MyUtility.Mark();
 			mark.name = child.gameObject.name;
@@ -131,8 +130,7 @@ public class WallManager : MonoBehaviour
 			mark.z = child.position.z;
 			mark.scale = child.localScale.x;
 
-			marks.data[i] = mark;
-			i++;
+			marks.Add(mark);
 		}
 		return marks;
 	}

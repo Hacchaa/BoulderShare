@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ThreeDFirstSettingView : SEComponentBase
 {
+	[SerializeField] private BorouteAndInformation borAndInfo;
 	[SerializeField] private ScreenTransitionManager sManager;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private ThreeDWall threeDWall;
@@ -19,6 +20,12 @@ public class ThreeDFirstSettingView : SEComponentBase
 		return isInit;
 	}
 
+	public void Init(int i, float s){
+		humanModel.SetModelSize(s);
+		wallManager.CommitIncline(i);
+		isInit = true;
+	}
+
 	public void Close(){
 		humanModel.SetModelSize(size);
 		wallManager.SyncIncline();
@@ -28,6 +35,9 @@ public class ThreeDFirstSettingView : SEComponentBase
 		isInit = true;
 		wallManager.CommitIncline(threeDWall.GetIncline());
 		sManager.Transition(ScreenTransitionManager.Screen.SceneEditor);
+
+		borAndInfo.SetIncline(threeDWall.GetIncline());
+		borAndInfo.SetHumanScale(humanModel.GetModelSize());
 	}
 	public override void OnPreShow(){
 		size = humanModel.GetModelSize();

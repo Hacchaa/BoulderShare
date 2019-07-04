@@ -41,6 +41,7 @@ public class STAnimation_ATMenu_SceneEditor : STAnimationFromBotToTop
         ResetRectPos(fromImage);
         fromImage.gameObject.SetActive(true);
         PrioritizeFrom();
+        from.OnPreHide();
         to.Show();
 
         cManager.StartSS2DTo();
@@ -59,8 +60,8 @@ public class STAnimation_ATMenu_SceneEditor : STAnimationFromBotToTop
     }
 
     private void CompleteAction(){
-        from.Hide();
-        to.Show();
+        from.HideUI();
+        //to.Show();
 
         if (fromImage != null){
             fromImage.SetParent(cavnasRoot);
