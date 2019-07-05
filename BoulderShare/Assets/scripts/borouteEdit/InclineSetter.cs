@@ -16,6 +16,12 @@ public class InclineSetter : MonoBehaviour {
 		return (int)inclineSlider.value*5;
 	}
 
+	public float GetMin(){
+		return inclineSlider.minValue*5.0f;
+	}
+	public float GetMax(){
+		return inclineSlider.maxValue*5.0f;
+	}
 	public void SyncInclineValue(){
 		float value = threeDWall.GetIncline();
 		inclineSlider.value = value/5;

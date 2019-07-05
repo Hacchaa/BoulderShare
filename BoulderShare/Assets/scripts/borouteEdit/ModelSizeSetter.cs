@@ -18,4 +18,10 @@ public class ModelSizeSetter : MonoBehaviour
 	public void SetModelSizeFromSlider(){
 		humanModel.SetModelSize(modelSizeSlider.value);
 	}
+	public float GetMin(){
+		return modelSizeSlider.minValue;
+	}
+	public float GetMax(){
+		return modelSizeSlider.maxValue;
+	}
 }

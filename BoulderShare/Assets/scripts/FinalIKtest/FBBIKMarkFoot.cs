@@ -14,6 +14,10 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 	[SerializeField] private Vector3 initAngles;
 	[SerializeField] private float maxDeg = 90.0f;
 	[SerializeField] private float bendAngle = 0.0f;
+	[SerializeField] private float stretchAngle = 0.0f;
+	private const float STRETCH_MIN = -35.0f;
+	private const float STRETCH_MAX = 60.0f;
+
 	public override void Init(){
 		//Debug.Log("init");
 		base.Init();
@@ -23,10 +27,28 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 		baseDir = avatar.position - thighAvatar.position;
 		baseLength = baseDir.magnitude;
 		//baseDir = avatar.position - footAvatar.position;
+
+		bendAngle = 0.0f;
+		stretchAngle = 0.0f;
 	}
 
-	public void AddBendAngle(float f){
-		bendAngle += f;
+	public void SetBendAngle(float f){
+		bendAngle = f;
+	}
+	public float GetBendAngle(){
+		return bendAngle;
+	}
+
+	public float GetStretchAngle(){
+		return stretchAngle;
+	}
+
+	public void SetStretchAngle(float v){
+		stretchAngle = ClampStretchAngle(v);
+	}
+
+	public float ClampStretchAngle(float f){
+		return Mathf.Clamp(f, STRETCH_MIN, STRETCH_MAX);
 	}
 
 	void Update(){
@@ -55,7 +77,7 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 		r = Mathf.Clamp(r, 0.0f, 1.0f);
 		float deg = maxDeg * (1.0f - r);
 
-		Vector3 offsetAngles = new Vector3(0.0f, bendAngle, deg) + initAngles;
+		Vector3 offsetAngles = new Vector3(0.0f, bendAngle, deg + stretchAngle) + initAngles;
 		//Debug.Log("r:"+r);
 		//Debug.Log("deg:"+deg);
 		target.localRotation = rot * Quaternion.Euler(offsetAngles);

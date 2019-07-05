@@ -61,7 +61,9 @@ public class MainView: SEComponentBase{
 			//borAndInfo.Write();
 		}else{
 			//ローディング
-			threeDSettingView.Init(info.incline, info.scaleH2M);
+			if (info.incline > 0 && info.scaleH2M > 0){
+				threeDSettingView.Init(info.incline, info.scaleH2M);
+			}
 		}
 	}
 

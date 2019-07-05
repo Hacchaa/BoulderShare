@@ -20,8 +20,7 @@ public class EditModelFigureView: SEComponentBase
 	[SerializeField] private float countPerCM;
 	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private float fov = 20.0f;
-	[SerializeField] private GameObject ikController;
-	private const string PPName_ModelFigure = "Info_ModelFigure";
+	[SerializeField] private GameObject avatarControl;
 
 	public override void OnPreShow(){
 		cManager.Active3D();
@@ -31,11 +30,11 @@ public class EditModelFigureView: SEComponentBase
 
 		//fbbikのdisable
 		//humanModel.SetIKEnable(false);
-		ikController.SetActive(false);
+		avatarControl.SetActive(false);
 
 		MyUtility.ModelFigure data;
-		if(PlayerPrefs.HasKey(PPName_ModelFigure)){
-			string json = PlayerPrefs.GetString(PPName_ModelFigure);
+		if(PlayerPrefs.HasKey(MyUtility.PPName_ModelFigure)){
+			string json = PlayerPrefs.GetString(MyUtility.PPName_ModelFigure);
 			//Debug.Log("model:"+json);
 			data = JsonUtility.FromJson<MyUtility.ModelFigure>(json);
 		}else{
@@ -89,7 +88,7 @@ public class EditModelFigureView: SEComponentBase
 		//設定をファイルに保存 PlayerPrefs
 		MyUtility.ModelFigure fig = GetModelFigure();
 
-		PlayerPrefs.SetString(PPName_ModelFigure, JsonUtility.ToJson(fig));
+		PlayerPrefs.SetString(MyUtility.PPName_ModelFigure, JsonUtility.ToJson(fig));
 		PlayerPrefs.Save();
 
 		ToMainView();

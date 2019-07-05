@@ -24,6 +24,7 @@ public class MyUtility {
         Look,
         Other
     }
+    public const string PPName_ModelFigure = "Info_ModelFigure";
 /*
     public static bool IsMFMark(FullBodyMark mark){
     	return IsMFHandMark(mark) || IsMFFootMark(mark);

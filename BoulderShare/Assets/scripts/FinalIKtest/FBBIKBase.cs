@@ -70,7 +70,7 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	public void SetPosition(Vector3 p){
 		target.localPosition = p;
 	}
-	public void InitPosition(){
+	public virtual void InitPosition(){
 		target.localPosition = initPos;
 	}
 	public Vector3 GetInitPosition(){
@@ -111,7 +111,7 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 		}
 	}
 
-	private void MoveDelta(PointerEventData data){
+	protected void MoveDelta(PointerEventData data){
 		Vector3 p = cam.ScreenToWorldPoint(
 			new Vector3(
 				data.position.x, 
@@ -130,14 +130,14 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 			t.Translate(v, Space.World);
 		}		
 	}
-	private void MovePoint(PointerEventData data){
+	protected void MovePoint(PointerEventData data){
 		Vector3 p = cam.ScreenToWorldPoint(
 			new Vector3(
 				data.position.x, 
 				data.position.y, 
 				baseDepth));
 
-		Debug.Log("target:"+ target.position + ", p:"+p);
+		//Debug.Log("target:"+ target.position + ", p:"+p);
 
 		Vector3 v = p - target.position;
 		target.position = p;
@@ -156,6 +156,6 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 				OnPostEndDrag();
 			}
 		}
-		Debug.Log("onendDrag target:"+ target.localPosition);
+		//Debug.Log("onendDrag target:"+ target.localPosition);
 	}
 }

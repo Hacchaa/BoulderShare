@@ -82,6 +82,12 @@ public class EditorManager : MonoBehaviour {
 				bManager.LoadBoroute();
 			}
 		}
+		if(PlayerPrefs.HasKey(MyUtility.PPName_ModelFigure)){
+			string json = PlayerPrefs.GetString(MyUtility.PPName_ModelFigure);
+			//Debug.Log("model:"+json);
+			MyUtility.ModelFigure data = JsonUtility.FromJson<MyUtility.ModelFigure>(json);
+			humanModel.SetModelFigure(data);
+		}
 		transition.Transition(ScreenTransitionManager.Screen.MainView);
 	}
 

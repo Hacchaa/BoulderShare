@@ -17,6 +17,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     [SerializeField] private Transform lHPoseRoot;
     [SerializeField] private Transform rHPoseRoot;
     [SerializeField] private List<FBBAimIKComponent> aimIKComponents;
+    [SerializeField] private List<FootPoser> footPoserList;
     [SerializeField] private VRIK ik;
     [SerializeField] private List<LegIK> legIKList;
     [SerializeField] private Transform model;
@@ -34,6 +35,10 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     public void Start(){
     	Init();
     	InitMarks();
+    }
+
+    public VRIK GetVRIK(){
+        return ik;
     }
    
     public void Init(){
@@ -136,13 +141,20 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     }
 
     public void ActiveAimMark(MyUtility.FullBodyMark mark){
-    	Debug.Log("mark:"+mark);
+    	//Debug.Log("mark:"+mark);
+        foreach(FootPoser poser in footPoserList){
+            if (poser.GetTargetAvatarBodyID() == mark){
+                poser.Show();
+            }else{
+                poser.Hide();
+            }
+        }
     	foreach(FBBAimIKComponent com in aimIKComponents){
     		if (com.GetTargetAvatarBodyID() == mark){
-    			Debug.Log("Active:"+com.GetTargetAvatarBodyID());
+    			//Debug.Log("Active:"+com.GetTargetAvatarBodyID());
     			com.Activate();
     		}else{
-    			Debug.Log("Deactivate:"+com.GetTargetAvatarBodyID());
+    			//Debug.Log("Deactivate:"+com.GetTargetAvatarBodyID());
     			com.Deactivate();
     		}
     	}
@@ -152,6 +164,10 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	foreach(FBBAimIKComponent com in aimIKComponents){
     		com.Deactivate();
     	}
+
+        foreach(FootPoser poser in footPoserList){
+            poser.Hide();
+        }
     }
 
     public void AddOnPostBeginDragAction(Action a){
@@ -240,16 +256,11 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
         }
     }*/
     void LateUpdate(){
-       //Invoke("UpdateLegIK", 0.0f);
         Invoke("UpdateAimIK", 0.0f);
         Invoke("ApplyRotationLimits", 0.0f);
         Invoke("CorrectPositions", 0.0f);
     }
-    private void UpdateLegIK(){
-        foreach(LegIK legIK in legIKList){
-            legIK.GetIKSolver().Update();
-        }
-    }
+
     private void ApplyRotationLimits(){
         foreach(FBBIKBase mark in map.Values){
             if (mark.GetType() == typeof(FBBIKMarkSP)){
@@ -289,6 +300,8 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     	SetHandAnim(HandAnim.Default, true);
     	SetHandAnim(HandAnim.Default, false);
+
+        model.localRotation = Quaternion.identity;
 
     }
     public Transform GetModelRoot(){
@@ -337,7 +350,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
 
     public Quaternion[] GetRotations(){
 	 	Quaternion[] rots = new Quaternion[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
-
+        rots[(int)MyUtility.FullBodyMark.Body] = model.localRotation;
 	 	foreach(FBBAimIKComponent com in aimMap.Values){
 	 		rots[(int)com.GetTargetAvatarBodyID()] = com.GetRotation();
 	 	}
@@ -372,6 +385,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     			aimMap[mark].SetRotation(rot[i]);
     		}
     	}
+        model.localRotation = rot[(int)MyUtility.FullBodyMark.Body];
     }
 
     public void SetHandAnim(HandAnim hand, bool isRight){

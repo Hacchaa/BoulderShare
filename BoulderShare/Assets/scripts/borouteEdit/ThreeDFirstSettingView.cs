@@ -21,8 +21,10 @@ public class ThreeDFirstSettingView : SEComponentBase
 	}
 
 	public void Init(int i, float s){
+		float inc = Mathf.Clamp(i, incline.GetMin(), incline.GetMax());
+		float size = Mathf.Clamp(s, modelSize.GetMin(), modelSize.GetMax());
 		humanModel.SetModelSize(s);
-		wallManager.CommitIncline(i);
+		wallManager.CommitIncline((int)inc);
 		isInit = true;
 	}
 

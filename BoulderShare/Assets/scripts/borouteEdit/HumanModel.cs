@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using RootMotion.FinalIK;
 
 public class HumanModel : MonoBehaviour {
 	[SerializeField] private FBBIKController fIK;
@@ -20,6 +21,7 @@ public class HumanModel : MonoBehaviour {
 
 	[SerializeField] private float defaultHeight = 150.0f;
 	[SerializeField] private float defaultReach = 127.0f;
+	[SerializeField] private float defaultArm = 53.5f;
 	[SerializeField] private float defaultLeg = 80.5f;
 	[SerializeField] private float handStretchRate = 0.2f;
 	[SerializeField] private Vector3[] avatarDefaultPos;
@@ -53,8 +55,12 @@ public class HumanModel : MonoBehaviour {
 		isStoredDef = true;*/
 	}
 
+	public void SetModelFigure(MyUtility.ModelFigure figure){
+		UpdateFigure(figure.height, figure.reach, figure.leg);
+	}
+
 	public void UpdateFigure(float height, float reach, float leg){
-		/*if (!isStoredDef){
+		if (!isStoredDef){
 			StoreDef();
 		}
 		float rate = height / defaultHeight;
@@ -62,15 +68,19 @@ public class HumanModel : MonoBehaviour {
 		float actualReach = reach / rate;
 		float actualLeg = leg / rate;
 
-		//手はx軸方向に動かすと伸びる
-		float reachDef = -(actualReach - defaultReach) * 0.01f;
-		//足は-x方向に動かすと伸びる
-		float legDef = -(actualLeg - defaultLeg) * 0.01f;
+		float reachDef = (actualReach - defaultReach) / 2.0f;
+
 		Debug.Log("rate:"+ rate);
 		Debug.Log("actualReach:"+actualReach);
 		Debug.Log("actualLeg:"+ actualLeg);
 		Debug.Log("reachDef:"+ reachDef);
-		Debug.Log("legDef:"+legDef);
+
+		VRIK vrik = fIK.GetVRIK();
+		vrik.solver.leftArm.armLengthMlp = reachDef / defaultArm  + 1.0f;
+		vrik.solver.rightArm.armLengthMlp = reachDef / defaultArm + 1.0f;
+		vrik.solver.leftLeg.legLengthMlp = actualLeg / defaultLeg;
+		vrik.solver.rightLeg.legLengthMlp = actualLeg / defaultLeg;
+		/*
 		foreach(MyUtility.FullBodyMark mark in Enum.GetValues(typeof(MyUtility.FullBodyMark))){
 			float del;
 			if (MyUtility.IsMFHandMark(mark)){
