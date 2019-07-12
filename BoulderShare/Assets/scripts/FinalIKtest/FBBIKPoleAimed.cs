@@ -7,6 +7,7 @@ public class FBBIKPoleAimed : FBBIKBase
 	[SerializeField] private float planeDist = 0.5f;
 	[SerializeField] private Transform aimedTarget;
 	private Plane plane ;
+    private float modelSize;
 
 	public override void Init(){
         base.Init();
@@ -15,6 +16,10 @@ public class FBBIKPoleAimed : FBBIKBase
     	OnPostDrag += LimitTargetPosition;
     	OnPostEndDrag += ShowAimTarget;
     	moveType = FBBIKBase.MoveType.Point;
+    }
+
+    public void StoreModelSize(float size){
+        modelSize = size;
     }
 
     private void HideAimTarget(){
@@ -44,11 +49,11 @@ public class FBBIKPoleAimed : FBBIKBase
     }
     public void DeterminePosition(Vector3 axis){
 		target.position = avatar.TransformPoint(axis);
-		target.position = avatar.position + (target.position - avatar.position).normalized * planeDist;
+		target.position = avatar.position + (target.position - avatar.position).normalized * planeDist * modelSize;
     }
 
     private void LimitTargetPosition(){
     	Vector3 v = plane.ClosestPointOnPlane(target.position);
-    	target.position = avatar.position + (v - avatar.position).normalized * planeDist;
+    	target.position = avatar.position + (v - avatar.position).normalized * planeDist * modelSize;
     }
 }

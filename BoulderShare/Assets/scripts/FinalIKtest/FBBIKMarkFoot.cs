@@ -9,6 +9,7 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 	private Quaternion fixRot;
 	private Vector3 baseDir;
 	private float baseLength;
+	[SerializeField] private HumanModel humanModel;
 	[SerializeField] private Transform footAvatar;
 	[SerializeField] private Transform thighAvatar;
 	[SerializeField] private Vector3 initAngles;
@@ -24,10 +25,28 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 		//storedRot = footAvatar.rotation;
 		storedLocalRot = footAvatar.localRotation;
 
-		baseDir = avatar.position - thighAvatar.position;
-		baseLength = baseDir.magnitude;
+		baseDir = (avatar.position - thighAvatar.position);
+		baseLength = baseDir.magnitude / humanModel.GetModelSize();
+		baseDir = baseDir.normalized;
 		//baseDir = avatar.position - footAvatar.position;
 
+		bendAngle = 0.0f;
+		stretchAngle = 0.0f;
+	}
+
+	public Quaternion GetRotation(){
+		return Quaternion.Euler(0.0f, bendAngle, stretchAngle);
+	}
+
+	public void SetRotation(Quaternion rot){
+		Vector3 angles = rot.eulerAngles;
+
+		bendAngle = angles.y;
+		stretchAngle = angles.z;
+	}
+
+	public override void InitPosition(Vector3 offset){
+		base.InitPosition(offset);
 		bendAngle = 0.0f;
 		stretchAngle = 0.0f;
 	}
@@ -69,11 +88,13 @@ public class FBBIKMarkFoot : FBBIKMarkHF
 
 		Debug.Log("target.localRotation:"+target.localRotation.eulerAngles);*/
 
-		Vector3 curDir = avatar.position - thighAvatar.position;
+		Vector3 curDir = (avatar.position - thighAvatar.position).normalized;
+		Debug.DrawLine(target.position , target.position + baseDir, Color.red);
+		Debug.DrawLine(target.position, target.position + curDir, Color.blue);
 		//footAvatar.localRotation = storedLocalRot;
 		//Vector3 curDir = avatar.position - footAvatar.position;
 		Quaternion rot = Quaternion.FromToRotation(baseDir, curDir);
-		float r = (target.position - thighAvatar.position).magnitude / baseLength;
+		float r = ((target.position - thighAvatar.position).magnitude / humanModel.GetModelSize())/ baseLength;
 		r = Mathf.Clamp(r, 0.0f, 1.0f);
 		float deg = maxDeg * (1.0f - r);
 

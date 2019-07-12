@@ -7,12 +7,16 @@ public class FBBIKMarkAimed : FBBIKBase
 	[SerializeField] private float limitR = 0.5f;
 	[SerializeField] private FBBIKPoleAimed poleTarget;
 	[SerializeField] private FBBAimIKComponent aimIKCom;
+    private float modelSize;
 
 	public override void Init(){
         base.Init();
     	OnPostDrag += LimitTargetPosition;
     	OnPostBeginDrag += HidePole;
     	OnPostEndDrag += ShowPole;
+    }
+    public void StoreModelSize(float size){
+        modelSize = size;
     }
 
     private void HidePole(){
@@ -36,16 +40,14 @@ public class FBBIKMarkAimed : FBBIKBase
 
     public void DeterminePosition(Vector3 axis){
 		target.position = avatar.TransformPoint(axis);
-		target.position = avatar.position + (target.position - avatar.position).normalized * limitR;
+		target.position = avatar.position + (target.position - avatar.position).normalized * limitR * modelSize;
     }
 
     private void LimitTargetPosition(){
     	//Debug.Log("avatar:"+avatar.localRotation.eulerAngles);
     	Vector3 sub = (target.position - avatar.position);
-    	float mag = sub.magnitude;
 
-    	if(mag > limitR){
-    		target.position = avatar.position + (sub / mag) * limitR ;
-    	}
+    	target.position = avatar.position + sub.normalized * limitR * modelSize;
+
     }
 }

@@ -14,6 +14,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     private Dictionary<MyUtility.FullBodyMark, FBBIKBase> map;
     private Dictionary<MyUtility.FullBodyMark, FBBAimIKComponent> aimMap;
     private Dictionary<string, Transform> handPoseMap;
+    [SerializeField] private BodyRotation bodyRotation;
     [SerializeField] private Transform lHPoseRoot;
     [SerializeField] private Transform rHPoseRoot;
     [SerializeField] private List<FBBAimIKComponent> aimIKComponents;
@@ -23,7 +24,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     [SerializeField] private Transform model;
     [SerializeField] private LineRenderer hfLinePrefab;
     [SerializeField] private bool switchAimIKActivate = false;
-
+    [SerializeField] private Vector3 initOffset;
     private HandAnim lHandAnim;
     private HandAnim rHandAnim;
 
@@ -132,12 +133,14 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	foreach(FBBIKBase m in markList){
     		m.gameObject.SetActive(true);
     	}
+        bodyRotation.gameObject.SetActive(true);
     }
 
     public void DeactiveMarks(){
     	foreach(FBBIKBase m in markList){
     		m.gameObject.SetActive(false);
     	}
+        bodyRotation.gameObject.SetActive(false);
     }
 
     public void ActiveAimMark(MyUtility.FullBodyMark mark){
@@ -274,6 +277,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
                 mark.CorrectPosition();
             }
         }
+        bodyRotation.FitTargetInAvatar();
     }
     public void DoVRIK(){
         ik.GetIKSolver().Update();
@@ -291,7 +295,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     }
     public void InitMarks(){
     	foreach(FBBIKBase mark in map.Values){
-    		mark.InitPosition();
+    		mark.InitPosition(initOffset);
     	}
 
     	foreach(FBBAimIKComponent com in aimIKComponents){
@@ -301,6 +305,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	SetHandAnim(HandAnim.Default, true);
     	SetHandAnim(HandAnim.Default, false);
 
+        model.localPosition = initOffset;
         model.localRotation = Quaternion.identity;
 
     }
@@ -318,7 +323,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
    	}
     public Vector3 GetWorldPosition(MyUtility.FullBodyMark mark){
         if (mark == MyUtility.FullBodyMark.Body){
-            return avatarReferences[(int)mark].position;
+            return model.position;
         }
         //Debug.Log("getworldposition:"+mark+" "+map.ContainsKey(mark));
     	if(map.ContainsKey(mark)){
@@ -327,6 +332,9 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     	return Vector3.zero;
     }
     public Vector3 GetPosition(MyUtility.FullBodyMark mark){
+        if (mark == MyUtility.FullBodyMark.Body){
+            return model.localPosition;
+        }
     	if(map.ContainsKey(mark)){
     		return map[mark].GetPosition();
     	}
@@ -334,6 +342,7 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     }
     public Vector3[] GetPositions(){
     	Vector3[] pos = new Vector3[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
+        pos[(int)MyUtility.FullBodyMark.Body] = model.localPosition;
 
     	foreach(FBBIKBase mark in map.Values){
     		pos[(int)mark.GetBodyID()] = mark.GetPosition();
@@ -351,6 +360,11 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     public Quaternion[] GetRotations(){
 	 	Quaternion[] rots = new Quaternion[Enum.GetNames(typeof(MyUtility.FullBodyMark)).Length];
         rots[(int)MyUtility.FullBodyMark.Body] = model.localRotation;
+        foreach(FBBIKBase mark in map.Values){
+            if(mark.GetType() == typeof(FBBIKMarkFoot)){
+                rots[(int)mark.GetBodyID()] = ((FBBIKMarkFoot)mark).GetRotation();
+            }
+        }
 	 	foreach(FBBAimIKComponent com in aimMap.Values){
 	 		rots[(int)com.GetTargetAvatarBodyID()] = com.GetRotation();
 	 	}
@@ -379,12 +393,17 @@ public class FBBIKController : MonoBehaviour, IHumanModelController
     		MyUtility.FullBodyMark mark = (MyUtility.FullBodyMark)i;
     		if (map.ContainsKey(mark)){
     			map[mark].SetPosition(pos[i]);
+
+                if (map[mark].GetType() == typeof(FBBIKMarkFoot)){
+                    ((FBBIKMarkFoot)map[mark]).SetRotation(rot[i]);
+                }
     		}
 
     		if (aimMap.ContainsKey(mark)){
     			aimMap[mark].SetRotation(rot[i]);
     		}
     	}
+        model.localPosition = pos[(int)MyUtility.FullBodyMark.Body];
         model.localRotation = rot[(int)MyUtility.FullBodyMark.Body];
     }
 

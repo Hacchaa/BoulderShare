@@ -10,6 +10,8 @@ public class FBBAimIKComponent : MonoBehaviour
 	[SerializeField] private AimIK aimIK;
 	[SerializeField] private FBBIKMarkAimed aimedMark;
 	[SerializeField] private FBBIKPoleAimed pole;
+	[SerializeField] private HumanModel humanModel;
+
 	bool isActive = false;
 	private Transform avatar;
 	private Quaternion storedRot;
@@ -51,11 +53,13 @@ public class FBBAimIKComponent : MonoBehaviour
 
 	public void Activate(){
 		isActive = true;
-
+		float size = humanModel.GetModelSize();
+		aimedMark.StoreModelSize(size);
 		aimedMark.DeterminePosition(aimIK.solver.axis);
 		aimedMark.Activate();
 
 		if (pole != null){
+			pole.StoreModelSize(size);
 			pole.DeterminePosition(aimIK.solver.poleAxis);
 			pole.Activate();
 		}

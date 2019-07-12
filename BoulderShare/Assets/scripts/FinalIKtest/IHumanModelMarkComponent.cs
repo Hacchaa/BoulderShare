@@ -6,7 +6,7 @@ public interface IHumanModelMarkComponent
 {
 	Vector3 GetPosition();
 	void SetPosition(Vector3 p);
-	void InitPosition();
+	void InitPosition(Vector3 offset);
 	Vector3 GetInitPosition();
 	void SetCamera(Camera camera);
 	void SetAvatar(Transform t);

@@ -47,7 +47,7 @@ public class ThreeDFirstSettingView : SEComponentBase
 		humanModel.InitModelPose();
 		humanModel.HideMarks();
 		cameraManager.Active3D();
-		cameraManager.Reset3DCamPosAndDepth();
+		humanModel.LookAtModel();
 		modelSize.SyncModelSize();
 		wallManager.HideTranslucentWall();
 	}

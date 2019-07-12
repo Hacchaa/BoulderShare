@@ -19,12 +19,14 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	protected Camera cam;
 	private float baseDepth;
 	[SerializeField] private Vector3 initPos;
+	private Quaternion initRot;
 	[SerializeField] private Vector3 avatarOffset;
 	protected MoveType moveType = MoveType.Delta;
 	protected bool isInit = false;
 
 	public virtual void Init(){
 		isInit = true;
+		initRot = target.localRotation;
 	}
 
 	public void AddOnPostBeginDragAction(Action a){
@@ -70,9 +72,10 @@ public class FBBIKBase : MonoBehaviour, IHumanModelMarkComponent, IDragHandler, 
 	public void SetPosition(Vector3 p){
 		target.localPosition = p;
 	}
-	public virtual void InitPosition(){
-		target.localPosition = initPos;
+	public virtual void InitPosition(Vector3 offset){
+		target.localPosition = initPos + offset;
 	}
+
 	public Vector3 GetInitPosition(){
 		return initPos;
 	}

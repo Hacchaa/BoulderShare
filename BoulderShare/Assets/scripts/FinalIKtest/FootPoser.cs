@@ -13,10 +13,12 @@ public class FootPoser : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDra
 	[SerializeField] private Camera cam;
 	[SerializeField] private FBBIKMarkFoot footMark;
 	[SerializeField] private Vector3 axis;
+	[SerializeField] private float length = 0.5f;
+	[SerializeField] private HumanModel humanModel;
 	private float baseDepth;
 	private Plane plane;
 	private Vector3 baseDir;
-	private float r = 0.5f;
+	private float r ;
 	private float baseStretchAngle;
 
 	public void Show(){
@@ -35,7 +37,7 @@ public class FootPoser : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDra
 
 	public void OnPreShow(){
 		plane = new Plane(toeAvatar.position, footAvatar.position, kneeAvatar.position);
-
+		r = length * humanModel.GetModelSize();
 		//baseDir = Quaternion.AngleAxis(offsetAngle, plane.normal) * toeAvatar.position - footAvatar.position;
 		baseDir = toeAvatar.TransformPoint(axis * r) - toeAvatar.position;
 		transform.position = toeAvatar.position + baseDir.normalized * r;
