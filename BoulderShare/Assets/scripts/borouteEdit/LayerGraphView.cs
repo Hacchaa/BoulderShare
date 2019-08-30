@@ -41,8 +41,8 @@ public class LayerGraphView : SEComponentBase{
 		dag.ConvertLayerGraph();
 	}
 
-	public void ToMainView(){
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+	public void ToRouteDetailView(){
+		trans.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public void Next(){

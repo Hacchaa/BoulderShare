@@ -37,8 +37,8 @@ public class Post2 :SEComponentBase{
 	public override void OnPreHide(){
 	}
 
-	public void ToMainView(){
-		stManager.Transition(ScreenTransitionManager.Screen.MainView);
+	public void ToRouteDetailView(){
+		stManager.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public string GetPlace(){

@@ -80,8 +80,8 @@ public class EditModelFigureView: SEComponentBase
 		return fig;
 	}
 
-	public void ToMainView(){
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+	public void ToRouteDetailView(){
+		trans.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public void Submit(){
@@ -91,7 +91,7 @@ public class EditModelFigureView: SEComponentBase
 		PlayerPrefs.SetString(MyUtility.PPName_ModelFigure, JsonUtility.ToJson(fig));
 		PlayerPrefs.Save();
 
-		ToMainView();
+		ToRouteDetailView();
 	}
 
 	public void OnChangeValueWithHeight(float v){

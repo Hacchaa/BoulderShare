@@ -16,11 +16,11 @@ public class PickImageView : SEComponentBase{
 	public override void OnPreHide(){
 	}
 
-	public void ToMainView(){
+	public void ToRouteDetailView(){
 		twoDWallImage.RotateWallTexture();
 		//ファイルに書き込まないように仕様変更
 		//bManager.WriteWallImage();
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+		trans.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 }

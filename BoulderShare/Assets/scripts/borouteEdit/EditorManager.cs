@@ -22,8 +22,6 @@ public class EditorManager : MonoBehaviour {
 	private string timeStamp ;
 	[SerializeField]
 	private BorouteLSManager2 bManager;
-	[SerializeField]
-	private ScreenTransitionManager transition;
 	[SerializeField] private WallManager wallManager;
 	[SerializeField] private HScenes2 hScenes;
 	[SerializeField] private bool isCalcFPS = false;
@@ -68,7 +66,7 @@ public class EditorManager : MonoBehaviour {
 	//borouteeditの初期化処理
 	private void FirstProc(){
 		hScenes.Init();
-		transition.Init();
+		ScreenTransitionManager.Instance.Init();
 		wallManager.InitMarks();
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){
@@ -88,7 +86,7 @@ public class EditorManager : MonoBehaviour {
 			MyUtility.ModelFigure data = JsonUtility.FromJson<MyUtility.ModelFigure>(json);
 			humanModel.SetModelFigure(data);
 		}
-		transition.Transition(ScreenTransitionManager.Screen.MainView);
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.RoutesView);
 	}
 
 	public void SetPList(List<string> list){

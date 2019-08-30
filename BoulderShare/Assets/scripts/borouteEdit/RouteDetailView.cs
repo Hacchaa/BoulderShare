@@ -13,8 +13,7 @@ using SA.iOS.UIKit;
 using System.Threading.Tasks;
 using System.Threading;
 
-public class MainView: SEComponentBase{
-	[SerializeField] private ScreenTransitionManager trans;
+public class RouteDetailView: SEComponentBase{
 	[SerializeField] private MakeAttemptTree makeAT;
 	[SerializeField] private CameraManager cameraManager;
 	[SerializeField] private HScenes2 hScenes2;
@@ -27,6 +26,7 @@ public class MainView: SEComponentBase{
 	[SerializeField] private PreLoader loadingScreen;
 	[SerializeField] private Text dateText;
 	[SerializeField] private BorouteAndInformation borAndInfo;
+
 
 	public override void OnPreShow(){
 		cameraManager.DontShow();
@@ -243,7 +243,7 @@ public class MainView: SEComponentBase{
 	}
 
 	public void ToLayerGraph(){
-		trans.Transition(ScreenTransitionManager.Screen.LayerGraphView);
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.LayerGraphView);
 	}
 
 	public void ToMakeAT(){
@@ -252,32 +252,36 @@ public class MainView: SEComponentBase{
 
 		if (threeDSettingView.IsInit()){
 			if (borAndInfo.IsRecordEmpty()){
-				trans.Transition(ScreenTransitionManager.Screen.SceneEditor);
+				ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.SceneEditor);
 			}else{
 				MyUtility.ClimbRecord rec = borAndInfo.LendLatesteRecord();
 				hScenes2.LoadRecord(rec);
 				wallManager.LoadMarks(rec.marks);
 				AttemptTreeMenu.mode = AttemptTreeMenu.Mode.Menu;
-				trans.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
+				ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.AttemptTreeMenu);
 			}
 		}else{
-			trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
+			ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
 		}
 	}
 
 	public void ToPost(){
-		trans.Transition(ScreenTransitionManager.Screen.Post);
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.Post);
 	}
 
 	public void To3DSetting(){
-		trans.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.ThreeDFirstSettingView);
 	}
 
 	public void ToEditInfo(){
-		trans.Transition(ScreenTransitionManager.Screen.EditInfoView);
+		//Debug.Log("ToEditInfo");
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.EditInfoView);
 	}
 
 	public void ToEditModelFigure(){
-		trans.Transition(ScreenTransitionManager.Screen.EditModelFigureView);
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.EditModelFigureView);
+	}
+	public void ToRoutesView(){
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.RoutesView);
 	}
 }

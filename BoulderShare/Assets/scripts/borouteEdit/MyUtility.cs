@@ -6,8 +6,8 @@ using System;
 
 public class MyUtility {
 	public static int FINGER_NONE = -10;
-
-	[System.Serializable]
+    private static string fORMAT_TIMESTAMP = "yyyyMMddHHmmss";
+    [System.Serializable]
     public enum FullBodyMark {
         Body = 0,
         Chest,
@@ -24,37 +24,74 @@ public class MyUtility {
         Look,
         Other
     }
+	public enum WallType{
+		Slab = 0,
+		Vertical,
+		LOverHang,
+		HOverHang,
+		Roof,
+		Bulge,
+		Other
+	}
+
+	public enum Grade{
+		Q10 = 0,
+		Q9,
+		Q8,
+		Q7,
+		Q6,
+		Q5,
+		Q4,
+		Q3,
+		Q2,
+		Q1,
+		D1,
+		D1p,
+		D2,
+		D2p,
+		D3,
+		D3p,
+		D4,
+		D4p,
+		D5,
+		D5p,
+		D6
+	}
+
     public const string PPName_ModelFigure = "Info_ModelFigure";
-/*
-    public static bool IsMFMark(FullBodyMark mark){
-    	return IsMFHandMark(mark) || IsMFFootMark(mark);
-    }
 
-    public static bool IsMFHandMark(FullBodyMark mark){
-		return mark == FullBodyMark.LeftHand ||
-			mark == FullBodyMark.RightHand ||
-			mark == FullBodyMark.LeftElbow || 
-			mark == FullBodyMark.RightElbow ;
-	}
+    public static string FORMAT_TIMESTAMP { get => fORMAT_TIMESTAMP;}
 
-   	public static bool IsMFHandMark(FullBodyMark mark){
-		return mark == FullBodyMark.LeftElbow || 
-			mark == FullBodyMark.RightElbow ;
-	}
-	public static bool IsMFFootMark(FullBodyMark mark){
-		return mark == FullBodyMark.LeftPelvis ||
-			mark == FullBodyMark.RightPelvis ||
-			mark == FullBodyMark.LeftKnee || 
-			mark == FullBodyMark.RightKnee ;
-	}
-	public static bool IsMFRightMark(FullBodyMark mark){
-		return mark == FullBodyMark.RightHand ||
-			mark == FullBodyMark.RightPelvis ||
-			mark == FullBodyMark.RightElbow || 
-			mark == FullBodyMark.RightKnee ;
-	}*/
+    /*
+        public static bool IsMFMark(FullBodyMark mark){
+            return IsMFHandMark(mark) || IsMFFootMark(mark);
+        }
 
-	public static int Gcd(int a, int b){
+        public static bool IsMFHandMark(FullBodyMark mark){
+            return mark == FullBodyMark.LeftHand ||
+                mark == FullBodyMark.RightHand ||
+                mark == FullBodyMark.LeftElbow || 
+                mark == FullBodyMark.RightElbow ;
+        }
+
+        public static bool IsMFHandMark(FullBodyMark mark){
+            return mark == FullBodyMark.LeftElbow || 
+                mark == FullBodyMark.RightElbow ;
+        }
+        public static bool IsMFFootMark(FullBodyMark mark){
+            return mark == FullBodyMark.LeftPelvis ||
+                mark == FullBodyMark.RightPelvis ||
+                mark == FullBodyMark.LeftKnee || 
+                mark == FullBodyMark.RightKnee ;
+        }
+        public static bool IsMFRightMark(FullBodyMark mark){
+            return mark == FullBodyMark.RightHand ||
+                mark == FullBodyMark.RightPelvis ||
+                mark == FullBodyMark.RightElbow || 
+                mark == FullBodyMark.RightKnee ;
+        }*/
+
+    public static int Gcd(int a, int b){
 		if (a < b){
 			return Gcd(b, a);
 		}
@@ -210,5 +247,31 @@ public class MyUtility {
 		public float height;
 		public float reach;
 		public float leg;
+	}
+
+	[Serializable]
+	public struct BSWall{
+		public string timestamp;
+		public string date;
+		public string gymName;
+		public string title;
+		public int wallType;
+		public int grade;
+		public bool usesKante;
+	}
+
+	[Serializable]
+	public struct AttemptRecords{
+		public string timestamp;
+		public AttemptRecord[] records;
+	}
+
+	[Serializable]
+	public struct AttemptRecord{
+		public string date;
+		public int attemptCount;
+		public int status;
+		public int condition;
+		public string comment;
 	}
 }

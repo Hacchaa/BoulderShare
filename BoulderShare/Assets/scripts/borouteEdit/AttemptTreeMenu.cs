@@ -114,14 +114,14 @@ public class AttemptTreeMenu : SEComponentBase{
 		hScenes.Init();
 		wallManager.InitMarks();
 
-		ToMainView();
+		ToRouteDetailView();
 	}
 
 	public void ExitWithNoSave(){
 		hScenes.Init();
 		wallManager.InitMarks();
 
-		ToMainView();
+		ToRouteDetailView();
 	}
 
 	public void AddPrev(){
@@ -140,9 +140,9 @@ public class AttemptTreeMenu : SEComponentBase{
 		popup.Open(Remove, null, warningWithRemove,"", "削除", "キャンセル");
 	}
 
-	public void ToMainView(){
+	public void ToRouteDetailView(){
 		hScenes.InitAT();
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+		trans.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public void Remove(){

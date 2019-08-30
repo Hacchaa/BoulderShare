@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
-public class ScreenTransitionManager : MonoBehaviour {
+public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionManager>{
 	private List<SEComponentBase> uiList;
-	[SerializeField] private Transform stAnimationRoot;
+	[SerializeField] private Transform bsTransitionRoot;
 	[SerializeField] private Canvas uiCanvas;
-	private STAnimationBase[,] stAnimations;
+	private BSScreenTransition[,] bsTransitions;
 	private Dictionary<string, SEComponentBase> map;
 	private SEComponentBase current = null;
 	private string prev;
@@ -16,13 +17,22 @@ public class ScreenTransitionManager : MonoBehaviour {
 	private Screen prevScreen;
 	private Screen curScreen;
 
+	[SerializeField] private string[] screenArr;
+	private Stack<string> screenStack;
+
 	[SerializeField] private CanvasResolutionManager canResManager;
 	[SerializeField] private List<RenderTexture> rtList;
 
 	public enum Screen {
+		RoutesView,
+		MakeRouteView,
+		RouteDetailView,
+		AttemptRecordsView,
+		MakeAttemptRecordView,
+		RouteAnalyticsView,
+		SearchRouteView,
 		Post,
 		ThreeDFirstSettingView,
-		MainView,
 		LayerGraphView,
 		AttemptTreeMenu,
 		SceneEditor,
@@ -30,6 +40,10 @@ public class ScreenTransitionManager : MonoBehaviour {
 		EditInfoView,
 		InputTextView,
 		EditModelFigureView
+	}
+
+	void Update(){
+		//screenArr = screenStack.ToArray();
 	}
 /*
 	void Awake(){
@@ -58,6 +72,7 @@ public class ScreenTransitionManager : MonoBehaviour {
 		uiList = new List<SEComponentBase>();
 		prev = "";
 		curName = "";
+		screenStack = new Stack<string>();
 		foreach(Transform t in uiCanvas.transform){
 			SEComponentBase com = t.GetComponent<SEComponentBase>();
 			if (com != null && IsScreenVaild(com.name)){
@@ -68,20 +83,21 @@ public class ScreenTransitionManager : MonoBehaviour {
 			}
 		}
 		int n = Enum.GetNames(typeof(Screen)).Length;
-		stAnimations = new STAnimationBase[n,n];
+		bsTransitions = new BSScreenTransition[n,n];
 		CanvasGroup cg = uiCanvas.GetComponent<CanvasGroup>();
 
-		foreach(Transform t in stAnimationRoot){
-			STAnimationBase anim = t.GetComponent<STAnimationBase>();
-			if (anim != null){
-				ScreenTransitionManager.Screen from = anim.GetFrom();
-				ScreenTransitionManager.Screen to = anim.GetTo();
+		foreach(Transform t in bsTransitionRoot){
+			BSScreenTransition trans = t.GetComponent<BSScreenTransition>();
+			if (trans != null){
+				trans.Init();
+				ScreenTransitionManager.Screen from = trans.GetFrom();
+				ScreenTransitionManager.Screen to = trans.GetTo();
 
-				stAnimations[(int)from, (int)to] = anim;
-
+				bsTransitions[(int)from, (int)to] = trans;
+/*
 				if (map.ContainsKey(from.ToString()) && map.ContainsKey(to.ToString())){
-					anim.Init(map[from.ToString()], map[to.ToString()], cg);
-				}
+					trans.Init(map[from.ToString()], map[to.ToString()], cg);
+				}*/
 			}
 		}
 
@@ -100,8 +116,22 @@ public class ScreenTransitionManager : MonoBehaviour {
 		}
 		return false;
 	}
+
+	public void InitScreen(Screen screen){
+		string name = screen.ToString();
+		if (!IsScreenVaild(name)){
+			return ;
+		}
+
+		if (map.ContainsKey(name)){
+			map[name].Show();
+		}
+	}
 	
-	public void Transition(Screen screen){
+	public void Transition(Screen screen, bool isNeedInit = true){
+		if (isNeedInit){
+			InitScreen(screen);
+		}
 		TransitionByName(screen);
 	}
 
@@ -116,9 +146,20 @@ public class ScreenTransitionManager : MonoBehaviour {
 			curName = name;
 			curScreen = screen;
 
-			if (!string.IsNullOrEmpty(prev) && stAnimations[(int)prevScreen, (int)curScreen] != null){
+			if (!screenStack.Any()){
+				screenStack.Push(name);
+			}
+
+			if (!string.IsNullOrEmpty(prev) && bsTransitions[(int)prevScreen, (int)curScreen] != null){
 				//Debug.Log("animatioN");
-				stAnimations[(int)prevScreen, (int)curScreen].Play();
+				BSScreenTransition trans = bsTransitions[(int)prevScreen, (int)curScreen];
+				trans.UpdateScreenStack(screenStack, false);
+				trans.BSTransitionWithAnim();
+
+			}else if(!string.IsNullOrEmpty(prev) && bsTransitions[(int)curScreen, (int)prevScreen] != null){
+				BSScreenTransition trans = bsTransitions[(int)curScreen, (int)prevScreen];
+				trans.UpdateScreenStack(screenStack, true);
+				trans.ReverseBSTransitionWithAnim();
 			}else{
 				//Debug.Log("no animation");
 				current.Show();
@@ -126,7 +167,6 @@ public class ScreenTransitionManager : MonoBehaviour {
 					map[prev].OnPreHide();
 					map[prev].HideUI();
 				}
-
 			}
 		}		
 	}

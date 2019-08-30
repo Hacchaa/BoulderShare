@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CanvasResolutionManager : MonoBehaviour
+public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionManager>
 {
 	[SerializeField] private List<Transform> canvasList;
+    [SerializeField] private float topInSafeArea = 20.0f;
 	[SerializeField] private float topOutSafeArea = 44.0f;
 	[SerializeField] private float botOutSafeArea = 34.0f;
 	[SerializeField] private float margin = 16.0f;
@@ -22,6 +23,9 @@ public class CanvasResolutionManager : MonoBehaviour
         # endif
 
     	retina = GetRetina(Screen.width, Screen.height);
+        if (hasStatusBarInSafeArea(Screen.width, Screen.height)){
+            safe.yMin += topInSafeArea * retina;
+        }
     	width = Screen.width;
     	topHeight = CalcTopSize();
     	botHeight = CalcBotSize();
@@ -156,6 +160,25 @@ public class CanvasResolutionManager : MonoBehaviour
     public float CalcCanvasMargin(int width, int height){
         RectTransform canvasRect = canvasList[0].GetComponent<RectTransform>();
         return canvasRect.sizeDelta.x * (GetRetina(width, height) * GetMarginPt(width, height) / width);
+    }
+
+    public bool hasStatusBarInSafeArea(int width, int height){
+        if(width == 1125 && height == 2436){
+            //iPhoneX iPhoneXS
+            return false;
+        }else if(width == 828 && height == 1792){
+            //iPhoneXR
+            return false;
+        }else if(width == 1242 && height == 2688){
+            //iPhoneXSMax
+            return false;
+        }
+
+        return true;
+    }
+
+    public static float GetRetina(){
+        return CanvasResolutionManager.GetRetina(Screen.width, Screen.height);
     }
 
     public static float GetRetina(int width, int height){

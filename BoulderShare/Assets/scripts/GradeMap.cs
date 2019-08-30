@@ -9,7 +9,7 @@ public class GradeMap : ScriptableObject {
 	private string[] gradeNames;
 
 	public string GetGradeName(int index){
-		if (gradeNames.Length <= index){
+		if (index < 0 || gradeNames.Length <= index){
 			return "";
 		}
 		return gradeNames[index];

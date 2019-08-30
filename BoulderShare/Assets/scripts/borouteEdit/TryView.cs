@@ -44,8 +44,8 @@ public class TryView : SEComponentBase{
 		congFrame.SetActive(true);
 	}
 
-	public void ToMainView(){
-		stManager.Transition(ScreenTransitionManager.Screen.MainView);
+	public void ToRouteDetailView(){
+		stManager.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public void ToATFV(){
@@ -67,6 +67,6 @@ public class TryView : SEComponentBase{
 			}
 		}
 		//hScenes.SetFailedList(fList);
-		ToMainView();
+		ToRouteDetailView();
 	}
 }

@@ -6,8 +6,8 @@ public class EditInfoView: SEComponentBase
 {
 	[SerializeField] ScreenTransitionManager trans;
 	
-	public void ToMainView(){
-		trans.Transition(ScreenTransitionManager.Screen.MainView);
+	public void ToRouteDetailView(){
+		trans.Transition(ScreenTransitionManager.Screen.RouteDetailView);
 	}
 
 	public void ToInputTextView(){
