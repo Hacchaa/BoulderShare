@@ -27,7 +27,7 @@ public class RouteDetailView: SEComponentBase{
 	[SerializeField] private Text dateText;
 	[SerializeField] private BorouteAndInformation borAndInfo;
 
-
+	[SerializeField] private Texture2D testTex;
 	public override void OnPreShow(){
 		cameraManager.DontShow();
 		LoadBorouteInfo();
@@ -50,6 +50,11 @@ public class RouteDetailView: SEComponentBase{
 
 	public override void OnPreHide(){
 
+	}
+
+	public void SetWallForTesting(){
+		ApplyWallImage(testTex);
+		OnPreShow();
 	}
 
 	public void LoadBorouteInfo(){
