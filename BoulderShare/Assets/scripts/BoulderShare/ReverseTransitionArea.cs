@@ -31,7 +31,7 @@ public class ReverseTransitionArea : MonoBehaviour, IPointerDownHandler, IPointe
 		}
 		doneReverseTransition = false;
 		determinedProc = false;
-		retina = CanvasResolutionManager.GetRetina();
+		retina = CanvasResolutionManager.GetRatioOfPtToPx();
 	}
 
 	public void OnPointerUp(PointerEventData data){

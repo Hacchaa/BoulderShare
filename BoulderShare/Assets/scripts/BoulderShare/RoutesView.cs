@@ -13,6 +13,10 @@ public class RoutesView : SEComponentBase
 		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.MakeRouteView);
 	}
 
+	public void ToATM(){
+		ScreenTransitionManager.Instance.Transition(ScreenTransitionManager.Screen.RouteDetailView);
+	}
+
 	public override void OnPreShow(){
         
 	}

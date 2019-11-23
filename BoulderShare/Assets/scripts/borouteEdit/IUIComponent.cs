@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 interface IUIComponent {
- 	void Show();
+ 	void ShowScreen();
  	void OnPreShow();
 	void OnPreHide();
-	void HideUI();
+	void HideScreen();
 }

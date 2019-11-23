@@ -42,7 +42,7 @@ public class STAnimation_ATMenu_SceneEditor : STAnimationFromBotToTop
         fromImage.gameObject.SetActive(true);
         PrioritizeFrom();
         from.OnPreHide();
-        to.Show();
+        to.ShowScreen();
 
         cManager.StartSS2DTo();
 
@@ -60,7 +60,7 @@ public class STAnimation_ATMenu_SceneEditor : STAnimationFromBotToTop
     }
 
     private void CompleteAction(){
-        from.HideUI();
+        from.HideScreen();
         //to.Show();
 
         if (fromImage != null){

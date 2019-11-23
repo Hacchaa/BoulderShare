@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 
@@ -66,6 +67,7 @@ public class BSScreenTransition : MonoBehaviour
     }
 
     public void ReverseBSTransitionWithAnim(){
+        toTrans.UpdateScreen();
         Ready(true);
         if (latestT < 0.0f){
             latestT = 1.0f;
@@ -74,15 +76,27 @@ public class BSScreenTransition : MonoBehaviour
     }
 
     public void Ready(bool isReverse = false){
+        fromTrans.Activate(false);
+        toTrans.Activate(false);
         fromTrans.Ready(isReverse);
         toTrans.Ready(isReverse);
         CorrectSortingOrder();
     }
 
     public void Complete(bool isReverse){
-        /*
-        fromTrans.Complete(isReverse);
-        toTrans.Complete(isReverse);*/
+        bool isFromShowed = isReverse;
+
+        fromTrans.Complete(isFromShowed);
+        toTrans.Complete(!isFromShowed);
+
+        if (isReverse){
+            fromTrans.Activate(true);
+            toTrans.DeActivate(false);
+        }else{
+            fromTrans.DeActivate(false);
+            toTrans.Activate(true);
+        }
+/*
         switch(transitionType){
             case TransitionType.Go:
                 if (isReverse){
@@ -103,7 +117,7 @@ public class BSScreenTransition : MonoBehaviour
                     toTrans.Activate(true);
                 }
                 break;                           
-        }
+        }*/
         latestT = -1.0f;
     }
 
@@ -117,23 +131,26 @@ public class BSScreenTransition : MonoBehaviour
         }
     }
 
-    public void UpdateScreenStack(Stack<string> stack, bool isReverse){
+    public void UpdateScreenStack(Stack<ScreenTransitionManager.Screen> stack, bool isReverse){
         switch(transitionType){
             case TransitionType.Go:
                 if (isReverse){
                     stack.Pop();
+                    if (stack.Any() && stack.Peek() != fromScreen){
+                        stack.Push(fromScreen);
+                    }
                 }else{
-                    stack.Push(toScreen.ToString());
+                    stack.Push(toScreen);
                 }
                 break;
 
             case TransitionType.Peer:
                 if (isReverse){
                     stack.Pop();
-                    stack.Push(fromScreen.ToString());
+                    stack.Push(fromScreen);
                 }else{
                     stack.Pop();
-                    stack.Push(toScreen.ToString());
+                    stack.Push(toScreen);
                 }
                 break;                           
         }        

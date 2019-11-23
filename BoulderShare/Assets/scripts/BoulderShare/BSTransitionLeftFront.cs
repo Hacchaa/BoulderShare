@@ -25,8 +25,7 @@ public class BSTransitionLeftFront : BSTransitionBase
 	//precondition:
 	//postcondition:
 	override public void Ready(bool isReverse){
-		screenRoot.gameObject.SetActive(true);
-		cg.blocksRaycasts = false;
+		base.Ready(isReverse);
 
 		if (!isReverse){
 			screenRoot.localPosition = new Vector2(screenRoot.rect.width, 0.0f);
@@ -35,7 +34,8 @@ public class BSTransitionLeftFront : BSTransitionBase
 		}
 	}
 
-	override public void Complete(bool isReverse){
+	override public void Complete(bool isShowed){
+		base.Complete(isShowed);
 		//screenRoot.gameObject.SetActive(!isReverse);
 		//cg.blocksRaycasts = !isReverse;
 	}

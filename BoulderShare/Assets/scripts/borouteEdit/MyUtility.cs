@@ -57,9 +57,21 @@ public class MyUtility {
 		D5p,
 		D6
 	}
-
+	private static string e3RoutePath = "Routes/";
+	public static string E3ROUTEPATH {get => e3RoutePath;}
+	private static string e3WallFileName = "Info.es3";
+	public static string E3WALLFILENAME {get => e3WallFileName;}
     public const string PPName_ModelFigure = "Info_ModelFigure";
-
+	private static string e3Key_bsWall = "BSWall";
+	public static string E3KEY_BSWALL { get => e3Key_bsWall;}
+	private static string e3Key_attemptRecords = "AttemptRecords";
+	public static string E3KEY_ATTEMPTRECORDS { get => e3Key_attemptRecords;}
+	private static string e3Path_WallImage = "WallImage.bsb";
+	public static string E3PATH_WALLIMAGE { get => e3Path_WallImage;}
+	private static string e3Path_WallThumbnail = "WallThumbnail.bsb";
+	public static string E3PATH_WALLTHUMBNAIL { get => e3Path_WallThumbnail;}
+	private static string e3Extension = ".es3";
+	public static string E3EXTENSION {get => e3Extension;}
     public static string FORMAT_TIMESTAMP { get => fORMAT_TIMESTAMP;}
 
     /*
@@ -255,8 +267,8 @@ public class MyUtility {
 		public string date;
 		public string gymName;
 		public string title;
-		public int wallType;
-		public int grade;
+		public WallType wallType;
+		public Grade grade;
 		public bool usesKante;
 	}
 

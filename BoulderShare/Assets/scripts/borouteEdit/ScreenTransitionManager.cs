@@ -17,8 +17,8 @@ public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionMa
 	private Screen prevScreen;
 	private Screen curScreen;
 
-	[SerializeField] private string[] screenArr;
-	private Stack<string> screenStack;
+	[SerializeField] private Screen[] screenArr;
+	private Stack<Screen> screenStack;
 
 	[SerializeField] private CanvasResolutionManager canResManager;
 	[SerializeField] private List<RenderTexture> rtList;
@@ -72,13 +72,13 @@ public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionMa
 		uiList = new List<SEComponentBase>();
 		prev = "";
 		curName = "";
-		screenStack = new Stack<string>();
+		screenStack = new Stack<Screen>();
 		foreach(Transform t in uiCanvas.transform){
 			SEComponentBase com = t.GetComponent<SEComponentBase>();
 			if (com != null && IsScreenVaild(com.name)){
 				map.Add(com.name, com);
 				//com.OnPreHide();
-				com.HideUI();
+				com.HideScreen();
 				uiList.Add(com);				
 			}
 		}
@@ -124,7 +124,7 @@ public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionMa
 		}
 
 		if (map.ContainsKey(name)){
-			map[name].Show();
+			map[name].ShowScreen();
 		}
 	}
 	
@@ -141,14 +141,12 @@ public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionMa
 			if (current != null){
 				prev = curName;
 				prevScreen = curScreen;
+			}else{
+				screenStack.Push(screen);
 			}
 			current = map[name];
 			curName = name;
 			curScreen = screen;
-
-			if (!screenStack.Any()){
-				screenStack.Push(name);
-			}
 
 			if (!string.IsNullOrEmpty(prev) && bsTransitions[(int)prevScreen, (int)curScreen] != null){
 				//Debug.Log("animatioN");
@@ -162,10 +160,10 @@ public class ScreenTransitionManager : SingletonMonoBehaviour<ScreenTransitionMa
 				trans.ReverseBSTransitionWithAnim();
 			}else{
 				//Debug.Log("no animation");
-				current.Show();
+				current.ShowScreen();
 				if (!string.IsNullOrEmpty(prev)){
 					map[prev].OnPreHide();
-					map[prev].HideUI();
+					map[prev].HideScreen();
 				}
 			}
 		}		

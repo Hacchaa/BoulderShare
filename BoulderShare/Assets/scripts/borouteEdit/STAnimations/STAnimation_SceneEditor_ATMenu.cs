@@ -43,7 +43,7 @@ public class STAnimation_SceneEditor_ATMenu : STAnimationFromBotToTopReverse
         fromImage.gameObject.SetActive(true);
         PrioritizeFrom();
         from.OnPreHide();
-        to.Show();
+        to.ShowScreen();
 
         cManager.StartSS3DTo();
 
@@ -61,7 +61,7 @@ public class STAnimation_SceneEditor_ATMenu : STAnimationFromBotToTopReverse
     }
 
     private void CompleteAction(){
-        from.HideUI();
+        from.HideScreen();
         //to.Show();
 
         if (fromImage != null){

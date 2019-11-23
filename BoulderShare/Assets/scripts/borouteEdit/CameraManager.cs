@@ -41,7 +41,8 @@ public class CameraManager : MonoBehaviour
     private const float FOV3D_MIN = 2.0f;
     private const float FOV3D_MAX = 60.0f;
     public const float FOV3D_DEF = 45.0f;
-	
+    [SerializeField] private float dirLength = 1.0f;
+	/* 
 	[SerializeField] private bool isFadeOut2D = false;
 	[SerializeField] private bool isFadeIn2D = false;
 	[SerializeField] private bool isFadeOut3D = false;
@@ -50,7 +51,6 @@ public class CameraManager : MonoBehaviour
 	[SerializeField] private bool fadeOutIn2D = false;
 	[SerializeField] private bool fadeOutIn3D = false;
     [SerializeField] private bool isRight = false;
-    [SerializeField] private float dirLength = 1.0f;
 
 	void Update(){
 		if (fadeOutIn3D){
@@ -83,7 +83,7 @@ public class CameraManager : MonoBehaviour
 			FadeIn3D(isRight, GetRootWorldPos());
 			isFadeIn3D = false;
 		}
-	}
+	}*/
 
     public void DontShow(){
         camera3D.gameObject.SetActive(false);

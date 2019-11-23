@@ -333,4 +333,5 @@ public class AttemptTreeMenu : SEComponentBase{
 	public void NextComment(){
 		scc.Next();
 	}
+
 }

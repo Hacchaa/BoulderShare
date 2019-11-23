@@ -6,41 +6,42 @@ using UnityEngine.UI;
 public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionManager>
 {
 	[SerializeField] private List<Transform> canvasList;
-    [SerializeField] private float topInSafeArea = 20.0f;
-	[SerializeField] private float topOutSafeArea = 44.0f;
-	[SerializeField] private float botOutSafeArea = 34.0f;
-	[SerializeField] private float margin = 16.0f;
-    [SerializeField] private float marginXSMAX = 20.0f;
+    [SerializeField] private float PT_STATUSBAR = 20.0f;
 	[SerializeField] private ScreenTransitionManager sManager;
-    private Rect safe;
 
-    void Start()
+    public void Init()
     {	
-    	safe = Screen.safeArea;
+    	Rect safe = Screen.safeArea;
     	float width, topHeight, botHeight, retina;
+
         # if UNITY_EDITOR
-    	   safe = SimulateIPhoneSafeArea(Screen.width, Screen.height);
+    	   safe = SimulateIPhoneSafeArea();
         # endif
 
-    	retina = GetRetina(Screen.width, Screen.height);
-        if (hasStatusBarInSafeArea(Screen.width, Screen.height)){
-            safe.yMin += topInSafeArea * retina;
+    	retina = GetRatioOfPtToPx();
+        if (hasStatusBarInSafeArea()){
+            safe.yMin += PT_STATUSBAR * retina;
         }
-    	width = Screen.width;
-    	topHeight = CalcTopSize();
-    	botHeight = CalcBotSize();
-/*
-    	Debug.Log("width:"+width);
+
+    	topHeight = safe.y / retina;
+    	botHeight = (Screen.height - (safe.y + safe.height)) / retina;
+        if (botHeight < 1.0f){
+            botHeight = 0.0f;
+        }
+/* 
+    	Debug.Log("width:"+Screen.width);
         Debug.Log("height:"+Screen.height);
     	Debug.Log("topHeight:"+topHeight);
     	Debug.Log("botHeight:"+botHeight);
-    	Debug.Log("safeRect:"+safe);*/
+    	Debug.Log("safeRect:"+safe);
+        Debug.Log("safeRect2:"+Screen.safeArea);
+        Debug.Log("retina:"+retina);*/
     	foreach(Transform t in canvasList){
     		t.GetComponent<CanvasScaler>().scaleFactor = retina;		
             t.localScale = Vector3.one;
     	}
 
-    	float mar = GetMarginPt(Screen.width, Screen.height);
+    	float mar = GetMarginPt();
     	foreach(SEComponentBase com in sManager.GetUIList()){
             RectTransform top = null;
             RectTransform bot = null;
@@ -114,55 +115,26 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         return new List<Transform>(canvasList);
     }
 
-    public float CalcTopSize(){
-        return safe.y / GetRetina(Screen.width, Screen.height);     
-    }
-    public float CalcBotSize(){
-        return (Screen.height - (safe.y + safe.height)) / GetRetina(Screen.width, Screen.height);
-    }
-
-    private Rect SimulateIPhoneSafeArea(int width, int height){
-    	Vector2 logicalPt, safeAreaPt;
+    private Rect SimulateIPhoneSafeArea(){
+        float width = Screen.width;
+        float height = Screen.height;
+        float retina = GetRatioOfPtToPx();
 
     	if (width == 1125 && height == 2436){
 			//iPhone X, iPhone XS
-			logicalPt = new Vector2(375.0f, 812.0f);
-			safeAreaPt = new Vector2(375.0f, 734.0f);
-
+            return new Rect(0.0f, 44.0f * retina, 375.0f * retina, 734.0f * retina);
     	}else if ((width == 828 && height == 1792) || (width == 1242 && height == 2688)){
 			//iPhone XR, iPhone XS MAX
-			logicalPt = new Vector2(414.0f, 896.0f);
-			safeAreaPt = new Vector2(414.0f, 818.0f);
-
+            return new Rect(0.0f, 44.0f * retina, 414.0f * retina, 818.0f * retina);
     	}else{
     		//safearea無し
-    		return new Rect(0.0f, 0.0f, Screen.width, Screen.height);
+    		return new Rect(0.0f, 0.0f, width, height);
     	}
-
-    	return new Rect(0.0f, topOutSafeArea / logicalPt.y * height, (safeAreaPt.x / logicalPt.x * width), (safeAreaPt.y / logicalPt.y * height));
     }
 
-    private float SimulateDPI(int width, int height){
-        if ((width == 1125 && height == 2436) || (width == 1242 && height == 2688)){
-            //iPhone X, iPhone XS, iPhone XSMax
-            return 458;
-        }else if ((width == 828 && height == 1792) || (width == 750 && height == 1334)){
-            //iPhone XR, iphone 8
-            return 326;
-        }else if (width == 1080 && height == 1920){
-            //iphone 8 Plus
-            return 401;
-        }
-        return Screen.dpi;
-    }
-
-    //マージンのピクセル量を返す
-    public float CalcCanvasMargin(int width, int height){
-        RectTransform canvasRect = canvasList[0].GetComponent<RectTransform>();
-        return canvasRect.sizeDelta.x * (GetRetina(width, height) * GetMarginPt(width, height) / width);
-    }
-
-    public bool hasStatusBarInSafeArea(int width, int height){
+    public bool hasStatusBarInSafeArea(){
+        float width = Screen.width;
+        float height = Screen.height;
         if(width == 1125 && height == 2436){
             //iPhoneX iPhoneXS
             return false;
@@ -177,11 +149,10 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         return true;
     }
 
-    public static float GetRetina(){
-        return CanvasResolutionManager.GetRetina(Screen.width, Screen.height);
-    }
+    public static float GetRatioOfPtToPx(){
+        float width = Screen.width;
+        float height = Screen.height;
 
-    public static float GetRetina(int width, int height){
         if (width == 320 && height == 480){
             //iPhone iPhone3G iPhone3GS
             return 1.0f;
@@ -196,7 +167,7 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
             return 2.0f;
         }else if(width == 1080 && height == 1920){
             //iPhone6Plus iPhone6SPlus iPhone7Plus iPhone8Plus
-            return 3.0f;
+            return 2.6087f;
         }else if(width == 1125 && height == 2436){
             //iPhoneX iPhoneXS
             return 3.0f;
@@ -209,7 +180,10 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         }
         return 1.0f;
     }
-    public static float GetMarginPt(int width, int height){
+    public static float GetMarginPt(){
+        float width = Screen.width;
+        float height = Screen.height;
+
         if(width == 1125 && height == 2436){
             //iPhoneX iPhoneXS
             return 16.0f;

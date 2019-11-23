@@ -12,10 +12,10 @@ public class STAnimation_Info_Main :STAnimationFromBotToTopReverse
 
     private void StartAction(){
         from.OnPreHide();
-    	to.Show();
+    	to.ShowScreen();
     }
 
     private void CompleteAction(){
-    	from.HideUI();
+    	from.HideScreen();
     }
 }

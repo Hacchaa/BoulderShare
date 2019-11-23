@@ -12,10 +12,10 @@ public class STAnimation_InputText_EditInfo : STAnimationFromRightToLeftReverse
 
     private void StartAction(){
         from.OnPreHide();
-    	to.Show();
+    	to.ShowScreen();
     }
 
     private void CompleteAction(){
-    	from.HideUI();
+    	from.HideScreen();
     }
 }

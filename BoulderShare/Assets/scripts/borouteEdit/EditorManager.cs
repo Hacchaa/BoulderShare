@@ -67,6 +67,8 @@ public class EditorManager : MonoBehaviour {
 	private void FirstProc(){
 		hScenes.Init();
 		ScreenTransitionManager.Instance.Init();
+		CanvasResolutionManager.Instance.Init();
+		BSRoute.Instance.Init();
 		wallManager.InitMarks();
 		GameObject obj = DontDestroyOnLoadManager.Get("InfoFromViewToEdit");
 		if(obj == null){

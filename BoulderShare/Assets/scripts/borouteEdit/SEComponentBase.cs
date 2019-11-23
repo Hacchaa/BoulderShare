@@ -26,12 +26,12 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
     	gameObject.SetActive(false);
     }*/
 
-    public void HideUI(){
+    public void HideScreen(){
         InitializeArrangement();
         gameObject.SetActive(false);       
     }
 
-    public void Show(){
+    public void ShowScreen(){
     	OnPreShow();
     	InitializeArrangement();
     	gameObject.SetActive(true);
@@ -46,7 +46,12 @@ public abstract class SEComponentBase : MonoBehaviour, ISEComponent, IUIComponen
     	}
     }
 
-    public abstract void OnPreHide();
-
     public abstract void OnPreShow();
+    public abstract void OnPreHide();
+    public void OnPreTransition(){
+
+    }
+    public void OnPostTransition(bool isShowed){
+
+    }
 }
