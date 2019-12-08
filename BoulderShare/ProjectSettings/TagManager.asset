@@ -73,3 +73,6 @@ TagManager:
   - name: 3DComment
     uniqueID: 1270762993
     locked: 0
+  - name: UIHeadComponent
+    uniqueID: 3509593963
+    locked: 0

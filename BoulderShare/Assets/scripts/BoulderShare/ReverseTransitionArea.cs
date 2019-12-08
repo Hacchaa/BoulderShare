@@ -15,7 +15,7 @@ public class ReverseTransitionArea : MonoBehaviour, IPointerDownHandler, IPointe
 	private float startWidth;
 	private Vector2 startPos;
 	private float retina;
-	//screen length per second. 1画面の横ピクセル数を単位とする
+	//screen length per second. 1画面の横ピクセル数を単位とする、単位時間当たりに動かした量
 	[SerializeField] private float threshold_slps = 4.0f;
 	[SerializeField] private float dirLengthPT = 10.0f;
 	
