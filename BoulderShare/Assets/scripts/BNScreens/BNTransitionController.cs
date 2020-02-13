@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
+namespace BoulderNotes{
 public class BNTransitionController
 {
     [SerializeField] private BNTransitionBase from;
@@ -13,10 +15,16 @@ public class BNTransitionController
     [SerializeField] private float duration = 0.5f;
     private bool isReverse ;
 
+    private Action onCompleteAction;
+
     public BNTransitionController(BNTransitionBase from, BNTransitionBase to, BNScreens.TransitionType type){
         this.from = from;
         this.to = to;
         this.type = type;
+    }
+
+    public void SetDuration(float t){
+        duration = t;
     }
 
     public BNScreens.TransitionType GetTransitionType(){
@@ -71,23 +79,50 @@ public class BNTransitionController
         int so ;
 
         if (type == BNScreens.TransitionType.Push){
+            so = baseSO+2;
+            from.SetSortingOrderWithHeadBG(so);
 
+            so = baseSO+3;
+            to.SetSortingOrderWithContent(so);
+
+            so = baseSO+4;
+            to.SetSortingOrderWithHeadBG(so);
+            
+            so = baseSO+5;
+            if (!toHasHead){
+                from.SetSortingOrderWithHead(baseSO+2);
+            }else{
+                from.SetSortingOrderWithHead(so);
+            }
+            to.SetSortingOrderWithHead(so);
+
+            if (from.HasTab() && !to.HasTab()){
+                so = baseSO+1;
+            }else{
+                so = baseSO+6;
+            }
+            from.SetSortingOrderWithTab(so);
+            to.SetSortingOrderWithTab(so);                
+
+/*
             if ((fromHasHead && toHasHead) || (!fromHasHead && toHasHead)){
                 so = baseSO+2;
                 to.SetSortingOrderWithContent(so);
 
                 so = baseSO+3;
                 from.SetSortingOrderWithHeadBG(so);
+
+                so = baseSO+4;
                 to.SetSortingOrderWithHeadBG(so);
                 
-                so = baseSO+4;
+                so = baseSO+5;
                 from.SetSortingOrderWithHead(so);
                 to.SetSortingOrderWithHead(so);
 
                 if (from.HasTab() && !to.HasTab()){
                     so = baseSO+1;
                 }else{
-                    so = baseSO+3;
+                    so = baseSO+6;
                 }
                 from.SetSortingOrderWithTab(so);
                 to.SetSortingOrderWithTab(so);
@@ -132,7 +167,7 @@ public class BNTransitionController
                     to.SetSortingOrderWithTab(so);
                 }
             }
-
+*/
         }else if(type == BNScreens.TransitionType.Modal){
             //toのcontentがfromのどの要素より前に来るようにする
             so = from.GetBiggestSO();
@@ -167,5 +202,18 @@ public class BNTransitionController
     public void Complete(){
         from.Complete(isReverse);
         to.Complete(isReverse);
+
+        if(onCompleteAction != null){
+            onCompleteAction();
+        }
     }
+
+    public void AddOnCompleteAction(Action a){
+        onCompleteAction += a;
+    }
+
+    public void RemoveOnCompleteAction(Action a){
+        onCompleteAction -= a;
+    }
+}
 }

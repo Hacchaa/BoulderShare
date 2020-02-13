@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace BoulderNotes{
 public class FirstView : MonoBehaviour
 {
     public void ToSecondView(){
@@ -13,4 +14,5 @@ public class FirstView : MonoBehaviour
     public void ToFourthView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.FourthView, BNScreens.TransitionType.Push);
     }
+}
 }

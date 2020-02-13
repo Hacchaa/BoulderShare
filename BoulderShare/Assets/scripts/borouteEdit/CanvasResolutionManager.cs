@@ -8,7 +8,27 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
 	[SerializeField] private List<Transform> canvasList;
     [SerializeField] private float PT_STATUSBAR = 20.0f;
 	[SerializeField] private ScreenTransitionManager sManager;
+    [SerializeField] private float statusBarHeight;
+    [SerializeField] private float botSafeAreaInset;
 
+    public float GetStatusBarHeight(){
+        return statusBarHeight;
+    }
+    public float GetBotSafeAreaInset(){
+        return botSafeAreaInset;
+    }
+    public void InitHeights(){
+        Rect safe = Screen.safeArea;
+        # if UNITY_EDITOR
+    	   safe = SimulateIPhoneSafeArea();
+        # endif
+        float retina = GetRatioOfPtToPx();
+        if (hasStatusBarInSafeArea()){
+            safe.yMin += PT_STATUSBAR * retina;
+        }
+    	statusBarHeight = safe.y / retina;
+    	botSafeAreaInset = (Screen.height - (safe.y + safe.height)) / retina;       
+    }
     public void Init()
     {	
     	Rect safe = Screen.safeArea;
@@ -25,6 +45,9 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
 
     	topHeight = safe.y / retina;
     	botHeight = (Screen.height - (safe.y + safe.height)) / retina;
+
+        statusBarHeight = topHeight;
+        botSafeAreaInset = botHeight;
         if (botHeight < 1.0f){
             botHeight = 0.0f;
         }

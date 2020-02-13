@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace BoulderNotes{
 public class BNTransitionPushTo : BNTransitionBase
 {
     [SerializeField] private TextMeshProUGUI title;
@@ -42,13 +43,15 @@ public class BNTransitionPushTo : BNTransitionBase
         float width = content.rect.width ;
         content.anchoredPosition = contentBase + new Vector2(width * (1.0f - t), 0.0f);
         if (HasHeadBG()){
+            /*
             if (isAnotherWithHeadBG){
                 //全体表示
                 headBG.anchoredPosition = headBGBase;
             }else{
                 //contentと一緒に動く
                 headBG.anchoredPosition = headBGBase + new Vector2(width * (1.0f - t), 0.0f);
-            }
+            }*/
+            headBG.anchoredPosition = headBGBase + new Vector2(width * (1.0f - t), 0.0f);
         }
         //title and backTitle
         if (title != null){
@@ -63,14 +66,17 @@ public class BNTransitionPushTo : BNTransitionBase
         if (headCG != null){
             headCG.alpha = t;
         }
+        if (headBGCG != null){
+            headBGCG.alpha = t;
+        }
     }
 
     override public void Ready(){
         base.Ready();
-
+/*
         if (HasHeadBG()){
             headBG.gameObject.SetActive(true);
-        }
+        }*/
     }
     override public void Complete(bool isReverse){
         base.Complete(isReverse);
@@ -82,4 +88,5 @@ public class BNTransitionPushTo : BNTransitionBase
             SetAllBlocksRaycasts(true);
         }
     }
+}
 }

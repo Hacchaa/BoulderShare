@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
+namespace BoulderNotes{
+
 public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
 {
     protected BNScreen screen;
@@ -60,6 +63,10 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
         SetSortingOrderWithHeadBG(2);
         SetSortingOrderWithHead(3);
         SetSortingOrderWithTab(4);
+    }
+
+    public BNScreen GetScreen(){
+        return screen;
     }
 
     public void SetOnCompleteAction(Action act){
@@ -161,8 +168,10 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
     public virtual void Ready(){
         screen.gameObject.SetActive(true);
         SetAllBlocksRaycasts(false);
+        BNScreens.Instance.Interactive(false);
     }
     public virtual void Complete(bool isReverse){
+        BNScreens.Instance.Interactive(true);
         if (OnComplete != null){
             OnComplete();
             OnComplete = null;
@@ -178,4 +187,5 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
             tabCG.blocksRaycasts = b;
     }
 
+}
 }

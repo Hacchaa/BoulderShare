@@ -26,4 +26,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/borouteEdit.unity
     guid: de06336ede477034885eff6b76ea359e
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: c5ad559d6fde1994dbbfc91a3a48f016,
+      type: 2}

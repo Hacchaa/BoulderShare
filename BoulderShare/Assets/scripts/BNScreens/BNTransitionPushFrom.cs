@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace BoulderNotes{
 public class BNTransitionPushFrom : BNTransitionBase
 {
     [SerializeField] private TextMeshProUGUI title;
@@ -11,11 +12,11 @@ public class BNTransitionPushFrom : BNTransitionBase
 
     private RectTransform titleRect;
     private RectTransform backTitleRect;
-    private Vector2 titleBase;
-    private Vector2 backTitleBase;
-    private Vector2 headBGBase;
-    private Vector2 tabBase;
-    private Vector2 contentBase;
+    [SerializeField] private Vector2 titleBase;
+    [SerializeField] private Vector2 backTitleBase;
+    [SerializeField] private Vector2 headBGBase;
+    [SerializeField] private Vector2 tabBase;
+    [SerializeField] private Vector2 contentBase;
     private bool isNeedHeadBG ;
 
 
@@ -48,9 +49,11 @@ public class BNTransitionPushFrom : BNTransitionBase
         content.anchoredPosition = contentBase + new Vector2(-width * t, 0.0f);
 
         //headBG
+        /*
         if (isNeedHeadBG){
             headBG.anchoredPosition = headBGBase + new Vector2(-width * t, 0.0f);
-        }
+        }*/
+        headBG.anchoredPosition = headBGBase + new Vector2(-width * t, 0.0f);
         //tab
         if (HasTab() && !isAnotherWithTab){
             tab.anchoredPosition = tabBase + new Vector2(-width * t, 0.0f);
@@ -68,6 +71,10 @@ public class BNTransitionPushFrom : BNTransitionBase
         if (headCG != null){
             headCG.alpha = 1.0f - t;
         } 
+
+        if (headBGCG != null){
+            headBGCG.alpha = 1.0f - t;
+        }
     }
 
     override public void Ready(){
@@ -75,10 +82,11 @@ public class BNTransitionPushFrom : BNTransitionBase
 
         isNeedHeadBG = false;
         if (HasHeadBG()){
+            /*
             if(!isAnotherWithHeadBG){
                 isNeedHeadBG = true;
             }
-            headBG.gameObject.SetActive(isNeedHeadBG);
+            headBG.gameObject.SetActive(isNeedHeadBG);*/
         }
     }
     override public void Complete(bool isReverse){
@@ -93,4 +101,5 @@ public class BNTransitionPushFrom : BNTransitionBase
             screen.gameObject.SetActive(isActiveWhenHiding);
         }
     }
+}
 }

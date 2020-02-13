@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace BoulderNotes{
 [CreateAssetMenu]
 public class WallTypeMap : ScriptableObject
 {
+    //walltypenameの順番と対応させる
+    public enum Type{Slab, Vertical, LOverHang, HOverHang, Roof, Bulge, Other};
 	[SerializeField]
 	private string[] wallTypeName;
     private static string PATH = "WallTypeMap";
@@ -13,6 +16,10 @@ public class WallTypeMap : ScriptableObject
 			return "";
 		}
 		return wallTypeName[index];
+	}
+
+	public string GetWallTypeName(Type t){
+		return GetWallTypeName((int)t);
 	}
 
 	public string[] GetWallTypeName(){
@@ -33,4 +40,4 @@ public class WallTypeMap : ScriptableObject
             return _entity;
         }
     }
-}
+}}

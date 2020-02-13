@@ -76,3 +76,6 @@ TagManager:
   - name: UIHeadComponent
     uniqueID: 3509593963
     locked: 0
+  - name: BlockTouch
+    uniqueID: 353915807
+    locked: 0

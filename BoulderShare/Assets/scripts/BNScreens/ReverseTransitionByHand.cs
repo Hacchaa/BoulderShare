@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+namespace BoulderNotes{
 public class ReverseTransitionByHand : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {	
     //指のx軸方向の速度の閾値
@@ -75,4 +76,5 @@ public class ReverseTransitionByHand : MonoBehaviour, IBeginDragHandler, IDragHa
 
         return (-delta.y / Time.deltaTime) / whole;
     }
+}
 }

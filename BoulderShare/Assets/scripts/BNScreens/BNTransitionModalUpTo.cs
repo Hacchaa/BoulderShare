@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace BoulderNotes{
 public class BNTransitionModalUpTo : BNTransitionBase
 {
     private RectTransform screenRect;
@@ -33,4 +34,5 @@ public class BNTransitionModalUpTo : BNTransitionBase
             SetAllBlocksRaycasts(true);
         }
     }
+}
 }

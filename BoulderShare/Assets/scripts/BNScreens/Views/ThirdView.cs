@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace BoulderNotes{
 public class ThirdView : MonoBehaviour
 {
     public void ReverseTransition(){
@@ -10,4 +11,5 @@ public class ThirdView : MonoBehaviour
      public void ToSecondView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.SecondView, BNScreens.TransitionType.Push);
     }
+}
 }

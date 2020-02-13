@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+namespace BoulderNotes{
 public class BNTStack : MonoBehaviour
 {
     [SerializeField] private BNScreens.BNScreenType initialView;
-    private Stack<BNScreen> screenStack;
+    private List<BNScreen> screenList;
     private Stack<BNTransitionController> controllers;
 
     private Stack<RectTransform> levels;
 
+    private int restRTCount;
     public void Init(){
-        screenStack = new Stack<BNScreen>();
+        screenList = new List<BNScreen>();
         controllers = new Stack<BNTransitionController>();
         levels = new Stack<RectTransform>();
+        restRTCount = 0;
 
         GameObject obj = new GameObject("Level0");
         RectTransform rect = obj.AddComponent<RectTransform>();
@@ -25,8 +28,23 @@ public class BNTStack : MonoBehaviour
         rect.offsetMax = Vector2.zero;
 
         levels.Push(rect);
+    }
 
-        Transition(initialView, BNScreens.TransitionType.Push);
+    public void ActivateStack(){
+        gameObject.SetActive(true);
+        if (!screenList.Any()){
+            Transition(initialView, BNScreens.TransitionType.Push);
+        }else{
+            screenList[screenList.Count-1].UpdateScreen();            
+        }
+    }
+
+    public void DeactivateStack(){
+        gameObject.SetActive(false);
+    }
+
+    public BNScreen GetPreviousScreen(int prevCount){
+        return screenList[screenList.Count - 1 - prevCount];
     }
 
     public void Transition(BNScreens.BNScreenType screenType, BNScreens.TransitionType t){
@@ -42,24 +60,25 @@ public class BNTStack : MonoBehaviour
         if (current == null){
             current = BNScreens.Instance.MakeScreen(screenType, parent);
         }
+        screenList.Add(current);
 
         current.gameObject.SetActive(true);
-
-        if (!screenStack.Any()){
-            screenStack.Push(current);
+        current.SetBelongingStack(this);
+        current.InitForFirstTransition();
+        current.UpdateScreen();
+        if (screenList.Count == 1){
             return ;
         }
 
-        BNScreen prev = screenStack.Peek();
+        BNScreen prev = screenList[screenList.Count-2];
         BNTransitionBase curTrans = current.GetTransition(t, false);
         BNTransitionBase prevTrans = prev.GetTransition(t, true);
 
-        //Debug.Log("current:"+current.gameObject.name);
-        //Debug.Log("prev:"+prev.gameObject.name);
+        //Debug.Log("current:"+curTrans.gameObject.name);
+        //Debug.Log("prev:"+prevTrans.gameObject.name);
         BNTransitionController controller = new BNTransitionController(prevTrans, curTrans, t);
-
+        //controller.SetDuration(10.0f);
         controller.BNTransitionWithAnim();
-        screenStack.Push(current);
         controllers.Push(controller);
 
     }
@@ -82,32 +101,44 @@ public class BNTStack : MonoBehaviour
 
     public void UpdateLatestSO(){
         if (!controllers.Any()){
-            if (!screenStack.Any()){
+            if (!screenList.Any()){
                  return ;
             }
-            screenStack.Peek().InitSO();
+            screenList[screenList.Count-1].InitSO();
             return ;
         }
 
         controllers.Peek().UpdateSO();
     }
 
-    public void ReverseTransition(float t = 1.0f){
+    public void ReverseTransition(float t = 1.0f, int rtTimes = 1){
         if (!controllers.Any()){
+            restRTCount = 0;
             return ;
         }
+        restRTCount = rtTimes-1;
         BNTransitionController cont = controllers.Peek();
-        cont.GetTo().SetOnCompleteAction(AfterReverseTransition);
+        BNScreen screen = cont.GetFrom().GetScreen();
+
+        if (rtTimes == 1){
+            //screen.InitForTargetTransition();
+            screen.UpdateScreen();
+        }
+        cont.AddOnCompleteAction(AfterReverseTransition);
         cont.ReverseBNTransitionWithAnim(t);
     }
 
     private void AfterReverseTransition(){
         BNTransitionController cont = controllers.Pop();
-        cont.GetTo().RemoveOnCompleteAction(AfterReverseTransition);
-        BNScreen screen = screenStack.Pop();
+        cont.RemoveOnCompleteAction(AfterReverseTransition);
+        BNScreen screen = screenList[screenList.Count-1];
+        screenList.RemoveAt(screenList.Count-1);
         BNScreens.Instance.AddUsedScreen(screen);
         if (cont.GetTransitionType() == BNScreens.TransitionType.Modal){
             ToPrevLevel();
+        }
+        if (restRTCount > 0){
+            ReverseTransition(1.0f, restRTCount);
         }
     }
 
@@ -117,4 +148,5 @@ public class BNTStack : MonoBehaviour
         }
         return controllers.Peek();
     }
+}
 }

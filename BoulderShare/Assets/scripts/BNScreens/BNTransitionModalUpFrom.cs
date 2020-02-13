@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace BoulderNotes{
+
+
 public class BNTransitionModalUpFrom : BNTransitionBase
 {
     private float screenDownRatio = 0.0f;
@@ -32,4 +35,5 @@ public class BNTransitionModalUpFrom : BNTransitionBase
             SetAllBlocksRaycasts(true);
         }
     }
+}
 }
