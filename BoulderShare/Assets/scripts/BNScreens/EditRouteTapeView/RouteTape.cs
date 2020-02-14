@@ -14,6 +14,7 @@ public class RouteTape : MonoBehaviour
     [SerializeField] private Color firstColor;
 
     public void LoadDefault(){
+        //Debug.Log("first:"+firstSprite.ToString());
         Addressables.LoadAssetsAsync<Sprite>(firstSprite, OnLoad);
         text.text = "";
         img.color = firstColor;
@@ -42,6 +43,7 @@ public class RouteTape : MonoBehaviour
         }
 
         if (!string.IsNullOrEmpty(t.spriteName)){
+            //Debug.Log("t.spriteName:"+t.spriteName);
             Addressables.LoadAssetsAsync<Sprite>(t.spriteName, OnLoad);
         }
         text.text = t.tapeText;
