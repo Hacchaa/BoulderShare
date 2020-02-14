@@ -36,7 +36,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         //listを日付で並び変える
         IEnumerable<BNRecord> sortedList ;
         if (list.Any()){
-            sortedList = list.OrderByDescending(x => x.GetDate());
+            sortedList = list.OrderByDescending(x => x.GetDate()).ThenByDescending(x => x.GetTryNumber());
 
             //日付毎にリストに格納
             foreach(BNRecord record in sortedList){

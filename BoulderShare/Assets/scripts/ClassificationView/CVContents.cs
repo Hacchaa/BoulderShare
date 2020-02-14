@@ -10,6 +10,7 @@ namespace BoulderNotes{
         private CVContent target;
         
         public void Init(float w){
+            Clear();
             for(int i = 0 ; i < contents.Length ; i++){
                 contents[i].Init(w);
                 contents[i].Deactive();

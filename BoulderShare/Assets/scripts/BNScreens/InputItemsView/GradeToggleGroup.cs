@@ -17,7 +17,7 @@ public class GradeToggleGroup : MonoBehaviour
     }
 
     public void SetGrade(BNGradeMap.Grade g){
-        Debug.Log("setGrade "+g.ToString());
+        //Debug.Log("setGrade "+g.ToString());
         selectedGrade = g;
     }
 

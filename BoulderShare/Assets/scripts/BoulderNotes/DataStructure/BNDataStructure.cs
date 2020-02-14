@@ -81,6 +81,8 @@ namespace BoulderNotes{
         public BNWall(){
             id = BNGymDataCenter.PREFIX_ID_WALL + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             routeIDs = new List<string>();
+            SetStart(DateTime.Now);
+            isFinished = false;
         }
         public BNWall Clone(){
             return (BNWall)this.MemberwiseClone();
@@ -116,12 +118,15 @@ namespace BoulderNotes{
             return end;
         }
 
-        public void SetStart(string str){
-            start = str;
+        public void SetStart(DateTime t){
+            start = t.ToString(BNGymDataCenter.FORMAT_DATE);
         }
 
-        public void SetEnd(string str){
-            end = str;
+        public void SetEnd(DateTime t){
+            end = t.ToString(BNGymDataCenter.FORMAT_DATE);
+        }
+        public void ClearEnd(){
+            end = "";
         }
         public void SetIsFinished(bool b){
             isFinished = b;
@@ -141,12 +146,14 @@ namespace BoulderNotes{
     public class BNRoute{
 
         [SerializeField] private string id;
+        [SerializeField] private RTape tape;
         [SerializeField] private List<BNMark> marks;
         [SerializeField] private string routeImagePath;
         [SerializeField] private BNGradeMap.Grade grade;
         [SerializeField] private int totalClearStatus;
         [SerializeField] private string start;
         [SerializeField] private string end;
+
         [SerializeField] private List<BNRecord> records;
         [SerializeField] private bool isFinished;
         [SerializeField] private bool usedKante;
@@ -156,12 +163,26 @@ namespace BoulderNotes{
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             marks = new List<BNMark>();
             records = new List<BNRecord>();
+            totalClearStatus = 0;
+            tape = null;
+            grade = BNGradeMap.Grade.None;
+            SetStart(DateTime.Now);
+            isFinished = false;
+            usedKante = false;
+            isFavorite = false;
         }
         public BNRoute Clone(){
             return (BNRoute)this.MemberwiseClone();
         }
         public string GetID(){
             return id;
+        }
+
+        public RTape GetTape(){
+            if (tape == null){
+                return null;
+            }
+            return tape.Clone();
         }
         public BNGradeMap.Grade GetGrade(){
             return grade;
@@ -213,6 +234,14 @@ namespace BoulderNotes{
         public void SetID(string str){
             id = str;
         }
+
+        public void SetTape(RTape t){
+            if (t == null){
+                tape = null;
+                return ;
+            }
+            tape = t.Clone();
+        }
         public void SetTotalClearStatus(int s){
             totalClearStatus = s;
         }
@@ -220,12 +249,16 @@ namespace BoulderNotes{
             return start + "～" + end;
         }
 
-        public void SetStart(string str){
-            start = str;
+        public void SetStart(DateTime t){
+            start = t.ToString(BNGymDataCenter.FORMAT_DATE);
         }
 
-        public void SetEnd(string str){
-            end = str;
+        public void SetEnd(DateTime t){
+            end = t.ToString(BNGymDataCenter.FORMAT_DATE);
+        }
+
+        public void ClearEnd(){
+            end = "";
         }
         public void SetIsFinished(bool b){
             isFinished = b;
@@ -268,10 +301,20 @@ namespace BoulderNotes{
         public Vector2[] shape;
     }
     [Serializable]
+    public class RTape{
+        public Quaternion imageRot;
+        public string spriteName;
+        public string tapeText;
+        public Color color;
+        public RTape Clone(){
+            return (RTape)this.MemberwiseClone();
+        }
+    }
+    [Serializable]
     public class BNRecord{
         public enum Condition{Worst, Bad, Normal, Good, Best};
         [SerializeField] private string id;
-        [SerializeField] private string time;
+
         [SerializeField] private string date;
         [SerializeField] private Condition condition;
         [SerializeField] private string comment;
@@ -279,6 +322,7 @@ namespace BoulderNotes{
         [SerializeField] private int tryNumber;
         public BNRecord(){
             id = BNGymDataCenter.PREFIX_ID_RECORD + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
+            SetDate(DateTime.Now);
         }
         public BNRecord Clone(){
             return (BNRecord)this.MemberwiseClone();
@@ -289,9 +333,6 @@ namespace BoulderNotes{
 
         public string GetDate(){
             return date;
-        }
-        public string GetTime(){
-            return time;
         }
 
         public Condition GetCondition(){
@@ -313,11 +354,8 @@ namespace BoulderNotes{
         public void SetID(string str){
             id = str;
         }
-        public void SetTime(string str){
-            time = str;
-            DateTime t = DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
+        public void SetDate(DateTime t){
             date = t.ToString(BNGymDataCenter.FORMAT_DATE);
-
         }
 
         public void SetCondition(Condition cond){

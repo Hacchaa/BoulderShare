@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace BoulderNotes{
 public class InputItemsView: BNScreen
 {
-    public enum TargetItem{None, WallType, Grade, Texts};
+    public enum TargetItem{None, WallType, Grade, Texts, Tape};
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TargetItem currentTargetItem;
     private BNScreenInput screen;
@@ -15,6 +15,7 @@ public class InputItemsView: BNScreen
     [SerializeField] private WallTypeToggleGroup wallTypeGroup;
     [SerializeField] private GradeToggleGroup gradeGroup;
     [SerializeField] private GameObject textObj;
+    [SerializeField] private ScrollRect scroller;
     public override void InitForFirstTransition(){
         screen = null;
         
@@ -37,6 +38,7 @@ public class InputItemsView: BNScreen
                 }
             }
         }
+        scroller.verticalNormalizedPosition = 0.0f;
     }
     private void ShowObj(){
         wallTypeGroup.gameObject.SetActive(false);

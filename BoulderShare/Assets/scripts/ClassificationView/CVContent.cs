@@ -8,7 +8,7 @@ public class CVContent : MonoBehaviour
         private float width;
         private float startX;
         private float endX;
-        public void Init(float w){
+        public virtual void Init(float w){
             width = w;
             startX = 0.0f;
             endX = 0.0f;

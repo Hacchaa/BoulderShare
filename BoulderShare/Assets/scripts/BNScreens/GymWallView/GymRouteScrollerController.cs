@@ -49,6 +49,7 @@ public class GymRouteScrollerController : MonoBehaviour, IEnhancedScrollerDelega
             data.isRoute = true;
             data.isAddButton = false;
             data.isFinished = route.IsFinished();
+            data.routeTape = route.GetTape();
             _data.Add(data);
         }
         _data.Add(new GymRouteScrollerData() { isAddButton = true});

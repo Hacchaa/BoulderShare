@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/edit3.unity
     guid: ca5f296d509297147a01cacf821c40ea
-  - enabled: 1
+  - enabled: 0
     path: Assets/routeview2.unity
     guid: 2cfa477b8df69604c9712f7e4ea296f2
   - enabled: 1

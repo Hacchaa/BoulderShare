@@ -10,6 +10,7 @@ public class GymRouteScrollerData : GymRouteScrollerDataBase
     public string period;
     public BNGradeMap.Grade grade;
     public bool isFinished;
+    public RTape routeTape;
     
 }
 public class GymRoutePastScrollerData : GymRouteScrollerDataBase

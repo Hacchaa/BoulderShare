@@ -14,8 +14,8 @@ namespace BoulderNotes{
             for(int i = 0 ; i < tabs.Length ; i++){
                 tabs[i].Init(normal, select);
             }
-            Debug.Log("1:"+tabs[1].GetLocalX());
-            Debug.Log("0:"+tabs[0].GetLocalX());
+           // Debug.Log("1:"+tabs[1].GetLocalX());
+            //Debug.Log("0:"+tabs[0].GetLocalX());
             tabWidth = tabs[1].GetLocalX() - tabs[0].GetLocalX();
             //
             underbar.Init(tabWidth, tabs[0].GetLocalX());

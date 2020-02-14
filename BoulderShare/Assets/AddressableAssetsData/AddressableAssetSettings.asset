@@ -65,6 +65,7 @@ MonoBehaviour:
   m_LabelTable:
     m_LabelNames:
     - default
+    - HoldMarkTexture
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 5a913806a86c1a541a8f8c25f7ac7a06, type: 2}

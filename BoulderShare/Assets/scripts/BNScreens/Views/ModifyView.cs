@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -14,12 +15,14 @@ public class ModifyView: BNScreenInput
 
     [SerializeField] private TMP_InputField gymNameTextIF;
     [SerializeField] private TextMeshProUGUI wallTypeText;
-    [SerializeField] private TMP_InputField wallStartTextIF;
     [SerializeField] private Toggle finishedWallToggle;
 
     [SerializeField] private TextMeshProUGUI gradeText;
     [SerializeField] private Toggle finishedRouteToggle;
     [SerializeField] private Toggle KanteToggle;
+    [SerializeField] private RouteTape routeTape;
+    [SerializeField] private GameObject tapeSelectedObj;
+    [SerializeField] private GameObject tapeNoSelectedObj;
 
     [SerializeField] private TextMeshProUGUI deleteText;
 
@@ -30,7 +33,8 @@ public class ModifyView: BNScreenInput
     private enum ViewType{Gym, Wall, Route};
     private ViewType type ;
 
-    public void ClearFields(){
+    public override void ClearFields(){
+        base.ClearFields();
         gym = null;
         wall = null;
         route = null;
@@ -38,8 +42,9 @@ public class ModifyView: BNScreenInput
         titleText.text = "";
         gymNameTextIF.text = "";
         wallTypeText.text = "";
-        wallStartTextIF.text = "";
-        gradeText.text = "";        
+        gradeText.text = "";     
+
+        //routeTape.Init();   
     }
 
     public override void InitForFirstTransition(){
@@ -69,7 +74,6 @@ public class ModifyView: BNScreenInput
                 //wall編集
                 wallType = wall.GetWallType();
                 wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
-                wallStartTextIF.text = "" + wall.GetStart();
                 type = ViewType.Wall;
                 titleText.text = "壁編集";
                 deleteText.text = "壁削除";
@@ -83,6 +87,13 @@ public class ModifyView: BNScreenInput
             gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
             finishedRouteToggle.isOn = route.IsFinished();
             KanteToggle.isOn = route.IsUsedKante();
+            if (route.GetTape() != null){
+                SetTape(route.GetTape());
+                routeTape.LoadTape(tape);              
+            }else{
+                routeTape.LoadDefault();
+            }
+
             type = ViewType.Route;
             titleText.text = "課題編集";
             deleteText.text = "課題削除";
@@ -109,6 +120,14 @@ public class ModifyView: BNScreenInput
     public override void UpdateScreen(){
         wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
         gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
+        if (tape != null){
+            routeTape.LoadTape(tape);
+            tapeSelectedObj.SetActive(true);
+            tapeNoSelectedObj.SetActive(false); 
+        }else{
+            tapeSelectedObj.SetActive(false);
+            tapeNoSelectedObj.SetActive(true);             
+        }
     }
 
     public void ReverseTransition(){
@@ -121,27 +140,32 @@ public class ModifyView: BNScreenInput
         }
         BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
         if (type == ViewType.Gym){
-            BNGym newGym = new BNGym();
-            newGym.SetID(gym.GetID());
+            BNGym newGym = gym.Clone();
             newGym.SetGymName(gymNameTextIF.text);
-            newGym.SetWallIDs(gym.GetWallIDs());
             stack.ModifyGym(newGym);
 
         }else if(type == ViewType.Wall){
-            BNWall newWall = new BNWall();
-            newWall.SetID(wall.GetID());
+            BNWall newWall = wall.Clone();
             newWall.SetWallType(wallType);
-            newWall.SetStart(wallStartTextIF.text);
-            newWall.SetRouteIDs(wall.GetRouteIDs());
             newWall.SetIsFinished(finishedWallToggle.isOn);
+            if (finishedWallToggle.isOn){
+                newWall.SetEnd(DateTime.Now);
+            }else{
+                newWall.ClearEnd();
+            }
             stack.ModifyWall(newWall);
+
         }else if(type == ViewType.Route){
-            BNRoute newRoute = new BNRoute();
-            newRoute.SetID(route.GetID());
+            BNRoute newRoute = route.Clone();
             newRoute.SetGrade(grade);
-            newRoute.SetRecords(route.GetRecords());
             newRoute.SetIsFinished(finishedRouteToggle.isOn);
+            if (finishedRouteToggle.isOn){
+                newRoute.SetEnd(DateTime.Now);
+            }else{
+                newRoute.ClearEnd();
+            }
             newRoute.SetIsUsedKante(KanteToggle.isOn);
+            newRoute.SetTape(tape);
             stack.ModifyRoute(newRoute);
         }
 

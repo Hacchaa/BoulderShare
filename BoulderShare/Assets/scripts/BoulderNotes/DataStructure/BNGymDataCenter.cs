@@ -136,18 +136,19 @@ namespace BoulderNotes{
             return routes;
         }
 
-        private void WriteGymIDs(List<string> ids){
+        private bool WriteGymIDs(List<string> ids){
             string path = ES3_ROOTPATH + "/" + ES3_FILE_BNGYMIDS + ES3_EXTENSION;
-            ES3.Save<List<string>>(ES3_KEY_BNGYMIDS, ids, path);            
+            ES3.Save<List<string>>(ES3_KEY_BNGYMIDS, ids, path); 
+            return true;           
         }
 
-        public void WriteGym(BNGym gym){
+        public bool WriteGym(BNGym gym){
             if (gym == null){
-                return ;
+                return false;
             }
             string id = gym.GetID();
             if (String.IsNullOrEmpty(id)){
-                return ;
+                return false;
             }
 
             //ES3読み込み
@@ -155,7 +156,7 @@ namespace BoulderNotes{
 
             //既にgymIDが存在する場合、作らない
             if (ids.Contains(id)){
-                return ;
+                return false;
             }
             ids.Add(id);
             //ES3に書き込み
@@ -164,51 +165,55 @@ namespace BoulderNotes{
             //gym
             string path = ES3_ROOTPATH + "/" + id + "/" + ES3_FILE_GYM + ES3_EXTENSION;
             ES3.Save<BNGym>(ES3_KEY_GYM, gym, path);
+            return true;
         }
 
-        public void WriteWall(BNWall wall, BNGym gym){
+        public bool WriteWall(BNWall wall, BNGym gym){
             if (gym == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
-                return ;
+                return false;
             }
 
             //既にwallIDが存在する場合、作らない
             if (gym.GetWallIDs().Contains(wall.GetID())){
-                return ;
+                return false;
             }
             gym.AddWallID(wall.GetID());
             ModifyGym(gym);
 
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_FILE_WALL + ES3_EXTENSION;
-            ES3.Save<BNWall>(ES3_KEY_WALL, wall, path);              
+            ES3.Save<BNWall>(ES3_KEY_WALL, wall, path);  
+            return true;            
         }
 
-        public void WriteWall(BNWall wall, string gymID){
-            WriteWall(wall, ReadGym(gymID));          
+        public bool WriteWall(BNWall wall, string gymID){
+            return WriteWall(wall, ReadGym(gymID));          
         }
 
-        public void WriteRoute(BNRoute route, BNWall wall, BNGym gym){
+        public bool WriteRoute(BNRoute route, BNWall wall, BNGym gym){
             if (gym == null || wall == null || route == null || string.IsNullOrEmpty(route.GetID())){
-                return ;
+                return false;
             }
 
             //既にrouteIDが存在する場合、作らない
             if (wall.GetRouteIDs().Contains(route.GetID())){
-                return ;
+                return false;
             }
             wall.AddRouteID(route.GetID());
             ModifyWall(wall, gym.GetID());
 
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + route.GetID() + "/" + ES3_FILE_ROUTE + ES3_EXTENSION;
-            ES3.Save<BNRoute>(ES3_KEY_ROUTE, route, path);                
+            ES3.Save<BNRoute>(ES3_KEY_ROUTE, route, path);       
+
+            return true;         
         }
-        public void WriteRoute(BNRoute route, string wallID, string gymID){
-            WriteRoute(route, ReadWall(wallID, gymID), ReadGym(gymID));            
+        public bool WriteRoute(BNRoute route, string wallID, string gymID){
+            return WriteRoute(route, ReadWall(wallID, gymID), ReadGym(gymID));            
         }
 
-        public void ModifyGym(BNGym gym){
+        public bool ModifyGym(BNGym gym){
             string id = gym.GetID();
             if (String.IsNullOrEmpty(id)){
-                return ;
+                return false;
             }
 
             //ES3読み込み
@@ -217,7 +222,7 @@ namespace BoulderNotes{
 
             //oldGymが存在しない場合、作らない
             if (oldGym == null){
-                return ;
+                return false;
             }
 
             //画像等の参照フィールドが変更された場合、参照先を削除する
@@ -226,10 +231,11 @@ namespace BoulderNotes{
             //gym
             string path = ES3_ROOTPATH + "/" + id + "/" + ES3_FILE_GYM + ES3_EXTENSION;
             ES3.Save<BNGym>(ES3_KEY_GYM, gym, path);
+            return true;
         }
-        public void ModifyWall(BNWall wall, BNGym gym){
+        public bool ModifyWall(BNWall wall, BNGym gym){
             if (gym == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
-                return ;
+                return false;
             }
 
             //ES3読み込み
@@ -237,7 +243,7 @@ namespace BoulderNotes{
 
             //oldWallが存在しない場合、作らない
             if (oldWall == null){
-                return ;
+                return false;
             }
 
             //画像等の参照フィールドが変更された場合、参照先を削除する
@@ -246,14 +252,15 @@ namespace BoulderNotes{
             //wall
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_FILE_WALL + ES3_EXTENSION;
             ES3.Save<BNWall>(ES3_KEY_WALL, wall, path);   
+            return true;
         }
-        public void ModifyWall(BNWall wall, string gymID){
-            ModifyWall(wall, ReadGym(gymID)); 
+        public bool ModifyWall(BNWall wall, string gymID){
+            return ModifyWall(wall, ReadGym(gymID)); 
         }
 
-        public void ModifyRoute(BNRoute route, BNWall wall, BNGym gym){
+        public bool ModifyRoute(BNRoute route, BNWall wall, BNGym gym){
             if (gym == null || wall == null || route == null || string.IsNullOrEmpty(route.GetID())){
-                return ;
+                return false;
             }
 
             //ES3読み込み
@@ -261,7 +268,7 @@ namespace BoulderNotes{
 
             //oldRouteが存在しない場合、作らない
             if (oldRoute == null){
-                return ;
+                return false;
             }
 
             //画像等の参照フィールドが変更された場合、参照先を削除する
@@ -270,9 +277,11 @@ namespace BoulderNotes{
             //route
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + route.GetID() + "/" + ES3_FILE_ROUTE + ES3_EXTENSION;
             ES3.Save<BNRoute>(ES3_KEY_ROUTE, route, path);    
+
+            return true;
         }
-        public void ModifyRoute(BNRoute route, string wallID, string gymID){
-            ModifyRoute(route, ReadWall(wallID, gymID), ReadGym(gymID));    
+        public bool ModifyRoute(BNRoute route, string wallID, string gymID){
+            return ModifyRoute(route, ReadWall(wallID, gymID), ReadGym(gymID));    
         }
 
         public void DeleteGym(string gymID){
@@ -298,31 +307,31 @@ namespace BoulderNotes{
             
             BNWall wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.Slab);
-            wall.SetStart(DateTime.Now.ToString(FORMAT_DATE));
+            wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
             WriteWall(wall, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.Vertical);
-            wall.SetStart(DateTime.Now.ToString(FORMAT_DATE));
+            wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
             WriteWall(wall, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.HOverHang);
-            wall.SetStart(DateTime.Now.ToString(FORMAT_DATE));
+            wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
             WriteWall(wall, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.Bulge);
-            wall.SetStart(DateTime.Now.ToString(FORMAT_DATE));
+            wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
             WriteWall(wall, gym.GetID());             
 
             BNRoute route = new BNRoute();
             route.SetGrade(BNGradeMap.Grade.Q3);
-            route.SetStart(DateTime.Now.ToString("yyyy/MM/dd"));
+            route.SetStart(DateTime.Now);
             WriteRoute(route, wall.GetID(), gym.GetID());
         }
     }

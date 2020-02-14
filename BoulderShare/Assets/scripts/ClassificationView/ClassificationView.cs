@@ -16,12 +16,12 @@ namespace BoulderNotes{
         private float width;
         private int contentNum;
 
-        void Start(){
+        public void Init(){
             current = 0;
             tab.Init(normal, select, current);
             width = GetComponent<RectTransform>().rect.width;
             contentNum = contents.GetSize();
-            contents.Init(width);
+            contents.Init(width);            
         }
         public bool NeededOverShooting(){
             if (current == 0 && target == -1){
@@ -38,7 +38,7 @@ namespace BoulderNotes{
         }
 
         public void MoveTo(int index){
-            Debug.Log("moveTO");
+            //Debug.Log("moveTO");
             if (current == index){
                 return ;
             }

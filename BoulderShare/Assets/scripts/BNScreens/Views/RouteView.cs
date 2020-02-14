@@ -26,11 +26,14 @@ public class RouteView : BNScreen
     [SerializeField] private Sprite favoriteOn;
     [SerializeField] private Sprite favoriteOff;
 
+    [SerializeField] private ClassificationView classView;
+
     private DateTime pushedTime;
     private bool isFavorite;
 
     public override void InitForFirstTransition(){
         scroller.Init();
+        classView.Init();
     }
 
     public void ClearFields(){

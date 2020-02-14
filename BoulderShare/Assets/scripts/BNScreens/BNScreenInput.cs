@@ -7,6 +7,11 @@ public class BNScreenInput : BNScreen
     [SerializeField] protected InputItemsView.TargetItem currentTargetItem;
     [SerializeField] protected WallTypeMap.Type wallType;
     protected BNGradeMap.Grade grade;
+    protected RTape tape;
+
+    public virtual void ClearFields(){
+        tape = null;
+    }
     public void SetWallType(WallTypeMap.Type t){
         wallType = t;
     }
@@ -17,6 +22,21 @@ public class BNScreenInput : BNScreen
 
     public void SetGrade(BNGradeMap.Grade g){
         grade = g;
+    }
+
+    public void SetTape(RTape t){
+        if (t == null){
+            tape = null;
+            return;
+        }
+        tape = t.Clone();
+    }
+
+    public RTape GetTape(){
+        if (tape == null){
+            return null;
+        }
+        return tape.Clone();
     }
 
     public BNGradeMap.Grade GetGrade(){
@@ -40,6 +60,14 @@ public class BNScreenInput : BNScreen
     public void InputTexts(){
         currentTargetItem = InputItemsView.TargetItem.Texts;
         ToInputItemsView();
+    }
+
+    public void InputTape(){
+        currentTargetItem = InputItemsView.TargetItem.Tape;
+        ToEditRouteTapeView();        
+    }
+    public void ToEditRouteTapeView(){
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.EditRouteTapeView, BNScreens.TransitionType.Push);
     }
 
     public void ToInputItemsView(){

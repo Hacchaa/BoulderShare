@@ -20,7 +20,7 @@ namespace ES3Editor
 		{
 			if(settings == null || editorSettings == null || assemblyNamesProperty == null)
 				Init();
-			
+
 			var style = EditorStyle.Get;
 
 			EditorGUI.BeginChangeCheck();

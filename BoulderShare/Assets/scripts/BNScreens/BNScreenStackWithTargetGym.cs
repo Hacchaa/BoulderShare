@@ -86,53 +86,75 @@ public class BNScreenStackWithTargetGym : BNTStack
     }
 
     public void WriteGym(BNGym gym){
-        targetGym = gym;
-        BNGymDataCenter.Instance.WriteGym(gym);
+        bool success = BNGymDataCenter.Instance.WriteGym(gym);
+        if (success){
+            targetGym = gym;
+        }
     }
     public void WriteWall(BNWall wall){
         if (targetGym == null || wall == null){
             return ;
         }
-        targetWall = wall;
-        BNGymDataCenter.Instance.WriteWall(wall, targetGym);
+        bool success = BNGymDataCenter.Instance.WriteWall(wall, targetGym);
+        if (success){
+            targetWall = wall;
+        }
     }
     public void WriteRoute(BNRoute route){
         if (targetGym == null || targetWall == null || route == null){
             return ;
         }
-        targetRoute = route;
-        BNGymDataCenter.Instance.WriteRoute(route, targetWall, targetGym);
+        bool success = BNGymDataCenter.Instance.WriteRoute(route, targetWall, targetGym);
+        if (success){
+            targetRoute = route;
+        }
     }
     public void WriteRecord(BNRecord record){
         if (targetGym == null || targetWall == null || targetRoute == null || record == null){
             return ;
         }
         targetRecord = record;
-
         targetRoute.AddRecord(record);
 
-        BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);
+        bool success = BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);
+
+        //失敗した場合、targetrouteの参照を元に戻す
+        if (!success){
+            targetRoute.DeleteRecord(record);
+        }
     }
+
+    //targetgymをgymに変更する
     public void ModifyGym(BNGym gym){
         ClearWall();
-        targetGym = gym;
-        BNGymDataCenter.Instance.ModifyGym(gym);
+        
+        bool success = BNGymDataCenter.Instance.ModifyGym(gym);
+
+        //成功した場合、targetgymをgymに変更する
+        if (success){
+            targetGym = gym;
+        }
     }
     public void ModifyWall(BNWall wall){
         if (targetGym == null || wall == null){
             return ;
         }
         ClearRoute();
-        targetWall = wall;
-        BNGymDataCenter.Instance.ModifyWall(wall, targetGym);
+        bool success = BNGymDataCenter.Instance.ModifyWall(wall, targetGym);
+        if (success){
+            targetWall = wall;
+        }
     }
     public void ModifyRoute(BNRoute route){
         if (targetGym == null || targetWall == null || route == null){
             return ;
         }
         ClearRecord();
-        targetRoute = route;
-        BNGymDataCenter.Instance.ModifyRoute(route, targetWall, targetGym);
+        
+        bool success = BNGymDataCenter.Instance.ModifyRoute(route, targetWall, targetGym);
+        if (success){
+            targetRoute = route;
+        }
     }
     public void ModifyRecord(BNRecord record){
         if (targetGym == null || targetWall == null || targetRoute == null || record == null){
@@ -153,12 +175,18 @@ public class BNScreenStackWithTargetGym : BNTStack
         if (!hasRecord){
             return ;
         }
-
+        BNRecord oldRecord = recList[i];
         recList.RemoveAt(i);
         recList.Insert(i, record);
         targetRoute.SetRecords(recList);
 
-        BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);        
+        bool success = BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);
+        //失敗した場合元に戻す
+        if (!success){
+            recList.RemoveAt(i);
+            recList.Insert(i, oldRecord);
+            targetRoute.SetRecords(recList);
+        }        
     }
 
     public void DeleteGym(){

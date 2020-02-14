@@ -14,25 +14,28 @@ public class RegisterView: BNScreenInput
 
     [SerializeField] private TMP_InputField gymNameTextIF;
     [SerializeField] private TextMeshProUGUI wallTypeText;
-    [SerializeField] private TMP_InputField wallStartTextIF;
 
     [SerializeField] private TextMeshProUGUI gradeText;
     [SerializeField] private Toggle kanteToggle;
-
+    [SerializeField] private GameObject tapeSelectedObj;
+    [SerializeField] private GameObject tapeNoSelectedObj;
+    [SerializeField] private RouteTape routeTape;
 
 
     
     private enum ViewType{All, Gym, Wall, Route};
     private ViewType type ;
 
-    public void ClearFields(){
+    public override void ClearFields(){
+        base.ClearFields();
         titleText.text = "";
         gymNameTextIF.text = "";
         wallType = WallTypeMap.Type.Slab;
         wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
-        wallStartTextIF.text = "";
         gradeText.text = "";
-        kanteToggle.isOn = false;        
+        kanteToggle.isOn = false;
+
+        routeTape.LoadDefault();        
     }
 
     public override void InitForFirstTransition(){
@@ -72,13 +75,21 @@ public class RegisterView: BNScreenInput
         }else if(type == ViewType.Route){
             gymInfo.SetActive(false);
             wallInfo.SetActive(false);
-            routeInfo.SetActive(true);            
+            routeInfo.SetActive(true);
         }
     }
 
     public override void UpdateScreen(){
         wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
         gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
+        if (tape != null){
+            routeTape.LoadTape(tape);
+            tapeSelectedObj.SetActive(true);
+            tapeNoSelectedObj.SetActive(false); 
+        }else{
+            tapeSelectedObj.SetActive(false);
+            tapeNoSelectedObj.SetActive(true);             
+        }
     }
 
     public void ReverseTransition(){
@@ -102,7 +113,6 @@ public class RegisterView: BNScreenInput
             BNWall wall = new BNWall();
             //Debug.Log(wallTypeTextIF.text);
             wall.SetWallType(wallType);
-            wall.SetStart(wallStartTextIF.text);
             s.WriteWall(wall);
         }
         
@@ -110,6 +120,7 @@ public class RegisterView: BNScreenInput
             BNRoute route = new BNRoute();
             route.SetGrade(grade);
             route.SetIsUsedKante(kanteToggle.isOn);
+            route.SetTape(tape);
             s.WriteRoute(route);
         }
 

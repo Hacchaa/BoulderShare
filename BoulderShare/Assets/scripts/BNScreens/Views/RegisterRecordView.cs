@@ -20,7 +20,7 @@ public class RegisterRecordView : BNScreen
 
     [SerializeField] private BNRecord record;
     [SerializeField] private BNRoute route;
-    private string time;
+  
     public override void InitForFirstTransition(){
         ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
@@ -39,14 +39,12 @@ public class RegisterRecordView : BNScreen
                 //Debug.Log("new");
                 //新規作成
                 dayText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_DATE);
-                time = DateTime.Now.ToString(BNGymDataCenter.FORMAT_TIME);
                 tryNumberText.text = route.GetNewTryNumber()+"";
                 deleteButton.SetActive(false);
             }else{
                 //Debug.Log("edit");
                 //編集
                 dayText.text = record.GetDate();
-                time = record.GetTime();
                 tryNumberText.text = record.GetTryNumber()+"";
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
@@ -66,7 +64,6 @@ public class RegisterRecordView : BNScreen
         commentIF.text = "";
         tryNumberText.text = "";
         record = null;
-        time = null;
     }
 
     public override void UpdateScreen(){
@@ -83,18 +80,18 @@ public class RegisterRecordView : BNScreen
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
             record.SetComment(commentIF.text);
-
+            if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+                (belongingStack as BNScreenStackWithTargetGym).ModifyRecord(record);
+            }
         }else{
             BNRecord rec = new BNRecord();
-            rec.SetTime(time);
             rec.SetTryNumber(int.Parse(tryNumberText.text));
             rec.SetCompleteRate((int)completeRateSlider.value);
             rec.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
             rec.SetComment(commentIF.text);
-            route.AddRecord(rec);            
-        }
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).ModifyRecord(record);
+            if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+                (belongingStack as BNScreenStackWithTargetGym).WriteRecord(rec);
+            }               
         }
    
     }

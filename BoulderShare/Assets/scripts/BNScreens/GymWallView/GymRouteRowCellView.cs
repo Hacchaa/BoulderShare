@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.AddressableAssets;
 
 namespace BoulderNotes {
 public class GymRouteRowCellView : MonoBehaviour
 {
     public BNRoute route;
-    public Image mark;
+    public RouteTape tape;
     public TextMeshProUGUI period;
     public TextMeshProUGUI grade;
     public GameObject container;
     public GameObject finishedObj;
-
+    [SerializeField] private AssetReference defaultSprite;
     public OnButtonClickedDelegateWithBNRoute onRouteClicked;
     public void SetData(GymRouteScrollerData data, OnButtonClickedDelegateWithBNRoute routeDel){
         if (data == null){
@@ -30,10 +31,20 @@ public class GymRouteRowCellView : MonoBehaviour
                 grade.text = BNGradeMap.Entity.GetGradeName(data.grade);  
                 route = data.route;   
                 onRouteClicked = routeDel;
+                if (data.routeTape != null && !string.IsNullOrEmpty(data.routeTape.spriteName)){
+                    tape.LoadTape(data.routeTape);
+                }else{
+                    Addressables.LoadAssetsAsync<Sprite>(defaultSprite, OnLoad);
+                }
 
                 finishedObj.SetActive(data.isFinished);       
             }
         }
+    }
+
+    private void OnLoad(Sprite sprite){
+        tape.ChangeShape(sprite);
+        tape.ChangeText("");
     }
 
     public void OnRouteClicked(){
