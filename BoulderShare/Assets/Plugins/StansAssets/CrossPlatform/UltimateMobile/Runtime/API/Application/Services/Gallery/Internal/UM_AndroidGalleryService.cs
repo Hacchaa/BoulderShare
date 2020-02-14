@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using SA.Android.Gallery;
 using SA.Foundation.Templates;
@@ -7,23 +7,27 @@ namespace SA.CrossPlatform.App
 {
     internal class UM_AndroidGalleryService : UM_AbstractGalleryService, UM_iGalleryService
     {
-        public void PickImage(int thumbnailSize, Action<UM_MediaResult> callback) {
+        public void PickImage(int thumbnailSize, Action<UM_MediaResult> callback) 
+        {
             PickMedia(thumbnailSize, AN_MediaType.Image, callback);
         }
 
-        public void PickVideo(int thumbnailSize, Action<UM_MediaResult> callback) {
+        public void PickVideo(int thumbnailSize, Action<UM_MediaResult> callback) 
+        {
             PickMedia(thumbnailSize, AN_MediaType.Video, callback);
         }
 
-        private void PickMedia(int thumbnailSize, AN_MediaType type, Action<UM_MediaResult> callback) {
+        private void PickMedia(int thumbnailSize, AN_MediaType type, Action<UM_MediaResult> callback) 
+        {
             var picker = new AN_MediaPicker(type);
             picker.AllowMultiSelect = false;
             picker.MaxSize = thumbnailSize;
 
-            picker.Show((result) => {
+            picker.Show(result => 
+            {
                 UM_MediaResult pickResult;
-
-                if (result.IsSucceeded) {
+                if (result.IsSucceeded) 
+                {
                     UM_MediaType um_type;
                     switch (type) {
                         case AN_MediaType.Video:
@@ -33,9 +37,11 @@ namespace SA.CrossPlatform.App
                             um_type = UM_MediaType.Image;
                             break;
                     } 
-                    var media = new UM_Media(result.Media[0].Thumbnail, result.Media[0].Path, um_type);
+                    var media = new UM_Media(result.Media[0].Thumbnail, result.Media[0].RawBytes, result.Media[0].Path, um_type);
                     pickResult = new UM_MediaResult(media);
-                } else {
+                } 
+                else 
+                {
                     pickResult = new UM_MediaResult(result.Error);
                 }
 
@@ -43,10 +49,9 @@ namespace SA.CrossPlatform.App
             });
         }
 
-        public override void SaveImage(Texture2D image, string fileName, Action<SA_Result> callback) {
-            AN_Gallery.SaveImageToGallery(image, fileName, (result) => {
-                callback.Invoke(result);
-            });
+        public override void SaveImage(Texture2D image, string fileName, Action<SA_Result> callback) 
+        {
+            AN_Gallery.SaveImageToGallery(image, fileName, callback.Invoke);
         }
     }
 }

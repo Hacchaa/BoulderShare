@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace SA.Foundation.Editor
         // Virtual Methods
         //--------------------------------------
 
-        public virtual int TabSelctionWidth {
+        public virtual int TabSelectionWidth {
             get {
                 return 140;
             }
@@ -64,7 +64,7 @@ namespace SA.Foundation.Editor
         // Static Methods
         //--------------------------------------
 
-        public static T ShowModal() {
+        public static T ShowAsModal() {
             T window = EditorWindow.GetWindow<T>(true);
 
             window.minSize = new Vector2(700f, 560f);
@@ -112,7 +112,7 @@ namespace SA.Foundation.Editor
 
             BeforeGUI();
             using (new SA_GuiBeginHorizontal()) {
-                m_sectionScrollPos = GUILayout.BeginScrollView(m_sectionScrollPos, SA_EditorStyles.PreferencesSectionBox, GUILayout.Width(TabSelctionWidth));
+                m_sectionScrollPos = GUILayout.BeginScrollView(m_sectionScrollPos, SA_EditorStyles.PreferencesSectionBox, GUILayout.Width(TabSelectionWidth));
 
                 for (int i = 0; i < m_sections.Count; i++) {
                     var section = m_sections[i];
@@ -143,11 +143,11 @@ namespace SA.Foundation.Editor
                 GUILayout.Space(10f);
 
                 using(new SA_GuiBeginVertical()) {
-                    m_tabScrollPos = GUILayout.BeginScrollView(m_tabScrollPos, GUILayout.Width(position.width -TabSelctionWidth - 10));
+                    m_tabScrollPos = GUILayout.BeginScrollView(m_tabScrollPos, GUILayout.Width(position.width -TabSelectionWidth - 10));
                     {
                         //  GUILayout.Label(m_sections[m_selectedSection].Content, SA_EditorStyles.Collection.SectionHeader);
 
-                        using (new SA_GuiBeginVertical(GUILayout.Width(position.width - TabSelctionWidth - 25))) {
+                        using (new SA_GuiBeginVertical(GUILayout.Width(position.width - TabSelectionWidth - 25))) {
                             m_sections[m_selectedSection].Layout.OnGUI();
                         }
                            

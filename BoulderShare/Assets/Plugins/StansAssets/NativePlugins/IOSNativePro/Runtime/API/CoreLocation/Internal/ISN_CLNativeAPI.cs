@@ -1,4 +1,4 @@
-#if (UNITY_IPHONE || UNITY_IOS || UNITY_TVOS) && CORE_LOCATION_API_ENABLED && !UNITY_EDITOR
+#if (UNITY_IPHONE || UNITY_IOS) && CORE_LOCATION_API_ENABLED && !UNITY_EDITOR
  #define API_ENABLED
 #endif
 
@@ -7,6 +7,8 @@ using System;
 using System.Runtime.InteropServices;
 using SA.Foundation.Templates;
 using SA.iOS.Utilities;
+using UnityEngine;
+
 
 #endif
 
@@ -46,6 +48,11 @@ namespace SA.iOS.CoreLocation
         [DllImport("__Internal")] static extern void _ISN_CL_SetAllowsBackgroundLocationUpdates(bool value);
         
         [DllImport("__Internal")] static extern void _ISN_CL_SetDesiredAccuracy(int value);
+        
+        [DllImport("__Internal")] static extern void _ISN_CL_SetDistanceFilter(double value);
+        [DllImport("__Internal")] static extern double _ISN_CL_GetDistanceFilter();
+        
+        [DllImport("__Internal")] static extern double _ISN_CL_Cllocation_DistanceFromLocation(string location1, string location2);
 #endif
 
         public static bool LocationServicesEnabled()
@@ -154,6 +161,25 @@ namespace SA.iOS.CoreLocation
         }
         
         
+        public static double DistanceFilter
+        {
+            get
+            {
+#if API_ENABLED
+                return _ISN_CL_GetDistanceFilter();
+#else
+                return  0;
+#endif
+            }
+
+            set
+            {
+#if API_ENABLED
+                _ISN_CL_SetDistanceFilter(value);
+#endif
+            }
+        }
+        
         public static bool AllowsBackgroundLocationUpdates
         {
             get
@@ -184,7 +210,16 @@ namespace SA.iOS.CoreLocation
 #endif
             }
         }
-        
+
+
+        public static double CllocationDistanceFromLocation(ISN_CLLocation location1, ISN_CLLocation location2)
+        {
+#if API_ENABLED
+            return _ISN_CL_Cllocation_DistanceFromLocation(JsonUtility.ToJson(location1), JsonUtility.ToJson(location2));
+#else
+            return 0;
+#endif
+        }
     
         
     }

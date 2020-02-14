@@ -1,4 +1,4 @@
-﻿using SA.Facebook;
+using SA.Facebook;
 using SA.Foundation.Editor;
 
 namespace SA.CrossPlatform
@@ -7,10 +7,15 @@ namespace SA.CrossPlatform
     {
         public bool IsSettingsEnabled {
             get {
-                return SA_FB_InstallationProcessing.IsSDKInstalled;
+                return SA_FB.IsSDKInstalled;
             }
 
             set { }
+        }
+
+        public void ResetRequirementsCache()
+        {
+            
         }
     }
 }

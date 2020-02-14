@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using SA.Android.App;
@@ -7,10 +7,13 @@ using SA.CrossPlatform.App;
 using SA.CrossPlatform.UI;
 using SA.CrossPlatform.Notifications;
 using SA.Foundation.Utility;
+using SA.iOS.UIKit;
+using SA.iOS.UserNotifications;
 
 public class UM_LocalNotificationsExample : MonoBehaviour
 {
     [Header("Unified API Buttons")] 
+    [SerializeField] private Button m_RequestAuthorization = null;
     [SerializeField] private Button m_Create5SecNotification = null;
     [SerializeField] private Button m_Create20SecNotification = null;
     [SerializeField] private Button m_RemoveDelivered = null;
@@ -20,13 +23,33 @@ public class UM_LocalNotificationsExample : MonoBehaviour
     [SerializeField] private Button m_CloseApp = null;
     [SerializeField] private Button m_ToBackground = null;
     
+    
+    
     [Header("Android Only")] 
     [SerializeField] private Button m_LargeImageStyle = null;
     [SerializeField] private Button m_LargeTextStyle = null;
+
+    [Header("iOS Only")] 
+    [SerializeField] private InputField m_iOSNotificationTitle = null;
+    [SerializeField] private InputField m_iOSNotificationBody = null;
+    [SerializeField] private InputField m_iOSNotificationSubtitle = null;
+    [SerializeField] private InputField m_iOSNotificationBadge = null;
+    
+    [SerializeField] private Button m_RegisterForRemoteNotifications = null;
+    [SerializeField] private Button m_iOSNotificationSchegule = null;
+    
+    [Header("iOS Debug Actions")] 
+    [SerializeField] private Button m_iOSClearAppBadges = null;
     
     private void Start()
     {
         var client = UM_NotificationCenter.Client;
+        
+        m_RequestAuthorization.onClick.AddListener(() =>
+        {
+            client.RequestAuthorization(UM_DialogsUtility.DisplayResultMessage);
+        });
+        
         m_Create5SecNotification.onClick.AddListener(() => { CreateNotificationWithInterval(5); });
         m_Create20SecNotification.onClick.AddListener(() => { CreateNotificationWithInterval(20); });
 
@@ -44,11 +67,10 @@ public class UM_LocalNotificationsExample : MonoBehaviour
         
         m_ToBackground.onClick.AddListener(() => { UM_Application.SendToBackground(); });
         
-        m_LargeImageStyle.onClick.AddListener(AndroidBigPictureStyle);
-        m_LargeTextStyle.onClick.AddListener(AndroidBigTextStyle);
-        
+        iOSOnlySetup();
+        AndroidOnlySetup();
     }
-    
+
     /// Uncomment if you wan to test Notification scheduling on application pause 
     /*
     void OnApplicationPause(bool pauseStatus)
@@ -58,6 +80,60 @@ public class UM_LocalNotificationsExample : MonoBehaviour
             CreateNotificationWithInterval(5);
         }
     }*/
+
+
+    private void AndroidOnlySetup()
+    {
+        m_LargeImageStyle.onClick.AddListener(AndroidBigPictureStyle);
+        m_LargeTextStyle.onClick.AddListener(AndroidBigTextStyle);
+    }
+
+    private void iOSOnlySetup()
+    {
+        m_RegisterForRemoteNotifications.onClick.AddListener(ISN_UIApplication.RegisterForRemoteNotifications);
+        ISN_UIApplication.ApplicationDelegate.DidRegisterForRemoteNotifications.AddListener((result) => {
+            if(result.IsSucceeded) {
+                var token = result.DeviceTokenUTF8;
+                UM_DialogsUtility.ShowMessage("Register For Remote Notifications", "ANS token string:" + token);
+                Debug.Log("ANS token string:" + token);
+            } else {
+                UM_DialogsUtility.ShowMessage("Register For Remote Notifications", "Error: " + result.Error.Message);
+                Debug.Log("Error: " + result.Error.Message);
+            }
+        });
+        
+        m_iOSNotificationTitle.text = "Wake up!";
+        m_iOSNotificationBody.text = "Rise and shine! It's morning time!";
+        m_iOSNotificationBadge.text = "1";
+        
+        
+        m_iOSNotificationSchegule.onClick.AddListener(ScheduleIOSNotification);
+        m_iOSClearAppBadges.onClick.AddListener(() =>
+        {
+            ISN_UIApplication.ApplicationIconBadgeNumber = 0;
+        });
+
+    }
+
+    private void ScheduleIOSNotification()
+    {
+        var content = new ISN_UNNotificationContent();
+        content.Title = m_iOSNotificationTitle.text;
+        content.Body = m_iOSNotificationBody.text;
+        content.Subtitle = m_iOSNotificationSubtitle.text;
+        content.Badge = Convert.ToInt32(m_iOSNotificationBadge.text);
+        
+        var seconds = 5;
+        var repeats = false;
+        var trigger = new ISN_UNTimeIntervalNotificationTrigger(seconds, repeats);
+        
+        var identifier = "TestAlarm";
+        var request = new ISN_UNNotificationRequest(identifier, content, trigger);
+        
+        ISN_UNUserNotificationCenter.AddNotificationRequest(request, (result) => {
+            Debug.Log("iOS AddNotificationRequest: " + result.IsSucceeded);
+        });
+    }
     
 
     private void CreateNotificationWithInterval(int delay)

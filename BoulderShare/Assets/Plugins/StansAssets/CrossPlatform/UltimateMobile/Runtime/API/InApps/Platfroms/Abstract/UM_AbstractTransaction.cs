@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,46 +8,59 @@ using SA.Foundation.Templates;
 namespace SA.CrossPlatform.InApp
 {
     [Serializable]
-    public class UM_AbstractTransaction 
+    public class UM_AbstractTransaction<T>
     {
         [SerializeField] protected string m_id;
         [SerializeField] protected string m_productId;
-        [SerializeField] protected long m_unitxTimestamp;
+        [SerializeField] protected long m_unixTimestamp;
 
         [SerializeField] protected UM_TransactionState m_state;
         [SerializeField] protected SA_Error m_error = null;
+        
+        public object NativeTemplate { get; private set; }
+
+        protected void SetNativeTransaction(T nativeTemplate)
+        {
+            NativeTemplate = nativeTemplate;
+        }
+
+        public string Id 
+        {
+            get { return m_id; }
+        }
+
+        public string ProductId 
+        {
+            get { return m_productId; }
+        }
 
 
-        public string Id {
-            get {
-                return m_id;
+        public DateTime Timestamp 
+        {
+            get
+            {
+                var timestamp = DateTime.MinValue;
+                try
+                {
+                    timestamp =  SA_Unix_Time.ToDateTime(m_unixTimestamp);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("Failed to convert UNIX " + m_unixTimestamp + " time to DateTime: " + ex.Message);
+                }
+
+                return timestamp;
             }
         }
 
-        public string ProductId {
-            get {
-                return m_productId;
-            }
+        public SA_Error Error 
+        {
+            get { return m_error; }
         }
 
-
-        public DateTime Timestamp {
-            get {
-                return SA_Unix_Time.ToDateTime(m_unitxTimestamp);
-            }
-        }
-
-        public SA_Error Error {
-            get {
-                return m_error;
-            }
-
-        }
-
-        public UM_TransactionState State {
-            get {
-                return m_state;
-            }
+        public UM_TransactionState State 
+        {
+            get { return m_state; }
         }
     }
 }

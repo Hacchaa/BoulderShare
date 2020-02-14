@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using SA.CrossPlatform.App;
 using SA.CrossPlatform.UI;
 using SA.Foundation.Utility;
@@ -46,29 +46,19 @@ public class UM_CameraAndGalleryExample : MonoBehaviour
    private void TakeVideo()
    {
       var cameraService = UM_Application.CameraService;
-      cameraService.TakeVideo(k_MaxThumbnailSize,PrintResult);
+      cameraService.TakeVideo(k_MaxThumbnailSize, PrintResult);
    }
    
    private void TakePicture()
    {
       var cameraService = UM_Application.CameraService;
-      cameraService.TakePicture(k_MaxThumbnailSize,PrintResult);
+      cameraService.TakePicture(k_MaxThumbnailSize, PrintResult);
    }
 
    private void SaveScreenshot()
    {
       var gallery = UM_Application.GalleryService;
-      gallery.SaveScreenshot("example_scene.png", (result) =>
-      {
-         if (result.IsSucceeded)
-         {
-            Debug.Log("Screenshot saved.");
-         } 
-         else 
-         {
-            Debug.Log("Failed to save a screenshot: " + result.Error.FullMessage);
-         }
-      });
+      gallery.SaveScreenshot("example_scene.png", UM_DialogsUtility.DisplayResultMessage);
    }
 
    private void SaveImage()
@@ -76,17 +66,7 @@ public class UM_CameraAndGalleryExample : MonoBehaviour
       //Generating sample red texture with 32x32 resolution
       var gallery = UM_Application.GalleryService;
       var sampleBlackTexture = SA_IconManager.GetIcon(Color.black, 32, 32);
-      gallery.SaveImage(sampleBlackTexture, "sample_black_image.png", (result) =>
-      {
-         if (result.IsSucceeded)
-         {
-            Debug.Log("Image saved.");
-         } 
-         else 
-         {
-            Debug.Log("Failed to save an Image: " + result.Error.FullMessage);
-         }
-      });
+      gallery.SaveImage(sampleBlackTexture, "sample_black_image.png", UM_DialogsUtility.DisplayResultMessage);
    }
 
    private void PickImage() {
@@ -117,20 +97,28 @@ public class UM_CameraAndGalleryExample : MonoBehaviour
             ApplyImageToGUI(mediaThumbnail);
             //path can be null when we taking a picture directly from a camera.
             //ios will not save it on a disk
-            if(!string.IsNullOrEmpty(media.Path)) {
-                byte[] movieBytes = File.ReadAllBytes(media.Path);
-                Debug.Log("picked file bytes size : " + movieBytes.Length);
+            
+            if(!string.IsNullOrEmpty(media.Path)) 
+            {
+               byte[] movieBytes = File.ReadAllBytes(media.Path);
+               Debug.Log("Picked file bytes size : " + movieBytes.Length);
             }
-        }
+      }
       else
       {
          UM_DialogsUtility.ShowMessage("Failed", result.Error.FullMessage);
       }
-     
    }
    
-   private void ApplyImageToGUI(Texture2D image) {
+   private void ApplyImageToGUI(Texture2D image) 
+   {
 
+      if (m_Image.texture != null)
+      {
+         DestroyImmediate(m_Image.texture, true);
+         DestroyImmediate(m_Sprite.sprite, true);
+      }
+      
       var aspectRatio =  (float)image.width / (float)image.height;
 
       m_Image.GetComponent<AspectRatioFitter>().aspectRatio = aspectRatio;

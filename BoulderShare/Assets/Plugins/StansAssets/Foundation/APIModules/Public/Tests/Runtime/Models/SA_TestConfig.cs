@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 namespace SA.Foundation.Tests {
     [Serializable]
     public class SA_TestConfig {

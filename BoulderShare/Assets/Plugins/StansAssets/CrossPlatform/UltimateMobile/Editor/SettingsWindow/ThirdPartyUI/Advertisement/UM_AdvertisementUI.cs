@@ -1,77 +1,86 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
-
 using SA.Foundation.Editor;
 using SA.CrossPlatform.Advertisement;
 
-
 namespace SA.CrossPlatform
 {
-
     public class UM_AdvertisementUI : UM_PluginSettingsUI
     {
+        private static SA_iGUILayoutElement s_AdMobSettingsLayout;
 
-        public class UM_AdsResolver : SA_iAPIResolver
+        public static void RegisterAdMobUILayout(SA_iGUILayoutElement layoutElement)
         {
-            public bool IsSettingsEnabled {
-                get {
-                    return UM_DefinesResolver.IsAdMobInstalled || UM_DefinesResolver.IsUnityAdsInstalled;
-                }
-
+            s_AdMobSettingsLayout = layoutElement;
+        }
+        
+        private class UM_AdsResolver : SA_iAPIResolver
+        {
+            public bool IsSettingsEnabled 
+            {
+                get { return UM_DefinesResolver.IsAdMobInstalled || UM_DefinesResolver.IsUnityAdsInstalled; }
                 set { }
+            }
+
+            public void ResetRequirementsCache()
+            {
+                
             }
         }
 
-        public class UM_GoogleAdsResolver : SA_iAPIResolver
+        private class UM_GoogleAdsResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled {
-                get {
-                    return UM_DefinesResolver.IsAdMobInstalled;
-                }
-
+            public bool IsSettingsEnabled 
+            {
+                get { return UM_DefinesResolver.IsAdMobInstalled; }
                 set { }
             }
-        }
 
+            public void ResetRequirementsCache()
+            {
+                
+            }
+        }
 
         public class UM_UnityAdsResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled {
-                get {
-                    return UM_DefinesResolver.IsUnityAdsInstalled;
-                }
-
+            public bool IsSettingsEnabled 
+            {
+                get { return UM_DefinesResolver.IsUnityAdsInstalled; }
                 set { }
+            }
+
+            public void ResetRequirementsCache()
+            {
+                
             }
         }
 
         public class UM_ChartBoostResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled {
-                get {
-                    return false;
-                }
-
+            public bool IsSettingsEnabled 
+            {
+                get { return false; }
                 set { }
             }
+
+            public void ResetRequirementsCache()
+            {
+                
+            }
         }
-
-
-        private const string AD_MOB_SDK_DOWNLOAD_URL = "https://github.com/googleads/googleads-mobile-unity/releases/download/v3.15.1/GoogleMobileAds.unitypackage";
+        
+        private const string AD_MOB_SDK_DOWNLOAD_URL = "https://github.com/googleads/googleads-mobile-unity/releases/download/v4.0.0/GoogleMobileAds-v4.0.0.unitypackage";
         private const string UNITY_ADS_SDK_DOWNLOAD_URL = "https://assetstore.unity.com/packages/add-ons/services/unity-monetization-3-0-66123";
 
+        private UM_AdsResolver m_ServiceResolver;
 
-        private UM_AdsResolver m_serviceResolver;
-
-
-        private SA_iGUILayoutElement m_admobSettingsUI;
-
-        private UM_AdvertisementPlatfromUI m_adMobBlock;
-        private UM_AdvertisementPlatfromUI m_unityAdBlock;
-        private UM_AdvertisementPlatfromUI m_chartboostBlock;
-
-
-        public override void OnAwake() {
+        private UM_AdvertisementPlatfromUI m_AdMobBlock;
+        private UM_AdvertisementPlatfromUI m_UnityAdBlock;
+        private UM_AdvertisementPlatfromUI m_ChartboostBlock;
+        
+        public override void OnAwake() 
+        {
             base.OnAwake();
 
             AddFeatureUrl("Getting Started", "https://unionassets.com/ultimate-mobile-pro/getting-started-778");
@@ -83,140 +92,143 @@ namespace SA.CrossPlatform
             AddFeatureUrl("Unity Ads", "https://unionassets.com/ultimate-mobile-pro/unity-ads-783");
             AddFeatureUrl("Google AdMob", "https://unionassets.com/ultimate-mobile-pro/google-admob-784");
             AddFeatureUrl("Google EU Consent", "https://unionassets.com/ultimate-mobile-pro/google-admob-784#consent-from-european-users");
-            
             AddFeatureUrl("Chartboost", "https://unionassets.com/ultimate-mobile-pro/chartboost-785");
         }
 
-        public override void OnLayoutEnable() {
-
+        public override void OnLayoutEnable() 
+        {
             base.OnLayoutEnable();
-
-            m_unityAdBlock = new UM_AdvertisementPlatfromUI("Unity Ads", "unity_icon.png", new UM_UnityAdsResolver(), () => {
+            m_UnityAdBlock = new UM_AdvertisementPlatfromUI("Unity Ads", "unity_icon.png", new UM_UnityAdsResolver(), () => 
+            {
                 DrawUnityAdsUI();
             });
 
-            m_adMobBlock = new UM_AdvertisementPlatfromUI("Google AdMob", "google_icon.png", new UM_GoogleAdsResolver(), () => {
+            m_AdMobBlock = new UM_AdvertisementPlatfromUI("Google AdMob", "google_icon.png", new UM_GoogleAdsResolver(), () => 
+            {
                 DrawAdmobUI();
             });
 
-            m_chartboostBlock = new UM_AdvertisementPlatfromUI("Chartboost", "chartboost_icon.png", new UM_ChartBoostResolver(), () => {
+            m_ChartboostBlock = new UM_AdvertisementPlatfromUI("Chartboost", "chartboost_icon.png", new UM_ChartBoostResolver(), () => 
+            {
                 EditorGUILayout.HelpBox("COMING SOON!", MessageType.Info);
             });
         }
 
 
-        public override string Title {
-            get {
-                return "Advertisement";
+        public override string Title 
+        {
+            get { return "Advertisement"; }
+        }
+
+        public override string Description 
+        {
+            get
+            {
+                return
+                    "Integrate banner, rewarded and non-rewarded adsfor you game, using the supported ads platfroms.";
             }
         }
 
-        public override string Description {
-            get {
-                return "Integrate banner, rewarded and non-rewarded adsfor you game, using the supported ads platfroms.";
-            }
+        protected override Texture2D Icon 
+        {
+            get { return UM_Skin.GetServiceIcon("um_advertisement_icon.png"); }
         }
 
-        protected override Texture2D Icon {
-            get {
-                return UM_Skin.GetServiceIcon("um_advertisement_icon.png");
-            }
-        }
-
-        public override SA_iAPIResolver Resolver {
-            get {
-                if(m_serviceResolver == null) {
-                    m_serviceResolver = new UM_AdsResolver();
+        public override SA_iAPIResolver Resolver 
+        {
+            get 
+            {
+                if(m_ServiceResolver == null) 
+                {
+                    m_ServiceResolver = new UM_AdsResolver();
                 }
 
-                return m_serviceResolver;
+                return m_ServiceResolver;
             }
         }
 
-        protected override void OnServiceUI() {
-
-            m_unityAdBlock.OnGUI();
-            m_adMobBlock.OnGUI();
-            m_chartboostBlock.OnGUI();
-
-
+        protected override void OnServiceUI() 
+        {
+            m_UnityAdBlock.OnGUI();
+            m_AdMobBlock.OnGUI();
+            m_ChartboostBlock.OnGUI();
         }
 
-        private void DrawAdmobUI() {
-            if (UM_DefinesResolver.IsAdMobInstalled) {
+        private void DrawAdmobUI() 
+        {
+            if (UM_DefinesResolver.IsAdMobInstalled) 
+            {
                 EditorGUILayout.HelpBox("Google Mobile Ads SDK Installed!", MessageType.Info);
                 DrawAdMobSettings();
-            } else {
-
+            } 
+            else 
+            {
                 EditorGUILayout.HelpBox("Google Mobile Ads SDK Missing!", MessageType.Warning);
-                using (new SA_GuiBeginHorizontal()) {
+                using (new SA_GuiBeginHorizontal()) 
+                {
                     GUILayout.FlexibleSpace();
                     var click = GUILayout.Button("Import SDK", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (click) {
-                        SA_PackageManager.DownloadAndImport("Google Mobiel Ads SDK", AD_MOB_SDK_DOWNLOAD_URL, interactive:false);
+                    if (click) 
+                    {
+                        SA_PackageManager.DownloadAndImport("Google Mobile Ads SDK", AD_MOB_SDK_DOWNLOAD_URL, interactive:false);
                     }
 
                     var refreshClick = GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (refreshClick) {
+                    if (refreshClick) 
+                    {
                         UM_DefinesResolver.ProcessAssets();
                     }
                 }
             }
-
         }
 
-
-       
-
-       private void DrawAdMobSettings() {
-            if(m_admobSettingsUI == null) {
-                var settingsUI = UM_GoogleAdsClientProxy.CreateSettingsLayout();
-                if (settingsUI != null) {
-                    m_admobSettingsUI = (settingsUI as SA_iGUILayoutElement);
-                    m_admobSettingsUI.OnLayoutEnable();
-                }
-            } 
-            if(m_admobSettingsUI == null) {
+        
+        private static void DrawAdMobSettings() 
+        {
+            if (s_AdMobSettingsLayout == null)
                 UM_SettingsUtil.DrawAddonRequestUI(UM_Addon.AdMob);
-            } else {
-                m_admobSettingsUI.OnGUI();
-            }
-       }
-
-
-
-
-        private static void DrawUnityAdsUI() {
-            if (UM_DefinesResolver.IsUnityAdsInstalled) {
-                DrawUnityAdsSettins();
-            } else {
+            else
+                s_AdMobSettingsLayout.OnGUI();
+        }
+        
+        private static void DrawUnityAdsUI() 
+        {
+            if (UM_DefinesResolver.IsUnityAdsInstalled)
+            {
+                DrawUnityAdsSettings();
+            } 
+            else 
+            {
                 EditorGUILayout.HelpBox("Unity Monetization SDK Missing!", MessageType.Warning);
-                using (new SA_GuiBeginHorizontal()) {
+                using (new SA_GuiBeginHorizontal()) 
+                {
                     GUILayout.FlexibleSpace();
                     var click = GUILayout.Button("Download SDK", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (click) {
+                    if (click) 
+                    {
                         Application.OpenURL(UNITY_ADS_SDK_DOWNLOAD_URL);
                     }
 
                     var refreshClick = GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (refreshClick) {
+                    if (refreshClick) 
+                    {
                         UM_DefinesResolver.ProcessAssets();
                     }
                 }
             }
         }
-        private static void DrawUnityAdsSettins() {
+        
+        private static void DrawUnityAdsSettings() 
+        {
             UM_AdvertisementUnityAdsUI.OnGUI();
         }
 
-
-
-        public static void DrawPlatfromIds(UM_PlatfromAdIds platfrom) {
-            platfrom.AppId = EditorGUILayout.TextField("App Id: ", platfrom.AppId);
-            platfrom.BannerId = EditorGUILayout.TextField("Banner Id: ", platfrom.BannerId);
-            platfrom.RewardedId = EditorGUILayout.TextField("Rewarded Id: ", platfrom.RewardedId);
-            platfrom.NonRewardedId = EditorGUILayout.TextField("Non-Rewarded Id: ", platfrom.NonRewardedId);
-        }  
-
+        public static void DrawPlatformIds(UM_PlatfromAdIds platform) 
+        {
+            platform.AppId = EditorGUILayout.TextField("App Id: ", platform.AppId);
+            platform.BannerId = EditorGUILayout.TextField("Banner Id: ", platform.BannerId);
+            platform.RewardedId = EditorGUILayout.TextField("Rewarded Id: ", platform.RewardedId);
+            platform.NonRewardedId = EditorGUILayout.TextField("Non-Rewarded Id: ", platform.NonRewardedId);
+        }
     }
 }

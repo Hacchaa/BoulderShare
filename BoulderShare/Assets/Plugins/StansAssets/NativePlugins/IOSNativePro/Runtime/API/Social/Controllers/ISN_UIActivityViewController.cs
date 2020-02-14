@@ -1,8 +1,6 @@
 using UnityEngine;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-
 using SA.iOS.Utilities;
 
 #if (UNITY_IPHONE && SOCIAL_API_ENABLED)
@@ -11,7 +9,6 @@ using System.Runtime.InteropServices;
 
 namespace SA.iOS.Social
 {
-
     /// <summary>
     /// A view controller that you use to offer standard services from your app.
     /// 
@@ -31,44 +28,39 @@ namespace SA.iOS.Social
         [DllImport("__Internal")]
         private static extern void _ISN_SOCIAL_PresentActivityViewController(string data, IntPtr callback);
 #endif
-       
-
+        
         #pragma warning disable 414
 
-        [SerializeField] string m_text = string.Empty;
-        [SerializeField] List<string> m_images = new  List<string>();
-        [SerializeField] List<string> m_excludedActivityTypes = new  List<string>();
-
-        //[SerializeField] List<string> m_applicationActivities = new  List<string>();
-
+        [SerializeField] private string m_Text = string.Empty;
+        [SerializeField] private List<string> m_Urls = new List<string>();
+        [SerializeField] private List<string> m_Images = new  List<string>();
+        [SerializeField] private List<string> m_ExcludedActivityTypes = new  List<string>();
+        
         #pragma warning restore 414
-
-
+        
         /// <summary>
-        /// Initializes and returns a new activity view controller object that acts on the specified data.
+        /// Sets the text that will be used for sharing
         /// </summary>
-        public ISN_UIActivityViewController() {
-            //m_applicationActivities = new List<string>(applicationActivities);
+        public void SetText(string text) 
+        {
+            m_Text = text;
         }
-
-
-
-        /// <summary>
-        /// Sets the text that will be usedfor sharing
-        /// </summary>
-        public void SetText(string text) {
-            m_text = text;
-        }
-
 
         /// <summary>
         /// Adds an image to the sharing data
         /// </summary>
-        public void AddImage(Texture2D image) {
-            m_images.Add(image.ToBase64String());
-
+        public void AddImage(Texture2D image) 
+        {
+            m_Images.Add(image.ToBase64String());
         }
-
+        
+        /// <summary>
+        /// Adds a URL to the sharing data
+        /// </summary>
+        public void AddImage(string url) 
+        {
+            m_Urls.Add(url);
+        }
 
         /// <summary>
         /// This property contains an array of strings. 
@@ -81,17 +73,15 @@ namespace SA.iOS.Social
         /// See the <see cref="ISN_UIActivityType"/> for a possible options.
         /// </summary>
         /// <value>The excluded activity types.</value>
-        public List<string> ExcludedActivityTypes {
-            get {
-                return m_excludedActivityTypes;
-            }
+        public List<string> ExcludedActivityTypes 
+        {
+            get { return m_ExcludedActivityTypes; }
         }
-
-
-        public void Present(Action<ISN_UIActivityViewControllerResult> callback) {
-
-
-            if(Application.isEditor) {
+        
+        public void Present(Action<ISN_UIActivityViewControllerResult> callback) 
+        {
+            if(Application.isEditor) 
+            {
                 var r = new ISN_UIActivityViewControllerResult();
                 callback.Invoke(r);
                 return;
@@ -104,6 +94,5 @@ namespace SA.iOS.Social
             }));
             #endif
         }
-
     }
 }

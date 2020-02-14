@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -111,11 +111,11 @@ namespace SA.iOS.XCode
         {
             public List<string> groups = new List<string>();
         }
-
-
-  		public iCloudCapability iCloud = new iCloudCapability();
+        
+        public iCloudCapability iCloud = new iCloudCapability();
 		public PushNotificationsCapability PushNotifications = new PushNotificationsCapability();
         public Capability GameCenter = new Capability();
+        public Capability SignInWithApple = new Capability();
         public WalletCapability Wallet = new WalletCapability();
         public Capability Siri = new Capability();
         public ApplePayCapability ApplePay = new ApplePayCapability();

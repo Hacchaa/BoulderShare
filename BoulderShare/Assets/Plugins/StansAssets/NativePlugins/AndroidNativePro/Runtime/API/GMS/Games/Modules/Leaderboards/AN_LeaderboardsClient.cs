@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using SA.Android.Utilities;
 using SA.Android.GMS.Internal;
 using SA.Android.GMS.Common;
 
 namespace SA.Android.GMS.Games
 {
-
     /// <summary>
     /// A client to interact with leaderboards functionality.
     /// https://developers.google.com/android/reference/com/google/android/gms/games/LeaderboardsClient
@@ -16,8 +12,6 @@ namespace SA.Android.GMS.Games
     [Serializable]
     public class AN_LeaderboardsClient : AN_LinkedObject
     {
-
-
         /// <summary>
         /// Asynchronously loads an Intent to show the list of leaderboards for a game. 
         /// Note that this must be invoked with <see cref="App.AN_Activity.StartActivityForResult(Content.AN_Intent, Action{App.AN_ActivityResult})"/> 
@@ -26,12 +20,11 @@ namespace SA.Android.GMS.Games
         /// Required Scopes: SCOPE_GAMES_LITE
         /// </summary>
         /// <param name="callback"></param>
-        public void GetAllLeaderboardsIntent(Action<AN_IntentResult> callback) {
+        public void GetAllLeaderboardsIntent(Action<AN_IntentResult> callback) 
+        {
             AN_GMS_Lib.Leaderboards.GetAllLeaderboardsIntent(this, callback);
 
         }
-
-        
 
         /// <summary>
         /// Asynchronously loads an Intent to show a leaderboard for a game specified by a leaderboardId. 
@@ -119,11 +112,11 @@ namespace SA.Android.GMS.Games
         /// Normally, this should be set to <c>false</c> to gain advantages of data caching.
         /// </param>
         /// <param name="callback">Request async callback</param>
-        public void LoadLeaderboardMetadata(string leaderboardId, bool forceReload, Action<AN_LeaderboardLoadResult> callback) {
+        public void LoadLeaderboardMetadata(string leaderboardId, bool forceReload, Action<AN_LeaderboardLoadResult> callback) 
+        {
             AN_GMS_Lib.Leaderboards.LoadLeaderboardMetadata(this, leaderboardId, forceReload, callback);
         }
-
-
+        
         /// <summary>
         /// Asynchronously loads an <see cref="AN_LeaderboardScores"/> that represents an additional page of score data 
         /// for the given score buffer. A new score buffer will be delivered that replaces the given buffer.
@@ -138,11 +131,11 @@ namespace SA.Android.GMS.Games
         /// </param>
         /// <param name="pageDirection">The direction to expand the buffer.</param>
         /// <param name="callback">Request async callback</param>
-        public void LoadMoreScores(AN_LeaderboardScoreBuffer buffer, int maxResults, AN_PageDirection pageDirection, Action<AN_LinkedObjectResult<AN_LeaderboardScores>> callback) {
+        public void LoadMoreScores(AN_LeaderboardScoreBuffer buffer, int maxResults, AN_PageDirection pageDirection, Action<AN_LinkedObjectResult<AN_LeaderboardScores>> callback) 
+        {
             AN_GMS_Lib.Leaderboards.LoadMoreScores(this, buffer, maxResults, (int) pageDirection, callback);
         }
-
-
+        
         /// <summary>
         /// Asynchronously loads an <see cref="AN_LeaderboardScores"/> that represents the player-centered page of scores 
         /// for the leaderboard specified by <see cref="leaderboardId"/>. 
@@ -156,7 +149,6 @@ namespace SA.Android.GMS.Games
         public void LoadPlayerCenteredScores(string leaderboardId, int maxResults, Action<AN_LinkedObjectResult<AN_LeaderboardScores>> callback) {
             LoadPlayerCenteredScores(leaderboardId, AN_Leaderboard.TimeSpan.AllTime, AN_Leaderboard.Collection.Public, maxResults, false, callback);
         }
-
 
         /// <summary>
         /// Asynchronously loads an <see cref="AN_LeaderboardScores"/> that represents the player-centered page of scores 

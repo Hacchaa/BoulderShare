@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -19,12 +19,10 @@ namespace SA.iOS.Foundation.Internal
         public static ISN_NSAPI API {
             get {
                 if (m_api == null) {
-                    if (Application.isEditor) {
+                    if (Application.isEditor) 
                         m_api = new ISN_NSEditorAPI();
-                    }
-                    else {
+                    else 
                         m_api = ISN_NSNativeAPI.Instance;
-                    }
                 }
 
                 return m_api;

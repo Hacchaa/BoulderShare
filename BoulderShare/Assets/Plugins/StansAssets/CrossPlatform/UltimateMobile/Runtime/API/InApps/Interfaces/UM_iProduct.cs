@@ -1,19 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 namespace SA.CrossPlatform.InApp
 {
     public interface UM_iProduct 
     {
-
         /// <summary>
         /// The string that identifies the product to the payment service.
         /// </summary>
         string Id { get; }
-
-
+        
         /// <summary>
         /// The locale used to format the price of the product.
         /// </summary>
@@ -33,8 +28,7 @@ namespace SA.CrossPlatform.InApp
         /// A description of the product.
         /// </summary>
         string Description { get; }
-
-
+        
         /// <summary>
         /// The currency code for the locale.
         /// Example currency codes include "USD", "EUR", and "JPY".
@@ -53,11 +47,18 @@ namespace SA.CrossPlatform.InApp
         UM_ProductType Type { get; }
 
         /// <summary>
-        /// Inidcates if products if product was recognized by the payment service.
+        /// Indicates if products if product was recognized by the payment service.
         /// Value is always <c>false</c> before you connect to the service.
         /// If after connection to the payment service, property value remains <c>false</c>,
-        /// it means that this product wasn't recognized by a payment service and not avaliabe for purchase.
+        /// it means that this product wasn't recognized by a payment service and not available for purchase.
         /// </summary>
         bool IsActive { get; }
+        
+        /// <summary>
+        /// Native product template originally provided by the platform specific SDK.
+        /// This template was used to fill in all the object properties,
+        /// and may contain more platform specific information.
+        /// </summary>
+        object NativeTemplate { get; }
     }
 }

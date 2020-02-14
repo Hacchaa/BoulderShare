@@ -9,13 +9,14 @@
 
 #if !TARGET_OS_TV
 @interface ISN_UIPickerControllerRequest : JSONModel
-@property (nonatomic) NSArray <NSString *> *m_mediaTypes;
-@property (nonatomic) UIImagePickerControllerSourceType m_sourceType;
-@property (nonatomic) bool m_allowsEditing;
-
-@property (nonatomic) float m_imageCompressionRate;
-@property (nonatomic) int m_maxImageSize;
-@property (nonatomic) int m_encodingType;
+@property (nonatomic) NSArray <NSString *> *m_MediaTypes;
+@property (nonatomic) UIImagePickerControllerSourceType m_SourceType;
+@property (nonatomic) UIImagePickerControllerCameraDevice m_CameraDevice;
+@property (nonatomic) UIModalPresentationStyle m_ModalPresentationStyle;
+@property (nonatomic) bool m_AllowsEditing;
+@property (nonatomic) float m_ImageCompressionRate;
+@property (nonatomic) int m_MaxImageSize;
+@property (nonatomic) int m_EncodingType;
 
 @end
 #endif
@@ -86,9 +87,21 @@
 @property (nonatomic) NSString* m_deviceTokenUTF8;
 @end
 
+@interface ISN_UIApplicationEvents : JSONModel
+@property (nonatomic) NSString *m_EventName;
+@property (nonatomic) NSString *m_Data;
+-(void)init:(NSString *)eventName data:(NSString *)data;
+@end
+
+@interface ISN_UIWheelPickerRequest : JSONModel
+@property (nonatomic) NSArray <NSString *> *m_Values;
+@end
 
 
-
+@interface ISN_UIWheelPickerResult : JSONModel
+@property (nonatomic) NSString *m_Value;
+@property (nonatomic) NSString *m_State;
+@end
 
 
 

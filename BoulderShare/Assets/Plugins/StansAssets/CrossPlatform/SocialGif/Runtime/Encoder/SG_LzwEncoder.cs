@@ -1,4 +1,4 @@
-﻿/*
+/*
  * No copyright asserted on the source code of this class. May be used
  * for any purpose, however, refer to the Unisys LZW patent for restrictions
  * on use of the associated LZWEncoder class :

@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
 using SA.Android.Utilities;
-
 
 namespace SA.Android.App
 {
-
     /// <summary>
     /// A class that represents how a persistent notification is to be presented to the user using the <see cref="AN_NotificationManager"/>
     /// </summary>
     public class AN_Notification : AN_LinkedObject
     {
-
-
-        private const string NATIVE_CLASS_NAME = "com.stansassets.android.app.notifications.AN_Notification";
-
-
+        private const string k_NativeClassName = "com.stansassets.android.app.notifications.AN_Notification";
+        
         /// <summary>
         /// Use all default values (where applicable).
         /// </summary>
@@ -37,12 +28,9 @@ namespace SA.Android.App
         /// Use the default notification vibrate
         /// </summary>
         public const int DEFAULT_VIBRATE = 2;
-
-
+        
         public AN_Notification(int hashCode):base(hashCode) {
           
         }
-
-
     }
 }

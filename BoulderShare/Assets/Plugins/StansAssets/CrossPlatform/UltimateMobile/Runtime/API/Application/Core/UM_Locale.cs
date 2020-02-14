@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using SA.Android.App.Utils;
 using SA.iOS.Foundation;
@@ -12,7 +12,6 @@ namespace SA.CrossPlatform.App
 	[Serializable]
 	public class UM_Locale  : AN_Locale
 	{
-
 		/// <summary>
 		/// Returns The locale is formed from the settings for the current user’s chosen system locale 
 		/// overlaid with any custom settings the user has specified.
@@ -20,7 +19,6 @@ namespace SA.CrossPlatform.App
 		public static UM_Locale GetCurrentLocale()
 		{
 			var un_locale = new UM_Locale();
-			
 			switch (Application.platform)
 			{
 				case RuntimePlatform.Android:

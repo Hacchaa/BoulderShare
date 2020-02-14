@@ -1,7 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.CrossPlatform.Analytics
 {
     /// <summary>
@@ -9,20 +5,19 @@ namespace SA.CrossPlatform.Analytics
     /// </summary>
     public static class UM_AnalyticsService
     {
-
-        private static UM_iAnalyticsClient s_client = null;
-
+        private static UM_iAnalyticsClient s_Client;
 
         /// <summary>
         /// Returns analytics client.
         /// </summary>
         public static UM_iAnalyticsClient Client {
             get {
-                if(s_client == null) {
-                    s_client = new UM_MasterAnalyticsClient();
+                if(s_Client == null) 
+                {
+                    s_Client = new UM_MasterAnalyticsClient();
                     UM_AnalyticsInternal.Init();
                 }
-                return s_client;
+                return s_Client;
             }
         }
 

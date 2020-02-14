@@ -1,5 +1,3 @@
-﻿
-
 namespace SA.iOS.AVFoundation
 {
     /// <summary>

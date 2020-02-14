@@ -21,14 +21,7 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     private List<BNScreen> usedScreens;
     [SerializeField] private Transform usedScreenRoot;
 
-    void Awake(){
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60; 
-    }
-
-    void Start(){
-        CanvasResolutionManager.Instance.InitHeights();
-
+    public void Init(){
         map = new Dictionary<BNScreenType, BNScreen>();
         foreach(BNScreenData data in screenPrefabs){
             map.Add(data.t, data.screen);

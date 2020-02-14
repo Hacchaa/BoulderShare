@@ -1,4 +1,6 @@
-﻿using SA.Android.Vending.Licensing;
+using SA.Android.Vending.BillingClient;
+using SA.Android.Vending.Licensing;
+using SA.CrossPlatform;
 using UnityEngine;
 using SA.CrossPlatform.InApp;
 using SA.CrossPlatform.UI;
@@ -6,7 +8,6 @@ using UnityEngine.UI;
 
 public class UM_InAppExample : MonoBehaviour
 {
-
     [Header("Unified API Buttons")] 
     [SerializeField] private Button m_Connect = null;
     [SerializeField] private Button m_PurchaseConsumable = null;
@@ -20,7 +21,7 @@ public class UM_InAppExample : MonoBehaviour
     
     [Header("Android Only API")] 
     [SerializeField] private Button m_CheckAccess = null;
-    
+    [SerializeField] private Button m_SubscriptionReplace = null;
     
     private void Start()
     {
@@ -30,14 +31,17 @@ public class UM_InAppExample : MonoBehaviour
             var observer = new UM_TransactionObserverExample();
             UM_InAppService.Client.SetTransactionObserver(observer);
             
-            UM_InAppService.Client.Connect((connectionResult) => {
+            UM_InAppService.Client.Connect(connectionResult => 
+            {
                 if(connectionResult.IsSucceeded) {
                     //You are now connected to the payment service.
                     //Also all product's info are updated at this point from according to server values.
                     SetStoreActiveState(true);
                     PrintAvailableProductsInfo();
                     UM_DialogsUtility.ShowMessage("Connection Succeeded", "In App Service is now connected and ready to use!");
-                } else {
+                } 
+                else 
+                {
                     //Connection failed.
                     UM_DialogsUtility.ShowMessage("Connection Failed", connectionResult.Error.FullMessage);
                 }
@@ -48,14 +52,12 @@ public class UM_InAppExample : MonoBehaviour
         m_PurchaseNonConsumable.onClick.AddListener(() => { StartPayment(UM_ProductType.NonConsumable); });
         m_TestFailedPurchase.onClick.AddListener(() => { UM_InAppService.Client.AddPayment("non_existed_product_id"); });
         
-        m_RestoreTransactions.onClick.AddListener(() =>
-        {
-            Restore();
-        });
+        m_RestoreTransactions.onClick.AddListener(Restore);
 
         m_CheckAccess.onClick.AddListener(() =>
         {
-            AN_LicenseChecker.CheckAccess((result) => {
+            AN_LicenseChecker.CheckAccess(result => 
+            {
                 if (result.IsSucceeded)
                 {
                     UM_DialogsUtility.ShowMessage("Policy Code", result.PolicyCode.ToString());
@@ -66,6 +68,23 @@ public class UM_InAppExample : MonoBehaviour
                 }
             });
         });
+        
+        m_SubscriptionReplace.onClick.AddListener(SubscriptionReplace);
+    }
+
+    private void SubscriptionReplace()
+    {
+        var oldProductId = "old_subscription_id";
+        var paramsBuilder = AN_BillingFlowParams.NewBuilder();
+
+        AN_SkuDetails subscriptionProduct = null; // get subscription AN_SkuDetails model here.
+        paramsBuilder.SetSkuDetails(subscriptionProduct);
+        paramsBuilder.SetOldSku(oldProductId);
+        paramsBuilder.SetReplaceSkusProrationMode(AN_BillingFlowParams.ProrationMode.ImmediateWithoutProration);
+
+        //Use your billing client here.
+        AN_BillingClient client = null;
+        client.LaunchBillingFlow(paramsBuilder.Build());
     }
 
     private void StartPayment(UM_ProductType productType)
@@ -82,6 +101,7 @@ public class UM_InAppExample : MonoBehaviour
 
         if (validProduct != null)
         {
+            UM_Logger.Log("Start Payment for: " + validProduct.Id);
             UM_InAppService.Client.AddPayment(validProduct.Id);
         }
         else

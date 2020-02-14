@@ -1,20 +1,17 @@
-﻿using System;
+using System;
 using SA.Foundation.Templates;
-
 
 namespace SA.CrossPlatform.GameServices
 {
-
     /// <summary>
     /// A client to interact with achievements functionality.
     /// </summary>
     public interface UM_iAchievementsClient
     {
-
         /// <summary>
         /// Show the native UI with the list of achievements for a game.
         /// </summary>
-        void ShowUI();
+        void ShowUI(Action<SA_Result> callback);
 
         /// <summary>
         /// Retrive's the achievements info
@@ -29,8 +26,7 @@ namespace SA.CrossPlatform.GameServices
         /// <param name="achievementId">The achievement ID to reveal.</param>
         /// <param name="callback">Result callback</param>
         void Reveal(string achievementId, Action<SA_Result> callback);
-
-
+        
         /// <summary>
         /// Asynchronously unlocks an achievement for the currently signed in player. 
         /// If the achievement is hidden this will reveal it to the player.
@@ -38,7 +34,6 @@ namespace SA.CrossPlatform.GameServices
         /// <param name="achievementId">The achievement ID to unlock.</param>
         /// <param name="callback">Result callback</param>
         void Unlock(string achievementId, Action<SA_Result> callback);
-
 
         /// <summary>
         /// Increments an achievement by the given number of steps. 
@@ -49,6 +44,5 @@ namespace SA.CrossPlatform.GameServices
         /// <param name="achievementId">The achievement ID to increment.</param>
         /// <param name="numSteps">The number of steps to increment by. Must be greater than 0.</param>
         void Increment(string achievementId, int numSteps, Action<SA_Result> callback);
-
     }
 }

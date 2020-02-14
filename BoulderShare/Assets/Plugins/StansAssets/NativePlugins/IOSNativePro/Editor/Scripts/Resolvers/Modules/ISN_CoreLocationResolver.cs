@@ -1,8 +1,3 @@
-﻿
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using SA.iOS.XCode;
 
 namespace SA.iOS
@@ -14,31 +9,37 @@ namespace SA.iOS
             var requirements = new ISN_XcodeRequirements();
             requirements.AddFramework(new ISD_Framework(ISD_iOSFramework.CoreLocation));
 
-            var NSLocationWhenInUseUsageDescription = new ISD_PlistKey();
-            NSLocationWhenInUseUsageDescription.Name = "NSLocationWhenInUseUsageDescription";
-            NSLocationWhenInUseUsageDescription.StringValue = ISN_Settings.Instance.LocationWhenInUseUsageDescription;
-            NSLocationWhenInUseUsageDescription.Type = ISD_PlistKeyType.String;
-            requirements.AddInfoPlistKey(NSLocationWhenInUseUsageDescription);
+            var nsLocationWhenInUseUsageDescription = new ISD_PlistKey();
+            nsLocationWhenInUseUsageDescription.Name = "NSLocationWhenInUseUsageDescription";
+            nsLocationWhenInUseUsageDescription.StringValue = ISN_Settings.Instance.LocationWhenInUseUsageDescription;
+            nsLocationWhenInUseUsageDescription.Type = ISD_PlistKeyType.String;
+            requirements.AddInfoPlistKey(nsLocationWhenInUseUsageDescription);
 
-            var NSLocationAlwaysAndWhenInUseUsageDescription = new ISD_PlistKey();
-            NSLocationAlwaysAndWhenInUseUsageDescription.Name = "NSLocationAlwaysAndWhenInUseUsageDescription";
-            NSLocationAlwaysAndWhenInUseUsageDescription.StringValue = ISN_Settings.Instance.LocationAlwaysAndWhenInUseUsageDescription;
-            NSLocationAlwaysAndWhenInUseUsageDescription.Type = ISD_PlistKeyType.String;
-            requirements.AddInfoPlistKey(NSLocationAlwaysAndWhenInUseUsageDescription);
+            var nsLocationAlwaysAndWhenInUseUsageDescription = new ISD_PlistKey();
+            nsLocationAlwaysAndWhenInUseUsageDescription.Name = "NSLocationAlwaysAndWhenInUseUsageDescription";
+            nsLocationAlwaysAndWhenInUseUsageDescription.StringValue = ISN_Settings.Instance.LocationAlwaysAndWhenInUseUsageDescription;
+            nsLocationAlwaysAndWhenInUseUsageDescription.Type = ISD_PlistKeyType.String;
+            requirements.AddInfoPlistKey(nsLocationAlwaysAndWhenInUseUsageDescription);
 
             return requirements;
         }
 
 
-        protected override string LibFolder { get { return "CoreLocation/"; } }
-        public override bool IsSettingsEnabled {
+        protected override string LibFolder
+        {
+            get { return "CoreLocation/"; }
+        }
+        
+        public override bool IsSettingsEnabled 
+        {
             get { return ISN_Settings.Instance.CoreLocation; }
             set { ISN_Settings.Instance.CoreLocation = value; }
-
         }
 
-        public override string DefineName { get { return "CORE_LOCATION_API_ENABLED"; } }
-
+        public override string DefineName
+        {
+            get { return "CORE_LOCATION_API_ENABLED"; }
+        }
     }
 }
 

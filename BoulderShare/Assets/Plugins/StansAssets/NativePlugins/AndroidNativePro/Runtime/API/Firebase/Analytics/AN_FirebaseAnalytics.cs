@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 #if AN_FIREBASE_ANALYTICS && (UNITY_IOS || UNITY_ANDROID)
 using Fire = Firebase.Analytics;
 #endif
@@ -16,6 +18,7 @@ namespace SA.Android.Firebase.Analytics
         /// <param name="eventName">event name.</param>
         public static void LogEvent(string eventName) {
 #if AN_FIREBASE_ANALYTICS && (UNITY_IOS || UNITY_ANDROID)
+            Debug.Log("LogEvent sent");
             Fire.FirebaseAnalytics.LogEvent(eventName);
 #endif
         }
@@ -28,6 +31,7 @@ namespace SA.Android.Firebase.Analytics
         /// <param name="data">event data.</param>
         public static void LogEvent(string eventName, IDictionary<string, object> data) {
 #if AN_FIREBASE_ANALYTICS && (UNITY_IOS || UNITY_ANDROID)
+            Debug.Log("LogEvent with data sent");
             List<Fire.Parameter> parameters = new List<Fire.Parameter>();
             foreach (var pair in data) {
                 string key = pair.Key;
@@ -66,6 +70,8 @@ namespace SA.Android.Firebase.Analytics
         /// </param>
         public static void Transaction(string productId, float amount, string currency) {
 #if AN_FIREBASE_ANALYTICS && (UNITY_IOS || UNITY_ANDROID)
+
+            Debug.Log("Monetization with data sent");
             List<Fire.Parameter> parameters = new List<Fire.Parameter>();
             parameters.Add(new Fire.Parameter(Fire.FirebaseAnalytics.ParameterCurrency, currency));
             parameters.Add(new Fire.Parameter(Fire.FirebaseAnalytics.ParameterItemId, productId));
@@ -73,19 +79,6 @@ namespace SA.Android.Firebase.Analytics
             parameters.Add(new Fire.Parameter(Fire.FirebaseAnalytics.ParameterQuantity, 1));
 
             Fire.FirebaseAnalytics.LogEvent(Fire.FirebaseAnalytics.EventEcommercePurchase, parameters.ToArray());
-#endif
-        }
-
-
-
-        /// <summary>
-        /// Sets the minimum engagement time required before starting a session. 
-        /// The default value 10 seconds.
-        /// </summary>
-        /// <param name="timeSpan">time span</param>
-        public static void SetMinimumSessionDuration(TimeSpan timeSpan) {
-#if AN_FIREBASE_ANALYTICS && (UNITY_IOS || UNITY_ANDROID)
-            Fire.FirebaseAnalytics.SetMinimumSessionDuration(timeSpan);
 #endif
         }
 

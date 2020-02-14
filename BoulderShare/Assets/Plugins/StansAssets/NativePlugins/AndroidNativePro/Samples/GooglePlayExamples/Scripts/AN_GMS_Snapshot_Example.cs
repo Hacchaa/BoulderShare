@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -98,7 +98,7 @@ public class AN_GMS_Snapshot_Example : MonoBehaviour {
         client.Open(name, createIfNotFound, conflictPolicy, (result) => {
             if(result.IsSucceeded) {
                 Debug.Log("We have snapshot, reading data...");
-                AN_Snapshot snapshot = result.Data;
+                AN_Snapshot snapshot = result.Data.GetSnapshot();
 
                 byte[] data = snapshot.ReadFully();
 

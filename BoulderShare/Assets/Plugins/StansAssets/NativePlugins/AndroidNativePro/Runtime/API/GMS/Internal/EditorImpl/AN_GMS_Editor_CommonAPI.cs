@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using SA.Foundation.Templates;
 using SA.Android.GMS.Common.Images;

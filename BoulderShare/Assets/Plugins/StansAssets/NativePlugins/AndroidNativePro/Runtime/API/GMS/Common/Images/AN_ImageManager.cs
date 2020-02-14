@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Android.GMS.Internal;
 
 namespace SA.Android.GMS.Common.Images

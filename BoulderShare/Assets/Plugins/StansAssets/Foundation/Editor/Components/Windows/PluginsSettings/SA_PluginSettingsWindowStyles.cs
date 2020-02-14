@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -198,11 +198,7 @@ namespace SA.Foundation.Editor
                 }
             }
         }
-
-
         
-
-
         public static Color SelectedElementColor {
             get {
                 if (EditorGUIUtility.isProSkin) {
@@ -213,9 +209,6 @@ namespace SA.Foundation.Editor
                 }
             }
         }
-
-
-
 
         public static Color SelectedImageColor {
             get {

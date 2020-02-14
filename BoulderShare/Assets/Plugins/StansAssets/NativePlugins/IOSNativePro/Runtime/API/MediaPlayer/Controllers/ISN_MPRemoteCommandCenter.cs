@@ -1,11 +1,13 @@
-﻿
+#if (UNITY_IPHONE || UNITY_IOS) && MEDIA_PLAYER_API_ENABLED && !UNITY_EDITOR
+ #define API_ENABLED
+#endif
+
 using System;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 using SA.iOS.Utilities;
 
-
-#if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+#if API_ENABLED
 using System.Runtime.InteropServices;
 #endif
 
@@ -18,7 +20,7 @@ namespace SA.iOS.MediaPlayer {
     public static class ISN_MPRemoteCommandCenter
     {
 
-#if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+#if API_ENABLED
 
         [DllImport("__Internal")] static extern void _ISN_MP_OnPlayCommand(IntPtr callback);
         [DllImport("__Internal")] static extern void _ISN_MP_OnPauseCommand(IntPtr callback);
@@ -28,9 +30,7 @@ namespace SA.iOS.MediaPlayer {
         [DllImport("__Internal")] static extern void _ISN_MP_OnPreviousTrackCommand(IntPtr callback);
 
 #endif
-
-
-        static SA_Event s_OnPlayCommand = null;
+        private static SA_Event s_OnPlayCommand = null;
 
         /// <summary>
         /// The command object for starting playback of the current item.
@@ -46,7 +46,7 @@ namespace SA.iOS.MediaPlayer {
                 if(s_OnPlayCommand == null) {
                     s_OnPlayCommand = new SA_Event();
 
-                    #if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+                    #if API_ENABLED
 
                     _ISN_MP_OnPlayCommand(ISN_MonoPCallback.ActionToIntPtr<SA_Result>((result) => {
                         s_OnPlayCommand.Invoke();
@@ -57,11 +57,6 @@ namespace SA.iOS.MediaPlayer {
                 return s_OnPlayCommand;
             }
         }
-
-
-
-
-
 
         static SA_Event s_OnPauseCommand = null;
 
@@ -78,7 +73,7 @@ namespace SA.iOS.MediaPlayer {
                 if (s_OnPauseCommand == null) {
                     s_OnPauseCommand = new SA_Event();
 
-                    #if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+                    #if API_ENABLED
 
                     _ISN_MP_OnPauseCommand(ISN_MonoPCallback.ActionToIntPtr<SA_Result>((result) => {
                         s_OnPauseCommand.Invoke();
@@ -106,7 +101,7 @@ namespace SA.iOS.MediaPlayer {
                 if (s_OnStopCommand == null) {
                     s_OnStopCommand = new SA_Event();
 
-                    #if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+                    #if API_ENABLED
 
                     _ISN_MP_OnStopCommand(ISN_MonoPCallback.ActionToIntPtr<SA_Result>((result) => {
                         s_OnStopCommand.Invoke();
@@ -117,9 +112,6 @@ namespace SA.iOS.MediaPlayer {
                 return s_OnStopCommand;
             }
         }
-
-
-
 
 
         static SA_Event s_OnNextTrackCommand = null;
@@ -137,7 +129,7 @@ namespace SA.iOS.MediaPlayer {
                 if (s_OnNextTrackCommand == null) {
                     s_OnNextTrackCommand = new SA_Event();
 
-                    #if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+                    #if API_ENABLED
 
                     _ISN_MP_OnNextTrackCommand(ISN_MonoPCallback.ActionToIntPtr<SA_Result>((result) => {
                         s_OnNextTrackCommand.Invoke();
@@ -165,7 +157,7 @@ namespace SA.iOS.MediaPlayer {
                 if (s_OnPreviousTrackCommand == null) {
                     s_OnPreviousTrackCommand = new SA_Event();
 
-                    #if ((UNITY_IPHONE || UNITY_TVOS) && MEDIA_PLAYER_API_ENABLED)
+                    #if API_ENABLED
 
                     _ISN_MP_OnPreviousTrackCommand(ISN_MonoPCallback.ActionToIntPtr<SA_Result>((result) => {
                         s_OnPreviousTrackCommand.Invoke();
@@ -176,9 +168,6 @@ namespace SA.iOS.MediaPlayer {
                 return s_OnPlayCommand;
             }
         }
-
-
-
     }
 
 }

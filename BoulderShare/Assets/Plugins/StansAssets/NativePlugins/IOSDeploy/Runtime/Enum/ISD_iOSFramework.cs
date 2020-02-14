@@ -1,8 +1,9 @@
-﻿
+
 
 namespace SA.iOS.XCode {
 
 	public enum ISD_iOSFramework {
+		AuthenticationServices,
 		Accelerate,
 		Accounts,
 		AddressBook,

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 #if UNITY_IPHONE || UNITY_TVOS
 using System.Runtime.InteropServices;
@@ -26,10 +26,13 @@ namespace SA.iOS.UIKit
         [DllImport("__Internal")] static extern string _ISN_UIApplicationOpenSettingsURLString();
 #endif
 
+        private static ISN_UIApplicationDelegate m_Delegate;
+
 
         [RuntimeInitializeOnLoadMethod]
-        static void Init() {
-            ISN_UIApplicationDelegate.Instantiate();
+        static void Init() 
+        {
+            m_Delegate = new ISN_UIApplicationDelegate();
         }
 
 
@@ -37,15 +40,18 @@ namespace SA.iOS.UIKit
         /// The number currently set as the badge of the app icon in Springboard.
         /// Set to 0 (zero) to hide the badge number. The default value of this property is 0.
         /// </summary>
-        public static long ApplicationBagesNumber {
-            get {
+        public static long ApplicationIconBadgeNumber 
+        {
+            get 
+            {
                 #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                     return _ISN_UI_GetApplicationBagesNumber();
                 #else
                     return 0; 
                 #endif
             }
-            set {
+            set 
+            {
                 #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                     _ISN_UI_SetApplicationBagesNumber(value);
                 #endif
@@ -57,8 +63,10 @@ namespace SA.iOS.UIKit
         /// When you open the URL built from this string, 
         /// the system launches the Settings app and displays the app’s custom settings, if it has any.
         /// </summary>
-        public static string OpenSettingsURLString {
-            get {
+        public static string OpenSettingsURLString 
+        {
+            get 
+            {
 #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                 return _ISN_UIApplicationOpenSettingsURLString();
 #else
@@ -76,7 +84,8 @@ namespace SA.iOS.UIKit
         /// More than one app can be registered to handle a scheme.
         /// The URL you pass to this method can have a common scheme or a custom scheme.
         /// </param>
-        public static bool CanOpenURL(string url) {
+        public static bool CanOpenURL(string url) 
+        {
             #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
             return _ISN_UI_CanOpenURL(url);
             #else
@@ -95,7 +104,8 @@ namespace SA.iOS.UIKit
         /// about registering the schemes you want to employ.
         /// </summary>
         /// <param name="url">URL.</param>
-        public static void OpenURL(string url) {
+        public static void OpenURL(string url) 
+        {
             #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
             _ISN_UI_OpenUrl(url);
             #endif
@@ -105,7 +115,8 @@ namespace SA.iOS.UIKit
         /// Will send an  application to background.
         /// Can be used to simulate Home button press.
         /// </summary>
-        public static void Suspend() {
+        public static void Suspend() 
+        {
             #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
             _ISN_UI_Suspend();
             #endif
@@ -115,9 +126,11 @@ namespace SA.iOS.UIKit
         /// <summary>
         /// A set of methods that are called in response to important events in the lifetime of your app.
         /// </summary>
-        public static ISN_UIApplicationDelegate ApplicationDelegate {
-            get {
-                return ISN_UIApplicationDelegate.Instance;
+        public static ISN_UIApplicationDelegate ApplicationDelegate 
+        {
+            get 
+            {
+                return m_Delegate;
             }
         }
 
@@ -138,8 +151,8 @@ namespace SA.iOS.UIKit
         /// If you do not request and receive authorization for your app's interactions, 
         /// the system delivers all remote notifications to your app silently.
         /// </summary>
-        public static void RegisterForRemoteNotifications() {
-            
+        public static void RegisterForRemoteNotifications() 
+        {  
             #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
             _ISN_UI_RegisterForRemoteNotifications();
             #endif
@@ -154,7 +167,8 @@ namespace SA.iOS.UIKit
         /// of the Settings app. 
         /// Apps unregistered through this method can always re-register.
         /// </summary>
-        public static void UnregisterForRemoteNotifications() {
+        public static void UnregisterForRemoteNotifications() 
+        {
             #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
             _ISN_UI_UnregisterForRemoteNotifications();
             #endif

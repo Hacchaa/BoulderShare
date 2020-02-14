@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using SA.Foundation.Time;
 using UnityEngine;
 
 namespace SA.iOS.CoreLocation
@@ -9,32 +10,62 @@ namespace SA.iOS.CoreLocation
     [Serializable]
     public class ISN_CLLocation 
     {
-        [SerializeField] double m_altitude = 0;
-        [SerializeField] int m_floor = 0;
-        [SerializeField] double m_speed = 0;
-        [SerializeField] double m_course = 0;
-        [SerializeField] long m_timestamp = 0;
-        [SerializeField] ISN_CLLocationCoordinate2D m_coordinate = null;
+        [SerializeField] private double m_Altitude;
+        [SerializeField] private int m_Floor = 0;
+        [SerializeField] private double m_Speed = 0;
+        [SerializeField] private double m_Course = 0;
+        [SerializeField] private long m_Timestamp;
+        [SerializeField] private double m_HorizontalAccuracy;
+        [SerializeField] private double m_VerticalAccuracy;
+        [SerializeField] private ISN_CLLocationCoordinate2D m_Coordinate;
 
+        /// <summary>
+        /// Creates a location object with the specified coordinate and altitude information.
+        /// </summary>
+        /// <param name="coordinate">A coordinate structure containing the latitude and longitude values.</param>
+        /// <param name="altitude">The altitude value for the location.</param>
+        /// <param name="hAccuracy">
+        /// The radius of uncertainty for the geographical coordinate, measured in meters.
+        /// Specify a negative number to indicate that the geographical coordinate is invalid.
+        /// </param>
+        /// <param name="vAccuracy">
+        /// The accuracy of the altitude value, measured in meters.
+        /// Specify a negative number to indicate that the altitude is invalid.
+        /// </param>
+        /// <param name="timestamp">
+        /// he time to associate with the location object.
+        /// Typically, you specify the current time.
+        /// </param>
+        public ISN_CLLocation(ISN_CLLocationCoordinate2D coordinate,
+            double altitude,
+            double hAccuracy,
+            double vAccuracy,
+            DateTime timestamp)
+        {
+            m_Coordinate = coordinate;
+            m_Altitude = altitude;
+            m_HorizontalAccuracy = hAccuracy;
+            m_VerticalAccuracy = vAccuracy;
+            m_Timestamp = SA_Unix_Time.ToUnixTime(timestamp);
+        }
+        
         /// <summary>
         /// The altitude, measured in meters.
         /// Positive values indicate altitudes above sea level.
         /// Negative values indicate altitudes below sea level.
         /// </summary>
-        public double Altitude {
-            get {
-                return m_altitude;
-            }
+        public double Altitude 
+        {
+            get { return m_Altitude; }
         }
 
         /// <summary>
         /// The logical floor of the building in which the user is located.
         /// If floor information is not available for the current location, the value of this property is -1.
         /// </summary>
-        public int Floor {
-            get {
-                return m_floor;
-            }
+        public int Floor 
+        {
+            get { return m_Floor; }
         }
         
         /// <summary>
@@ -45,10 +76,9 @@ namespace SA.iOS.CoreLocation
         /// Because the actual speed can change many times between the delivery of location events,
         /// use this property for informational purposes only.
         /// </summary>
-        public double Speed {
-            get {
-                return m_speed;
-            }
+        public double Speed 
+        {
+            get { return m_Speed; }
         }
 
         /// <summary>
@@ -57,19 +87,17 @@ namespace SA.iOS.CoreLocation
         /// Thus, north is 0 degrees, east is 90 degrees, south is 180 degrees, and so on.
         /// Course values may not be available on all devices. A negative value indicates that the course information is invalid.
         /// </summary>
-        public double Course {
-            get {
-                return m_course;
-            }
+        public double Course 
+        {
+            get { return m_Course; }
         }
 
         /// <summary>
         /// The time at which this location was determined.
         /// </summary>
-        public long Timestamp {
-            get {
-                return m_timestamp;
-            }
+        public DateTime Timestamp 
+        {
+            get { return SA_Unix_Time.ToDateTime(m_Timestamp); }
         }
 
         /// <summary>
@@ -77,10 +105,53 @@ namespace SA.iOS.CoreLocation
         /// When running in the simulator, Core Location uses the values provided to it by the simulator.
         /// You must run your application on an iOS-based device to get the actual location of that device.
         /// </summary>
-        public ISN_CLLocationCoordinate2D Coordinate {
-            get {
-                return m_coordinate;
-            }
+        public ISN_CLLocationCoordinate2D Coordinate 
+        {
+            get { return m_Coordinate; }
+        }
+
+        /// <summary>
+        /// The radius of uncertainty for the location, measured in meters.
+        ///
+        /// The location’s latitude and longitude identify the center of the circle,
+        /// and this value indicates the radius of that circle.
+        /// A negative value indicates that the latitude and longitude are invalid.
+        /// </summary>
+        public double HorizontalAccuracy
+        {
+            get { return m_HorizontalAccuracy; }
+        }
+
+        /// <summary>
+        /// The accuracy of the altitude value, measured in meters.
+        ///
+        /// When this property contains 0 or a positive number,
+        /// the value in the <see cref="Altitude"/> property is plus or minus the specified number of meters.
+        /// When this property contains a negative number, the value in the <see cref="Altitude"/> property is invalid.
+        ///
+        ///Determining the vertical accuracy requires a device with GPS capabilities.
+        /// Thus, on some devices, this property always contains a negative value.
+        /// </summary>
+        public double VerticalAccuracy
+        {
+            get { return m_VerticalAccuracy; }
+        }
+
+        /// <summary>
+        /// Returns the distance (measured in meters) from the current object's location to the specified location.
+        ///
+        /// This method measures the distance between the location in the current object
+        /// and the value in the location parameter.
+        /// The distance is calculated by tracing a line between the two points
+        /// that follows the curvature of the Earth, and measuring the length of the resulting arc.
+        /// The arc is a smooth curve that does not take into account altitude changes
+        /// between the two locations.
+        /// </summary>
+        /// <param name="location">The destination location.</param>
+        /// <returns>The distance (in meters) between the two locations.</returns>
+        public double DistanceFromLocation(ISN_CLLocation location)
+        {
+            return ISN_CLNativeAPI.CllocationDistanceFromLocation(this, location);
         }
     }
 }

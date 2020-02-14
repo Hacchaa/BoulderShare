@@ -6,8 +6,8 @@
 
 @protocol ISN_CLLocationCoordinate2D;
 @interface ISN_CLLocationCoordinate2D : JSONModel
-@property (nonatomic) float m_latitude;
-@property (nonatomic) float m_longitude;
+@property (nonatomic) double m_Latitude;
+@property (nonatomic) double m_Longitude;
 
 -(id) initWithCLLocationCoordinate2D:(CLLocationCoordinate2D ) location;
 -(CLLocationCoordinate2D ) getCLLocationCoordinate2D;
@@ -29,14 +29,17 @@
 
 @protocol ISN_CLLocation;
 @interface ISN_CLLocation : JSONModel
-@property (nonatomic) ISN_CLLocationCoordinate2D* m_coordinate;
-@property (nonatomic) double m_altitude;
-@property (nonatomic) int m_floor;
-@property (nonatomic) double m_speed;
-@property (nonatomic) double m_course;
-@property (nonatomic) long m_timestamp;
+@property (nonatomic) ISN_CLLocationCoordinate2D* m_Coordinate;
+@property (nonatomic) double m_Altitude;
+@property (nonatomic) int m_Floor;
+@property (nonatomic) double m_Speed;
+@property (nonatomic) double m_Course;
+@property (nonatomic) long m_Timestamp;
+@property (nonatomic) double m_HorizontalAccuracy;
+@property (nonatomic) double m_VerticalAccuracy;
 
 -(id) initWithCLLocation:(CLLocation *) location;
+-(CLLocation *) getCLLocation;
 @end
 
 @protocol ISN_CLLocationArray;

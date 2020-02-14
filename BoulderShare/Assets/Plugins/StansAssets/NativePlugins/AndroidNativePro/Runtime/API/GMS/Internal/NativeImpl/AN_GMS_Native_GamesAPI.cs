@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SA.Foundation.Templates;
 using UnityEngine;
 
 using SA.Android.GMS.Games;
+using SA.Android.GMS.Games.Multiplayer;
 using SA.Android.Utilities;
 
 namespace SA.Android.GMS.Internal
@@ -47,41 +48,10 @@ namespace SA.Android.GMS.Internal
             return JsonUtility.FromJson<AN_SnapshotsClient>(json);
         }
 
-
-        //--------------------------------------
-        // AN_Player
-        //--------------------------------------
-
-        const string AN_Player = JAVA_PACKAGE  + "AN_Player";
-
-
-        public string Player_GetPlayerId(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<string>(AN_Player, "GetPlayerId", player.HashCode);
+        public AN_RealTimeMultiplayerClient GetRealTimeMultiplayerClient()
+        {
+            var json = AN_Java.Bridge.CallStatic<string>(AN_Games, "GetRealTimeMultiplayerClient");
+            return JsonUtility.FromJson<AN_RealTimeMultiplayerClient>(json);
         }
-
-        public string Player_GetDisplayName(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<string>(AN_Player, "GetDisplayName", player.HashCode);
-        }
-
-        public string Player_GetTitle(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<string>(AN_Player, "GetTitle", player.HashCode);
-        }
-
-        public bool Player_HasIconImage(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<bool>(AN_Player, "HasIconImage", player.HashCode);
-        }
-
-        public bool Player_HasHiResImage(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<bool>(AN_Player, "HasHiResImage", player.HashCode);
-        }
-
-        public string Player_GetHiResImageUri(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<string>(AN_Player, "GetHiResImageUri", player.HashCode);
-        }
-
-        public string Player_GetIconImageUri(AN_Player player) {
-            return AN_Java.Bridge.CallStatic<string>(AN_Player, "GetIconImageUri", player.HashCode);
-        }
-
     }
 }

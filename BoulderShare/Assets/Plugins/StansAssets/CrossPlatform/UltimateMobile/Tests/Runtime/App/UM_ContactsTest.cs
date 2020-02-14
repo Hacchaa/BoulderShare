@@ -1,4 +1,6 @@
-﻿using System.Collections;
+#if UNITY_2018_1_OR_NEWER
+
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using SA.CrossPlatform.App;
@@ -47,3 +49,5 @@ namespace SA.CrossPlatform.Tests.App
         }
     }
 }
+
+#endif

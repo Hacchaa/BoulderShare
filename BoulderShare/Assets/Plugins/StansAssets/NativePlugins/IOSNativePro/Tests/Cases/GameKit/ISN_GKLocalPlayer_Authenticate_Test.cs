@@ -1,4 +1,4 @@
-﻿
+
 
 using UnityEngine;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace SA.iOS.Tests.GameKit
 
         public override void Test() {
 
-            ISN_GKLocalPlayer.Authenticate((SA_Result result) => {
+            ISN_GKLocalPlayer.setAuthenticateHandler((SA_Result result) => {
                if(result.IsSucceeded) {
                     ISN_GKLocalPlayer player = ISN_GKLocalPlayer.LocalPlayer;
                     ISN_Logger.Log("player.PlayerID: " + player.PlayerID);

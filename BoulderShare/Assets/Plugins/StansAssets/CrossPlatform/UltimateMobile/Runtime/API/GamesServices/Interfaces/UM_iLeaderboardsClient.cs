@@ -1,32 +1,27 @@
 
 using System;
-using UnityEngine;
 using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.GameServices
 {
-
     /// <summary>
     /// A client to interact with leaderboards functionality.
     /// </summary>
     public interface UM_iLeaderboardsClient
     {
         
-      
         /// <summary>
         /// Show the native UI with the list of leaderboards for a game.
         /// </summary>
         /// <param name="callback">Operation callback.</param>
         void ShowUI(Action<SA_Result> callback);
-
-
+        
         /// <summary>
         /// Show the native UI of the specified leaderboard.
         /// </summary>
         /// <param name="leaderboardId">The Id of the leaderboard to view.</param>
         /// <param name="callback">Operation callback.</param>
         void ShowUI(string leaderboardId, Action<SA_Result> callback);
-
 
         /// <summary>
         /// Show the native UI of the specified leaderboard and time span page.
@@ -35,7 +30,6 @@ namespace SA.CrossPlatform.GameServices
         /// <param name="timeSpan">ime span to retrieve data for.</param>
         /// <param name="callback">Operation callback.</param>
         void ShowUI(string leaderboardId, UM_LeaderboardTimeSpan timeSpan, Action<SA_Result> callback);
-
 
         /// <summary>
         /// Submits the score to the game service.
@@ -63,13 +57,11 @@ namespace SA.CrossPlatform.GameServices
         /// </param>
         /// <param name="callback">Operation callback.</param>
         void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback);
-
-
+        
         /// <summary>
-        /// Asynchronously loads game registred leaderboards metadata
+        /// Asynchronously loads game registered leaderboards metadata
         /// </summary>
         void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback);
-
 
         /// <summary>
         /// Asynchronously loads <see cref="UM_Score"/> 

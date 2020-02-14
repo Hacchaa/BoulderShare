@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
 using SA.iOS.Foundation.Internal;
 
 namespace SA.iOS.Foundation
@@ -16,53 +14,39 @@ namespace SA.iOS.Foundation
     [Serializable]
     public class ISN_NSTimeZone
     {
-
         [SerializeField] string m_name = null;
         [SerializeField] string m_description = null;
         [SerializeField] private int m_secondsFromGMT = 0;
-
-
+        
         //--------------------------------------
         // Get / Set
         //--------------------------------------
-
 
         /// <summary>
         /// The geopolitical region ID that identifies the receiver.
         /// </summary>
         public string Name {
-            get {
-                return m_name;
-            }
+            get { return m_name; }
         }
-
-
+        
         /// <summary>
         /// A textual description of the time zone including the name, abbreviation, 
         /// offset from GMT, and whether or not daylight saving time is currently in effect.
         /// </summary>
         public string Description {
-            get {
-                return m_description;
-            }
-
+            get { return m_description; }
         }
-
-
+        
         /// <summary>
         /// The current difference in seconds between the receiver and Greenwich Mean Time.
         /// </summary>
         public int SecondsFromGMT {
-            get {
-                return m_secondsFromGMT;
-            }
+            get { return m_secondsFromGMT; }
         }
-
 
         //--------------------------------------
         // Static Methods
         //--------------------------------------
-
 
         /// <summary>
         /// Clears any time zone value cached for the systemTimeZone property.
@@ -72,11 +56,11 @@ namespace SA.iOS.Foundation
         /// If you subsequently access the  <see cref="SystemTimeZone"/> class property, 
         /// a new time zone object is created and cached.
         /// </summary>
-        public static void ResetSystemTimeZone() {
+        public static void ResetSystemTimeZone() 
+        {
             ISN_NSLib.API.ResetSystemTimeZone();
         }
-
-
+        
         /// <summary>
         /// Gets the local time zone.
         /// 
@@ -95,14 +79,11 @@ namespace SA.iOS.Foundation
         /// Contrast this behavior with that of the <see cref="LocalTimeZone"/> class property, 
         /// which returns a proxy object that always reflects the current system time zone.
         /// </summary>
-        public static ISN_NSTimeZone LocalTimeZone {
-            get {
-                return ISN_NSLib.API.LocalTimeZone;
-            }
+        public static ISN_NSTimeZone LocalTimeZone 
+        {
+            get { return ISN_NSLib.API.LocalTimeZone; }
         }
-
-
-
+        
         /// <summary>
         /// Gets the local time zone.
         /// 
@@ -121,13 +102,11 @@ namespace SA.iOS.Foundation
         /// Contrast this behavior with that of the <see cref="LocalTimeZone"/> class property, 
         /// which returns a proxy object that always reflects the current system time zone.
         /// </summary>
-        public static ISN_NSTimeZone SystemTimeZone {
-            get {
-                return ISN_NSLib.API.SystemTimeZone;
-            }
+        public static ISN_NSTimeZone SystemTimeZone 
+        {
+            get { return ISN_NSLib.API.SystemTimeZone; }
         }
-
-
+        
         /// <summary>
         /// The default time zone for the current app.
         /// 
@@ -144,11 +123,9 @@ namespace SA.iOS.Foundation
         /// Contrast this behavior with that of the localTimeZone class property, 
         /// which returns a proxy object that always reflects the current system time zone.
         /// </summary>
-        public static ISN_NSTimeZone DefaultTimeZone {
-            get {
-                return ISN_NSLib.API.DefaultTimeZone;
-            }
+        public static ISN_NSTimeZone DefaultTimeZone 
+        {
+            get { return ISN_NSLib.API.DefaultTimeZone; }
         }
-
     }
 }

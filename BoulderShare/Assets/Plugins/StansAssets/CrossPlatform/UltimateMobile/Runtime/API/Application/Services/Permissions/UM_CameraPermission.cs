@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Android.Manifest;
 using SA.iOS.AVFoundation;
 
@@ -34,7 +34,7 @@ namespace  SA.CrossPlatform.App
 
         protected override AMM_ManifestPermission[] AndroidPermissions
         {
-            get { return new []{ AMM_ManifestPermission.WRITE_EXTERNAL_STORAGE, AMM_ManifestPermission.READ_EXTERNAL_STORAGE }; }
+            get { return new []{ AMM_ManifestPermission.CAMERA, AMM_ManifestPermission.WRITE_EXTERNAL_STORAGE, AMM_ManifestPermission.READ_EXTERNAL_STORAGE }; }
         }
     }
 

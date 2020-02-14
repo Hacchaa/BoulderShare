@@ -1,45 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using SA.Foundation.Editor;
-using SA.Foundation.Utility;
 using SA.Foundation.UtilitiesEditor;
 
 namespace SA.Facebook
 {
-
     public class SA_FB_EditorWindow : EditorWindow
     {
-
-        private static string newPermition = string.Empty;
-        private const string SDK_DOWNLOAD_URL = "https://developers.facebook.com/docs/unity";
-        private static Editor m_facebookSettingsEditor = null;
-
-
+        private static Editor s_FacebookSettingsEditor = null;
+        private static string s_NewPermission = string.Empty;
+        private const string k_SDKDownloadUrl = "https://developers.facebook.com/docs/unity";
+        private const string k_MyAppsPageUrl = "https://developers.facebook.com/apps/";
 
         private void OnEnable() {
             titleContent = new GUIContent("Facebook");
             minSize = new Vector2(350, 100);
         }
 
-
         void OnGUI() {
-
             DrawSettingsUI();
-
         }
 
-        public static void DrawSettingsUI() {
-
-
-            
-
-           // FB_Plugin.FacebookSdkVersion.Build
-
+        public static void DrawSettingsUI() 
+        {
             using (new SA_WindowBlockWithSpace(new GUIContent("Facebook SDK"))) {
-                if (SA_FB_InstallationProcessing.IsSDKInstalled) {
+                if (SA_FB.IsSDKInstalled) {
                     EditorGUILayout.HelpBox("Facebook SDK Installed!", MessageType.Info);
+                    var click = GUILayout.Button("My Apps Page", EditorStyles.miniButton, GUILayout.Width(120));
+                    if (click) {
+                        Application.OpenURL(k_MyAppsPageUrl);
+                    }
                 } else {
 
                     EditorGUILayout.HelpBox("Facebook SDK Required!", MessageType.Warning);
@@ -47,7 +37,7 @@ namespace SA.Facebook
                         GUILayout.FlexibleSpace();
                         var click = GUILayout.Button("Download SDK", EditorStyles.miniButton, GUILayout.Width(120));
                         if (click) {
-                            Application.OpenURL(SDK_DOWNLOAD_URL);
+                            Application.OpenURL(k_SDKDownloadUrl);
                         }
 
                         var refreshClick = GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(120));
@@ -58,29 +48,29 @@ namespace SA.Facebook
                 }
             }
 
-            if (!SA_FB_InstallationProcessing.IsSDKInstalled) {
+            if (!SA_FB.IsSDKInstalled) {
                 return;
             }
 
             using (new SA_WindowBlockWithSpace(new GUIContent("SDK Settings"))) {
-                if (m_facebookSettingsEditor == null) {
+                if (s_FacebookSettingsEditor == null) {
                     var facebookSettings = Resources.Load("FacebookSettings") as ScriptableObject;
                     if(facebookSettings != null) {
-                        m_facebookSettingsEditor = Editor.CreateEditor(facebookSettings);
+                        s_FacebookSettingsEditor = Editor.CreateEditor(facebookSettings);
                     }
                 }
 
-                if(m_facebookSettingsEditor == null) {
+                if(s_FacebookSettingsEditor == null) {
                     EditorGUILayout.HelpBox("Facebook Settings Resources can't be located! " +
-                        "Try to use Facebook plugin top menu in order to tirgger Settings Resources creation.", 
+                        "Try to use Facebook plugin top menu in order to trigger Settings Resources creation.", 
                         MessageType.Warning);
                     return;
                 }
 
                 EditorGUI.BeginChangeCheck();
-                m_facebookSettingsEditor.OnInspectorGUI();
+                s_FacebookSettingsEditor.OnInspectorGUI();
                 if(EditorGUI.EndChangeCheck()) {
-                    SA_EditorUtility.SetDirty(m_facebookSettingsEditor.target);
+                    SA_EditorUtility.SetDirty(s_FacebookSettingsEditor.target);
                 }
                 
             }
@@ -93,7 +83,7 @@ namespace SA.Facebook
 
                 using (new SA_GuiBeginHorizontal()) {
                     EditorGUILayout.LabelField("Add new scope: ");
-                    newPermition = EditorGUILayout.TextField(newPermition);
+                    s_NewPermission = EditorGUILayout.TextField(s_NewPermission);
                 }
 
 
@@ -105,12 +95,12 @@ namespace SA.Facebook
 
 
                     if (GUILayout.Button("Add", GUILayout.Width(100))) {
-                        if (newPermition != string.Empty) {
-                            newPermition = newPermition.Trim();
-                            if (!SA_FB_Settings.Instance.Scopes.Contains(newPermition)) {
-                                SA_FB_Settings.Instance.Scopes.Add(newPermition);
+                        if (s_NewPermission != string.Empty) {
+                            s_NewPermission = s_NewPermission.Trim();
+                            if (!SA_FB_Settings.Instance.Scopes.Contains(s_NewPermission)) {
+                                SA_FB_Settings.Instance.Scopes.Add(s_NewPermission);
                             }
-                            newPermition = string.Empty;
+                            s_NewPermission = string.Empty;
                         }
                     }
                 }

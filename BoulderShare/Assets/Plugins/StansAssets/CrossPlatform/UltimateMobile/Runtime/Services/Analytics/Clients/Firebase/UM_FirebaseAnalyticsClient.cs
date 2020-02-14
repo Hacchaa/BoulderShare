@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using SA.Android.Firebase.Analytics;
@@ -12,9 +12,6 @@ namespace SA.CrossPlatform.Analytics
         public UM_FirebaseAnalyticsClient() {
 
             var firebaseClient = UM_Settings.Instance.Analytics.FirebaseClient;
-
-
-            AN_FirebaseAnalytics.SetMinimumSessionDuration(TimeSpan.FromSeconds(firebaseClient.MinimumSessionDuration));
             AN_FirebaseAnalytics.SetSessionTimeoutDuration(TimeSpan.FromSeconds(firebaseClient.SessionTimeoutDuration));
         }
 

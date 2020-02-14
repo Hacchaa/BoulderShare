@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using SA.iOS.GameKit;
@@ -10,10 +10,12 @@ namespace SA.CrossPlatform.GameServices
     internal class UM_IOSAchievementsClient : UM_AbstractAchievementsClient, UM_iAchievementsClient
     {
 
-        public void ShowUI() {
+        public void ShowUI(Action<SA_Result> callback) {
             ISN_GKGameCenterViewController viewController = new ISN_GKGameCenterViewController();
             viewController.ViewState = ISN_GKGameCenterViewControllerState.Achievements;
-            viewController.Show();
+            viewController.Show(() => {
+                callback.Invoke(new SA_Result());
+            });
         }
 
 

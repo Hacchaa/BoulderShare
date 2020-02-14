@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ namespace SA.Android.GMS.Games
         /// Required Scopes: SCOPE_GAMES_LITE
         /// </summary>
         /// <param name="callback">player load callback.</param>
-        public void GetCurrentPlayer(Action<AN_LinkedObjectResult<AN_Player>> callback) {
+        public void GetCurrentPlayer(Action<AN_SerializedObjectResult<AN_Player>> callback) {
             AN_GMS_Lib.Players.GetCurrentPlayer(this, callback);
         }
 

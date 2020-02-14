@@ -24,7 +24,5 @@ namespace SA.iOS.AVKit.Internal
             _ISN_AV_ShowPlayerViewController(JsonUtility.ToJson(controller));
 #endif
         }
-
-       
     }
 }

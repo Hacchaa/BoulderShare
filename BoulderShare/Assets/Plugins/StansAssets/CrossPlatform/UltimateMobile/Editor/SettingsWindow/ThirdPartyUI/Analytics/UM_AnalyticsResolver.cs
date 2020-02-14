@@ -1,4 +1,4 @@
-﻿using SA.Foundation.Editor;
+using SA.Foundation.Editor;
 
 namespace SA.CrossPlatform
 {
@@ -11,6 +11,11 @@ namespace SA.CrossPlatform
             }
 
             set { }
+        }
+
+        public void ResetRequirementsCache()
+        {
+           
         }
     }
 }

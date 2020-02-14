@@ -1,4 +1,4 @@
-﻿using SA.Foundation.Templates;
+using SA.Foundation.Templates;
 using SA.CrossPlatform.Analytics;
 
 

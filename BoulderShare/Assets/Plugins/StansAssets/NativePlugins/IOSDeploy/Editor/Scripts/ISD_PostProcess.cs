@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Deploy
 // @author Stanislav Osipov (Stan's Assets) 
@@ -6,19 +6,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#if (UNITY_IOS || UNITY_TVOS) && !ISD_DISABLED
 
+
+#if (UNITY_IOS || UNITY_TVOS) && !ISD_DISABLED
 using UnityEngine;
 using UnityEditor;
+using System.Reflection;
 using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEditor.iOS.Xcode.Extensions;
-
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Reflection;
-
-using SA.Foundation.Utility;
 using SA.Foundation.UtilitiesEditor;
 
 namespace SA.iOS.XCode
@@ -26,48 +24,47 @@ namespace SA.iOS.XCode
 
     public class ISD_PostProcess
     {
-
-
         [PostProcessBuild(100)]
         public static void OnPostprocessBuild(BuildTarget target, string projectPath) {
             
-            var pbxProjPath = PBXProject.GetPBXProjectPath(projectPath); 
-
-
-            PBXProject proj = new PBXProject();
+            var pbxProjPath = PBXProject.GetPBXProjectPath(projectPath);
+            var proj = new PBXProject();
             proj.ReadFromFile(pbxProjPath);
-            string targetGuid = proj.TargetGuidByName("Unity-iPhone");
-
+            
+            #if UNITY_2019_3_OR_NEWER
+                var targetGuid = proj.GetUnityMainTargetGuid();
+                var frameworkTargetGuid = proj.GetUnityFrameworkTargetGuid();
+            #else
+                var targetGuid = proj.TargetGuidByName("Unity-iPhone");
+                var frameworkTargetGuid = proj.TargetGuidByName("Unity-iPhone");
+            #endif
 
             RegisterAppLanguages();
 
             AddFlags(proj, targetGuid);
             AddLibraries(proj, targetGuid);
-            AddFrameworks(proj, targetGuid, target);
-            AddEmbededFrameworks(proj, targetGuid);
-            AddPlistVariables(proj, projectPath, targetGuid);
-            ApplyBuildSettings(proj, targetGuid);
+            AddFrameworks(proj, frameworkTargetGuid, target);
+            AddEmbeddedFrameworks(proj, targetGuid);
+            AddPlistVariables(projectPath);
+            ApplyBuildSettings(proj, frameworkTargetGuid);
             CopyAssetFiles(proj, projectPath, targetGuid);
             AddShellScriptBuildPhase(proj, targetGuid);
-                    
+            
             proj.WriteToFile(pbxProjPath);
 
-
-			var capManager = new ProjectCapabilityManager(pbxProjPath, ISD_Settings.ENTITLEMENTS_FILE_NAME, "Unity-iPhone");
-			AddCapabilities(proj, targetGuid, capManager);
+            var capManager = new ProjectCapabilityManager(pbxProjPath, ISD_Settings.ENTITLEMENTS_FILE_NAME, "Unity-iPhone");
+			AddCapabilities(capManager);
 			capManager.WriteToFile();
-            
-
 
             //Some API simply does not work so on this block we are applying a workaround
             //after Unity deploy scrips has stopped working
 
-            //Addons EmbededFrameworks
+            //Adding Embedded Frameworks
             foreach (var framework in ISD_Settings.Instance.EmbededFrameworks) {
-                string contents = File.ReadAllText(pbxProjPath);
-                string pattern = "(?<=Embed Frameworks)(?:.*)(\\/\\* " + framework.FileName + "\\ \\*\\/)(?=; };)";
-                string oldText = "/* " + framework.FileName + " */";
-                string updatedText = "/* " + framework.FileName + " */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }";
+                var contents = File.ReadAllText(pbxProjPath);
+                var pattern = "(?<=Embed Frameworks)(?:.*)(\\/\\* " + framework.FileName + "\\ \\*\\/)(?=; };)";
+                var oldText = "/* " + framework.FileName + " */";
+                var updatedText = "/* " + framework.FileName + " */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }";
                 contents = Regex.Replace(contents, pattern, m => m.Value.Replace(oldText, updatedText));
                 File.WriteAllText(pbxProjPath, contents);
             }
@@ -96,22 +93,19 @@ namespace SA.iOS.XCode
                     Debug.LogWarning("ISD: EntitlementsMode set to Manual but no file provided");
                 }
             }
-
-
-
-
-
         }
 
-        static void AddPlistVariables(PBXProject proj, string pathToBuiltProject, string targetGUID) {
+        private static void AddPlistVariables(string projectPath) 
+        {
             var infoPlist = new PlistDocument();
-            var infoPlistPath = pathToBuiltProject + "/Info.plist";
+            var infoPlistPath = projectPath + "/Info.plist";
             infoPlist.ReadFromFile(infoPlistPath);
 
-            foreach(var variable in ISD_Settings.Instance.PlistVariables) {
-
+            foreach(var variable in ISD_Settings.Instance.PlistVariables) 
+            { 
                PlistElement plistVariable = null;
-               switch (variable.Type) {
+               switch (variable.Type) 
+               {
                     case ISD_PlistKeyType.String:
                         plistVariable = new PlistElementString(variable.StringValue);
                         break;
@@ -127,19 +121,28 @@ namespace SA.iOS.XCode
                     case ISD_PlistKeyType.Dictionary:
                         plistVariable = CreatePlistDict(variable);
                         break;
-
-
                 }
 
                 infoPlist.root[variable.Name] = plistVariable;
             }
+            
+            
+            // Get root
+            PlistElementDict rootDict = infoPlist.root;
+ 
+            /*
+            // Set encryption usage boolean
+            string encryptKey = "ITSAppUsesNonExemptEncryption";
+            rootDict.SetBoolean(encryptKey, false);*/
+ 
+            // remove exit on suspend if it exists.
+            string exitsOnSuspendKey = "UIApplicationExitsOnSuspend";
+            if(rootDict.values.ContainsKey(exitsOnSuspendKey))
+            {
+                rootDict.values.Remove(exitsOnSuspendKey);
+            }
 
             infoPlist.WriteToFile(infoPlistPath);
-
-
-
-           
-
         }
 
 
@@ -207,9 +210,6 @@ namespace SA.iOS.XCode
             return dict;
         }
 
-
-
-
         static void ApplyBuildSettings(PBXProject proj, string targetGUID) {
             foreach(var property in ISD_Settings.Instance.BuildProperties) {
                 proj.SetBuildProperty(targetGUID, property.Name, property.Value);
@@ -227,11 +227,7 @@ namespace SA.iOS.XCode
                     proj.AddBuildProperty(targetGuid, "OTHER_CFLAGS", flag.Name);
                 }
             }
-            
-           
-           
         }
-
 
         static void RegisterAppLanguages() {
 
@@ -253,14 +249,10 @@ namespace SA.iOS.XCode
 
             ISD_API.SetInfoPlistKey(CFBundleLocalizations);
         }
-
-
-        static void AddCapabilities(PBXProject proj, string targetGuid, ProjectCapabilityManager capManager) {
-
-
-
+        
+        private static void AddCapabilities(ProjectCapabilityManager capManager) {
+            
             var capability = ISD_Settings.Instance.Capability;
-
             if (capability.iCloud.Enabled) {
 
                 if (capability.iCloud.iCloudDocument || capability.iCloud.customContainers.Count > 0) {
@@ -268,8 +260,6 @@ namespace SA.iOS.XCode
                 } else {
                     capManager.AddiCloud(capability.iCloud.keyValueStorage, false, null);
                 }
-
-
             }
 
             if(capability.PushNotifications.Enabled) {
@@ -280,6 +270,10 @@ namespace SA.iOS.XCode
                 capManager.AddGameCenter();
             }
 
+            if(capability.SignInWithApple.Enabled) {
+                capManager.AddSignInWithApple();
+            }
+
             if(capability.Wallet.Enabled) {
                 capManager.AddWallet(capability.Wallet.passSubset.ToArray());
             }
@@ -287,7 +281,7 @@ namespace SA.iOS.XCode
             if(capability.Siri.Enabled) {
                 capManager.AddSiri();
             }
-
+        
             if(capability.ApplePay.Enabled) {
                 capManager.AddApplePay(capability.ApplePay.merchants.ToArray());
             }
@@ -350,89 +344,54 @@ namespace SA.iOS.XCode
             if (capability.WirelessAccessoryConfiguration.Enabled) {
                 capManager.AddWirelessAccessoryConfiguration();
             }
-
-            /*
-
-
-            if (ISD_Settings.Instance.Capabilities.Count == 0) {
-                return;
-            }
-
-
-            foreach (var cap in ISD_Settings.Instance.Capabilities) {
-                switch(cap.CapabilityType) {  
-                 
-
-                     case ISD_CapabilityType.InAppPurchase:
-                        capManager.AddInAppPurchase();
-                        break;
-                    case ISD_CapabilityType.GameCenter:
-                        capManager.AddGameCenter();
-                        break;
-                    case ISD_CapabilityType.PushNotifications:
-                        var pushSettings = ISD_Settings.Instance.PushNotificationsCapabilitySettings;
-                        capManager.AddPushNotifications(pushSettings.Development);
-                        break;
-
-                    default:
-                        var capability = ISD_PBXCapabilityTypeUtility.ToPBXCapability(cap.CapabilityType);
-                        string entitlementsFilePath = null;
-                        if(!string.IsNullOrEmpty(cap.EntitlementsFilePath)) {
-                            entitlementsFilePath = cap.EntitlementsFilePath;
-                        } 
-
-
-                        proj.AddCapability(targetGuid, capability, entitlementsFilePath, cap.AddOptionalFramework); 
-                        break;
-                }
-            }
-            */
-
-
         }
-
-
+        
         static void AddFrameworks(PBXProject proj, string targetGuid, BuildTarget target) {
             foreach (ISD_Framework framework in ISD_Settings.Instance.Frameworks) {
 
-                if(IsAvaliableOnPlatfrom(framework, target)) {
+                if (target == BuildTarget.tvOS)
+                {
+                    if (framework.Type == ISD_iOSFramework.EventKit)
+                    {
+                        continue;
+                    }
+                }
+                
+                if(IsAvailableOnPlatform(framework, target)) {
                     proj.AddFrameworkToProject(targetGuid, framework.Name, framework.IsOptional);
                 }
 
             }
         }
 
-        static bool IsAvaliableOnPlatfrom(ISD_Framework framework, BuildTarget target) {
-            if(target == BuildTarget.tvOS) {
-                switch(framework.Type) {
+        private static bool IsAvailableOnPlatform(ISD_Framework framework, BuildTarget target) {
+            if(target == BuildTarget.tvOS) 
+            {
+                switch(framework.Type) 
+                {
                     case ISD_iOSFramework.MessageUI:
                     case ISD_iOSFramework.Contacts:
                     case ISD_iOSFramework.ContactsUI:
                     case ISD_iOSFramework.Social:
                     case ISD_iOSFramework.Accounts:
                         return false;
-
                 }
             }
-
             return true;
-
         }
 
 
-        static void AddEmbededFrameworks(PBXProject proj, string targetGuid) {
-            foreach (var framework in ISD_Settings.Instance.EmbededFrameworks) {
-
-
-                string fileGuid = proj.AddFile(framework.AbsoluteFilePath, "Frameworks/" + framework.FileName, PBXSourceTree.Source);
-                string embedPhase = proj.AddCopyFilesBuildPhase(targetGuid, "Embed Frameworks", "", "10");
+        private static void AddEmbeddedFrameworks(PBXProject proj, string targetGuid) 
+        {
+            foreach (var framework in ISD_Settings.Instance.EmbededFrameworks) 
+            {
+                var fileGuid = proj.AddFile(framework.AbsoluteFilePath, "Frameworks/" + framework.FileName, PBXSourceTree.Source);
+                var embedPhase = proj.AddCopyFilesBuildPhase(targetGuid, "Embed Frameworks", "", "10");
                 proj.AddFileToBuildSection(targetGuid, embedPhase, fileGuid);
 #if UNITY_2017_4_OR_NEWER
-                PBXProjectExtensions.AddFileToEmbedFrameworks(proj, targetGuid, fileGuid);
+                proj.AddFileToEmbedFrameworks(targetGuid, fileGuid);
 #endif
                 proj.AddBuildProperty(targetGuid, "LD_RUNPATH_SEARCH_PATHS", "$(inherited) @executable_path/Frameworks");
-                //proj.AddBuildProperty(targetGuid, "FRAMEWORK_SEARCH_PATHS", "$(SRCROOT)/PATH_TO_FRAMEWORK/");
-
             }
         }
 
@@ -465,30 +424,28 @@ namespace SA.iOS.XCode
         }
 
 
-
-        static void CopyAssetFiles(PBXProject proj, string pathToBuiltProject, string targetGUID) {
+        private static void CopyAssetFiles(PBXProject proj, string pathToBuiltProject, string targetGUID) 
+        {
             
-            foreach (ISD_AssetFile file in ISD_Settings.Instance.Files) {
-
-                if (file.IsDirectory) {
-
-                    foreach (var assetPath in Directory.GetFiles(file.RelativeFilePath)) {
-
-                        string fileName = Path.GetFileName(assetPath);
-                        string XCodeRelativePath = file.XCodeRelativePath + "/" + fileName;
+            foreach (ISD_AssetFile file in ISD_Settings.Instance.Files) 
+            {
+                if (file.IsDirectory) 
+                {
+                    foreach (var assetPath in Directory.GetFiles(file.RelativeFilePath)) 
+                    {
+                        var fileName = Path.GetFileName(assetPath);
+                        var XCodeRelativePath = file.XCodeRelativePath + "/" + fileName;
                         CopyFile(XCodeRelativePath, assetPath, pathToBuiltProject, proj, targetGUID);
                     }
 
                 } else {
                     CopyFile(file.XCodeRelativePath, file.RelativeFilePath, pathToBuiltProject, proj, targetGUID);
                 }
-
             }
         }
 
-
-        static void CopyFile(string XCodeRelativePath, string sourcePath, string pathToBuiltProject, PBXProject proj, string targetGUID) {
-
+        private static void CopyFile(string XCodeRelativePath, string sourcePath, string pathToBuiltProject, PBXProject proj, string targetGUID) 
+        {
             var dstPath = Path.Combine(pathToBuiltProject, XCodeRelativePath);
             var rootPath = Path.GetDirectoryName(dstPath);
 
@@ -498,11 +455,10 @@ namespace SA.iOS.XCode
 
             File.Copy(sourcePath, dstPath);
 
-            string name = proj.AddFile(XCodeRelativePath, XCodeRelativePath, PBXSourceTree.Source);
+            var name = proj.AddFile(XCodeRelativePath, XCodeRelativePath, PBXSourceTree.Source);
             proj.AddFileToBuild(targetGUID, name);
         }
-
-
     }
 }
+
 #endif

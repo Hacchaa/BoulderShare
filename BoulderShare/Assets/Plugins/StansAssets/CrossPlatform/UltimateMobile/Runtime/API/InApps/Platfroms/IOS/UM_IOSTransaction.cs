@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+using System;
 using SA.iOS.StoreKit;
 using SA.Foundation.Time;
-
 
 namespace SA.CrossPlatform.InApp
 {
     [Serializable]
-    public class UM_IOSTransaction : UM_AbstractTransaction, UM_iTransaction
+    internal class UM_IOSTransaction : UM_AbstractTransaction<ISN_iSKPaymentTransaction>, UM_iTransaction
     {
-
-        private ISN_SKPaymentTransaction m_iosTransaction;
-
-        public UM_IOSTransaction(ISN_SKPaymentTransaction transaction) {
+        public UM_IOSTransaction(ISN_iSKPaymentTransaction transaction)
+        {
             m_id = transaction.TransactionIdentifier;
             m_productId = transaction.ProductIdentifier;
-            m_unitxTimestamp = SA_Unix_Time.ToUnixTime(transaction.Date);
+            m_unixTimestamp = SA_Unix_Time.ToUnixTime(transaction.Date);
 
-            switch (transaction.State) {
+            switch (transaction.State) 
+            {
                 case ISN_SKPaymentTransactionState.Deferred:
-                    m_state = UM_TransactionState.Deferred;
+                    m_state = UM_TransactionState.Pending;
                     break;
                 case ISN_SKPaymentTransactionState.Failed:
                     m_state = UM_TransactionState.Failed;
@@ -31,17 +27,23 @@ namespace SA.CrossPlatform.InApp
                 case ISN_SKPaymentTransactionState.Purchased:
                     m_state = UM_TransactionState.Purchased;
                     break;
+                case ISN_SKPaymentTransactionState.Purchasing:
+                    m_state = UM_TransactionState.Failed;
+                    m_id = UM_IOSInAppClient.k_UndefinedTransactionId;
+                    break;
+                default:
+                    m_state = UM_TransactionState.Unspecified;
+                    m_id = UM_IOSInAppClient.k_UndefinedTransactionId;
+                    break;
             }
 
             m_error = transaction.Error;
-
-            m_iosTransaction = transaction;
+            SetNativeTransaction(transaction);
         }
 
-        public ISN_SKPaymentTransaction IosTransaction {
-            get {
-                return m_iosTransaction;
-            }
+        public ISN_iSKPaymentTransaction IosTransaction 
+        {
+            get { return (ISN_iSKPaymentTransaction) NativeTemplate; }
         }
     }
 }

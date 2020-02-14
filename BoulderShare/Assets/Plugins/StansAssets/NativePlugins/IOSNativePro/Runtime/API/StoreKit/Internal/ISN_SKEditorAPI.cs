@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native 2018 - New Generation
 // @author Stan's Assets team 
@@ -19,11 +19,11 @@ namespace SA.iOS.StoreKit.Internal
 
     internal class ISN_SKEditorAPI : ISN_iSKAPI {
         
-        private SA_Event<ISN_SKPaymentTransaction> m_transactionUpdated = new SA_Event<ISN_SKPaymentTransaction>();
-        private SA_Event<ISN_SKPaymentTransaction> m_transactionRemoved = new SA_Event<ISN_SKPaymentTransaction>();
+        private SA_Event<ISN_iSKPaymentTransaction> m_transactionUpdated = new SA_Event<ISN_iSKPaymentTransaction>();
+        private SA_Event<ISN_iSKPaymentTransaction> m_transactionRemoved = new SA_Event<ISN_iSKPaymentTransaction>();
         private SA_Event<ISN_SKProduct> m_shouldAddStorePayment = new SA_Event<ISN_SKProduct>();
         private SA_Event<SA_Result> m_restoreTransactionsComplete = new SA_Event<SA_Result>();
-
+        private SA_Event m_didChangeStorefront = new SA_Event();
 
         public void LoadStore(ISN_SKLib.SA_PluginSettingsWindowStylesitRequest request, Action<ISN_SKInitResult> callback) {
             SA_Coroutine.WaitForSeconds(DelayTime, () => {
@@ -42,7 +42,7 @@ namespace SA.iOS.StoreKit.Internal
         }
 
 
-        public void FinishTransaction(ISN_SKPaymentTransaction transaction) {
+        public void FinishTransaction(ISN_iSKPaymentTransaction transaction) {
             SA_Coroutine.WaitForSeconds(DelayTime, () => {
                 m_transactionRemoved.Invoke(transaction);
             });
@@ -63,7 +63,7 @@ namespace SA.iOS.StoreKit.Internal
         }
 
         public void SetTransactionObserverState(bool enabled) {
-            //Just do nothgin
+            //Just do nothing
         }
 
         public ISN_SKAppStoreReceipt RetrieveAppStoreReceipt() {
@@ -77,8 +77,13 @@ namespace SA.iOS.StoreKit.Internal
         }
 
         public void StoreRequestReview() {
-            //do nothing
-            //probabl need to simulate show popup in an editor
+            // do nothing
+            // probably need to simulate show popup in an editor
+        }
+
+        public ISN_SKStorefront PaymentQueue_Storefront()
+        {
+            return new ISN_SKStorefront();
         }
 
         public void RefreshRequest(ISN_SKReceiptDictionary dictionary, Action<SA_Result> callback) {
@@ -87,13 +92,13 @@ namespace SA.iOS.StoreKit.Internal
             });
         }
 
-        public SA_iEvent<ISN_SKPaymentTransaction> TransactionUpdated {
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionUpdated {
             get {
                 return m_transactionUpdated;
             }
         }
 
-        public SA_iEvent<ISN_SKPaymentTransaction> TransactionRemoved {
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionRemoved {
             get {
                 return m_transactionRemoved;
             }
@@ -109,6 +114,11 @@ namespace SA.iOS.StoreKit.Internal
             get {
                 return m_restoreTransactionsComplete;
             }
+        }
+
+        public SA_iEvent DidChangeStorefront
+        {
+            get { return m_didChangeStorefront; }
         }
 
         private float DelayTime {

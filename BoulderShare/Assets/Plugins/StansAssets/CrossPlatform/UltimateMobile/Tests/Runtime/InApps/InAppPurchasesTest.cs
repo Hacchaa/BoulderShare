@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -36,16 +36,6 @@ namespace SA.CrossPlatform.Tests.InApp
             var settings = AN_Settings.Instance;
             settings.RSAPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAonqY2kxgUKeAioN2tnMB2jtS1tBVwm0RHvsrFkDewHfzMGyBZvHsg9UN47H1MO6omXtNvsVuOnACV02MWIY16w7TPnttYTY7e2pULARafq7GwPuh9F7gLDdGluIoi/dJGjhaCTzvY6TpslI/FegJ/tDXVsNZh7urAxO1pWP4vrs412lANAjN8O6KF2dxF0VSThejyjzhyL0QWVtXtB6mJ9Ulsw16+0ndY4/Y4gL0BYSiJ4Qa+y7Ron6IXEGOnimixvGWasQQSKZHtEOLrh593ssp4a9PKMLQHWP7Pu2AYDmzhfR/ZkR1ZupKattjsviPnz5fTpsZ3oggSK+7IDBWQwIDAQAB";
             settings.InAppProducts.Clear();
-            
-            var p0 = new AN_Product(UM_InAppService.TEST_ITEM_PURCHASED, AN_ProductType.inapp);
-            p0.Title = "Android Purchased";
-            p0.IsConsumable = false;
-            settings.InAppProducts.Add(p0);
-            
-            var p1 = new AN_Product(UM_InAppService.TEST_ITEM_UNAVAILABLE, AN_ProductType.inapp);
-            p1.Title = "Android Unavailable";
-            p1.IsConsumable = false;
-            settings.InAppProducts.Add(p1);
             
             m_Observer = new TestTransactionObserver();
             UM_InAppService.Client.SetTransactionObserver(m_Observer);

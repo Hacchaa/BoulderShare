@@ -23,13 +23,6 @@ extern "C" {
             return;
         }
         
-        if ([request.m_title length] == 0){
-            request.m_title = nil;
-        }
-        if ([request.m_message length] == 0){
-            request.m_message = nil;
-        }
-
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:request.m_title  message:request.m_message  preferredStyle:request.m_preferredStyle];
         for(ISN_UIAlertAction* actionRequest in request.m_actions) {
             UIAlertAction* uiAction = [UIAlertAction actionWithTitle:actionRequest.m_title style:actionRequest.m_style handler:^(UIAlertAction * _Nonnull action) {
@@ -45,10 +38,7 @@ extern "C" {
                 NSData *imageData = [[NSData alloc] initWithBase64EncodedString:actionRequest.m_image options:NSDataBase64DecodingIgnoreUnknownCharacters];
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
                 [uiAction setValue:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forKey:@"image"];
-                
-                
             }
-            
             
             [alert addAction:uiAction];
             
@@ -60,16 +50,21 @@ extern "C" {
             if(actionRequest.m_preffered) {
                 alert.preferredAction = uiAction;
             }
-            
-            
         }
         
+         UIViewController *vc =  UnityGetGLViewController();
         
-        UIViewController *vc =  UnityGetGLViewController();
+        #if !TARGET_OS_TV
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && alert.preferredStyle == UIAlertControllerStyleActionSheet)
+        {
+            UIPopoverPresentationController *popPresenter = [alert popoverPresentationController];
+            popPresenter.sourceView = [vc view];
+            popPresenter.sourceRect = CGRectMake(0, 0, 1, 1);
+        }
+        #endif
+
         [vc presentViewController:alert animated:YES completion:nil];
-        
         NSString* key = [NSString stringWithFormat:@"%d",request.m_id];
-        
         [alerts setObject:alert forKey:key];
     }
     
@@ -80,9 +75,7 @@ extern "C" {
             [alert dismissViewControllerAnimated:true completion:^{}];
         }
     }
-    
-    
-    
+
     void _ISN_UI_PreloaderLockScreen() {
         [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         
@@ -109,7 +102,6 @@ extern "C" {
             spinner.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
         }];
         
-        
         [vc.view addSubview:spinner];
         [spinner startAnimating];
     }
@@ -128,7 +120,5 @@ extern "C" {
             }];
         }
     }
-    
-    
 }
 

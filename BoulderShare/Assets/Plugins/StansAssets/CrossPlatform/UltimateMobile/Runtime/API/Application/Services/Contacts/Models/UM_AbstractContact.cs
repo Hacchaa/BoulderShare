@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
 
 namespace SA.CrossPlatform.App
 {
@@ -12,23 +10,19 @@ namespace SA.CrossPlatform.App
         [SerializeField] protected string m_phone;
         [SerializeField] protected string m_email;
 
-
-        public string Name {
-            get {
-                return m_name;
-            }
+        public string Name 
+        {
+            get { return m_name; }
         }
 
-        public string Phone {
-            get {
-                return m_phone;
-            }
+        public string Phone 
+        {
+            get { return m_phone; }
         }
 
-        public string Email {
-            get {
-                return m_email;
-            }
+        public string Email 
+        {
+            get { return m_email; }
         }
     }
 }

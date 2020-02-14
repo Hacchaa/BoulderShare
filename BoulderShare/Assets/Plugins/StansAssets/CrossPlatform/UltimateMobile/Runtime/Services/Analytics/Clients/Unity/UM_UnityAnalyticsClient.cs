@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityAnalytics = UnityEngine.Analytics;
-
-
 
 
 namespace SA.CrossPlatform.Analytics

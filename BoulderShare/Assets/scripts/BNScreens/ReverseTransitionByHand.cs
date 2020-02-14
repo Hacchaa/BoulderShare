@@ -9,13 +9,14 @@ public class ReverseTransitionByHand : MonoBehaviour, IBeginDragHandler, IDragHa
     //指のx軸方向の速度の閾値
     [SerializeField] private float threshold_ScreensPerSecond = 4.0f;
     [SerializeField] private bool isHorizontal;
-    private int finger = MyUtility.FINGER_NONE;
+    private static int FINGER_NONE = -10;
+    private int finger = FINGER_NONE;
     private float whole;
     private float startPos;
     private BNTransitionController controller;
 
     public void OnBeginDrag(PointerEventData data){
-        if (finger == MyUtility.FINGER_NONE){
+        if (finger == FINGER_NONE){
             if (isHorizontal){
                 whole = Screen.width;
                 startPos = data.position.x;                
@@ -40,7 +41,7 @@ public class ReverseTransitionByHand : MonoBehaviour, IBeginDragHandler, IDragHa
 
     public void OnEndDrag(PointerEventData data){
         if (finger == data.pointerId){
-            finger = MyUtility.FINGER_NONE;
+            finger = FINGER_NONE;
             
             float screensPerSecond = CalcScreensPerSecond(data.delta);
             float t = CalcScreenRatio(data.position);

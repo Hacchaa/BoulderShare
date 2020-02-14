@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using SA.Android.GMS.Games;
 
 namespace SA.CrossPlatform.GameServices
 {
     [Serializable]
-    internal class UM_AndroidAchievement : UM_AbstractAchievement, UM_iAchievement
+    internal class UM_AndroidAchievement : UM_AbstractAchievement
     {
-
         public UM_AndroidAchievement(AN_Achievement achievement) {
             m_identifier = achievement.AchievementId;
             m_name = achievement.Name;

@@ -5,6 +5,13 @@ namespace SA.iOS.CoreLocation
     /// </summary>
     public static class ISN_CLLocationManager
     {
+
+        /// <summary>
+        /// A constant indicating that all movement should be reported.
+        /// Use this constant to specify that any change in location should trigger a new location update.
+        /// </summary>
+        public static double k_CLDistanceFilterNone = 0;
+        
         /// <summary>
         /// Returns a Boolean value indicating whether location services are enabled on the device.
         /// The user can enable or disable location services from the Settings app by toggling the Location Services switch in General.
@@ -183,6 +190,23 @@ namespace SA.iOS.CoreLocation
         {
             get { return ISN_CLNativeAPI.AllowsBackgroundLocationUpdates; }
             set { ISN_CLNativeAPI.AllowsBackgroundLocationUpdates = value; }
+        }
+
+        /// <summary>
+        /// The minimum distance (measured in meters)
+        /// a device must move horizontally before an update event is generated.
+        ///
+        /// This distance is measured relative to the previously delivered location.
+        /// Use the value <see cref="k_CLDistanceFilterNone"/> to be notified of all movements.
+        /// The default value of this property is <see cref="k_CLDistanceFilterNone"/>.
+        /// 
+        /// This property is used only in conjunction with the standard location services
+        /// and is not used when monitoring significant location changes.
+        /// </summary>
+        public static double DistanceFilter
+        {
+            get { return ISN_CLNativeAPI.DistanceFilter; }
+            set { ISN_CLNativeAPI.DistanceFilter = value; }
         }
         
         /// <summary>

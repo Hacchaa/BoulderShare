@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using SA.Foundation.Templates;
-
 using SA.Android.GMS.Common;
 
 namespace SA.Android.GMS.Auth
@@ -15,9 +11,8 @@ namespace SA.Android.GMS.Auth
     [Serializable]
     public class AN_GoogleSignInResult : AN_LinkedObjectResult<AN_GoogleSignInAccount>
     {
-
-
-        public AN_GoogleSignInResult(AN_GoogleSignInAccount account) :base() {
+        public AN_GoogleSignInResult(AN_GoogleSignInAccount account)
+        {
             m_linkedObject = account;
         }
 
@@ -26,12 +21,16 @@ namespace SA.Android.GMS.Auth
         /// <summary>
         /// Basic account information of the signed in Google user
         /// </summary>
-        public AN_GoogleSignInAccount Account {
-            get {
-                return m_linkedObject;
-            }
+        public AN_GoogleSignInAccount Account 
+        {
+            get { return m_linkedObject; }
         }
 
+        /// <summary>
+        /// Indicates the status of the operation.
+        /// Status code resulting from the operation. The value is one of the constants in <see cref="AN_CommonStatusCodes"/>
+        /// Or <see cref="AN_GoogleSignInStatusCodes"/>
+        /// </summary>
         public AN_CommonStatusCodes StatusCode {
             get {
                 if (Error != null) {

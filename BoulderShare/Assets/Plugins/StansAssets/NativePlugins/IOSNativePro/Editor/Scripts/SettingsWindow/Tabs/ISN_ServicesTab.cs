@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +25,9 @@ namespace SA.iOS
             RegisterService(CreateInstance<ISN_UserNotificationsUI>());
             RegisterService(CreateInstance<ISN_CoreLocationUI>());
             RegisterService(CreateInstance<ISN_MediaPlayerUI>());
+            RegisterService(CreateInstance<ISN_AdSupportUI>());
+            RegisterService(CreateInstance<ISN_EventKitUI>());
+            RegisterService(CreateInstance<ISN_AuthenticationServicesUI>());
         }
     }
 }

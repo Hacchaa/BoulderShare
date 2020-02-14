@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -14,7 +14,7 @@ namespace SA.CrossPlatform.Samples
         [SerializeField] private GameObject m_ButtonsPanel = null;
         [SerializeField] private GameObject m_FeatureViewport = null;
 
-        private Scene m_currentlyFeaturedScene;
+        private Scene m_CurrentlyFeaturedScene;
 
         private void OnEnable() {
             OnWelcomeControllerAwake.Invoke();
@@ -52,7 +52,7 @@ namespace SA.CrossPlatform.Samples
 
         private void SceneManagerOnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            m_currentlyFeaturedScene = scene;
+            m_CurrentlyFeaturedScene = scene;
             foreach (var rootGameObject in scene.GetRootGameObjects())
             {
                 if (rootGameObject.GetComponent<Canvas>() == null)
@@ -78,15 +78,15 @@ namespace SA.CrossPlatform.Samples
 
         private void LoadScene(string sceneName)
         {
-            if (sceneName.Equals(m_currentlyFeaturedScene.name))
+            if (sceneName.Equals(m_CurrentlyFeaturedScene.name))
             {
                 return;
             }
 
             m_FeatureViewport.Clear();
-            if (m_currentlyFeaturedScene.isLoaded)
+            if (m_CurrentlyFeaturedScene.isLoaded)
             {
-                SceneManager.UnloadSceneAsync(m_currentlyFeaturedScene);
+                SceneManager.UnloadSceneAsync(m_CurrentlyFeaturedScene);
             }
 
             SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);

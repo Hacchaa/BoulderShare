@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public static class SA_Extensions_Transform  {
 
@@ -16,21 +16,22 @@ public static class SA_Extensions_Transform  {
         t.localRotation = Quaternion.identity;
     }
 
-    public static Transform Clear(this Transform transform) {
+    public static Transform Clear(this Transform transform, bool activeOnly = false)
+    {
 
         if (transform.childCount == 0) {
             return transform;
         }
-
-        Transform[] children = transform.GetComponentsInChildren<Transform>();
+        var children = transform.GetComponentsInChildren<Transform>();
 
         foreach (Transform child in children) {
-            if (child != transform && child != null) {
-                Object.DestroyImmediate(child.gameObject);
-            }
+            if (child == transform || child == null) continue;
+            if (activeOnly && !child.gameObject.activeSelf)  continue;
+            Object.DestroyImmediate(child.gameObject);
         }
         return transform;
     }
+    
 
     public static Transform FindOrCreateChild(this Transform target, string name) {
         var part = target.Find(name);

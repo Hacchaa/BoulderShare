@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+#if UNITY_2018_1_OR_NEWER
+
+using NUnit.Framework;
 using SA.CrossPlatform.App;
 
 namespace SA.CrossPlatform.Tests.App
@@ -13,3 +15,5 @@ namespace SA.CrossPlatform.Tests.App
 		}
 	}
 }
+
+#endif

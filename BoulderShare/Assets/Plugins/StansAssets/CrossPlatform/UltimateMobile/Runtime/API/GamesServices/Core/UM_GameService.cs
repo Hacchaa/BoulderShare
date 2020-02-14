@@ -1,124 +1,127 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SA.CrossPlatform.GameServices
 {
-
     /// <summary>
     /// Main entry point for the Game Services APIs. 
     /// This class provides APIs and interfaces to access the game services functionality.
     /// </summary>
     public static class UM_GameService 
     {
+        private static UM_iSignInClient s_SignInClient = null;
+        private static UM_iAchievementsClient s_Achievements = null;
+        private static UM_iLeaderboardsClient s_Leaderboards = null;
+        private static UM_iSavedGamesClient s_SavedGames = null;
         
-        private static UM_iSignInClient m_signInClient = null;
-        private static UM_iAchievementsClient m_achievements = null;
-        private static UM_iLeaderboardsClient m_leaderboards = null;
-        private static UM_iSavedGamesClient m_savedGames = null;
-
-
-
-
         /// <summary>
         /// Returns a new instance of <see cref="UM_iSignInClient"/>
         /// </summary>
-        public static UM_iSignInClient SignInClient {
+        public static UM_iSignInClient SignInClient 
+        {
             get {
-
-                if (m_signInClient == null) {
-                    switch (Application.platform) {
+                if (s_SignInClient == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
-                            m_signInClient = new UM_AndroidSignInClient();
+                            s_SignInClient = new UM_AndroidSignInClient();
                             break;
+                        case RuntimePlatform.tvOS:
+                        case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.IPhonePlayer:
-                            m_signInClient = new UM_IOSSignInClient();
+                            s_SignInClient = new UM_IOSSignInClient();
                             break;
                         default:
-                            m_signInClient = new UM_EditorSignInClient();
+                            s_SignInClient = new UM_EditorSignInClient();
                             break;
                     }
                 }
 
-                return m_signInClient;
+                return s_SignInClient;
             }
         }
-
-
-
-
+        
         /// <summary>
         /// Returns a new instance of <see cref="UM_iSignInClient"/>
         /// </summary>
-        public static UM_iAchievementsClient AchievementsClient {
+        public static UM_iAchievementsClient AchievementsClient 
+        {
             get {
-
-                if (m_achievements == null) {
-                    switch (Application.platform) {
+                if (s_Achievements == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
-                            m_achievements = new UM_AndroidAchievementsClient();
+                            s_Achievements = new UM_AndroidAchievementsClient();
                             break;
+                        case RuntimePlatform.tvOS:
+                        case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.IPhonePlayer:
-                            m_achievements = new UM_IOSAchievementsClient();
+                            s_Achievements = new UM_IOSAchievementsClient();
                             break;
                         default:
-                            m_achievements = new UM_EditorAchievementsClient();
+                            s_Achievements = new UM_EditorAchievementsClient();
                             break;
                     }
                 }
 
-                return m_achievements;
+                return s_Achievements;
             }
         }
-
 
         /// <summary>
         /// Returns a new instance of <see cref="UM_iSignInClient"/>
         /// </summary>
-        public static UM_iLeaderboardsClient LeaderboardsClient {
+        public static UM_iLeaderboardsClient LeaderboardsClient 
+        {
             get {
-
-                if (m_leaderboards == null) {
-                    switch (Application.platform) {
+                if (s_Leaderboards == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
-                            m_leaderboards = new UM_AndroidLeaderboardsClient();
+                            s_Leaderboards = new UM_AndroidLeaderboardsClient();
                             break;
+                        case RuntimePlatform.tvOS:
+                        case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.IPhonePlayer:
-                            m_leaderboards = new UM_IOSLeaderboardsClient();
+                            s_Leaderboards = new UM_IOSLeaderboardsClient();
                             break;
                         default:
-                            m_leaderboards = new UM_EditorLeaderboardsClient();
+                            s_Leaderboards = new UM_EditorLeaderboardsClient();
                             break;
                     }
                 }
-
-                return m_leaderboards;
+                return s_Leaderboards;
             }
         }
-
-
+        
         /// <summary>
         /// Returns a new instance of <see cref="UM_iSavedGamesClient"/>
         /// </summary>
-        public static UM_iSavedGamesClient SavedGamesClient {
+        public static UM_iSavedGamesClient SavedGamesClient 
+        {
             get {
-                if (m_savedGames == null) {
-                    switch (Application.platform) {
+                if (s_SavedGames == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
-                            m_savedGames = new UM_AndroidSavedGamesClient();
+                            s_SavedGames = new UM_AndroidSavedGamesClient();
                             break;
+                        //not supported by tv OS
+                        case RuntimePlatform.OSXPlayer:
                         case RuntimePlatform.IPhonePlayer:
-                            m_savedGames = new UM_IOSSavedGamesClient();
+                            s_SavedGames = new UM_IOSSavedGamesClient();
                             break;
                         default:
-                            m_savedGames = new UM_EditorSavedGamesClient();
+                            s_SavedGames = new UM_EditorSavedGamesClient();
                             break;
                     }
                 }
 
-                return m_savedGames;
+                return s_SavedGames;
             }
         }
-
     }
 }

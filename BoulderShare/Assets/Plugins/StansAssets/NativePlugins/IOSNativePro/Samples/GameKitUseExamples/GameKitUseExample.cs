@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -66,7 +66,7 @@ namespace SA.iOS.Examples
             //ISN_GKLocalPlayer info
 
             if (GUI.Button(new Rect(0, 0, 250, 50), "Authenticate")) {
-                ISN_GKLocalPlayer.Authenticate((SA_Result result) => {
+                ISN_GKLocalPlayer.setAuthenticateHandler((SA_Result result) => {
                     if (result.IsSucceeded) {
                         Debug.Log("Authenticate is succeeded!");
 

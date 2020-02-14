@@ -12,13 +12,8 @@ const char* UNITY_AV_LISTENER = "SA.iOS.AVFoundation.Internal.ISN_AVNativeAPI";
 const char* UNITY_PH_LISTENER = "SA.iOS.Photos.Internal.ISN_PHNativeAPI";
 const char* UNITY_UI_LISTENER = "SA.iOS.UIKit.Internal.ISN_UINativeAPI";
 const char* UNITY_CK_LISTENER = "SA.iOS.Foundation.Internal.ISN_NSNativeAPI";
-const char* UNITY_GK_LISTENER = "SA.iOS.GameKit.Internal.ISN_GKNativeAPI";
 const char* UNITY_UN_LISTENER = "SA.iOS.UserNotifications.Internal.ISN_UNNativeAPI";
-
-const char* UNITY_APP_DELEGATE  = "SA.iOS.UIKit.ISN_UIApplicationDelegate";
-
-
-
+const char* UNITY_APP_DELEGATE = "SA.iOS.UIKit.ISN_UIApplicationDelegate";
 
 
 //--------------------------------------
@@ -197,6 +192,11 @@ extern "C" {
         return  [imageData base64EncodedStringWithOptions:0];
     }
     
+    NSString* ISN_ConvertImageToJPEGBase64(UIImage* image, CGFloat compression) {
+        NSData *imageData = UIImageJPEGRepresentation(image, compression);
+        return  [imageData base64EncodedStringWithOptions:0];
+    }
+    
     // Этот метод можно объявить в каком-нибудь классе
     void ISN_SendCallbackToUnity(UnityAction callback, NSString* data) {
         if(callback == NULL)
@@ -213,8 +213,6 @@ extern "C" {
                 _monoPCallbackDelegate(callback, [data cStringUsingEncoding:NSUTF8StringEncoding]);
         });
     }
-    
-    
 #if __cplusplus
 }   // Extern C
 #endif

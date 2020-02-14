@@ -1,4 +1,4 @@
-﻿
+
 using SA.Foundation.Tests;
 using SA.iOS.Social;
 using SA.Foundation.Utility;

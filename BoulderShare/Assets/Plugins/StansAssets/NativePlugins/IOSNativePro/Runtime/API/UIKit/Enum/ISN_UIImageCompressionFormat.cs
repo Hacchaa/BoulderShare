@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Osipov Stanislav (Stan's Assets) 
@@ -10,7 +10,7 @@
 namespace SA.iOS.UIKit
 {
     /// <summary>
-    /// Image compression fromat options for <see cref="ISN_UIImagePickerController"/>
+    /// Image compression format options for <see cref="ISN_UIImagePickerController"/>
     /// </summary>
     public enum ISN_UIImageCompressionFormat
     {

@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
-
+using System;
 using SA.Android.Utilities;
-
 using SA.Android.GMS.Common;
 using SA.Android.GMS.Internal;
 
 namespace SA.Android.GMS.Games
 {
-
     /// <summary>
-    /// A client to interact with Shapshots.
+    /// A client to interact with Snapshots.
     /// </summary>
     [Serializable]
     public class AN_SnapshotsClient : AN_LinkedObject
     {
-
         public enum ResolutionPolicy {
 
             /// <summary>
@@ -76,10 +69,6 @@ namespace SA.Android.GMS.Games
         /// </summary>
         public const int DISPLAY_LIMIT_NONE = -1;
 
-
-
-
-
         /// <summary>
         /// Shows the UI that will let the user select a snapshot.
         /// 
@@ -92,11 +81,11 @@ namespace SA.Android.GMS.Games
         /// See the 
         /// </summary>
         /// <param name="title">The title to display in the action bar of the returned Activity.</param>
-        /// <param name="callback">User ineraction callback</param>
-        public void ShowSelectSnapshotIntent(string title, Action<AN_SnapshotUIResult> callback) {
+        /// <param name="callback">User interaction callback</param>
+        public void ShowSelectSnapshotIntent(string title, Action<AN_SnapshotUIResult> callback) 
+        {
             ShowSelectSnapshotIntent(title, true, true, DISPLAY_LIMIT_NONE, callback);
         }
-
 
         /// <summary>
         /// Shows the UI that will let the user select a snapshot.
@@ -116,8 +105,9 @@ namespace SA.Android.GMS.Games
         /// The maximum number of snapshots to display in the UI. 
         /// Use <see cref="DISPLAY_LIMIT_NONE"/> to display all snapshots.
         /// </param>
-        /// <param name="callback">User ineraction callback</param>
-        public void ShowSelectSnapshotIntent(string title, bool allowAddButton, bool allowDelete, int maxSnapshots, Action<AN_SnapshotUIResult> callback) {
+        /// <param name="callback">User interaction callback</param>
+        public void ShowSelectSnapshotIntent(string title, bool allowAddButton, bool allowDelete, int maxSnapshots, Action<AN_SnapshotUIResult> callback) 
+        {
             AN_GMS_Lib.Snapshots.ShowSelectSnapshotIntent(this, title, allowAddButton, allowAddButton, maxSnapshots, callback);
         }
 
@@ -125,7 +115,8 @@ namespace SA.Android.GMS.Games
         /// Asynchronously loads the maximum data size per snapshot in bytes. 
         /// Guaranteed to be at least 3 MB. May increase in the future.
         /// </summary>
-        public void GetMaxDataSize() {
+        public void GetMaxDataSize() 
+        {
 
         }
 
@@ -135,7 +126,8 @@ namespace SA.Android.GMS.Games
         /// Required Scopes: SCOPE_GAMES_LITE and SCOPE_APPFOLDER.
         /// </summary>
         /// <param name="callback">The task callback</param>
-        public void Load(Action<AN_SnapshotsMetadataResult> callback) {
+        public void Load(Action<AN_SnapshotsMetadataResult> callback) 
+        {
             AN_GMS_Lib.Snapshots.Load(this, false, callback);
         }
 
@@ -150,7 +142,8 @@ namespace SA.Android.GMS.Games
         /// </param>
         /// <param name="callback">The task callback</param>
         /// </summary>
-        public void Load(bool forceReload, Action<AN_SnapshotsMetadataResult> callback) {
+        public void Load(bool forceReload, Action<AN_SnapshotsMetadataResult> callback) 
+        {
             AN_GMS_Lib.Snapshots.Load(this, forceReload, callback);
         }
 
@@ -166,11 +159,26 @@ namespace SA.Android.GMS.Games
         /// </param>
         /// <param name="createIfNotFound">If true, the snapshot will be created if one cannot be found.</param>
         /// <param name="conflictPolicy">The conflict resolution policy to use for this snapshot.</param>
-        /// <param name="callback">The task callback</param>
-        public void Open(string fileName, bool createIfNotFound, ResolutionPolicy conflictPolicy, Action<AN_LinkedObjectResult<AN_Snapshot>> callback) {
+        /// <param name="callback">The task callback.</param>
+        public void Open(string fileName, bool createIfNotFound, ResolutionPolicy conflictPolicy, Action<AN_LinkedObjectResult<AN_DataOrConflictResult>> callback) 
+        {
             AN_GMS_Lib.Snapshots.Open(this, fileName, createIfNotFound, (int)conflictPolicy, callback);
         }
-
+        
+        /// <summary>
+        /// Starts a task which asynchronously resolves a conflict using the data from the provided Snapshot.
+        /// 
+        /// This will replace the data on the server with the specified Snapshot.
+        /// Note that it is possible for this operation to result in a conflict itself, in which case resolution should be repeated.
+        /// </summary>
+        /// <param name="conflictId">he ID of the conflict to resolve. Must come from <see cref="AN_SnapshotConflict"/></param>
+        /// <param name="snapshot">The snapshot to use to resolve the conflict.</param>
+        /// <param name="callback">The task callback.</param>
+        public void ResolveConflict(string conflictId, AN_Snapshot snapshot,  Action<AN_LinkedObjectResult<AN_DataOrConflictResult>> callback) 
+        {
+            AN_GMS_Lib.Snapshots.ResolveConflict(this, conflictId, snapshot, callback);
+        }
+        
 
         /// <summary>
         /// Asynchronously commits any modifications in <see cref="AN_SnapshotMetadataChange"/>
@@ -190,10 +198,10 @@ namespace SA.Android.GMS.Games
         /// Use <see cref="AN_SnapshotMetadataChange.EMPTY_CHANGE"/> to preserve the existing metadata.
         /// </param>
         /// <param name="callback">The operation callback.</param>
-        public void CommitAndClose(AN_Snapshot snapshot, AN_SnapshotMetadataChange metadataChange, Action<AN_SnapshotMetadataResult> callback) {
+        public void CommitAndClose(AN_Snapshot snapshot, AN_SnapshotMetadataChange metadataChange, Action<AN_SnapshotMetadataResult> callback) 
+        {
             AN_GMS_Lib.Snapshots.CommitAndClose(this, snapshot, metadataChange, callback);
         }
-
 
         /// <summary>
         /// Asynchronously deletes the specified by <see cref="AN_SnapshotMetadata"/> snapshot and loads the deleted snapshot ID. 
@@ -201,9 +209,9 @@ namespace SA.Android.GMS.Games
         /// </summary>
         /// <param name="meta">The metadata of the snapshot to delete.</param>
         /// <param name="callback">The operation callback.</param>
-        public void Delete(AN_SnapshotMetadata meta, Action<AN_SnapshotsDeleteResult> callback) {
+        public void Delete(AN_SnapshotMetadata meta, Action<AN_SnapshotsDeleteResult> callback) 
+        {
             AN_GMS_Lib.Snapshots.Delete(this, meta, callback);
         }
-
     }
 }

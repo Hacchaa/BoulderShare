@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
-using SA.Android.App;
 using SA.Foundation.Templates;
-
 
 namespace SA.Android.Vending.Billing
 {
+    [Obsolete("Use AN_BillingClient API instead")]
     public class AN_BillingConnectionResult : SA_Result
     {
 
@@ -15,11 +12,18 @@ namespace SA.Android.Vending.Billing
         [SerializeField] int m_subsState;
 
         public AN_BillingConnectionResult():base() {
-            //Wehn initializaed in editor
+            //When initialized in editor
             m_inappState = AN_Billing.RESULT_OK;
             m_subsState = AN_Billing.RESULT_OK;
         }
 
+        public AN_BillingConnectionResult(SA_iResult result):base(result) {
+            if (result.IsSucceeded)
+            {
+                m_inappState = AN_Billing.RESULT_OK;
+                m_subsState = AN_Billing.RESULT_OK;
+            }
+        }
 
         public bool IsInAppsAPIAvalible {
             get {

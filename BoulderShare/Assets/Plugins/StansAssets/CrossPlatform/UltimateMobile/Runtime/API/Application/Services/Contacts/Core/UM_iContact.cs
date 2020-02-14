@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.CrossPlatform.App
 {
-    public interface UM_iContact {
-
+    public interface UM_iContact 
+    {
         /// <summary>
         /// Contact name.
         /// </summary>
@@ -17,7 +13,7 @@ namespace SA.CrossPlatform.App
         string Phone { get; }
 
         /// <summary>
-        /// The email addres
+        /// The email address
         /// </summary>
         string Email { get; }
     }

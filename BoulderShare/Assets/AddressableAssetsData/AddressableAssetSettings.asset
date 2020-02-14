@@ -22,8 +22,8 @@ MonoBehaviour:
     m_Id: 
   m_overridePlayerVersion: 
   m_GroupAssets:
-  - {fileID: 11400000, guid: adfb69a26875dab4ebbfa986486744b0, type: 2}
   - {fileID: 11400000, guid: b2d03481d0d6e6f4199233caed7d8d22, type: 2}
+  - {fileID: 11400000, guid: adfb69a26875dab4ebbfa986486744b0, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1

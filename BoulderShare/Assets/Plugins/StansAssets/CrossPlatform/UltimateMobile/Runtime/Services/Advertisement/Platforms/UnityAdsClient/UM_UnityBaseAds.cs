@@ -1,4 +1,4 @@
-﻿#if SA_UNITY_ADS_INSTALLED
+#if SA_UNITY_ADS_INSTALLED
 using UnityEngine.Monetization;
 #endif
 

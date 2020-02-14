@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using SA.iOS.StoreKit.Internal;
 using SA.Foundation.Templates;

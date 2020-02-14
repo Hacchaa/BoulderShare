@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.Social

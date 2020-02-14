@@ -103,6 +103,21 @@ extern "C" {
         
         [[SA_PluginSettingsWindowStylesAppManager sharedInstance] loadStoreProductsWithIdentifiers:request.ProductIdentifiers];
     }
+
+    const char * _ISN_SKPaymentQueue_Storefront() {
+
+        ISN_SKStorefront * isn_storefront;
+        if (@available(iOS 13.0, *)) {
+            SKStorefront* storefront = [[SKPaymentQueue defaultQueue] storefront];
+            if(storefront != nil) {
+                 isn_storefront = [[ISN_SKStorefront alloc] initWithSKStorefront:storefront];
+                 return ISN_ConvertToChar([isn_storefront toJSONString]);
+            }
+        }
+        
+        isn_storefront = [[ISN_SKStorefront alloc] init];
+        return ISN_ConvertToChar([isn_storefront toJSONString]);
+    }
     
     void _ISN_SetTransactionObserverState(bool enabled) {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_SetTransactionObserverState" data: enabled ? "enabled"  : "disabled"];

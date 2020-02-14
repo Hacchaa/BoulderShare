@@ -146,10 +146,21 @@
 -(id) init {return [super init]; }
 @end
 
+@implementation ISN_UIApplicationEvents
+-(id) init { return self = [super init]; }
+-(void)init:(NSString *)eventName data:(NSString *)data{
+    self.m_EventName = eventName;
+    self.m_Data = data;
+}
+@end
 
+@implementation ISN_UIWheelPickerResult
+-(id) init { return [super init]; }
+@end
 
-
-
+@implementation ISN_UIWheelPickerRequest
+-(id) init { return [super init]; }
+@end
 
 
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using SA.Android;
 using SA.iOS;

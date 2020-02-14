@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using SA.Foundation.Templates;
 
@@ -17,7 +18,16 @@ namespace SA.CrossPlatform.InApp
         /// <see cref="Products"/> list will be update with the information received from a payment service.
         /// </summary>
         /// <param name="callback">Operation callback.</param>
-        void Connect(Action<SA_Result> callback);
+        void Connect(Action<SA_iResult> callback);
+
+        /// <summary>
+        /// Initializes the billing service with the set of previously defined products.
+        /// Once the connection is successfully established, 
+        /// <see cref="Products"/> list will be update with the information received from a payment service.
+        /// </summary>
+        /// <param name="products">Product templates to initialize the service with.</param>
+        /// <param name="callback"></param>
+        void Connect(IEnumerable<UM_ProductTemplate> products, Action<SA_iResult> callback);
 
         /// <summary>
         /// Adds a payment request to the queue.
@@ -86,7 +96,7 @@ namespace SA.CrossPlatform.InApp
         /// Once you connected to the service, products info will be updated according to the data received from 
         /// a payment service.
         /// </summary>
-        List<UM_iProduct> Products { get; }
+        IEnumerable<UM_iProduct> Products { get; }
 
         bool IsConnected { get; }
     }

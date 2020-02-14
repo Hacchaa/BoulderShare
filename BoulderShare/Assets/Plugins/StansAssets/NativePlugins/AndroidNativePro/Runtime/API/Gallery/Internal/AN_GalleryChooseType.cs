@@ -1,8 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.Android.Gallery.Internal
 {
     internal enum AN_GalleryChooseType

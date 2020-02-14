@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -44,8 +44,9 @@ namespace SA.Android.Utilities
         public T CallStatic<T>(string javaClassName, string methodName, params object[] args) {
             var javaClass = GetJavaClass(javaClassName);
 
-            List<object> arguments = new List<object>();
-            foreach (object p in args) {
+            var arguments = new List<object>();
+            foreach (object p in args) 
+            {
                 arguments.Add(ConvertObjectData(p));
             }
 
@@ -53,9 +54,20 @@ namespace SA.Android.Utilities
             LogCommunication(javaClassName, methodName, arguments);
 
             if (Application.isEditor) { return default(T);}
-            var result =  javaClass.CallStatic<T>(methodName, arguments.ToArray());
-            AN_Logger.LogCommunication("[Sync] Sent to Unity ->: " + result);
-            return result;
+
+            if (IsPrimitive(typeof(T)))
+            {
+                var result = javaClass.CallStatic<T>(methodName, arguments.ToArray());
+                AN_Logger.LogCommunication("[Sync] Sent to Unity ->: " + result);
+                return result;
+            }
+
+            var json = javaClass.CallStatic<string>(methodName, arguments.ToArray());
+            AN_Logger.LogCommunication("[Sync] Sent to Unity ->: " + json);
+            if (string.IsNullOrEmpty(json))
+                return default(T);
+            
+            return JsonUtility.FromJson<T>(json);
         }
 
         public R CallStaticWithCallback<R,T>(string javaClassName, string methodName, Action<T> callback, params object[] args) {
@@ -92,20 +104,24 @@ namespace SA.Android.Utilities
         //  Private Methods
         //--------------------------------------
 
-        private string LogArguments(List<object> arguments) {
-            string log = string.Empty;
-            foreach(var p in arguments) {
-                if(log != string.Empty) {
+        private static string LogArguments(List<object> arguments) 
+        {
+            var log = string.Empty;
+            foreach(var p in arguments) 
+            {
+                if (p == null) continue;
+                
+                if(log != string.Empty) 
+                {
                     log += " | ";
                 }
-
                 log += p.ToString();
             }
 
             return log;
         }
 
-        private void LogCommunication(string className, string methodName, List<object> arguments) {
+        public void LogCommunication(string className, string methodName, List<object> arguments) {
 
             var strippedClassName = SA_PathUtil.GetExtension(className);
             strippedClassName = strippedClassName.Substring(1);
@@ -117,9 +133,11 @@ namespace SA.Android.Utilities
         }
 
 
-        private object ConvertObjectData(object param) {
+        public object ConvertObjectData(object param) {
             if (param is string) {
-                return  param.ToString();
+                return param.ToString();
+            } else if (param is Enum) {
+                return param.ToString();
             } else if (param is bool) {
                 return param;
             } else if (param is int) {
@@ -135,7 +153,30 @@ namespace SA.Android.Utilities
             }
         }
 
-        private AndroidJavaClass GetJavaClass(string javaClassName) {
+        public bool IsPrimitive(Type type)
+        {
+            if (type == typeof(byte) ||
+                type == typeof(ushort) ||
+                type == typeof(short) ||
+                type == typeof(uint) ||
+                type == typeof(int) ||
+                type == typeof(ulong) ||
+                type == typeof(long) ||
+                type == typeof(float) ||
+                type == typeof(double) ||
+                type == typeof(bool) ||
+                type == typeof(string) ||
+                type == typeof(char) 
+
+                )
+            {
+                return true;
+            }
+
+            return false;
+        }
+        
+        public AndroidJavaClass GetJavaClass(string javaClassName) {
 
             if (Application.isEditor) {
                 return null;
@@ -143,11 +184,11 @@ namespace SA.Android.Utilities
 
             if (m_classes.ContainsKey(javaClassName)) {
                 return m_classes[javaClassName];
-            } else {
-                var javaClass = new AndroidJavaClass(javaClassName);
-                m_classes.Add(javaClassName, javaClass);
-                return javaClass;
             }
+
+            var javaClass = new AndroidJavaClass(javaClassName);
+            m_classes.Add(javaClassName, javaClass);
+            return javaClass;
         }
     }
 }

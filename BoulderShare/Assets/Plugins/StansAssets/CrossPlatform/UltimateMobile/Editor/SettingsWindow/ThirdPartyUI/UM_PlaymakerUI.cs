@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -19,6 +19,11 @@ namespace SA.CrossPlatform
                 }
 
                 set { }
+            }
+
+            public void ResetRequirementsCache()
+            {
+                
             }
         }
 

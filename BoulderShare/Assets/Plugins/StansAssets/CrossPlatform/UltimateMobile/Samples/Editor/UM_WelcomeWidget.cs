@@ -1,10 +1,10 @@
-﻿using SA.Foundation.Editor;
+using SA.Foundation.Editor;
 using UnityEditor;
 using UnityEngine;
 
 namespace SA.CrossPlatform.Samples
 {
-    public class UM_WelcomeWidget 
+    internal class UM_WelcomeWidget 
     {
         private const int k_WindowPrefixId = 12516789;
         private const int k_ButtonWidth = 100;
@@ -13,27 +13,59 @@ namespace SA.CrossPlatform.Samples
         private readonly SceneView m_SceneView;
         private Rect m_WindowRect = Rect.zero;
      
-        public UM_WelcomeWidget(SceneView sceneView) {
+        public UM_WelcomeWidget(SceneView sceneView) 
+        {
             m_SceneView = sceneView;
             m_WindowId = k_WindowPrefixId + m_SceneView.GetInstanceID();
 
             m_WindowRect.y = 20;
         }   
-
         
-        public void OnGUI() {
+        public void OnGUI() 
+        {
             m_WindowRect = GUILayout.Window(m_WindowId, m_WindowRect, OnWindowGui, "Ultimate Mobile Samples.", GUILayout.ExpandHeight(true));
         }
 
-        private void OnWindowGui(int id) {
+        private bool IsCollapsed
+        {
+            get { return EditorPrefs.GetBool("UM_WelcomeWidget_IsCollapsed", false); }
+            set {EditorPrefs.SetBool("UM_WelcomeWidget_IsCollapsed", value); }
+        }
 
+        private void OnWindowGui(int id) 
+        {
+            using (new SA_GuiBeginHorizontal())
+            {
+                GUILayout.Label("Welcome!", EditorStyles.boldLabel);
+                GUILayout.FlexibleSpace();
+                var buttonText = IsCollapsed ? "Expand" : "Collapse";
+                var click = GUILayout.Button(buttonText);
+                if (click)
+                {
+                    IsCollapsed = !IsCollapsed;
+                    if (IsCollapsed)
+                    {
+                        m_WindowRect.height = 0f;
+                    }
+                }
+            }
 
-           GUILayout.Label("Welcome!", EditorStyles.boldLabel);
-           var message = "Welcome to samples application main page. \n" +
-                           "This is an early version that is still under development. \n \n" +
-                           "You are welcome to try it inside the editor and check out how different features are implemented, " +
-                           "or can also build an application on a real device. \n" +
-                           "Please note that some section of the sample app may not work if you haven't configured corresponded module.";
+            m_WindowRect.width = Mathf.Max(m_WindowRect.width, 200f);
+            if (!IsCollapsed)
+            {
+                DrawWindowContent();
+            }
+            
+            GUI.DragWindow(new Rect(0, 20, m_SceneView.position.width, m_SceneView.position.height));
+        }
+
+        private void DrawWindowContent()
+        {
+            const string message = "Welcome to samples application main page. \n" +
+                                   "This is an early version that is still under development. \n \n" +
+                                   "You are welcome to try it inside the editor and check out how different features are implemented, " +
+                                   "or can also build an application on a real device. \n" +
+                                   "Please note that some section of the sample app may not work if you haven't configured corresponded module.";
            
            var style = new GUIStyle (EditorStyles.helpBox);
            style.richText = true;
@@ -88,10 +120,7 @@ namespace SA.CrossPlatform.Samples
               {
                   UM_EditorMenu.About();
               }
-               
            }
-
-            GUI.DragWindow(new Rect(0, 0, m_SceneView.position.width, m_SceneView.position.height));
-        }
+        } 
     }
 }

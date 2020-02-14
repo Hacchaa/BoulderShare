@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
-
 
 namespace SA.Android.GMS.Games
 {
-
     /// <summary>
     /// Data interface for retrieving achievement information.
     /// </summary>
@@ -14,11 +10,11 @@ namespace SA.Android.GMS.Games
     public class AN_Achievement
     {
 
-        public enum AchievementState {
+        public enum AchievementState 
+        {
             UNLOCKED = 0,
             REVEALED = 1,
             HIDDEN = 2,
-
         }
 
         public enum AchievementType
@@ -26,7 +22,6 @@ namespace SA.Android.GMS.Games
             STANDARD = 0,
             INCREMENTAL = 1,
         }
-
 
         [SerializeField] string m_achievementId = null;
         [SerializeField] string m_description = null;
@@ -40,9 +35,6 @@ namespace SA.Android.GMS.Games
         [SerializeField] long m_xpValue = 0;
         
 
-
-
-
         /// <summary>
         /// The achievement ID.
         /// </summary>
@@ -51,7 +43,6 @@ namespace SA.Android.GMS.Games
                 return m_achievementId;
             }
         }
-
 
         /// <summary>
         /// Retrieves the description for this achievement.
@@ -62,7 +53,6 @@ namespace SA.Android.GMS.Games
             }
         }
 
-
         /// <summary>
         /// Retrieves the name of this achievement.
         /// </summary>
@@ -71,7 +61,6 @@ namespace SA.Android.GMS.Games
                 return m_name;
             }
         }
-
 
         /// <summary>
         /// Retrieves a URI that can be used to load the achievement's revealed image icon. 
@@ -84,11 +73,8 @@ namespace SA.Android.GMS.Games
                 } else {
                     return m_unlockedImageUri;
                 }
-
             }
-
         }
-
 
         /// <summary>
         /// Retrieves the number of steps this user has gone toward unlocking this achievement; 
@@ -100,7 +86,6 @@ namespace SA.Android.GMS.Games
             }
         }
 
-
         /// <summary>
         /// Retrieves the total number of steps necessary to unlock this achievement; 
         /// only applicable for <see cref="AchievementType.INCREMENTAL"/> achievement types.
@@ -111,7 +96,6 @@ namespace SA.Android.GMS.Games
             }
         }
 
-
         /// <summary>
         /// Returns the Type of this achievement.
         /// </summary>
@@ -120,7 +104,6 @@ namespace SA.Android.GMS.Games
                 return (AchievementType) m_type;
             }
         }
-
 
         /// <summary>
         /// Returns the State of the achievement.
@@ -140,6 +123,5 @@ namespace SA.Android.GMS.Games
                 return m_xpValue;
             }
         }
-        
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SA.Foundation.Tests;
@@ -10,11 +10,6 @@ namespace SA.Foundation.Tests
     public class SA_TestsManager : MonoBehaviour
     {
         [SerializeField] SA_TestSuiteConfig m_config = null;
-
-        public static event Action<string> OnGroupTestStarted = delegate { };
-        public static event Action<string> OnTestStarted = delegate { };
-        public static event Action<SA_TestResult> OnTestResult = delegate { };
-
         private readonly List<SA_TestGroupConfig> m_testGroups = new List<SA_TestGroupConfig>();
 
         public SA_TestSuiteConfig Config {

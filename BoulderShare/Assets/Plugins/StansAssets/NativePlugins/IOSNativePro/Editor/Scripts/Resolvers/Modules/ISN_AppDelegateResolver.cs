@@ -1,6 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using SA.iOS.XCode;
 using SA.iOS.UIKit;
 
@@ -9,7 +6,6 @@ namespace SA.iOS
 {
     public class ISN_AppDelegateResolver : ISN_APIResolver
     {
-
         protected override ISN_XcodeRequirements GenerateRequirements() {
             var requirements = new ISN_XcodeRequirements();
 

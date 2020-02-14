@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using SA.Foundation.Templates;
 using UnityEngine;
 
 namespace SA.CrossPlatform.UI
@@ -22,6 +23,18 @@ namespace SA.CrossPlatform.UI
 
             var dialog = builder.Build();
             dialog.Show();
+        }
+
+        public static void DisplayResultMessage(SA_Result result)
+        {
+            if (result.IsSucceeded)
+            {
+                ShowMessage("Success", "Operation completed successfully!");
+            }
+            else
+            {
+                ShowMessage("Error", result.Error.FullMessage);
+            }
         }
     }
 }

@@ -1,33 +1,46 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-
 using SA.Foundation.Templates;
 using SA.iOS.StoreKit;
-
+using UnityEngine;
 
 namespace SA.CrossPlatform.InApp
 {
-
     internal class UM_IOSInAppClient : UM_AbstractInAppClient, UM_iInAppClient, ISN_iSKPaymentTransactionObserver
     {
-
-
+        public const string k_UndefinedTransactionId = "undefined";
+        
         //--------------------------------------
         //  UM_AbstractInAppClient
         //--------------------------------------
 
-        protected override void ConnectToService(Action<SA_Result> callback) {
-
-            ISN_SKPaymentQueue.Init((result) => {
-                callback.Invoke(result);
-            });
+        protected override void ConnectToService(Action<SA_iResult> callback) 
+        {
+            ISN_SKPaymentQueue.Init(callback.Invoke);
         }
 
-        protected override Dictionary<string, UM_iProduct> GetServerProductsInfo() {
+        protected override void ConnectToService(IEnumerable<UM_ProductTemplate> products, Action<SA_iResult> callback)
+        {
+            ISN_SKPaymentQueue.Init(ConvertToIOSTemplates(products), callback.Invoke);
+        }
+
+        internal static List<ISN_SKProduct> ConvertToIOSTemplates(IEnumerable<UM_ProductTemplate> productTemplates)
+        {
+            var result = new List<ISN_SKProduct>();
+            foreach (var product in productTemplates)
+            {
+                result.Add(new ISN_SKProduct { ProductIdentifier = product.Id});
+            }
+
+            return result;
+        }
+
+        protected override Dictionary<string, UM_iProduct> GetServerProductsInfo() 
+        {
             var products = new Dictionary<string, UM_iProduct>();
-            foreach (var product in ISN_SKPaymentQueue.Products) {
-                UM_IOSProduct p = new UM_IOSProduct();
+            foreach (var product in ISN_SKPaymentQueue.Products) 
+            {
+                var p = new UM_IOSProduct();
                 p.Override(product);
 
                 products.Add(p.Id, p);
@@ -35,7 +48,8 @@ namespace SA.CrossPlatform.InApp
             return products;
         }
 
-        protected override void ObserveTransactions() {
+        protected override void ObserveTransactions() 
+        {
             ISN_SKPaymentQueue.AddTransactionObserver(this);
         }
 
@@ -43,30 +57,37 @@ namespace SA.CrossPlatform.InApp
         //  UM_iInAppClient
         //--------------------------------------
 
-        public void AddPayment(string productId) {
+        public void AddPayment(string productId) 
+        {
             ISN_SKPaymentQueue.AddPayment(productId);
         }
 
-        public void FinishTransaction(UM_iTransaction transaction) {
-            UM_IOSTransaction t = (UM_IOSTransaction) transaction;
-
-            ISN_SKPaymentTransaction skPaymentTransaction = t.IosTransaction;
+        public void FinishTransaction(UM_iTransaction transaction) 
+        {
+            if(transaction.Id.Equals(k_UndefinedTransactionId))
+                return;
+            
+            var t = (UM_IOSTransaction) transaction;
+            var skPaymentTransaction = t.IosTransaction;
             ISN_SKPaymentQueue.FinishTransaction(skPaymentTransaction);
         }
 
-        public void RestoreCompletedTransactions() {
+        public void RestoreCompletedTransactions() 
+        {
             ISN_SKPaymentQueue.RestoreCompletedTransactions();
         }
-
 
         //--------------------------------------
         //  ISN_TransactionObserver implementation
         //--------------------------------------
 
-        public void OnTransactionUpdated(ISN_SKPaymentTransaction transaction) {
+        public void OnTransactionUpdated(ISN_iSKPaymentTransaction transaction) 
+        {
             var um_transaction = new UM_IOSTransaction(transaction);
             switch (transaction.State) {
                 case ISN_SKPaymentTransactionState.Purchasing:
+                    if(transaction.HasError)  //otherwise we aren't interested.
+                        UpdateTransaction(um_transaction);
                     break;
                 case ISN_SKPaymentTransactionState.Purchased:
                 case ISN_SKPaymentTransactionState.Restored:
@@ -81,21 +102,26 @@ namespace SA.CrossPlatform.InApp
             }
         }
 
-        public void OnTransactionRemoved(ISN_SKPaymentTransaction result) {
+        public void OnTransactionRemoved(ISN_iSKPaymentTransaction result) 
+        {
             //Your application does not typically need to anything on this event,  
             //but it may be used to update user interface to reflect that a transaction has been completed.
         }
 
-        public bool OnShouldAddStorePayment(ISN_SKProduct product) {
+        public bool OnShouldAddStorePayment(ISN_SKProduct product) 
+        {
             AddPayment(product.ProductIdentifier);
             return true;
         }
 
-
-        public void OnRestoreTransactionsComplete(SA_Result result) {
+        public void OnRestoreTransactionsComplete(SA_Result result) 
+        {
             SetRestoreTransactionsResult(result);
         }
 
-
+        public void DidChangeStorefront()
+        {
+            // Do nothing
+        }
     }
 }

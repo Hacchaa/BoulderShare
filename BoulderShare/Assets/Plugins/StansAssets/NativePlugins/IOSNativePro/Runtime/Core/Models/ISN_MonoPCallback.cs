@@ -1,25 +1,30 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+#if UNITY_IPHONE || UNITY_TVOS || UNITY_STANDALONE_OSX 
+    #define API_ENABLED
+#endif
+
 using System;
 using UnityEngine;
-
-
 using System.Runtime.InteropServices;
-
 
 
 namespace SA.iOS.Utilities
 {
     public static class ISN_MonoPCallback
     {
+        
         #if UNITY_IPHONE || UNITY_TVOS
-        [DllImport("__Internal")] static extern void RegisterCallbackDelegate(MonoPCallbackDelegate callbackDelegate);
+            private const string k_DllName = "__Internal";
+        #else
+            private const string k_DllName = "ISN_GameKit";
         #endif
-
-
+        
+        #if API_ENABLED
+        [DllImport(k_DllName)] static extern void RegisterCallbackDelegate(MonoPCallbackDelegate callbackDelegate);
+        #endif
+        
         private delegate void MonoPCallbackDelegate(IntPtr actionPtr, string data);
 
-#if UNITY_IPHONE || UNITY_TVOS
+#if API_ENABLED
         [RuntimeInitializeOnLoadMethod]
          private static void Initialize() {
             if(!Application.isEditor) {
@@ -27,7 +32,6 @@ namespace SA.iOS.Utilities
             }
          }
 #endif
-
 
         [AOT.MonoPInvokeCallback(typeof(MonoPCallbackDelegate))]
         private static void MonoPCallbackInvoke(IntPtr actionPtr, string data) {
@@ -37,14 +41,14 @@ namespace SA.iOS.Utilities
 
             // Возвращаем по указателю хранящийся там Action
             var action = IntPtrToObject(actionPtr, false);
-            if (action == null) {
-                Debug.LogError("Callaback not found");
+            if (action == null) 
+            {
+                Debug.LogError("Callback not found");
                 return;
             }
 
-            try {
-
-               
+            try 
+            {
                 var paramTypes = action.GetType().GetGenericArguments();
                 var arg = paramTypes.Length == 0 ? null : ConvertObject(data, paramTypes[0]);
 
@@ -85,9 +89,7 @@ namespace SA.iOS.Utilities
 
             return JsonUtility.FromJson(value, objectType);
         }
-
-
-
+        
 
         // Функция получения указателя для переданного объекта
         public static IntPtr ObjectToIntPtr(object obj) {

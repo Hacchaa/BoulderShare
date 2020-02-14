@@ -1,3 +1,7 @@
+#if ((UNITY_IPHONE || UNITY_IOS || UNITY_TVOS ) && STORE_KIT_API_ENABLED)
+#define API_ENABLED
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native 2018 - New Generation
@@ -23,7 +27,7 @@ namespace SA.iOS.StoreKit.Internal
 	
     internal class ISN_SKNativeAPI : ISN_Singleton<ISN_SKNativeAPI>, ISN_iSKAPI {
 
-#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+#if API_ENABLED
         [DllImport ("__Internal")] private static extern void _ISN_LoadStore(string data);
         [DllImport ("__Internal")] private static extern void _ISN_AddPayment(string productIdentifier);
         [DllImport ("__Internal")] private static extern void _ISN_FinishTransaction(string transactionIdentifier);
@@ -33,23 +37,21 @@ namespace SA.iOS.StoreKit.Internal
 
         [DllImport("__Internal")] private static extern bool _ISN_CanMakePayments();
         [DllImport("__Internal")] private static extern string _ISN_RetrieveAppStoreReceipt();
+        [DllImport("__Internal")] private static extern string _ISN_SKPaymentQueue_Storefront();
 
         [DllImport("__Internal")] static extern void _ISN_SK_RefreshRequest(string data, IntPtr callback);
-
-
 #endif
-
-        private SA_Event<ISN_SKPaymentTransaction> m_transactionUpdated = new SA_Event<ISN_SKPaymentTransaction>();
-        private SA_Event<ISN_SKPaymentTransaction> m_transactionRemoved = new SA_Event<ISN_SKPaymentTransaction>();
+        private SA_Event m_didChangeStorefront = new SA_Event();
+        private SA_Event<ISN_iSKPaymentTransaction> m_transactionUpdated = new SA_Event<ISN_iSKPaymentTransaction>();
+        private SA_Event<ISN_iSKPaymentTransaction> m_transactionRemoved = new SA_Event<ISN_iSKPaymentTransaction>();
         private SA_Event<ISN_SKProduct> m_shouldAddStorePayment = new SA_Event<ISN_SKProduct>();
         private SA_Event<SA_Result> m_restoreTransactionsComplete = new SA_Event<SA_Result>();
         private Action<ISN_SKInitResult> m_LoadStoreCallback;
 
 
-
         public void LoadStore(ISN_SKLib.SA_PluginSettingsWindowStylesitRequest request, Action<ISN_SKInitResult> callback) {
             m_LoadStoreCallback  = callback;
-			#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+			#if API_ENABLED
             _ISN_LoadStore(JsonUtility.ToJson(request));
 			#endif
 		}
@@ -60,10 +62,8 @@ namespace SA.iOS.StoreKit.Internal
             m_LoadStoreCallback.Invoke(result);
         }
 
-
-
         public void RefreshRequest(ISN_SKReceiptDictionary dictionary, Action<SA_Result> callback) {
-            #if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+            #if API_ENABLED
             _ISN_SK_RefreshRequest(JsonUtility.ToJson(dictionary), ISN_MonoPCallback.ActionToIntPtr(callback));
             #endif
         }
@@ -73,66 +73,71 @@ namespace SA.iOS.StoreKit.Internal
             m_LoadStoreCallback.Invoke(result);
         }
 
-
-
         public void SetTransactionObserverState(bool enabled) {
-            #if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+            #if API_ENABLED
             _ISN_SetTransactionObserverState(enabled);
             #endif
         }
 
         public void AddPayment(string productIdentifier) {
-			#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED) 
+			#if API_ENABLED
             _ISN_AddPayment(productIdentifier);
 			#endif
 		}
 
-        public void FinishTransaction(ISN_SKPaymentTransaction transaction) {
-			#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED) 
+        public void FinishTransaction(ISN_iSKPaymentTransaction transaction) {
+			#if API_ENABLED
             _ISN_FinishTransaction(transaction.TransactionIdentifier);
 			#endif
 		}
 
         public void RestoreCompletedTransactions() {
-			#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED) 
+			#if API_ENABLED
                 _ISN_RestoreCompletedTransactions();
 			#endif
 		}
 
-		
-
         public bool CanMakePayments() {
-			#if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED) 
+			#if API_ENABLED 
                 return _ISN_CanMakePayments();
 			#else
 				return false;
 			#endif
 		}
 
-        public ISN_SKAppStoreReceipt RetrieveAppStoreReceipt() {
-            #if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+        public ISN_SKAppStoreReceipt RetrieveAppStoreReceipt() 
+        {
+            #if API_ENABLED
             return new ISN_SKAppStoreReceipt(_ISN_RetrieveAppStoreReceipt()); 
             #else
             return new ISN_SKAppStoreReceipt(string.Empty); 
             #endif
         }
 
-        public void StoreRequestReview() {
-            #if ((UNITY_IPHONE || UNITY_TVOS) && STORE_KIT_API_ENABLED)
+        public void StoreRequestReview() 
+        {
+            #if API_ENABLED
              _ISN_StoreRequestReview();
             #endif
-
         }
 
+        public ISN_SKStorefront PaymentQueue_Storefront()
+        {
+            #if API_ENABLED
+            var json = _ISN_SKPaymentQueue_Storefront();
+            return JsonUtility.FromJson<ISN_SKStorefront>(json);
+            #else
+            return new ISN_SKStorefront();
+            #endif
+        }
 
-
-        public SA_iEvent<ISN_SKPaymentTransaction> TransactionUpdated { 
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionUpdated { 
             get {
                 return m_transactionUpdated;
             }
         }
 
-        public SA_iEvent<ISN_SKPaymentTransaction> TransactionRemoved { 
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionRemoved { 
             get {
                 return m_transactionRemoved;
             }
@@ -149,19 +154,26 @@ namespace SA.iOS.StoreKit.Internal
                 return m_restoreTransactionsComplete;
             }
         }
-
-
+        
+        public SA_iEvent DidChangeStorefront { 
+            get {
+                return m_didChangeStorefront;
+            }
+        }
 
         //--------------------------------------
         //  ISN_TransactionObserver
         //--------------------------------------
 
+        void OnDidChangeStorefront() 
+        {
+            m_didChangeStorefront.Invoke();
+        }
 
         void OnTransactionUpdated(string data) {
             var result = JsonUtility.FromJson<ISN_SKPaymentTransaction>(data);
             m_transactionUpdated.Invoke(result);
         }
-
 
         void OnTransactionRemoved(string data) {
             var result = JsonUtility.FromJson<ISN_SKPaymentTransaction>(data);
@@ -173,12 +185,9 @@ namespace SA.iOS.StoreKit.Internal
             m_shouldAddStorePayment.Invoke(result);
         }
 
-
         void OnRestoreTransactionsComplete(string data) {
             var result = JsonUtility.FromJson<SA_Result>(data);
             m_restoreTransactionsComplete.Invoke(result);
         }
-
-   
     }
 }

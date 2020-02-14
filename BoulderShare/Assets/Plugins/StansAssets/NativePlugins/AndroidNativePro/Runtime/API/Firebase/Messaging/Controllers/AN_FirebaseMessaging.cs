@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Foundation.Events;
 #if AN_FIREBASE_MESSAGING && (UNITY_IOS || UNITY_ANDROID)
 using Firebase.Messaging;

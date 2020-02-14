@@ -2,7 +2,6 @@ using System;
 using SA.Android.GMS.Games;
 using SA.Foundation.Templates;
 
-
 namespace SA.CrossPlatform.GameServices
 {
     /// <summary>
@@ -12,21 +11,23 @@ namespace SA.CrossPlatform.GameServices
     {
         public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback) {
             var client = AN_Games.GetSnapshotsClient();
-            client.Load((result) => {
+            client.Load(result => {
 
-            UM_SavedGamesMetadataResult loadResult;
-
-            if (result.IsSucceeded) {
+                UM_SavedGamesMetadataResult loadResult;
+                if (result.IsSucceeded) 
+                {
                     loadResult = new UM_SavedGamesMetadataResult();
-                    foreach (var meta in result.Snapshots) {
-                        var an_meta = new UM_AndroidSavedGameMetadata(meta);
-                        loadResult.AddMetadata(an_meta);
+                    foreach (var meta in result.Snapshots) 
+                    {
+                        var anMeta = new UM_AndroidSavedGameMetadata(meta);
+                        loadResult.AddMetadata(anMeta);
                     }
-                } else {
+                } 
+                else 
+                {
                     loadResult = new UM_SavedGamesMetadataResult(result.Error);
                 }
-
-
+                
                 callback.Invoke(loadResult);
             });
         }
@@ -69,16 +70,18 @@ namespace SA.CrossPlatform.GameServices
             var conflictPolicy = AN_SnapshotsClient.ResolutionPolicy.MOST_RECENTLY_MODIFIED;
 
             client.Open(name, true, conflictPolicy, (result) => {
-                if (result.IsSucceeded) {
-                    var snapshot = result.Data;
-
+                if (result.IsSucceeded) 
+                {
+                    var snapshot = result.Data.GetSnapshot();
                     snapshot.WriteBytes(data);
-                    client.CommitAndClose(snapshot, meta, (commitResult) => {
+                    client.CommitAndClose(snapshot, meta, commitResult => 
+                    {
                         ReportGameSave(name, result);
                         callback.Invoke(result);
                     });
-
-                } else {
+                } 
+                else 
+                {
                     callback.Invoke(result);
                 }
             });
@@ -94,29 +97,33 @@ namespace SA.CrossPlatform.GameServices
             var client = AN_Games.GetSnapshotsClient();
             var conflictPolicy = AN_SnapshotsClient.ResolutionPolicy.LAST_KNOWN_GOOD;
 
-            client.Open(game.Name, true, conflictPolicy, (result) => {
-
+            client.Open(game.Name, true, conflictPolicy, result => 
+            {
                 UM_SavedGameDataLoadResult loadResult;
-                if (result.IsSucceeded) {
-                    var snapshot = result.Data;
+                if (result.IsSucceeded) 
+                {
+                    var snapshot = result.Data.GetSnapshot();
                     var data = snapshot.ReadFully();
-
-                    client.CommitAndClose(snapshot, AN_SnapshotMetadataChange.EMPTY_CHANGE, (commitResult) => {
+                    client.CommitAndClose(snapshot, AN_SnapshotMetadataChange.EMPTY_CHANGE, commitResult => 
+                    {
                         if (commitResult.IsSucceeded)
                         {
                             loadResult = new UM_SavedGameDataLoadResult(data, new AndroidSaveInfo(commitResult.Metadata));
-                        } else {
+                        } 
+                        else 
+                        {
                             loadResult = new UM_SavedGameDataLoadResult(commitResult.Error);
                         }
 
                         callback.Invoke(loadResult);
                     });
-                } else {
+                } 
+                else 
+                {
                     loadResult = new UM_SavedGameDataLoadResult(result.Error);
                     callback.Invoke(loadResult);
                 }
             });
         }
-        
     }
 }

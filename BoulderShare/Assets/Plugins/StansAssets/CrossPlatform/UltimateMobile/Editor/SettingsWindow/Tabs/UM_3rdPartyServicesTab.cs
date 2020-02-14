@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,8 +14,8 @@ namespace SA.CrossPlatform
             RegisterService(CreateInstance<UM_AdvertisementUI>());
             RegisterService(CreateInstance<UM_AnalyticsUI>());
             RegisterService(CreateInstance<UM_PlaymakerUI>());
-
             RegisterService(CreateInstance<UM_FirebaseUI>());
+            RegisterService(CreateInstance<UM_GifUI>());
         }
 
     }

@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -43,7 +43,7 @@ namespace SA.iOS.Foundation.Internal
         ISN_NSLocale CurrentLocale { get; }
         ISN_NSLocale AutoUpdatingCurrentLocale { get; }
 
-
+        string PreferredLanguage { get; }
 
         //--------------------------------------
         // File Manager

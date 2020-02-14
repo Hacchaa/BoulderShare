@@ -1,8 +1,13 @@
 #import "JSONModel.h"
 #import "ISN_Logger.h"
+#import "ISN_HashStorage.h"
 
 
-#define SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
 //--------------------------------------
 // Constants
@@ -15,7 +20,6 @@ extern const char* UNITY_AV_LISTENER;
 extern const char* UNITY_PH_LISTENER;
 extern const char* UNITY_UI_LISTENER;
 extern const char* UNITY_CK_LISTENER;
-extern const char* UNITY_GK_LISTENER;
 extern const char* UNITY_UN_LISTENER;
 
 extern const char* UNITY_APP_DELEGATE;
@@ -85,6 +89,7 @@ extern "C" {
     void ISN_SendCallbackToUnity(UnityAction callback, NSString* data);
     NSString* ISN_ConvertToBase64(NSData* data);
     NSString* ISN_ConvertImageToBase64(UIImage* image);
+    NSString* ISN_ConvertImageToJPEGBase64(UIImage* image, CGFloat compression);
     
 #if __cplusplus
 }   // Extern C

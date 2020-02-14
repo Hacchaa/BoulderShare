@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
@@ -7,7 +7,7 @@ namespace SA.CrossPlatform.Notifications
     public interface UM_iNotificationsClient 
     {
         /// <summary>
-        /// Unschedule all pending notification requests.
+        /// Unscheduled all pending notification requests.
         /// This method executes asynchronously, removing all pending notification requests on a secondary thread.
         /// </summary>
         void RequestAuthorization(Action<SA_Result> callback);
@@ -27,13 +27,13 @@ namespace SA.CrossPlatform.Notifications
         void AddNotificationRequest(UM_NotificationRequest request, Action<SA_Result> callback);
 
         /// <summary>
-        /// Unschedule all pending notification requests.
+        /// Unscheduled all pending notification requests.
         /// This method executes asynchronously, removing all pending notification requests on a secondary thread.
         /// </summary>
         void RemoveAllPendingNotifications();
 
         /// <summary>
-        /// Unschedule the specified notification requests.
+        /// Unscheduled the specified notification requests.
         /// This method executes asynchronously, removing the pending notification requests on a secondary thread.
         /// </summary>
         /// <param name="identifier">
@@ -82,7 +82,6 @@ namespace SA.CrossPlatform.Notifications
         /// The notification will be delivered as soon as app enters foreground.
         /// </summary>
         SA_iEvent<UM_NotificationRequest> OnNotificationClick { get; }
-
 
         /// <summary>
         /// Called when a notification is delivered to a foreground app.

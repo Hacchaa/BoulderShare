@@ -6,9 +6,8 @@
 
 + (id)sharedInstance;
 
-- (void) loadAchievements:(NSString *) requestId;
-- (void) resetAchievements:(NSString *) requestId;
-- (void) reportAchievements:(NSString *) requestId withAchievementsArray:(NSArray<ISN_GKAchievement> *) achievementsArray;
-
+- (void) loadAchievements:(UnityAction) callback;
+- (void) resetAchievements:(UnityAction) callback;
+- (void) reportAchievements:(UnityAction) callback withAchievementsArray:(NSArray<ISN_GKAchievement> *) achievementsArray;
 
 @end

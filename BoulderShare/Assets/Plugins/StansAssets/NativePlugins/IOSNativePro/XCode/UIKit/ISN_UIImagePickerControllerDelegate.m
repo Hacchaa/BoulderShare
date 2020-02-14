@@ -20,8 +20,6 @@
 
 
 -(void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    //ISN_SendMessage(UNITY_UI_LISTENER, "PreloaderLockScreen", @"");
-
     UIViewController *vc =  UnityGetGLViewController();
     [vc dismissViewControllerAnimated:YES completion:nil];
     
@@ -36,6 +34,9 @@
     NSURL *mediaUrl = (NSURL*)[info objectForKey:UIImagePickerControllerMediaURL];
     if(mediaUrl != NULL) {
         NSString *path = [mediaUrl absoluteString];
+        if (@available(iOS 13.0, *)) {
+            path = [self iOS13MediaUrlFix:[mediaUrl path]];
+        }
         [result setM_mediaURL:path];
     }
     
@@ -46,26 +47,34 @@
             [result setM_imageURL:path];
         }
     } else {
-        // Fallback on earlier versions
+        [ISN_Logger Log:@"imageUrl param does not supported on this iOS version"];
     }
-    
-    
-    
+
     NSString* mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     [result setM_mediaType:mediaType];
     
     ISN_SendMessage(UNITY_UI_LISTENER, "didFinishPickingMedia", [result toJSONString]);
 }
 
+-(NSString*) iOS13MediaUrlFix:(NSString*) moviePath {
+    NSArray* spliteArray = [moviePath componentsSeparatedByString: @"/"];
+    NSString* lastString = [spliteArray lastObject];
+    NSError *error;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *documentsDirectory = [NSHomeDirectory() stringByAppendingPathComponent:@"tmp"];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:lastString];
+    [fileManager copyItemAtPath:moviePath toPath:filePath error:&error];
+    
+    NSString* mediaPath = [NSString stringWithFormat:@"%@%@", @"file:///private", filePath];
+    return mediaPath;
+}
 
 
 - (NSString*) EncodeImage:(UIImage *)image {
     image = [image fixOrientation];
     
-    //int encodingType = [self.controllerRequest m_encodingType];
-    int maxImageSize = [self.controllerRequest m_maxImageSize];
-    //  int imageCompressionRate = [self.controllerRequest m_imageCompressionRate];
-    
+    int encodingType = [self.controllerRequest m_EncodingType];
+    int maxImageSize = [self.controllerRequest m_MaxImageSize];
     
     if(image.size.width >  maxImageSize || image.size.height > maxImageSize ) {
         [ISN_Logger Log:@"resizing image"];
@@ -81,10 +90,20 @@
             
         }
         image =  [self imageWithImage:image scaledToSize:s];
-        
     }
     
-    return  ISN_ConvertImageToBase64(image);
+    NSString* imageData;
+    if(encodingType == 0) // PNG encoding
+    {
+        imageData = ISN_ConvertImageToBase64(image);
+    }
+    else // JPEG encoding
+    {
+        float imageCompressionRate = [self.controllerRequest m_ImageCompressionRate];
+        imageData = ISN_ConvertImageToJPEGBase64(image, imageCompressionRate);
+    }
+    
+    return imageData;
 }
 
 

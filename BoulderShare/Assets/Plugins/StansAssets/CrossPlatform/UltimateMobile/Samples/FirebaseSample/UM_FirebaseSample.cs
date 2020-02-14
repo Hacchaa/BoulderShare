@@ -1,4 +1,4 @@
-﻿using SA.CrossPlatform.Media;
+using SA.CrossPlatform.Media;
 using UnityEngine;
 using UnityEngine.UI;
 using SA.Android.Firebase.Analytics;

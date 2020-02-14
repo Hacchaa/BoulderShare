@@ -1,20 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using SA.Foundation.Templates;
 
 namespace SA.iOS.StoreKit 
 {
-
     public interface ISN_iSKPaymentTransactionObserver
     {
-
         /// <summary>
         /// Tells an observer that one or more transactions have been updated.
         /// </summary>
-        void OnTransactionUpdated(ISN_SKPaymentTransaction result);
-
+        void OnTransactionUpdated(ISN_iSKPaymentTransaction result);
 
         /// <summary>
         /// Tells an observer that one or more transactions have been removed from the queue.
@@ -22,8 +15,7 @@ namespace SA.iOS.StoreKit
         /// Your application does not typically need to anything on this event,  
         /// but it may be used to update user interface to reflect that a transaction has been completed.
         /// </summary>
-        void OnTransactionRemoved(ISN_SKPaymentTransaction result);
-
+        void OnTransactionRemoved(ISN_iSKPaymentTransaction result);
 
         /// <summary>
         /// Tells the observer that a user initiated an in-app purchase from the App Store.
@@ -37,10 +29,15 @@ namespace SA.iOS.StoreKit
         /// <summary>
         /// Tells the observer that the payment queue has finished sending restored transactions.
         /// 
-        /// This method is called after all restorable transactions have been processed by the payment queue. 
+        /// This method is called after all restartable transactions have been processed by the payment queue. 
         /// Your application is not required to do anything in this method.
         /// </summary>
         void OnRestoreTransactionsComplete(SA_Result result);
+        
+        /// <summary>
+        /// Tells the observer that the storefront for the payment queue has changed.
+        /// </summary>
+        void DidChangeStorefront();
     }
 }
 

@@ -1,10 +1,10 @@
 #if !TARGET_OS_TV
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
 #import "ISN_Foundation.h"
 #import "ISN_UIImagePickerControllerDelegate.h"
 #import "ISN_UICommunication.h"
+
 
 
 @interface ISN_UIImagePickerController : NSObject
@@ -69,11 +69,15 @@ static ISN_UIImagePickerController * s_sharedInstance;
     
     UIViewController *vc =  UnityGetGLViewController();
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    [picker setModalPresentationStyle: UIModalPresentationOverCurrentContext];
+
+    picker.mediaTypes = request.m_MediaTypes;
+    picker.sourceType = request.m_SourceType;
+    picker.allowsEditing  = request.m_AllowsEditing;
+    picker.modalPresentationStyle = request.m_ModalPresentationStyle;
     
-    picker.mediaTypes = request.m_mediaTypes;
-    picker.sourceType = request.m_sourceType;
-    picker.allowsEditing  = request.m_allowsEditing;
+    if(picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+         picker.cameraDevice = request.m_CameraDevice;
+    }
     
     picker.delegate = self.m_pickerDelegate;
     [vc presentViewController:picker animated:YES completion:nil];
@@ -111,7 +115,7 @@ extern "C" {
     
     
     void _ISN_UI_PresentPickerController(char* data) {
-        [ISN_Logger LogNativeMethodInvoke:"_ISN_UI_SaveToCameraRoll" data:data];
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_UI_PresentPickerController" data:data];
         
         NSError *jsonError;
         ISN_UIPickerControllerRequest *request = [[ISN_UIPickerControllerRequest alloc] initWithChar:data error:&jsonError];
@@ -120,9 +124,7 @@ extern "C" {
         }
         
         [[ISN_UIImagePickerController sharedInstance] presentPickerController:request];
-        
     }
-    
 }
 
 

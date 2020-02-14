@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +27,8 @@ namespace SA.Android.App
         /// <param name="year">the initially selected year.</param>
         /// <param name="month">the initially selected month of the year 0-11.</param>
         /// <param name="day">the initially selected day of month (1-31, depending on month)</param>
-        public AN_DatePickerDialog(int year, int month, int day) {
+        public AN_DatePickerDialog(int year, int month, int day)
+        {
             m_year = year;
             m_month = month;
             m_day = day;
@@ -36,8 +37,8 @@ namespace SA.Android.App
         /// <summary>
         /// Start the dialog and display it on screen.
         /// </summary>
-        public void Show(Action<AN_DatePickerResult> callback) {
-
+        public void Show(Action<AN_DatePickerResult> callback) 
+        {
             var json = JsonUtility.ToJson(this);
             AN_Java.Bridge.CallStaticWithCallback<AN_DatePickerResult>(
                 AN_DATEPICKERDIALOG_CLASS,

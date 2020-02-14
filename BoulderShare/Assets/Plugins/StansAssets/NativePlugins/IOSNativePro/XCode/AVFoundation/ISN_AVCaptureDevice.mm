@@ -21,7 +21,7 @@ extern "C" {
         }
         
         AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:type];
-        return authStatus;
+        return (int) authStatus;
 #else
         return 0;
 #endif
@@ -45,8 +45,8 @@ extern "C" {
                 break;
         }
         
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-            int authStatus = [AVCaptureDevice authorizationStatusForMediaType:type];
+        [AVCaptureDevice requestAccessForMediaType:type completionHandler:^(BOOL granted) {
+            int authStatus = (int) [AVCaptureDevice authorizationStatusForMediaType:type];
             ISN_SendMessage(UNITY_AV_LISTENER, "OnRequestAccessCompleted", [NSString stringWithFormat:@"%d",authStatus]);
         }];
 #endif

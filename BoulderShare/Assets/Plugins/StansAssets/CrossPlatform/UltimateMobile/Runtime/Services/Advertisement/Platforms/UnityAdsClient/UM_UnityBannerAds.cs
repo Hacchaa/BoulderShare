@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 #if SA_UNITY_ADS_INSTALLED
 using UADS = UnityEngine.Advertisements;

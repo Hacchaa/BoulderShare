@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using SA.iOS.XCode;
 using UnityEngine;
@@ -27,14 +27,15 @@ namespace SA.iOS
             base.RemoveXcodeRequirements();
         }
 
-        protected override void AddXcodeRequirements() {
-
-
+        protected override void AddXcodeRequirements() 
+        {
+            #if !UNITY_TVOS
             if(ISN_Settings.Instance.SavingAGame) {
                 ISD_API.Capability.iCloud.Enabled = true;
                 ISD_API.Capability.iCloud.keyValueStorage = true;
                 ISD_API.Capability.iCloud.iCloudDocument = true;
             }
+            #endif
 
             base.AddXcodeRequirements();
         }

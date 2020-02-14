@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using SA.Android;
 using SA.iOS;
 using SA.Foundation.Editor;
@@ -10,9 +10,18 @@ namespace SA.CrossPlatform
 
         public class ISNSettings : UM_NativeServiceLayoutBasedSetting
         {
-            public override SA_ServiceLayout Layout { get { return CreateInstance<ISN_FoundationUI>(); } }
-            public override bool IsEnabled {
-                get {
+            public override SA_ServiceLayout Layout 
+            { 
+                get 
+                { 
+                    return CreateInstance<ISN_FoundationUI>(); 
+                } 
+            }
+
+            public override bool IsEnabled 
+            {
+                get 
+                {
                     return ISN_Preprocessor.GetResolver<ISN_FoundationResolver>().IsSettingsEnabled;
                 }
             }
@@ -20,10 +29,18 @@ namespace SA.CrossPlatform
 
         public class ANSettings : UM_NativeServiceLayoutBasedSetting
         {
-            public override SA_ServiceLayout Layout { get { return CreateInstance<AN_AppFeaturesUI>(); } }
+            public override SA_ServiceLayout Layout 
+            { 
+                get 
+                { 
+                    return CreateInstance<AN_AppFeaturesUI>(); 
+                } 
+            }
 
-            public override bool IsEnabled {
-                get {
+            public override bool IsEnabled 
+            {
+                get 
+                {
                     return AN_Preprocessor.GetResolver<AN_CoreResolver>().IsSettingsEnabled;
                 }
             }
@@ -46,6 +63,7 @@ namespace SA.CrossPlatform
             AddFeatureUrl("Rate Us Dialog", "https://unionassets.com/ultimate-mobile-pro/rate-us-dialog-767");
             AddFeatureUrl("Dialogs Utility ", "https://unionassets.com/ultimate-mobile-pro/native-dialogs-722#utility");
             AddFeatureUrl("Date Picker Dialog", "https://unionassets.com/ultimate-mobile-pro/date-picker-dialog-777");
+            AddFeatureUrl("Wheel Picker Dialog", "https://unionassets.com/ultimate-mobile-pro/wheel-picker-dialog-838");
 
             AddFeatureUrl("Build Info", "https://unionassets.com/ultimate-mobile-pro/build-info-723");
             AddFeatureUrl("Locale Info", "https://unionassets.com/ultimate-mobile-pro/locale-825");
@@ -54,20 +72,26 @@ namespace SA.CrossPlatform
             AddFeatureUrl("Send To Background", "https://unionassets.com/ultimate-mobile-pro/application-834#send-to-background");
         }
 
-        public override string Title {
-            get {
+        public override string Title 
+        {
+            get 
+            {
                 return "Foundation";
             }
         }
 
-        public override string Description {
-            get {
+        public override string Description 
+        {
+            get 
+            {
                 return "Access operating-system services to define the base layer of functionality for your app.";
             }
         }
 
-        protected override Texture2D Icon {
-            get {
+        protected override Texture2D Icon 
+        {
+            get 
+            {
                 return UM_Skin.GetServiceIcon("um_system_icon.png");
             }
         }

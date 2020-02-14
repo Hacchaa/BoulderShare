@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +16,7 @@ public class AN_ContactsEample : MonoBehaviour
     public void Awake() {
 
         m_retirve.onClick.AddListener(() => {
-            AN_ContactsContract.Retrieve((result) => {
+            AN_ContactsContract.RetrieveAllAsync((result) => {
                 if(result.IsFailed) {
                     Debug.Log("Filed:  " + result.Error.Message);
                     return;

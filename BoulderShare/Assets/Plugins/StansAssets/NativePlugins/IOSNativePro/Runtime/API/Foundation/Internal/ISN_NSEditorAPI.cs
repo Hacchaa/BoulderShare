@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -103,6 +103,11 @@ namespace SA.iOS.Foundation.Internal
             get {
                 return new ISN_NSLocale();
             }
+        }
+
+        public string PreferredLanguage
+        {
+            get { return "en"; }
         }
     }
 }

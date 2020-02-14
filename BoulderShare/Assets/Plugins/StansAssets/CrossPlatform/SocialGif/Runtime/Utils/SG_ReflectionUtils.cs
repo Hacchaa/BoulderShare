@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2015 Thomas Hourdel
  *
  * This software is provided 'as-is', without any express or implied

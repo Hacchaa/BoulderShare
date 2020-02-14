@@ -1,17 +1,15 @@
-﻿using System;
+using System;
 using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.Advertisement
 {
-
     /// <summary>
     /// A client to interact with advertisements functionality.
     /// </summary>
-    public interface UM_iAdsClient {
-
-
+    public interface UM_iAdsClient 
+    {
         /// <summary>
-        /// Initialize the Ads client using the id spesifaied in editor settings.
+        /// Initialize the Ads client using the id specified in editor settings.
         /// </summary>
         /// <param name="callback">The result callback</param>
         void Initialize(Action<SA_Result> callback);
@@ -24,7 +22,7 @@ namespace SA.CrossPlatform.Advertisement
         void Initialize(string appId, Action<SA_Result> callback);
 
         /// <summary>
-        /// Inidicates if ads client was Initialized successfully.
+        /// Indicates if ads client was Initialized successfully.
         /// </summary>
         bool IsInitialized { get; }
 
@@ -42,6 +40,5 @@ namespace SA.CrossPlatform.Advertisement
         /// A client to interact with non-rewarded advertisements functionality.
         /// </summary>
         UM_iNonRewardedAds NonRewardedAds { get; }
-
     }
 }

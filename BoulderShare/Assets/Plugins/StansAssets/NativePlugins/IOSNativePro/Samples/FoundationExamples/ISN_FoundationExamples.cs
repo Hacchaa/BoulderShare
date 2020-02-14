@@ -1,4 +1,4 @@
-﻿using SA.iOS.Foundation;
+using SA.iOS.Foundation;
 using UnityEngine;
 
 

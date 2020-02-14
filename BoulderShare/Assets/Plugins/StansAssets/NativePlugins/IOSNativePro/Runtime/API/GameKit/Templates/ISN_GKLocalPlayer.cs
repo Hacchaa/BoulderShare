@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -59,6 +59,8 @@ namespace SA.iOS.GameKit
         /// After you set a handler, authentication begins automatically 
         /// and is repeated when your game moves to the background and then back to the foreground.
         /// </summary>
+        
+        [Obsolete("Authenticate is deprecated, please use setAuthenticateHandler instead.")]
         public static void Authenticate(Action<SA_Result> callback) {
             
             if (m_successAuthenticateResultCache != null) {
@@ -72,7 +74,8 @@ namespace SA.iOS.GameKit
 
             m_isAuthenticateInProgress = true;
 
-            ISN_GKLib.API.AuthenticateLocalPlayer((SA_Result result) => {
+            ISN_GKLib.API.AuthenticateLocalPlayer(result => 
+            {
 
                 m_isAuthenticateInProgress = false;
                 if (result.IsSucceeded) {
@@ -80,7 +83,30 @@ namespace SA.iOS.GameKit
                 }
                 m_onAuthenticateLocalPlayerComplete.Invoke(result);
                 m_onAuthenticateLocalPlayerComplete = delegate { };
+            });
+        }
 
+        /// <summary>
+        /// A handler called to process an authentication-related event.
+        ///
+        /// Your game should authenticate the player as early as possible after launching, 
+        /// ideally as soon as you can present a user interface to the player. 
+        /// For example, your game may be launched because the player accepted an invitation to join a match 
+        /// or to take a turn in a turn-based match, 
+        /// so you want your game to authenticate the player 
+        /// and process the match invitation as quickly as possible. 
+        /// After you set a handler, authentication begins automatically 
+        /// and is repeated when your game moves to the background and then back to the foreground.
+        /// </summary>
+        /// <param name="callback">Authentication Result</param>
+        public static void setAuthenticateHandler(Action<SA_Result> callback)
+        {
+            m_onAuthenticateLocalPlayerComplete = callback;
+            m_isAuthenticateInProgress = true;
+            ISN_GKLib.API.AuthenticateLocalPlayer(result => 
+            {
+                m_isAuthenticateInProgress = false;
+                m_onAuthenticateLocalPlayerComplete.Invoke(result);
             });
         }
 
@@ -102,14 +128,16 @@ namespace SA.iOS.GameKit
         /// Retrieves the shared instance of the local player.
         /// You never directly create a local player object. Instead, you retrieve the Singleton object by calling this class method.
         /// </summary>
-        public static ISN_GKLocalPlayer LocalPlayer {
+        public static ISN_GKLocalPlayer LocalPlayer 
+        {
             get { return ISN_GKLib.API.LocalPlayer; }
         }
 
         /// <summary>
         /// A Boolean value that indicates whether a local player is currently signed in to Game Center.
         /// </summary>
-        public bool Authenticated {
+        public bool Authenticated 
+        {
             get { return m_authenticated; }
         }
 
@@ -118,20 +146,23 @@ namespace SA.iOS.GameKit
         /// Some Game Center features are disabled if the local player is underage. 
         /// Your game can also test this property if it wants to disable some of its own features based on the player’s age.
         /// </summary>
-        public bool Underage {
+        public bool Underage 
+        {
             get { return m_underage; }
         }
 
         /// <summary>
         /// Retrieves all available saved games.
         /// </summary>
-        public static void FetchSavedGames(Action<ISN_GKSavedGameFetchResult> callback) {
+        public static void FetchSavedGames(Action<ISN_GKSavedGameFetchResult> callback) 
+        {
             m_onFetchSavedGamesComplete += callback;
             if (m_isFetchSavedGamesInProgress) { return; }
 
             m_isFetchSavedGamesInProgress = true;
 
-            ISN_GKLib.API.FetchSavedGames((ISN_GKSavedGameFetchResult result) => {
+            ISN_GKLib.API.FetchSavedGames(result => 
+            {
                 m_isFetchSavedGamesInProgress = false;
 
                 m_onFetchSavedGamesComplete.Invoke(result);
@@ -142,12 +173,14 @@ namespace SA.iOS.GameKit
         /// <summary>
         /// Saves game data under the specified name.
         /// </summary>
-        public static void SavedGame(string name, byte[] data, Action<ISN_GKSavedGameSaveResult> callback) {
+        public static void SavedGame(string name, byte[] data, Action<ISN_GKSavedGameSaveResult> callback) 
+        {
             m_onSavedGameComplete += callback;
 
             string stringData = Convert.ToBase64String(data);
 
-            ISN_GKLib.API.SavedGame(name, stringData, (ISN_GKSavedGameSaveResult result) => {
+            ISN_GKLib.API.SavedGame(name, stringData, result => 
+            {
                 m_onSavedGameComplete.Invoke(result);
                 m_onSavedGameComplete = delegate { };
             });
@@ -171,7 +204,8 @@ namespace SA.iOS.GameKit
         public static void LoadGameData(ISN_GKSavedGame game, Action<ISN_GKSavedGameLoadResult> callback) {
             m_onLoadGameDataComplete += callback;
 
-            ISN_GKLib.API.LoadGameData(game, (ISN_GKSavedGameLoadResult result) => {
+            ISN_GKLib.API.LoadGameData(game, result => 
+            {
                 m_onLoadGameDataComplete.Invoke(result);
                 m_onLoadGameDataComplete = delegate { };
             });
@@ -185,7 +219,8 @@ namespace SA.iOS.GameKit
 
             m_request = new ISN_GKResolveSavedGamesRequest(conflictedGames, stringData: Encoding.UTF8.GetString(data));
 
-            ISN_GKLib.API.ResolveConflictingSavedGames(m_request, (ISN_GKSavedGameFetchResult result) => {
+            ISN_GKLib.API.ResolveConflictingSavedGames(m_request, result => 
+            {
                 m_onResolveSavedGamesComplete.Invoke(result);
                 m_onResolveSavedGamesComplete = delegate { };
             });

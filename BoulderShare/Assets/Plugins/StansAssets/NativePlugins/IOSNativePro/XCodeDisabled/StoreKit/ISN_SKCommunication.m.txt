@@ -125,9 +125,9 @@
             NSTimeZone *zone = [NSTimeZone systemTimeZone];
             NSInteger interval = [zone secondsFromGMTForDate:transaction.transactionDate];
             myDate = [myDate dateByAddingTimeInterval:interval];
-            self.m_unitxDate = [myDate timeIntervalSince1970];
+            self.m_unixDate = [myDate timeIntervalSince1970];
         } else {
-            self.m_unitxDate = 0;
+            self.m_unixDate = 0;
         }
     }
     return self;
@@ -157,3 +157,26 @@
 -(id) init {  return self = [super init]; }
 @end
 
+@implementation ISN_SKStorefront
+ -(id) init { return self = [super init]; }
+- (id) initWithSKStorefront:(SKStorefront *)storefront {
+    self = [super init];
+    if(self) {
+       self.m_Identifier = storefront.identifier;
+       self.m_CountryCode = storefront.countryCode;
+    }
+    return  self;
+}
+@end
+
+@implementation ISN_SKStorefrontChageEvent
+ -(id) init { return self = [super init]; }
+- (id) initWithSKModels:(SKStorefront *)storefront transaction:(SKPaymentTransaction *)transaction {
+    self = [super init];
+    if(self) {
+        self.m_Storefront = [[ISN_SKStorefront alloc] initWithSKStorefront:storefront];
+        self.m_Transaction = [[ISN_SKPaymentTransaction alloc] initWithSKPaymentTransaction:transaction];;
+    }
+    return  self;
+}
+@end

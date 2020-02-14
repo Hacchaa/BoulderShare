@@ -11,7 +11,7 @@ namespace SA.CrossPlatform.App
     {
         public void TakePicture(int maxThumbnailSize, Action<UM_MediaResult> callback) {
             SA_ScreenUtil.TakeScreenshot(maxThumbnailSize, (image) => {
-                var media = new UM_Media(image, string.Empty, UM_MediaType.Image);
+                var media = new UM_Media(image, image.EncodeToPNG(), string.Empty, UM_MediaType.Image);
                 var result = new UM_MediaResult(media);
                 callback.Invoke(result);
             });
@@ -19,7 +19,7 @@ namespace SA.CrossPlatform.App
 
         public void TakeVideo(int maxThumbnailSize, Action<UM_MediaResult> callback) {
             SA_ScreenUtil.TakeScreenshot(maxThumbnailSize, (image) => {
-                var media = new UM_Media(image, string.Empty, UM_MediaType.Video);
+                var media = new UM_Media(image, image.EncodeToPNG(), string.Empty, UM_MediaType.Video);
                 var result = new UM_MediaResult(media);
                 callback.Invoke(result);
             });

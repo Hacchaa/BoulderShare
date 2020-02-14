@@ -32,9 +32,10 @@
 
 
 @interface ISN_UIActivityViewController : JSONModel
-@property (nonatomic) NSString*  m_text;
-@property (nonatomic) NSArray <NSString*>* m_images;
-@property (nonatomic) NSArray <NSString*>* m_excludedActivityTypes;
+@property (nonatomic) NSString* m_Text;
+@property (nonatomic) NSArray <NSString*>* m_Urls;
+@property (nonatomic) NSArray <NSString*>* m_Images;
+@property (nonatomic) NSArray <NSString*>* m_ExcludedActivityTypes;
 @end
 
 
@@ -62,11 +63,16 @@ extern "C" {
         UIActivityViewController *controller;
         
         NSMutableArray* activityItems  = [[NSMutableArray alloc] init];
-        if(request.m_text.length != 0) {
-            [activityItems addObject:request.m_text];
+        if(request.m_Text.length != 0) {
+            [activityItems addObject:request.m_Text];
         }
         
-        for(NSString* media in request.m_images) {
+        for(NSString* urlData in request.m_Urls) {
+            NSURL* url = [[NSURL alloc] initWithString:urlData];
+            [activityItems addObject:url];
+        }
+        
+        for(NSString* media in request.m_Images) {
             NSData *imageData = [[NSData alloc] initWithBase64EncodedString:media options:NSDataBase64DecodingIgnoreUnknownCharacters];
             UIImage *image = [[UIImage alloc] initWithData:imageData];
             [activityItems addObject:image];
@@ -76,7 +82,7 @@ extern "C" {
         
         
         NSMutableArray* excludedActivityTypes  = [[NSMutableArray alloc] init];
-        for(NSString* activityType in request.m_excludedActivityTypes) {
+        for(NSString* activityType in request.m_ExcludedActivityTypes) {
             NSLog(@"Excluded activityType: %@", activityType);
             [excludedActivityTypes addObject:activityType];
         }
@@ -111,10 +117,7 @@ extern "C" {
         };
         
         [vc presentViewController:controller animated:YES completion:nil];
-        
-        
     }
-
 }
 
 

@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using SA.Foundation.Templates;
-using UnityEngine;
-
 using SA.Android.GMS.Games;
-using SA.Android.Utilities;
+using SA.Android.GMS.Games.Multiplayer;
 
 namespace SA.Android.GMS.Internal
 {
 
     internal class AN_GMS_Editor_GamesAPI : AN_iGMS_GamesAPI
     {
-
-
-
         //--------------------------------------
         // AN_Games
         //--------------------------------------
@@ -39,6 +30,11 @@ namespace SA.Android.GMS.Internal
 
         public AN_SnapshotsClient GetSnapshotsClient() {
             return new AN_SnapshotsClient();
+        }
+
+        public AN_RealTimeMultiplayerClient GetRealTimeMultiplayerClient()
+        {
+            return new AN_RealTimeMultiplayerClient(0);
         }
 
 

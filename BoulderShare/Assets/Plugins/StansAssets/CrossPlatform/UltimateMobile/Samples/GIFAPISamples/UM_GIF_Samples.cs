@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SA.CrossPlatform.Social;
 using SA.CrossPlatform.UI;
 using SA.Foundation.Templates;

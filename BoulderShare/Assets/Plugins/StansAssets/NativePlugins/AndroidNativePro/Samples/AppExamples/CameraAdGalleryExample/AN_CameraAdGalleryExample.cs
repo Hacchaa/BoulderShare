@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using SA.Android.Camera;
 using SA.Android.Gallery;
@@ -14,7 +14,7 @@ public class AN_CameraAdGalleryExample : MonoBehaviour {
 
     [Header("Camera")]
     [SerializeField] Button m_captureAdvanced;
-    // [SerializeField] Button m_nativeCapture;
+     //[SerializeField] Button m_nativeCapture;
     [SerializeField] Button m_captureVideo;
 
     [Header("Gallery")]
@@ -38,27 +38,14 @@ public class AN_CameraAdGalleryExample : MonoBehaviour {
 
         AddFitter(m_image.gameObject);
         AddFitter(m_sprite.gameObject);
-       
-
+        
         m_captureAdvanced.onClick.AddListener(() => {
             var maxSize = 1024;
             AN_Camera.CaptureImage(maxSize, (result) => {
                 PrintCaptureResult(result);
             });
         });
-
-
-        /*
-        m_nativeCapture.onClick.AddListener(() => {
-            
-            SA.Android.Gallery.Internal.AN_GalleryInternal.StartNativeImageCaptureIntent((result) => {
-
-                var texture = new Texture2D(1, 1);
-                texture.LoadImageFromBase64(result.Base64String);
-                ApplyImageToGUI(texture);
-
-            });
-        });*/
+        
 
         m_captureVideo.onClick.AddListener(() => {
             var maxSize = 1024;

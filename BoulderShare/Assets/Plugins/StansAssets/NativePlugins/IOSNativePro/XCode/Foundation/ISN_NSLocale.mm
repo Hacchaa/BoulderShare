@@ -6,6 +6,11 @@
 
 extern "C" {
     
+    char*  _ISN_NS_Locale_PreferredLanguage() {
+        NSString * language = [[NSLocale preferredLanguages] firstObject];
+        return ISN_ConvertToChar(language);
+    }
+    
     char* _ISN_NS_Locale_CurrentLocale() {
         NSLocale* locale = NSLocale.currentLocale;
         ISN_NSLocale* isn_locale = [[ISN_NSLocale alloc] initWithNSLocale:locale];

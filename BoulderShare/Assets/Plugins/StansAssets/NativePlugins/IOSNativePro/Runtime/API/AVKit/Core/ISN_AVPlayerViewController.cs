@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -95,7 +95,7 @@ namespace SA.iOS.AVKit {
         /// 
 		/// Default value is <c>true</c>. 
         /// </summary>
-		public bool ShoudCloseWhenFinished {
+		public bool ShouldCloseWhenFinished {
 			get {
 				return m_shoudCloseWhenFinished;
 			}

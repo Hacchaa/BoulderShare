@@ -1,4 +1,4 @@
-﻿using SA.Android.App.Internal;
+using SA.Android.App.Internal;
 
 namespace SA.Android.App
 {

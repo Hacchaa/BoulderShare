@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using SA.Android.Vending.BillingClient;
 using UnityEngine;
 
 using SA.Foundation.Templates;
-using SA.Android.Vending.Internal;
 
 namespace SA.Android.Vending.Billing
 {
@@ -12,8 +12,102 @@ namespace SA.Android.Vending.Billing
     /// Communicates with the Billing service
     /// and presents a user interface so that the user can authorize payment. 
     /// </summary>
+    [Obsolete("Use AN_BillingClient API instead")]
     public static class AN_Billing 
     {
+        internal class InternalBillingClient : AN_iPurchasesUpdatedListener, AN_iBillingClientStateListener, AN_iSkuDetailsResponseListener, AN_iConsumeResponseListener
+        {
+            //Billing Client
+            private AN_BillingClient m_BillingClient;
+
+            private Action<AN_BillingConnectionResult> m_ConnectionResultAction;
+            private Action<AN_BillingPurchaseResult> m_BillingPurchaseCallback;
+            private Action<List<AN_SkuDetails>> m_OnSkuDetailsCallback;
+            private Action<SA_iResult> m_OnConsumeCallback;
+            
+            public void Connect(Action<AN_BillingConnectionResult> callback)
+            {
+                m_ConnectionResultAction = callback;
+                using (var builder = AN_BillingClient.NewBuilder())
+                {
+                    builder.SetListener(this);
+                    builder.EnablePendingPurchases();
+                    builder.SetChildDirected(AN_BillingClient.ChildDirected.Unspecified);
+                    builder.SetUnderAgeOfConsent(AN_BillingClient.UnderAgeOfConsent.Unspecified);
+
+                    m_BillingClient = builder.Build();
+                    m_BillingClient.StartConnection(this);
+                }
+            }
+
+            public void QuerySkuDetailsAsync(AN_SkuDetailsParams @params, Action<List<AN_SkuDetails>> callback)
+            {
+                m_OnSkuDetailsCallback = callback;
+                m_BillingClient.QuerySkuDetailsAsync(@params, this);
+                
+            }
+
+            public void Purchase(AN_SkuDetails skuDetails, string developerPayload, Action<AN_BillingPurchaseResult> callback)
+            {
+                m_BillingPurchaseCallback = callback;
+                var paramsBuilder = AN_BillingFlowParams.NewBuilder();
+                paramsBuilder.SetSkuDetails(skuDetails);
+                        
+                m_BillingClient.LaunchBillingFlow(paramsBuilder.Build());
+            }
+
+            public void Consume(string purchaseToken, Action<SA_iResult> callback)
+            {
+                m_OnConsumeCallback = callback;
+                var paramsBuilder = AN_ConsumeParams.NewBuilder();
+                paramsBuilder.SetPurchaseToken(purchaseToken);
+                        
+                m_BillingClient.ConsumeAsync(paramsBuilder.Build(), this);
+            }
+            
+            public void onPurchasesUpdated(SA_iResult billingResult, List<BillingClient.AN_Purchase> purchases)
+            {
+                AN_BillingPurchaseResult result;
+                if (billingResult.IsSucceeded)
+                {
+                    result = new AN_BillingPurchaseResult(new AN_Purchase(purchases[0]));
+                }
+                else
+                {
+                    result = new AN_BillingPurchaseResult(billingResult);
+                }
+                
+                m_BillingPurchaseCallback.Invoke(result);
+            }
+
+            public void OnBillingSetupFinished(SA_iResult billingResult)
+            {
+                AN_BillingConnectionResult result = new AN_BillingConnectionResult(billingResult);
+                m_ConnectionResultAction.Invoke(result);
+            }
+
+            public void OnBillingServiceDisconnected()
+            {
+                //Do nothing
+            }
+
+            public AN_BillingClient API
+            {
+                get { return m_BillingClient; }
+            }
+
+            public void OnSkuDetailsResponse(SA_Result billingResult, List<AN_SkuDetails> skuDetailsList)
+            {
+                m_OnSkuDetailsCallback.Invoke(skuDetailsList);
+            }
+
+            public void OnConsumeResponse(SA_iResult billingResult, string purchaseToken)
+            {
+                m_OnConsumeCallback.Invoke(billingResult);
+            }
+        }
+
+         
 
         public const int RESULT_OK = 0;
 
@@ -23,6 +117,10 @@ namespace SA.Android.Vending.Billing
 
         private static event Action<AN_BillingConnectionResult> s_OnConnect = delegate{};
         private static Action<SA_Result> s_GetPurchasesRequestCallback;
+
+        private static readonly InternalBillingClient m_Client = new InternalBillingClient();
+
+        private static List<AN_SkuDetails> m_LoadedSkus = new List<AN_SkuDetails>();
             
 
 
@@ -51,26 +149,83 @@ namespace SA.Android.Vending.Billing
 
 
             s_IsConnectionInProgress = true;
-            var request = GetConnectionRequest();
-
-
-            AN_VendingLib.API.Connect(request, connectionResult => {
-                s_IsConnectionInProgress = false;
-                if (connectionResult.IsSucceeded) {
-                    GetPurchases((invResult) => {
-                        if(invResult.IsSucceeded) {
-                            SaveConnectionResult(connectionResult);
-                        } else {
-                            connectionResult.SetError(invResult.Error);
+            
+            m_Client.Connect(connectionResult =>
+            {
+                if (connectionResult.IsSucceeded)
+                {
+                    var skusList = new List<string>();
+                    foreach (var product in AN_Settings.Instance.InAppProducts)
+                    {
+                        if (product.Type == AN_BillingClient.SkuType.inapp)
+                        {
+                            skusList.Add(product.Sku);
                         }
-                        s_OnConnect.Invoke(connectionResult);
-                        s_OnConnect = delegate { };
+                    }
+                    
+                    var paramsBuilder = AN_SkuDetailsParams.NewBuilder();
+                    paramsBuilder.SetType(AN_BillingClient.SkuType.inapp);
+                    paramsBuilder.SetSkusList(skusList);
+                    
+                    m_Client.QuerySkuDetailsAsync(paramsBuilder.Build(), (skus) =>
+                    {
+                        if (skus != null)
+                        {
+                            var products  = new List<AN_Product>();
+                            foreach (var sku in skus)
+                            {
+                                m_LoadedSkus.Add(sku);
+                                products.Add(new AN_Product(sku));
+                            }
+                            Inventory.SetProducts(products);
+                        }
+                        
+                        skusList = new List<string>();
+                        foreach (var product in AN_Settings.Instance.InAppProducts)
+                        {
+                            if (product.Type == AN_BillingClient.SkuType.subs)
+                            {
+                                skusList.Add(product.Sku);
+                            }
+                        }
+                    
+                        paramsBuilder = AN_SkuDetailsParams.NewBuilder();
+                        paramsBuilder.SetType(AN_BillingClient.SkuType.subs);
+                        paramsBuilder.SetSkusList(skusList);
+                        m_Client.QuerySkuDetailsAsync(paramsBuilder.Build(), (subsSkus) =>
+                        {
+                            if (subsSkus != null)
+                            {
+                                var products  = new List<AN_Product>();
+                                foreach (var sku in subsSkus)
+                                {
+                                    m_LoadedSkus.Add(sku);
+                                    products.Add(new AN_Product(sku));
+                                }
+                                Inventory.SetProducts(products);
+                            }
+
+                            
+                            GetPurchases((invResult) => {
+                                if(invResult.IsSucceeded) {
+                                    SaveConnectionResult(connectionResult);
+                                } else {
+                                    connectionResult.SetError(invResult.Error);
+                                }
+                                s_OnConnect.Invoke(connectionResult);
+                                s_OnConnect = delegate { };
+                            });
+                            
+                            
+                        });
+
                     });
-                   
-                } else {
+                }
+                else
+                {
                     s_OnConnect.Invoke(connectionResult);
                     s_OnConnect = delegate { };
-                } 
+                }
             });
         }
 
@@ -93,14 +248,39 @@ namespace SA.Android.Vending.Billing
                 return;
             }
 
-            var request = GetConnectionRequest();
-            AN_VendingLib.API.GetPurchases(request, (result) => {
-                if(result.IsSucceeded) {
-                    UpdateInventory(result.Inventory);
-                }
-                s_GetPurchasesRequestCallback.Invoke(result);
+            var inAppsResult =  m_Client.API.QueryPurchases(AN_BillingClient.SkuType.inapp);
+            if (inAppsResult.IsFailed)
+            {
+                s_GetPurchasesRequestCallback.Invoke(inAppsResult);
                 s_GetPurchasesRequestCallback = null;
-            });
+                return;
+            }
+
+            var purchases = new List<AN_Purchase>();
+            foreach (var purchase in inAppsResult.Purchases)
+            {
+                purchases.Add(new AN_Purchase(purchase));
+            }
+            
+            var subsResult =  m_Client.API.QueryPurchases(AN_BillingClient.SkuType.subs);
+            if (subsResult.IsFailed)
+            {
+                s_GetPurchasesRequestCallback.Invoke(subsResult);
+                s_GetPurchasesRequestCallback = null;
+                return;
+            }
+            
+            purchases.Clear();
+            foreach (var purchase in subsResult.Purchases)
+            {
+                purchases.Add(new AN_Purchase(purchase));
+            }
+
+            Inventory.SetPurchases(purchases);
+            UpdateInventory(Inventory);
+            s_GetPurchasesRequestCallback.Invoke(subsResult);
+            s_GetPurchasesRequestCallback = null;
+
         }
 
         /// <summary>
@@ -123,39 +303,14 @@ namespace SA.Android.Vending.Billing
         /// <param name="callback">Purchase request callback</param>
         public static void Purchase(AN_Product product, string developerPayload, Action<AN_BillingPurchaseResult> callback) {
 
-            var request = new AN_VendingLib.AN_PurchaseRequest();
-            request.m_product = product;
-            request.m_developerPayload = developerPayload;
-
-            AN_VendingLib.API.Purchase(request, (result) => {
-
-                if(result.IsSucceeded) {
-                    Inventory.Purchases.Add(result.Purchase);
-                } else {
-                    //me might try to resolve some know response codes
-                    switch (result.Error.Code) {
-                        case (int)AN_BillingRessponceCodes.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED:
-                            AN_Purchase purchase = Inventory.GetPurchaseByProductId(product.ProductId);
-                            if(purchase != null) {
-                                result = new AN_BillingPurchaseResult(purchase);
-                                callback.Invoke(result);
-                            } else {
-                                GetPurchases((purchasesLoadResult) => {
-                                    purchase = Inventory.GetPurchaseByProductId(product.ProductId);
-                                    if(purchase != null) {
-                                        result = new AN_BillingPurchaseResult(purchase);
-                                    }
-                                    callback.Invoke(result);
-                                });
-
-                            }
-                            return;
-                    }
-                   
-                }
-
-                callback.Invoke(result);
-            });
+            
+            foreach (var sku in m_LoadedSkus)
+            {
+                if (sku.Sku.Equals(product.ProductId))
+                {
+                    m_Client.Purchase(sku, developerPayload, callback);  
+                }    
+            }
         }
         
         /// <summary>
@@ -174,19 +329,10 @@ namespace SA.Android.Vending.Billing
         /// You can specify a value for this field when you make a Purchase request.
         /// </param>
         /// <param name="callback">Purchase request callback</param>
+        
         public static void PurchaseSubscriptionReplace(List<string> oldProductsId, string newProductId, string developerPayload, Action<AN_BillingPurchaseResult> callback) {
 
-            var request = new AN_VendingLib.AN_PurchaseSubscriptionReplaceRequest();
-            request.m_oldProductsId = oldProductsId;
-            request.m_newProductId = newProductId;
-            request.m_developerPayload = developerPayload;
-
-            AN_VendingLib.API.PurchaseSubscriptionReplace(request, (result) => {
-                if(result.IsSucceeded) {
-                    Inventory.Purchases.Add(result.Purchase);
-                }
-                callback.Invoke(result);
-            });
+            throw new NotImplementedException("Use new AN_BillingClient API.");
         }
 
         /// <summary>
@@ -198,18 +344,10 @@ namespace SA.Android.Vending.Billing
         /// <param name="callback">Consume request callback</param>
         public static void Consume(AN_Purchase purchase, Action<SA_Result> callback) {
 
-
-            var product = Inventory.GetProductById(purchase.ProductId);
-            if(product != null) {
-               if(!product.IsConsumable) {
-                    Debug.LogWarning("You are trying to consume product with id: " + product.ProductId + " that was originally marked as non consumable product");
-               }
-            } else {
-                Debug.LogWarning("product " + purchase.ProductId + " isn't the registered inventory product");
-            }
-
-            AN_VendingLib.API.Consume(purchase, (result) => {
-                if(result.IsSucceeded) {
+            m_Client.Consume(purchase.Token, result =>
+            {
+                if (result.IsSucceeded)
+                {
                     foreach (var invPurchase in Inventory.Purchases) {
                         if (invPurchase.ProductId.Equals(purchase.ProductId)) {
                             Inventory.Purchases.Remove(invPurchase);
@@ -217,9 +355,10 @@ namespace SA.Android.Vending.Billing
                         }
                     }
                 }
-                callback.Invoke(result);
-            });
-
+                
+                callback.Invoke((SA_Result)result);
+            } );
+            
         }
 
         //--------------------------------------
@@ -243,7 +382,13 @@ namespace SA.Android.Vending.Billing
             get {
                 if(s_Inventory == null) {
                     s_Inventory = new AN_Inventory();
-                    s_Inventory.SetProducts(AN_Settings.Instance.InAppProducts);
+                    var products = new List<AN_Product>();
+                    foreach (var sku in AN_Settings.Instance.InAppProducts)
+                    {
+                        var product = new AN_Product(sku);
+                        products.Add(product);
+                    }
+                    s_Inventory.SetProducts(products);
                 }
                 return s_Inventory;
             }
@@ -277,31 +422,7 @@ namespace SA.Android.Vending.Billing
                 }
             }
         }
-
-
-        private static AN_VendingLib.AN_ConnectionRequest GetConnectionRequest() {
-            var request = new AN_VendingLib.AN_ConnectionRequest();
-            foreach (var product in AN_Settings.Instance.InAppProducts) {
-
-                switch (product.Type) {
-                    case AN_ProductType.inapp:
-                        request.m_inapp.Add(product.ProductId);
-                        break;
-                    case AN_ProductType.subs:
-                        request.m_subs.Add(product.ProductId);
-                        break;
-                    case AN_ProductType.undefined:
-                        request.m_inapp.Add(product.ProductId);
-                        break;
-                }
-            }
-
-            request.m_base64EncodedPublicKey = AN_Settings.Instance.RSAPublicKey;
-
-            return request;
-        }
-
-
+        
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SA.Foundation.Templates;
@@ -17,7 +17,7 @@ namespace SA.Android.GMS.Internal
         const string AN_PlayersClient = "com.stansassets.gms.games.AN_PlayersClient";
 
 
-        public void GetCurrentPlayer(AN_PlayersClient client, Action<AN_LinkedObjectResult<AN_Player>> callback) {
+        public void GetCurrentPlayer(AN_PlayersClient client, Action<AN_SerializedObjectResult<AN_Player>> callback) {
             AN_Java.Bridge.CallStaticWithCallback(AN_PlayersClient, "GetCurrentPlayer", callback, client.HashCode);
         }
 

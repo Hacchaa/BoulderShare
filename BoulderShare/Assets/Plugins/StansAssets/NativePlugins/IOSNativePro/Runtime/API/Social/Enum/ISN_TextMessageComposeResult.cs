@@ -1,4 +1,4 @@
-﻿namespace SA.iOS.Social.Enum
+namespace SA.iOS.Social.Enum
 {
     public enum TextMessageComposeResult
     {

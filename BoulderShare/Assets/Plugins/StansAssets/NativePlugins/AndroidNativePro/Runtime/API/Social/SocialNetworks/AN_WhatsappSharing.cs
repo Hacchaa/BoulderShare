@@ -1,4 +1,4 @@
-﻿
+
 using SA.Android.App;
 using SA.Android.Content;
 using SA.Android.Content.Pm;

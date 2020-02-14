@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using SA.iOS.UIKit;
 using SA.Android.App;

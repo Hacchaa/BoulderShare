@@ -1,9 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
-
 namespace SA.Android.GMS.Common
 {
     /// <summary>
@@ -11,8 +5,6 @@ namespace SA.Android.GMS.Common
     /// </summary>
     public enum AN_CommonStatusCodes 
     {
-
-
         /// <summary>
         /// The operation was successful, but was used the device's cache. 
         /// If this is a write, the data will be written when the device is online; errors will be written to the logs. 
@@ -94,19 +86,5 @@ namespace SA.Android.GMS.Common
         /// The specific API cannot connect on this device.
         /// </summary>
         API_NOT_CONNECTED = 17,
-
-
-        /// <summary>
-        /// This is common error that does not docuementede with google.
-        /// In most cases it means:
-        /// 1 - User canceld login
-        /// 2 - There is an issue with your application settings
-        /// </summary>
-        UNKNOWN_SING_ERROR = 12501,
-
-        /// <summary>
-        /// Failed Activity, We just need to retry
-        /// </summary>
-        FAILED_ACTIVITY_ERROR = 12502
     }
 }

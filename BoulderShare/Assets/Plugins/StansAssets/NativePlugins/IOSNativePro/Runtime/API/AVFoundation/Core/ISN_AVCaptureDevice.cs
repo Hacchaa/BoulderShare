@@ -1,10 +1,8 @@
-﻿using System;
-
+using System;
 using SA.iOS.AVFoundation.Internal;
 
 namespace SA.iOS.AVFoundation
 {
-
     /// <summary>
     /// A device that provides input (such as audio or video) 
     /// for capture sessions and offers controls for hardware-specific capture features.
@@ -20,7 +18,8 @@ namespace SA.iOS.AVFoundation
         /// any audio recordings will contain only silence and any video recordings will contain only black frames.
         /// </summary>
         /// <param name="type">A media type constant, either Video or Audio.</param>
-        public static ISN_AVAuthorizationStatus GetAuthorizationStatus(ISN_AVMediaType type) {
+        public static ISN_AVAuthorizationStatus GetAuthorizationStatus(ISN_AVMediaType type) 
+        {
             return ISN_AVLib.API.GetAuthorizationStatus(type);
         } 
 
@@ -36,10 +35,10 @@ namespace SA.iOS.AVFoundation
         /// </summary>
         /// <param name="type">media type.</param>
         /// <param name="callback">Callback.</param>
-        public static void RequestAccess(ISN_AVMediaType type, Action<ISN_AVAuthorizationStatus> callback) {
+        public static void RequestAccess(ISN_AVMediaType type, Action<ISN_AVAuthorizationStatus> callback) 
+        {
             ISN_AVLib.API.RequestAccess(type, callback);
         }
-
     }
 }
 

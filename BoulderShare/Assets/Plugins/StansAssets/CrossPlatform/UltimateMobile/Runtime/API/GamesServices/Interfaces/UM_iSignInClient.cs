@@ -1,35 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
-
 namespace SA.CrossPlatform.GameServices
 {
-
     /// <summary>
     /// A client to interact with sing-in flow.
     /// </summary>
     public interface UM_iSignInClient 
     {
         /// <summary>
-        /// Start's Sing In flow
+        /// Starts Sing In flow
         /// </summary>
-        /// <param name="callback">Operation assync callback</param>
+        /// <param name="callback">Operation async callback</param>
         void SingIn(Action<SA_Result> callback);
 
         /// <summary>
         /// Start's Sing Out flow
         /// </summary>
-        /// <param name="callback">Operation assync callback</param>
+        /// <param name="callback">Operation async callback</param>
         void SingOut(Action<SA_Result> callback);
 
         
         /// <summary>
-        /// Fired when pleyaer info is changed.
-        /// Player Singed in / Singned out / Changed Account
+        /// Fired when player info is changed.
+        /// Player Singed in / Signed out / Changed Account
         /// </summary>
         SA_iEvent OnPlayerUpdated { get; }
 
@@ -39,6 +34,5 @@ namespace SA.CrossPlatform.GameServices
         /// and get singed <see cref="UM_iPlayer"/> object
         /// </summary>
         UM_PlayerInfo PlayerInfo { get; }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,6 +59,10 @@ namespace SA.iOS.XCode
 
             //Game Center
             layout = new ISD_CapabilityLayout("Game Center", "game.png", () => { return ISD_Settings.Instance.Capability.GameCenter; }, () => { });
+            m_CapabilitiesLayout.Add(layout);
+            
+            //Game Center
+            layout = new ISD_CapabilityLayout("Sign In With Apple", "keychaine.png", () => { return ISD_Settings.Instance.Capability.SignInWithApple; }, () => { });
             m_CapabilitiesLayout.Add(layout);
 
             //Wallet

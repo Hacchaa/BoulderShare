@@ -237,11 +237,19 @@ static ISN_UIDateTime * na_sharedInstance;
     ISN_SendCallbackToUnity(OnDatePickedCallback, dateString);
 }
 
+- (void)disableTouchesOnView:(UIView *)view {
+    UIButton *ghostButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, view.frame.size.width, view.frame.size.height)];
+    [ghostButton setBackgroundColor:[UIColor clearColor]];
+    ghostButton.tag = 42; // Any random number. Use #define to avoid putting numbers in code.
+    
+    [view addSubview:ghostButton];
+}
 
 UIDatePicker *datePicker;
 
 - (void) DP_show:(ISN_UIDateTimePicker* )request {
     UIViewController *vc =  UnityGetGLViewController();
+    [self disableTouchesOnView:vc.view];
     
     CGRect toolbarTargetFrame = CGRectMake(0, vc.view.bounds.size.height-216-44, [self GetW], 44);
     CGRect datePickerTargetFrame = CGRectMake(0, vc.view.bounds.size.height-216, [self GetW], 216);
@@ -258,11 +266,13 @@ UIDatePicker *datePicker;
     
     
     datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, vc.view.bounds.size.height+44, [self GetW], 216)];
+    if (@available(iOS 12.0, *)) {
+        if([vc traitCollection].userInterfaceStyle == UIUserInterfaceStyleDark) {
+             datePicker.backgroundColor = [UIColor grayColor];
+        }
+    }
+   
     datePicker.tag = 10;
-    
-    
-    
-    
     [datePicker addTarget:self action:@selector(DP_changeDate:) forControlEvents:UIControlEventValueChanged];
     switch (request.m_datePickerMode) {
         case 1:
@@ -336,6 +346,8 @@ UIDatePicker *datePicker;
     [[vc.view viewWithTag:9] removeFromSuperview];
     [[vc.view viewWithTag:10] removeFromSuperview];
     [[vc.view viewWithTag:11] removeFromSuperview];
+    
+    [[vc.view viewWithTag:42] removeFromSuperview];
 }
 
 - (void)DP_dismissDatePicker:(id)sender {

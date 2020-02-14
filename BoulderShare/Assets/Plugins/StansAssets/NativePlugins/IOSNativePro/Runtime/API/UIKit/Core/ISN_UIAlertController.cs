@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using SA.Foundation.Events;
 using UnityEngine;
 using SA.Foundation.Utility;
 using SA.iOS.UIKit.Internal;
@@ -25,24 +27,30 @@ namespace SA.iOS.UIKit
         [SerializeField] string m_title;
         [SerializeField] string m_message;
         [SerializeField] ISN_UIAlertControllerStyle m_preferredStyle;
-
         [SerializeField] List<ISN_UIAlertAction> m_actions = new List<ISN_UIAlertAction>();
 
-        private ISN_UIAlertAction m_preferredAction = null;
+        private ISN_UIAlertAction m_PreferredAction = null;
+        private readonly SA_Event m_DialogDismissed = new SA_Event();
 
 
-        public ISN_UIAlertController(string title, string message, ISN_UIAlertControllerStyle preferredStyle) {
+        public ISN_UIAlertController(string title, string message, ISN_UIAlertControllerStyle preferredStyle) 
+        {
             m_id = SA_IdFactory.NextId;
             m_title = title;
             m_message = message;
             m_preferredStyle = preferredStyle;
-
         }
 
         /// <summary>
-        /// Presents a view controller modally.
+        /// Presents a view controller as modal window.
         /// </summary>
-        public void Present() {
+        public void Present()
+        {
+            ISN_DialogsStack.Present(this);
+        }
+
+        internal void PresentInternal()
+        {
             ISN_UILib.API.PresentUIAlertController(this);
             ISN_UILib.API.OnUIAlertActionPerformed.AddListener(OnAction);
         }
@@ -50,9 +58,11 @@ namespace SA.iOS.UIKit
         /// <summary>
         /// Dismiss view controller.
         /// </summary>
-        public void Dismiss() {
+        public void Dismiss() 
+        {
             ISN_UILib.API.DismissUIAlertController(this);
             ISN_UILib.API.OnUIAlertActionPerformed.RemoveListener(OnAction);
+            m_DialogDismissed.Invoke();
         }
 
 
@@ -64,7 +74,8 @@ namespace SA.iOS.UIKit
         /// The action object to display as part of the alert. Actions are displayed as buttons in the alert. 
         /// The action object provides the button text and the action to be performed when that button is tapped.
         /// </param>
-        public void AddAction(ISN_UIAlertAction action) {
+        public void AddAction(ISN_UIAlertAction action) 
+        {
             m_actions.Add(action);
         }
 
@@ -81,24 +92,22 @@ namespace SA.iOS.UIKit
         /// Assigning an object to this property before adding it with the <see cref="AddAction"/> method is a programmer error.
         /// The default value of this property is nil.
         /// </summary>
-        public ISN_UIAlertAction PreferredAction {
-            get {
-                return m_preferredAction;
-            } 
-
-            set {
-                m_preferredAction = value;
-                m_preferredAction.MakePreffered();
+        public ISN_UIAlertAction PreferredAction 
+        {
+            get { return m_PreferredAction; }
+            set 
+            {
+                m_PreferredAction = value;
+                m_PreferredAction.MakePreffered();
             }
         }
 
         /// <summary>
         /// Gets the unique alert identifier.
         /// </summary>
-        public int Id {
-            get {
-                return m_id;
-            }
+        public int Id 
+        {
+            get { return m_id; }
         }
 
         /// <summary>
@@ -107,10 +116,9 @@ namespace SA.iOS.UIKit
         /// The title string is displayed prominently in the alert or action sheet. 
         /// You should use this string to get the user’s attention and communicate the reason for displaying the alert.
         /// </summary>
-        public string Title {
-            get {
-                return m_title;
-            }
+        public string Title 
+        {
+            get { return m_title; }
         }
 
         /// <summary>
@@ -119,19 +127,17 @@ namespace SA.iOS.UIKit
         /// The message string is displayed below the title string and is less prominent. 
         /// Use this string to provide additional context about the reason for the alert or about the actions that the user might take.
         /// </summary>
-        public string Message {
-            get {
-                return m_message;
-            }
+        public string Message 
+        {
+            get { return m_message; }
         }
 
         /// <summary>
         /// The style of the alert controller.
         /// </summary>
-        public ISN_UIAlertControllerStyle PreferredStyle {
-            get {
-                return m_preferredStyle;
-            }
+        public ISN_UIAlertControllerStyle PreferredStyle 
+        {
+            get { return m_preferredStyle; }
         }
 
         /// <summary>
@@ -141,27 +147,60 @@ namespace SA.iOS.UIKit
         /// This order also corresponds to the order in which they are displayed in the alert or action sheet. 
         /// The second action in the array is displayed below the first, the third is displayed below the second, and so on.
         /// </summary>
-        public List<ISN_UIAlertAction> Actions {
-            get {
-                return m_actions;
-            }
-
-            set {
-                m_actions = value;
-            }
+        public List<ISN_UIAlertAction> Actions 
+        {
+            get { return m_actions; }
+            set { m_actions = value; }
         }
 
-
-
-        private void OnAction(ISN_UIAlertActionId actionId) {
-            if(m_id.Equals(actionId.AlertId)) {
-                foreach(var action in m_actions) {
-                    if(action.Id.Equals(actionId.ActionId)) {
-                        action.Invoke();
-                        ISN_UILib.API.OnUIAlertActionPerformed.RemoveListener(OnAction);
-                    }
-                }
+        internal SA_iEvent OnDialogDismissed
+        {
+            get { return m_DialogDismissed; }
+        }
+        
+        private void OnAction(ISN_UIAlertActionId actionId)
+        {
+            if (!m_id.Equals(actionId.AlertId)) return;
+            foreach(var action in m_actions) 
+            {
+                if (!action.Id.Equals(actionId.ActionId)) continue;
+                
+                action.Invoke();
+                ISN_UILib.API.OnUIAlertActionPerformed.RemoveListener(OnAction);
+                
+                m_DialogDismissed.Invoke();
+                break;
             }
+        }
+    }
+
+    internal static class ISN_DialogsStack
+    {
+        private static readonly List<ISN_UIAlertController> m_Dialogs = new List<ISN_UIAlertController>();
+
+        public static void Present(ISN_UIAlertController dialog)
+        {
+            if (m_Dialogs.Count == 0)
+            {
+                ShowDialog(dialog);
+            }
+            
+            m_Dialogs.Add(dialog);
+        }
+
+        private static void ShowDialog(ISN_UIAlertController dialog)
+        {
+            dialog.PresentInternal();
+            dialog.OnDialogDismissed.AddListener(() => { OnDialogDismissed(dialog); });
+        }
+
+        private static void OnDialogDismissed(ISN_UIAlertController dialog)
+        {
+            m_Dialogs.Remove(dialog);
+            if (m_Dialogs.Count == 0) return;
+            
+            var newDialog = m_Dialogs.Last();
+            ShowDialog(newDialog);
         }
     }
 }

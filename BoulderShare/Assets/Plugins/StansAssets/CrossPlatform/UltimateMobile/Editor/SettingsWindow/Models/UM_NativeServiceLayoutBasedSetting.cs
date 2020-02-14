@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using SA.iOS;
 using SA.Foundation.Editor;

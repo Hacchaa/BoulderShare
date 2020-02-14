@@ -1,4 +1,4 @@
-﻿/*
+/*
  * No copyright asserted on the source code of this class. May be used
  * for any purpose.
  * 

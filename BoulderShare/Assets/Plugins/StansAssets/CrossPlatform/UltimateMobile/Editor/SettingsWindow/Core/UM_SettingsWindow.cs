@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using SA.Foundation.Editor;
 
@@ -213,7 +213,7 @@ namespace SA.CrossPlatform
                
 
             } else {
-                DrawTopbar();
+                DrawToolbar();
                 DrawHeader();
 
                 var tabIndex = DrawMenu();
@@ -256,7 +256,7 @@ namespace SA.CrossPlatform
         }
 
 
-        private void DrawTopbar() {
+        private void DrawToolbar() {
             GUILayout.Space(2);
             using (new SA_GuiBeginHorizontal()) {
                // DrawDocumentationLink();

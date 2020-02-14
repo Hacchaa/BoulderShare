@@ -9,7 +9,8 @@ public class CVSelectionByHand : MonoBehaviour, IBeginDragHandler, IDragHandler,
 {	
     //指のx軸方向の速度の閾値
     [SerializeField] private float threshold_ScreensPerSecond = 4.0f;
-    private int finger = MyUtility.FINGER_NONE;
+    private static int FINGER_NONE = -10;
+    private int finger = FINGER_NONE;
     [SerializeField] private float width;
     [SerializeField] private float startWidth;
     private bool moveToRight;
@@ -20,7 +21,7 @@ public class CVSelectionByHand : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
 
     public void OnBeginDrag(PointerEventData data){
-        if (finger == MyUtility.FINGER_NONE){
+        if (finger == FINGER_NONE){
 
             width = Screen.width;
             startWidth = data.position.x;                	
@@ -72,7 +73,7 @@ public class CVSelectionByHand : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnEndDrag(PointerEventData data){
         if (finger == data.pointerId){
-            finger = MyUtility.FINGER_NONE;
+            finger = FINGER_NONE;
             
             float screensPerSecond = CalcScreensPerSecond(data.delta);
             float t = CalcScreenRatio(data.position);

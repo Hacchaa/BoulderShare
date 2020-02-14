@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -178,7 +178,7 @@ public class AN_GMS_Auth_Example : MonoBehaviour {
             if(result.IsSucceeded) {
                 AN_Player player = result.Data;
                 //Printing player info:
-                AN_Logger.Log("player.Id: " + player.Id);
+                AN_Logger.Log("player.Id: " + player.PlayerId);
                 AN_Logger.Log("player.DisplayName: " + player.DisplayName);
                 AN_Logger.Log("player.HiResImageUri: " + player.HiResImageUri);
                 AN_Logger.Log("player.IconImageUri: " + player.IconImageUri);

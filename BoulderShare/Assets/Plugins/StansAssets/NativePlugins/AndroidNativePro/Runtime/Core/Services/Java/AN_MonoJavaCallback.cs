@@ -1,23 +1,19 @@
-﻿
+using System;
+using UnityEngine;
+using SA.Foundation.Threading;
+
 namespace SA.Android.Utilities
 {
-
-    using System;
-    using UnityEngine;
-
-    using SA.Foundation.Threading;
-
     public static class AN_MonoJavaCallback
     {
-        private static bool s_isInited = false;
-
+        private static bool s_IsInited = false;
 
         private class AndroidCallbackHandler<T> : AndroidJavaProxy
         {
-            private readonly Action<T> m_resultHandler = delegate {};
+            private readonly Action<T> m_ResultHandler = delegate {};
 
             public AndroidCallbackHandler(Action<T> resultHandler) : base("com.stansassets.core.interfaces.AN_CallbackJsonHandler") {
-                m_resultHandler = resultHandler;
+                m_ResultHandler = resultHandler;
             }
 
             public void onHandleResult(string json, bool forceMainThread) {
@@ -26,22 +22,23 @@ namespace SA.Android.Utilities
                 if (forceMainThread)
                 {
                     SA_MainThreadDispatcher.Enqueue(() => {
-                        m_resultHandler.Invoke(result);
+                        m_ResultHandler.Invoke(result);
                     });
                 }
                 else
                 {
-                    m_resultHandler.Invoke(result);
+                    m_ResultHandler.Invoke(result);
                 }
             }
         }
-
-        // В дальнейшем будем использовать эту функцию для оборачивания C# делегата
+        
         public static AndroidJavaProxy ActionToJavaObject<T>(Action<T> action) {
 
-            if(!s_isInited) {
+            if (Application.isEditor) { return null; }
+            
+            if(!s_IsInited) {
                 SA_MainThreadDispatcher.Init();
-                s_isInited = true;
+                s_IsInited = true;
             }
             
             return new AndroidCallbackHandler<T>(action);

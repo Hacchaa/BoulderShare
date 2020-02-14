@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using SA.Facebook;
 using SA.Foundation.Editor;
@@ -37,7 +37,7 @@ namespace SA.CrossPlatform
 
         protected override Texture2D Icon {
             get {
-                return UM_Skin.GetServiceIcon("un_facebook_icon.png");
+                return UM_Skin.GetServiceIcon("um_facebook_icon.png");
             }
         }
 

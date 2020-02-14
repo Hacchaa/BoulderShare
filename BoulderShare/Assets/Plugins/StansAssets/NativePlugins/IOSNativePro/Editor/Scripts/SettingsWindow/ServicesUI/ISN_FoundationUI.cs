@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 
 
@@ -21,7 +21,9 @@ namespace SA.iOS
             AddFeatureUrl("Check If App Installed", "https://unionassets.com/ios-native-pro/url-queries-schemes-607#how-to-check-programmatically-if-an-app-is-installed");
 
             AddFeatureUrl("Notification Center", "https://unionassets.com/ios-native-pro/notification-center-820");
-            AddFeatureUrl("System Locale", "https://unionassets.com/ios-native-pro/locale-823");
+            AddFeatureUrl("Locale", "https://unionassets.com/ios-native-pro/locale-823");
+            AddFeatureUrl("System Language", "https://unionassets.com/ios-native-pro/locale-823#system-language");
+            AddFeatureUrl("Preferred Language", "https://unionassets.com/ios-native-pro/locale-823#preferred-language");
 
 
             //Av foundation

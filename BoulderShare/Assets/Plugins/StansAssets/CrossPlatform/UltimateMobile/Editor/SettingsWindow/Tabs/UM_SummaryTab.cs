@@ -1,62 +1,54 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using SA.iOS;
 using SA.Android;
-
 using SA.Foundation.Editor;
+using SA.CrossPlatform.Editor;
 
 namespace SA.CrossPlatform
 {
     public class UM_SummaryTab : SA_GUILayoutElement
     {
-
-        private SA_CollapsableWindowBlockLayout m_iosRequirements;
-        private SA_CollapsableWindowBlockLayout m_androidRequirements;
-        private SA_CollapsableWindowBlockLayout m_unityRequirements;
-
-        private SA_PluginActiveTextLink m_learnMoreLink;
+        private SA_CollapsableWindowBlockLayout m_IOSRequirements;
+        private SA_CollapsableWindowBlockLayout m_AndroidRequirements;
+        private SA_CollapsableWindowBlockLayout m_UnityRequirements;
+        private SA_PluginActiveTextLink m_LearnMoreLink;
 
         public override void OnLayoutEnable()
         {
-
             base.OnLayoutEnable();
-
             var content = new GUIContent("iOS Build Requirements", UM_Skin.GetPlatformIcon("ios_icon.png"));
-            m_iosRequirements = new SA_CollapsableWindowBlockLayout(content, () => { XCodeRequirements(); });
+            m_IOSRequirements = new SA_CollapsableWindowBlockLayout(content, () => { XCodeRequirements(); });
 
             content = new GUIContent("Android Build Requirements", UM_Skin.GetPlatformIcon("android_icon.png"));
-            m_androidRequirements = new SA_CollapsableWindowBlockLayout(content, () => { AndroidRequirements(); });
+            m_AndroidRequirements = new SA_CollapsableWindowBlockLayout(content, () => { AndroidRequirements(); });
 
             content = new GUIContent("Unity Project Requirements ", UM_Skin.GetPlatformIcon("unity_icon.png"));
-            m_unityRequirements = new SA_CollapsableWindowBlockLayout(content, () => { DefineSymbols(); });
+            m_UnityRequirements = new SA_CollapsableWindowBlockLayout(content, () => { DefineSymbols(); });
 
-            m_learnMoreLink = new SA_PluginActiveTextLink("[?] Learn More");
-
+            m_LearnMoreLink = new SA_PluginActiveTextLink("[?] Learn More");
         }
 
         public override void OnGUI()
         {
-
             EditorGUILayout.HelpBox("The summary tab provides useful summary information " +
                                     "for example you can check platform requirements based on current plugin services configuration.",
                 MessageType.Info);
-
-
-
+            
 
             using (new SA_GuiBeginHorizontal())
             {
                 GUILayout.FlexibleSpace();
-                var click = m_learnMoreLink.Draw(GUILayout.Width(90));
+                var click = m_LearnMoreLink.Draw(GUILayout.Width(90));
                 if (click)
                 {
                     Application.OpenURL("https://unionassets.com/ultimate-mobile-pro/summary-tab-768");
                 }
             }
 
-            m_iosRequirements.OnGUI();
-            m_androidRequirements.OnGUI();
-            m_unityRequirements.OnGUI();
+            m_IOSRequirements.OnGUI();
+            m_AndroidRequirements.OnGUI();
+            m_UnityRequirements.OnGUI();
 
 
             using (new SA_WindowBlockWithSpace("Plugin Use Examples"))
@@ -68,13 +60,13 @@ namespace SA.CrossPlatform
                 using (new SA_GuiBeginHorizontal())
                 {
                     EditorGUILayout.Space();
-                    var pressed = GUILayout.Button("Open Example Scene", GUILayout.Width(width));
+                    var pressed = GUILayout.Button("Open Welcome Scene", GUILayout.Width(width));
                     if (pressed)
                     {
                         UM_SamplesManager.OpenWelcomeScene();
                     }
 
-                    pressed = GUILayout.Button("Build Example Scene", GUILayout.Width(width));
+                    pressed = GUILayout.Button("Build Example", GUILayout.Width(width));
                     if (pressed)
                     {
                         UM_SamplesManager.BuildWelcomeScene();
@@ -82,7 +74,29 @@ namespace SA.CrossPlatform
                 }
             }
 
+            using (new SA_WindowBlockWithSpace("Export/import settings"))
+            {
+                EditorGUILayout.HelpBox("Export settings to file.", MessageType.Info);
+                var pressed = GUILayout.Button("Export settings");
+                if (pressed)
+                {
+                    string path = EditorUtility.SaveFilePanel("Save settings as JSON",
+                    "",
+                    "UM_Settings",
+                    "um_settings");
+                    UM_SettingsManager.Export(path);
+                }
 
+                EditorGUILayout.HelpBox("Import settings from file.", MessageType.Info);
+                pressed = GUILayout.Button("Import settings");
+                if (pressed)
+                {
+                    string path = EditorUtility.OpenFilePanel("Import settings from json",
+                        "",
+                        "um_settings");
+                    UM_SettingsManager.Import(path);
+                }
+            }
         }
 
         private void DefineSymbols()

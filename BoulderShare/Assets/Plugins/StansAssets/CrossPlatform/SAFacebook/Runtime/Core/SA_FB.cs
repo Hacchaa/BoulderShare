@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -204,6 +204,19 @@ namespace SA.Facebook
 			}
 		}
 
+		/// <summary>
+		/// Returns <c>true</c> if Facebook SDK installed in current Unity project. <c>false</c> otherwise.
+		/// </summary>
+		public static bool IsSDKInstalled {
+			get {
+			#if SA_FB_INSTALLED
+                return true;
+			#else
+				return false;
+			#endif
+			}
+		}
+		
 
         /*
 		/// <summary>

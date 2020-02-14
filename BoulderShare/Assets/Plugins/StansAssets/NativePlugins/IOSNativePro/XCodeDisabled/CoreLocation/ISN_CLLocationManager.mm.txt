@@ -5,6 +5,8 @@
 //  Created by Stanislav Osipov on 2/25/19.
 //
 
+#if !TARGET_OS_TV
+
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
@@ -193,6 +195,15 @@ extern "C" {
         return [GetLocationManager()  allowsBackgroundLocationUpdates];
     }
     
+    void _ISN_CL_SetDistanceFilter(double distance) {
+        GetLocationManager().distanceFilter = distance;
+    }
+    
+    double _ISN_CL_GetDistanceFilter() {
+        return GetLocationManager().distanceFilter;
+    }
+    
+    
     void _ISN_CL_SetDesiredAccuracy(int value) {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_CL_SetDesiredAccuracy" data:""];
         switch (value) {
@@ -223,4 +234,24 @@ extern "C" {
         }
     }
     
+    
+    double _ISN_CL_Cllocation_DistanceFromLocation(char * location1, char* location2) {
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_CL_Cllocation_DistanceFromLocation_location1" data:location1];
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_CL_Cllocation_DistanceFromLocation_location1" data:location2];
+        
+        
+        NSError *jsonError;
+        ISN_CLLocation *loc1 = [[ISN_CLLocation alloc] initWithChar:location1 error:&jsonError];
+        if (jsonError) {
+            [ISN_Logger LogError:@"_ISN_LoadStore JSON parsing error: %@", jsonError.description];
+        }
+        
+        ISN_CLLocation *loc2 = [[ISN_CLLocation alloc] initWithChar:location2 error:&jsonError];
+        if (jsonError) {
+            [ISN_Logger LogError:@"_ISN_LoadStore JSON parsing error: %@", jsonError.description];
+        }
+        
+        return [loc1.getCLLocation distanceFromLocation:loc2.getCLLocation];
+    }
 }
+#endif

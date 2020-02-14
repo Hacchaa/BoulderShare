@@ -56,7 +56,7 @@ namespace SA.CrossPlatform.GameServices
 
                 if (result.IsSucceeded) {
                     loadResult = new UM_SavedGamesMetadataResult();
-                    foreach (ISN_GKSavedGame game in result.SavedGames) {
+                    foreach (var game in result.SavedGames) {
                         var isn_meta = new UM_IOSSavedGameMetadata(game);
                         loadResult.AddMetadata(isn_meta);
                     }

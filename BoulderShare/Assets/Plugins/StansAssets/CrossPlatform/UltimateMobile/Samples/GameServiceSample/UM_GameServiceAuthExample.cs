@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using SA.CrossPlatform.GameServices;
 
@@ -36,7 +36,6 @@ public class UM_GameServiceAuthExample : MonoBehaviour {
                  client.SingIn(result => {
                      if (result.IsSucceeded) {
                          Debug.Log("Singed In");
-                         
                      } else {
                          Debug.Log("Failed to sing in: " + result.Error.FullMessage);
                      }
@@ -72,9 +71,7 @@ public class UM_GameServiceAuthExample : MonoBehaviour {
                 }
                 m_userAvatarLoader.gameObject.SetActive(false);
             });
-
-
-
+            
             m_connect.GetComponentInChildren<Text>().text = "Sing Out";
         } else {
             m_connect.GetComponentInChildren<Text>().text = "Sing In";

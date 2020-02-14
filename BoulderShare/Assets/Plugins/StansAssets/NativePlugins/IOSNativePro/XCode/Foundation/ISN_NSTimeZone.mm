@@ -26,7 +26,6 @@
 
 extern "C" {
     
-    
     char* _ISN_NS_TimeZone_LocalTimeZone() {
         NSTimeZone* zone = NSTimeZone.localTimeZone;
         ISN_NSTimeZone *timeZone = [[ISN_NSTimeZone alloc] initWithNSTimeZone:zone];
@@ -51,11 +50,6 @@ extern "C" {
     void _ISN_NS_TimeZone_ResetSystemTimeZone() {
         [NSTimeZone resetSystemTimeZone];
     }
-    
-    
-    
-    
-    
 }
 
 

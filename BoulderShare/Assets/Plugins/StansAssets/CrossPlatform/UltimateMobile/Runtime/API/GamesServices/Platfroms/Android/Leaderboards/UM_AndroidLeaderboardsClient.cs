@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-
 using SA.Android.App;
 using SA.Android.GMS.Games;
 using SA.Foundation.Templates;
@@ -10,82 +9,84 @@ namespace SA.CrossPlatform.GameServices
 {
     internal class UM_AndroidLeaderboardsClient : UM_AbstractLeaderboardsClient, UM_iLeaderboardsClient
     {
-
-        public void ShowUI(Action<SA_Result> callback) {
+        public void ShowUI(Action<SA_Result> callback) 
+        {
             var client = AN_Games.GetLeaderboardsClient();
-            client.GetAllLeaderboardsIntent((result) => {
-                if (result.IsSucceeded) {
+            client.GetAllLeaderboardsIntent(result => 
+            {
+                if (result.IsSucceeded) 
+                {
                     var intent = result.Intent;
-                    AN_ProxyActivity proxy = new AN_ProxyActivity();
-                    proxy.StartActivityForResult(intent, (intentResult) => {
+                    var proxy = new AN_ProxyActivity();
+                    proxy.StartActivityForResult(intent, intentResult => 
+                    {
                         proxy.Finish();
                         callback.Invoke(intentResult); 
                     });
-
-                } else {
+                } 
+                else 
+                {
                     callback.Invoke(result);  
                 }
             });
         }
 
-        public void ShowUI(string leaderboardId, Action<SA_Result> callback) {
+        public void ShowUI(string leaderboardId, Action<SA_Result> callback) 
+        {
             ShowUI(leaderboardId, UM_LeaderboardTimeSpan.AllTime, callback);
         }
 
-        public void ShowUI(string leaderboardId, UM_LeaderboardTimeSpan timeSpan, Action<SA_Result> callback) {
-
-            AN_Leaderboard.TimeSpan span = AN_Leaderboard.TimeSpan.AllTime;
-
-            switch (timeSpan) {
-                case UM_LeaderboardTimeSpan.AllTime:
-                    span = AN_Leaderboard.TimeSpan.AllTime;
-                    break;
-                case UM_LeaderboardTimeSpan.Daily:
-                    span = AN_Leaderboard.TimeSpan.Daily;
-                    break;
-                case UM_LeaderboardTimeSpan.Weekly:
-                    span = AN_Leaderboard.TimeSpan.Weekly;
-                    break;
-            }
-
+        public void ShowUI(string leaderboardId, UM_LeaderboardTimeSpan timeSpan, Action<SA_Result> callback)
+        {
+            var span = ToAndroidSpan(timeSpan);
             var client = AN_Games.GetLeaderboardsClient();
-            client.GetLeaderboardIntent(leaderboardId, span, (result) => {
-                if (result.IsSucceeded) {
+            client.GetLeaderboardIntent(leaderboardId, span, result =>
+            {
+                if (result.IsSucceeded) 
+                {
                     var intent = result.Intent;
-                    AN_ProxyActivity proxy = new AN_ProxyActivity();
-                    proxy.StartActivityForResult(intent, (intentResult) => {
+                    var proxy = new AN_ProxyActivity();
+                    proxy.StartActivityForResult(intent, intentResult => 
+                    {
                         proxy.Finish();
                         callback.Invoke(intentResult);
                     });
 
-                } else {
+                } 
+                else 
+                {
                     callback.Invoke(result);
                 }
             });
         }
-
-
-        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback) {
+        
+        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback) 
+        {
             var client = AN_Games.GetLeaderboardsClient();
-            client.SubmitScoreImmediate(leaderboardId, score, context.ToString(), (result) => {
+            client.SubmitScoreImmediate(leaderboardId, score, context.ToString(), result => 
+            {
                 ReportScoreSubmited(leaderboardId, score, result);
                 callback.Invoke(result);
             });
         }
 
-        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback) {
+        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback) 
+        {
             var leaderboards = AN_Games.GetLeaderboardsClient();
-            leaderboards.LoadLeaderboardMetadata(false, (result) => {
+            leaderboards.LoadLeaderboardMetadata(false, result => 
+            {
                 UM_LoadLeaderboardsMetaResult um_result;
                 if (result.IsSucceeded) {
-                    List<UM_iLeaderboard> um_leaderboards = new List<UM_iLeaderboard>();
-                    foreach (var leaderboard in result.Leaderboards) {
+                    var um_leaderboards = new List<UM_iLeaderboard>();
+                    foreach (var leaderboard in result.Leaderboards) 
+                    {
                         var um_leaderboardMetda = new UM_LeaderboardMeta(leaderboard.LeaderboardId, leaderboard.DisplayName);
                         um_leaderboards.Add(um_leaderboardMetda);
                     }
-
                     um_result = new UM_LoadLeaderboardsMetaResult(um_leaderboards);
-                } else {
+                } 
+                else 
+                {
                     um_result = new UM_LoadLeaderboardsMetaResult(result.Error);
                 }
 
@@ -93,37 +94,14 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-        public void LoadCurrentPlayerScore(string leaderboardId, UM_LeaderboardTimeSpan span, UM_LeaderboardCollection collection, Action<UM_ScoreLoadResult> callback) {
+        public void LoadCurrentPlayerScore(string leaderboardId, UM_LeaderboardTimeSpan span, UM_LeaderboardCollection collection, Action<UM_ScoreLoadResult> callback) 
+        {
             var leaderboards = AN_Games.GetLeaderboardsClient();
-
-
-            AN_Leaderboard.TimeSpan an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
-            switch (span) {
-                case UM_LeaderboardTimeSpan.AllTime:
-                    an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
-                    break;
-                case UM_LeaderboardTimeSpan.Weekly:
-                    an_timeSpan = AN_Leaderboard.TimeSpan.Weekly;
-                    break;
-                case UM_LeaderboardTimeSpan.Daily:
-                    an_timeSpan = AN_Leaderboard.TimeSpan.Daily;
-                    break;
-            }
-
-            AN_Leaderboard.Collection an_collection = AN_Leaderboard.Collection.Public;
-            switch (collection) {
-                case UM_LeaderboardCollection.Public:
-                    an_collection = AN_Leaderboard.Collection.Public;
-                    break;
-                case UM_LeaderboardCollection.Social:
-                    an_collection = AN_Leaderboard.Collection.Social;
-                    break;
-            }
-
-
-
-            leaderboards.LoadCurrentPlayerLeaderboardScore(leaderboardId, an_timeSpan, an_collection, (res) => {
-
+            var an_timeSpan = ToAndroidSpan(span);
+            var an_collection = ToAndroidCollection(collection);
+            
+            leaderboards.LoadCurrentPlayerLeaderboardScore(leaderboardId, an_timeSpan, an_collection, res => 
+            {
                 UM_ScoreLoadResult um_result;
                 if (res.IsSucceeded) {
                     AN_LeaderboardScore an_score = res.Data;
@@ -142,13 +120,49 @@ namespace SA.CrossPlatform.GameServices
                         an_score.TimestampMillis);
 
                     um_result = new UM_ScoreLoadResult(score);
-                } else {
+                } 
+                else 
+                {
                     um_result = new UM_ScoreLoadResult(res.Error);
                 }
 
                 callback.Invoke(um_result);
             });
         }
+        
+        private AN_Leaderboard.TimeSpan ToAndroidSpan(UM_LeaderboardTimeSpan span)
+        {
+            var an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
+            switch (span) 
+            {
+                case UM_LeaderboardTimeSpan.AllTime:
+                    an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
+                    break;
+                case UM_LeaderboardTimeSpan.Weekly:
+                    an_timeSpan = AN_Leaderboard.TimeSpan.Weekly;
+                    break;
+                case UM_LeaderboardTimeSpan.Daily:
+                    an_timeSpan = AN_Leaderboard.TimeSpan.Daily;
+                    break;
+            }
 
+            return an_timeSpan;
+        }
+
+        private AN_Leaderboard.Collection ToAndroidCollection(UM_LeaderboardCollection collection)
+        {
+            var an_collection = AN_Leaderboard.Collection.Public;
+            switch (collection) 
+            {
+                case UM_LeaderboardCollection.Public:
+                    an_collection = AN_Leaderboard.Collection.Public;
+                    break;
+                case UM_LeaderboardCollection.Social:
+                    an_collection = AN_Leaderboard.Collection.Social;
+                    break;
+            }
+
+            return an_collection;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using SA.CrossPlatform.App;
 using SA.CrossPlatform.Analytics;
@@ -13,26 +13,23 @@ namespace SA.CrossPlatform {
         public const string DOCUMENTATION_URL = "https://unionassets.com/ultimate-mobile-pro/manual";
 
         public const string PLUGIN_FOLDER = SA_Config.STANS_ASSETS_CROSS_PLATFORM_PLUGINS_PATH + "UltimateMobile/";
-
         
         //--------------------------------------
         // Example Scenes
         //--------------------------------------
         
-        
-        public const string ExamplesPath = PLUGIN_FOLDER + "Samples/";
-        public const string WelcomeSamplesScenePath = ExamplesPath + "WelcomePage/UM_Welcome.unity"; 
-        public const string InAppSamplesScenePath = ExamplesPath + "InAppSample/UM_InAppExample.unity"; 
-        public const string GameServicesSamplesScenePath = ExamplesPath + "GameServiceSample/UM_GameService.unity"; 
-        public const string SharingSamplesScenePath = ExamplesPath + "SoicalSample/UM_SharingExample.unity"; 
-        public const string NotificationsSamplesScenePath = ExamplesPath + "LocalNotificationsSample/UM_LocalNotifications.unity"; 
-        public const string CameraAndGallerySamplesScenePath = ExamplesPath + "CameraAndGallerySample/UM_CameraAndGalleryExample.unity"; 
-        public const string MedialPlayerSamplesScenePath = ExamplesPath + "MedialPlayerSample/UM_MedialPlayerExample.unity"; 
-        public const string FirebaseSamplesScenePath = ExamplesPath + "FirebaseSample/UM_FirebaseSample.unity"; 
-        public const string GIFSamplesScenePath = ExamplesPath + "GIFAPISamples/UM_GIF_Samples.unity"; 
-        
-        
-        
+        private const string k_ExamplesPath = PLUGIN_FOLDER + "Samples/";
+        public const string k_WelcomeSamplesScenePath = k_ExamplesPath + "WelcomePage/UM_Welcome.unity"; 
+        public const string k_InAppSamplesScenePath = k_ExamplesPath + "InAppSample/UM_InAppExample.unity"; 
+        public const string k_GameServicesSamplesScenePath = k_ExamplesPath + "GameServiceSample/UM_GameService.unity"; 
+        public const string k_SharingSamplesScenePath = k_ExamplesPath + "SoicalSample/UM_SharingExample.unity"; 
+        public const string k_NotificationsSamplesScenePath = k_ExamplesPath + "LocalNotificationsSample/UM_LocalNotifications.unity"; 
+        public const string k_CameraAndGallerySamplesScenePath = k_ExamplesPath + "CameraAndGallerySample/UM_CameraAndGalleryExample.unity"; 
+        public const string k_MedialPlayerSamplesScenePath = k_ExamplesPath + "MedialPlayerSample/UM_MedialPlayerExample.unity"; 
+        public const string k_ContactsSampleScenePath = k_ExamplesPath + "ContactsSample/UM_ContactsSample.unity"; 
+        public const string k_FirebaseSamplesScenePath = k_ExamplesPath + "FirebaseSample/UM_FirebaseSample.unity"; 
+        public const string k_GIFSamplesScenePath = k_ExamplesPath + "GIFAPISamples/UM_GIF_Samples.unity"; 
+        public const string k_FBSamplesScenePath = k_ExamplesPath + "FacebookSamples/UM_FB_Samples.unity"; 
         
         //--------------------------------------
         // Game Service API

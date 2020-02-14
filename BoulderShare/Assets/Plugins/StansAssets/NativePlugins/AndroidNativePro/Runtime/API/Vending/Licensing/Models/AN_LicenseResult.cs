@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +13,10 @@ namespace SA.Android.Vending.Licensing
         [SerializeField] int m_policyCode;
 
         //Editor use only
-        public AN_LicenseResult(int policyCode) : base(){
+        public AN_LicenseResult(int policyCode)
+        {
             m_policyCode = policyCode;
         }
-
 
         public AN_LicenseErrorCode ErrorCode  {
             get {

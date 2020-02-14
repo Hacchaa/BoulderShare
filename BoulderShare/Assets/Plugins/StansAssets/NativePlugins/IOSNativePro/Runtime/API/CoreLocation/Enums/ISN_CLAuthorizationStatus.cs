@@ -1,4 +1,4 @@
-﻿namespace SA.iOS.CoreLocation
+namespace SA.iOS.CoreLocation
 {
     public enum ISN_CLAuthorizationStatus
     {

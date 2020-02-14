@@ -1,15 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using SA.iOS.XCode;
 
 namespace SA.iOS 
 {
     public class ISN_ContactsResolver : ISN_APIResolver
     {
-
-        protected override ISN_XcodeRequirements GenerateRequirements() {
+        protected override ISN_XcodeRequirements GenerateRequirements() 
+        {
             var requirements = new ISN_XcodeRequirements();
             requirements.AddFramework(new ISD_Framework(ISD_iOSFramework.Contacts));
             requirements.AddFramework(new ISD_Framework(ISD_iOSFramework.ContactsUI));
@@ -20,18 +16,25 @@ namespace SA.iOS
             NSContactsUsageDescription.Type = ISD_PlistKeyType.String;
 
             requirements.AddInfoPlistKey(NSContactsUsageDescription);
-           
-
+            
             return requirements;
         }
-       
+        
+        protected override string LibFolder
+        {
+            get { return "Contacts/"; }
+        }
 
-        protected override string LibFolder { get { return "Contacts/"; } }
-        public override bool IsSettingsEnabled {
+        public override bool IsSettingsEnabled 
+        {
             get { return ISN_Settings.Instance.Contacts; }
             set { ISN_Settings.Instance.Contacts = value; }
         }
-        public override string DefineName { get { return "CONTACTS_API_ENABLED"; } }
+
+        public override string DefineName
+        {
+            get { return "CONTACTS_API_ENABLED"; }
+        }
     }
 }
 

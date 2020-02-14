@@ -14,8 +14,7 @@ using SA.iOS.Utilities;
 using SA.Foundation.Templates;
 using SA.Foundation.Events;
 
-
-#if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+#if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
 using System.Runtime.InteropServices;
 #endif
 
@@ -24,7 +23,7 @@ namespace SA.iOS.UserNotifications.Internal
 
     internal class ISN_UNNativeAPI : ISN_Singleton<ISN_UNNativeAPI>, ISN_iUNAPI
     {
-        #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+        #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             
         [DllImport("__Internal")] static extern void _ISN_UN_RequestAuthorization(int options);
         [DllImport("__Internal")] static extern void _ISN_UN_GetNotificationSettings();
@@ -54,7 +53,7 @@ namespace SA.iOS.UserNotifications.Internal
         public void RequestAuthorization(int options, Action<SA_Result> callback) {
             m_onRequestAuthorization = callback;
 
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_RequestAuthorization(options);
             #endif
         }
@@ -72,7 +71,7 @@ namespace SA.iOS.UserNotifications.Internal
         private event Action<ISN_UNNotificationSettings> m_onGetNotificationSettings = null;
         public void GetNotificationSettings(Action<ISN_UNNotificationSettings> callback) {
             m_onGetNotificationSettings = callback;
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_GetNotificationSettings();
             #endif
         }
@@ -91,7 +90,7 @@ namespace SA.iOS.UserNotifications.Internal
         public void AddNotificationRequest(ISN_UNNotificationRequest request, Action<SA_Result> callback) {
 
             m_onAddNotificationRequest = callback;
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_AddNotificationRequest(JsonUtility.ToJson(request));
             #endif
         }
@@ -108,7 +107,7 @@ namespace SA.iOS.UserNotifications.Internal
 
         private Action<List<ISN_UNNotificationRequest>> m_onGetPendingNotificationRequests = null;
         public void GetPendingNotificationRequests(Action<List<ISN_UNNotificationRequest>> callback) {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             m_onGetPendingNotificationRequests = callback;
             _ISN_UN_GetPendingNotificationRequests();
             #endif
@@ -121,14 +120,14 @@ namespace SA.iOS.UserNotifications.Internal
 
 
         public void RemoveAllPendingNotificationRequests() {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_RemoveAllPendingNotificationRequests();
             #endif
         }
 
 
         public void RemovePendingNotificationRequests(List<string> notificationRequestsIds) {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             var request = new ISN_UNNotifcationRequestsIds(notificationRequestsIds);
             _ISN_UN_RemovePendingNotificationRequests(JsonUtility.ToJson(request));
             #endif
@@ -142,7 +141,7 @@ namespace SA.iOS.UserNotifications.Internal
 
         private Action<List<ISN_UNNotification>> m_onGetDeliveredNotifications = null;
         public void GetDeliveredNotifications(Action<List<ISN_UNNotification>> callback) {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             m_onGetDeliveredNotifications = callback;
             _ISN_UN_GetDeliveredNotifications();
             #endif
@@ -156,21 +155,21 @@ namespace SA.iOS.UserNotifications.Internal
 
 
         public void RemoveAllDeliveredNotifications() {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_RemoveAllDeliveredNotifications();
             #endif
         }
 
 
         public void RemoveDeliveredNotifications(List<string> notificationIds) {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             var request = new ISN_UNNotifcationRequestsIds(notificationIds);
             _ISN_UN_RemoveDeliveredNotifications(JsonUtility.ToJson(request));
             #endif
         }
 
         public void ClearLastReceivedResponse(List<string> notificationIds) {
-            #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+            #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
             _ISN_UN_ClearLastReceivedResponse();
             #endif
         }
@@ -201,8 +200,8 @@ namespace SA.iOS.UserNotifications.Internal
 
         public ISN_UNNotificationResponse LastReceivedResponse {
             get {
-                string json = string.Empty;
-                #if (UNITY_IPHONE || UNITY_TVOS) && USER_NOTIFICATIONS_API_ENABLED
+                var json = string.Empty;
+                #if UNITY_IPHONE && USER_NOTIFICATIONS_API_ENABLED
                 json =  _ISN_UN_GetLastReceivedResponse();
                 #endif
 

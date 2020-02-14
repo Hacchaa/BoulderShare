@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace SA.Android.Vending.Billing
 {
+    [Obsolete("Use AN_BillingClient API instead")]
     [Serializable]
     public class AN_Inventory
     {

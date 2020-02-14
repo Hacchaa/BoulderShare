@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using SA.iOS.CoreLocation;
 using SA.Foundation.Templates;
 using SA.iOS.UIKit;

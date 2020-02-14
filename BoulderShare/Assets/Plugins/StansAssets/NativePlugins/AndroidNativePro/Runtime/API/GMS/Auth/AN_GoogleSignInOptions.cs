@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,7 +48,7 @@ namespace SA.Android.GMS.Auth
             /// </summary>
             /// <param name="singInConf">The predefined Builder configuration, use <see cref="DEFAULT_GAMES_SIGN_IN"/> or <see cref="DEFAULT_SIGN_IN"/> </param>
             public Builder(int singInConf = 0) {
-                m_hashCode = AN_GMS_Lib.Auth.GoogleSignInOptions_Builder_Create(singInConf);
+                m_HashCode = AN_GMS_Lib.Auth.GoogleSignInOptions_Builder_Create(singInConf);
             }
 
             /// <summary>

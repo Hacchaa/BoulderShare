@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
-
 using SA.Foundation.Utility;
 using SA.Foundation.Time;
-
 
 namespace SA.Android.Vending.Billing
 {
@@ -13,6 +9,7 @@ namespace SA.Android.Vending.Billing
     /// Response data from an In-app Billing purchase request.
     /// </summary>
     [Serializable]
+    [Obsolete("Use AN_BillingClient API instead")]
     public class AN_Purchase
     { 
         [SerializeField] string m_type;  
@@ -46,9 +43,24 @@ namespace SA.Android.Vending.Billing
             m_originalJson = JsonUtility.ToJson(this);
         }
 
+        public AN_Purchase(SA.Android.Vending.BillingClient.AN_Purchase purchase)
+        {
+            m_type = purchase.Type.ToString();
+            m_orderId = purchase.OrderId;
+            m_packageName = purchase.PackageName;
+            m_productId = purchase.Sku;
+            m_purchaseTime = purchase.PurchaseTime;
+            m_purchaseState = (int) purchase.PurchaseState;
+            m_developerPayload = purchase.DeveloperPayload;
+            m_token = purchase.PurchaseToken;
+            m_originalJson = purchase.OriginalJson;
+            m_signature = purchase.Signature;
+            m_autoRenewing = purchase.IsAutoRenewing;
+        }
+
 
         /// <summary>
-        /// Type of the purchsed product
+        /// Type of the purchased product
         /// </summary>
         public AN_ProductType Type {
             get {
@@ -116,7 +128,7 @@ namespace SA.Android.Vending.Billing
         }
 
         /// <summary>
-        /// XXXXX
+        /// A token that uniquely identifies a purchase for a given item and user pair.
         /// </summary>
         public string Token {
             get {
@@ -126,7 +138,7 @@ namespace SA.Android.Vending.Billing
 
 
         /// <summary>
-        /// XXXXX
+        /// Original non modified google billing service response.
         /// </summary>
         public string OriginalJson {
             get {
@@ -135,7 +147,8 @@ namespace SA.Android.Vending.Billing
         }
 
         /// <summary>
-        /// XXXXX
+        /// String containing the signature of the purchase data that was signed with the private key of the developer.
+        /// The data signature uses the RSASSA-PKCS1-v1_5 scheme.
         /// </summary>
         public string Signature {
             get {
@@ -159,6 +172,11 @@ namespace SA.Android.Vending.Billing
             get {
                 return m_autoRenewing;
             }
+        }
+
+        public override string ToString()
+        {
+            return OriginalJson;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Android.Manifest;
 using SA.iOS.Photos;
 

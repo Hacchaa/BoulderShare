@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using SA.Foundation.Editor;
@@ -11,7 +11,8 @@ namespace SA.iOS
         public override void OnAwake() {
             base.OnAwake();
 
-            AddFeatureUrl("AVPlayer View Controller", "https://unionassets.com/ios-native-pro/avplayerviewcontroller-663");
+            AddFeatureUrl("AVPlayer View", "https://unionassets.com/ios-native-pro/avplayerviewcontroller-663");
+            AddFeatureUrl("Video Player", "https://unionassets.com/ios-native-pro/avplayerviewcontroller-663");
 
         }
 

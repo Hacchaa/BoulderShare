@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,8 +11,7 @@ namespace SA.CrossPlatform.GameServices
 {
     internal class UM_AndroidAchievementsClient : UM_AbstractAchievementsClient, UM_iAchievementsClient
     {
-
-        public void ShowUI() {
+        public void ShowUI(Action<SA_Result> callback) {
             var client = AN_Games.GetAchievementsClient();
             client.GetAchievementsIntent((result) => {
                 if (result.IsSucceeded) {
@@ -20,8 +19,10 @@ namespace SA.CrossPlatform.GameServices
                     AN_ProxyActivity proxy = new AN_ProxyActivity();
                     proxy.StartActivityForResult(intent, (intentResult) => {
                         proxy.Finish();
+                        callback.Invoke(intentResult); 
                     });
                 } else {
+                    callback.Invoke(result); 
                     Debug.LogError("Failed to Get Achievements Intent " + result.Error.FullMessage);
                 }
             });

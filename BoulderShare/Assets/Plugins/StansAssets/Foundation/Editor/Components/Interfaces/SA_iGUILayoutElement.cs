@@ -1,7 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.Foundation.Editor
 {
     public interface SA_iGUILayoutElement
@@ -13,7 +9,4 @@ namespace SA.Foundation.Editor
 
         void OnLayoutEnable();
     }
-
-
-
 }

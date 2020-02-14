@@ -1,4 +1,4 @@
-﻿#if  (UNITY_IPHONE || UNITY_TVOS)  
+#if  (UNITY_IPHONE || UNITY_TVOS)  
 using System.Runtime.InteropServices;
 #endif
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 #if UNITY_IPHONE
 using System.Runtime.InteropServices;

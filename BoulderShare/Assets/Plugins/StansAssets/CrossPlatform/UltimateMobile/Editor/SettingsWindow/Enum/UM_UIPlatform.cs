@@ -1,4 +1,4 @@
-﻿namespace SA.CrossPlatform
+namespace SA.CrossPlatform
 {
     public enum UM_UIPlatform  {
         Unified = 0,

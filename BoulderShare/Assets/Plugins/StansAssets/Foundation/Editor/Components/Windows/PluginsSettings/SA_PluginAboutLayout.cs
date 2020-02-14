@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -194,11 +194,11 @@ namespace SA.Foundation.Editor
 
 
 		private SA_HyperLabel CreateAboutLabel(string title, string icon) {
-            return CreateLabel(title, icon, SA_Skin.ABOUT_ICONS_PATH);
+            return CreateLabel(title, icon, SA_Skin.k_AboutIconsPath);
         }
 
         private SA_HyperLabel CreateSocialLabel(string title, string icon) {
-            return CreateLabel(title, icon, SA_Skin.SOCIAL_ICONS_PATH);
+            return CreateLabel(title, icon, SA_Skin.k_SocialIconsPath);
         }
 
         private SA_HyperLabel CreateLabel(string title, string icon, string iconFolder) {

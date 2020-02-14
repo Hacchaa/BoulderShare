@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -17,8 +17,6 @@ namespace SA.iOS.GameKit.Internal
 
     internal class ISN_GKEditorAPI : ISN_iGKAPI
     {
-
-
         private SA_Event<ISN_GKSavedGameSaveResult> m_DidModifySavedGame = new SA_Event<ISN_GKSavedGameSaveResult>();
         private SA_Event<ISN_GKSavedGameFetchResult> m_HasConflictingSavedGames = new SA_Event<ISN_GKSavedGameFetchResult>();
 
@@ -44,13 +42,13 @@ namespace SA.iOS.GameKit.Internal
 
       
 
-        public SA_iEvent<ISN_GKSavedGameSaveResult> DidModifySavedGameEventResponse {
+        public SA_iEvent<ISN_GKSavedGameSaveResult> DidModifySavedGame {
             get {
                 return m_DidModifySavedGame;
             }
         }
 
-        public SA_iEvent<ISN_GKSavedGameFetchResult> HasConflictingSavedGamesEventResponse {
+        public SA_iEvent<ISN_GKSavedGameFetchResult> HasConflictingSavedGames {
             get {
                 return m_HasConflictingSavedGames;
             }

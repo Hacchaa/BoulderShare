@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+using SA.Android.Utilities;
 using UnityEngine;
-
 using SA.Foundation.Utility;
-using SA.Android.Vending.Internal;
-
+using SA.Foundation.Async;
 
 namespace SA.Android.Vending.Licensing
 {
     public static class AN_LicenseChecker
     {
-
+        private const string k_JavaLicenseCheckerClass = "com.stansassets.licensing.AN_LicenseChecker";
 
         public static void CheckAccess(Action<AN_LicenseResult> callback) {
 
@@ -19,8 +17,18 @@ namespace SA.Android.Vending.Licensing
                 return;
             }
 
-            AN_VendingLib.API.CheckAccess(AN_Settings.Instance.RSAPublicKey, callback);
+            if (Application.isEditor)
+            {
+                SA_Coroutine.WaitForSeconds(1, () => {
+                    callback.Invoke(new AN_LicenseResult(AN_Policy.LICENSED));
+                });
+                return;
+            }
+            
+            AN_Java.Bridge.CallStaticWithCallback(k_JavaLicenseCheckerClass, 
+                "CheckAccess", 
+                callback, 
+                AN_Settings.Instance.RSAPublicKey);
         }
-
     }
 }

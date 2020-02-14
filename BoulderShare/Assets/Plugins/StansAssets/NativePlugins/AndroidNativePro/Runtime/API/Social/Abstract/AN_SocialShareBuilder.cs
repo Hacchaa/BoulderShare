@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -74,7 +74,6 @@ namespace SA.Android.Social
 
             m_proxyActivity = new AN_ProxyActivity();
             m_proxyActivity.StartActivityForResult(intentToShare, (result) => {
-                m_proxyActivity.Finish();
                 if (callback != null) {
                     callback.Invoke();
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 
 #if SA_FB_INSTALLED

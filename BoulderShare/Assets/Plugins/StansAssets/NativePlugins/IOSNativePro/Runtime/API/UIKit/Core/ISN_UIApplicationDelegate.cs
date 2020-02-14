@@ -6,7 +6,8 @@
 // @website https://stansassets.com
 //
 ////////////////////////////////////////////////////////////////////////////////
-
+using System;
+using System.ComponentModel;
 using UnityEngine;
 using SA.iOS.Utilities;
 using SA.Foundation.Events;
@@ -21,11 +22,11 @@ namespace SA.iOS.UIKit
     /// <summary>
     /// A set of methods that are called in response to important events in the lifetime of your app.
     /// </summary>
-    public class ISN_UIApplicationDelegate : ISN_Singleton<ISN_UIApplicationDelegate>
+    public class ISN_UIApplicationDelegate
     {
 
         #if (UNITY_IPHONE || UNITY_TVOS) && APP_DELEGATE_ENABLED
-        [DllImport("__Internal")] static extern void _ISN_AppDelegate_Subscribe();
+        [DllImport("__Internal")] static extern void _ISN_AppDelegate_Subscribe(IntPtr callback);
         [DllImport("__Internal")] static extern string _ISN_AppDelegate_GetAppOpenShortcutItem();
         [DllImport("__Internal")] static extern string _ISN_AppDelegate_GetLaunchUniversalLink();
         [DllImport("__Internal")] static extern string _ISN_AppDelegate_GetLaunchURL();
@@ -49,11 +50,14 @@ namespace SA.iOS.UIKit
         //--------------------------------------
         // Initialization
         //--------------------------------------
-
-        protected override void Awake() {
-            base.Awake();
+        /// <summary>
+        /// Initialization of ISN_UIApplicationDelegate and call native ISN_UIApplicationDelegate subscribe
+        /// method with callback.
+        /// </summary>
+        public ISN_UIApplicationDelegate() 
+        {
             #if (UNITY_IPHONE || UNITY_TVOS) && APP_DELEGATE_ENABLED && !UNITY_EDITOR
-            _ISN_AppDelegate_Subscribe();
+            _ISN_AppDelegate_Subscribe(ISN_MonoPCallback.ActionToIntPtr<ISN_UIApplicationDelegateResult>(ISN_UIApplicationDelegateListener));
             #endif
         }
 
@@ -67,8 +71,10 @@ namespace SA.iOS.UIKit
         /// Called when the user selects a Home screen quick action for your app, 
         /// except when you’ve intercepted the interaction in a launch method.
         /// </summary>
-        public SA_iEvent<ISN_UIApplicationShortcutItem> PerformActionForShortcutItem {
-            get {
+        public SA_iEvent<ISN_UIApplicationShortcutItem> PerformActionForShortcutItem 
+        {
+            get 
+            {
                 return m_performActionForShortcutItem;
             }
         }
@@ -79,7 +85,8 @@ namespace SA.iOS.UIKit
         /// with the correspondent item type.
         /// <c>null</c> if app wasn't launched using Home screen quick action.
         /// </summary>
-        public ISN_UIApplicationShortcutItem GetAppOpenShortcutItem() {
+        public ISN_UIApplicationShortcutItem GetAppOpenShortcutItem() 
+        {
             string shortcutItemType = string.Empty;
             #if (UNITY_IPHONE || UNITY_TVOS) && APP_DELEGATE_ENABLED && !UNITY_EDITOR
             shortcutItemType = _ISN_AppDelegate_GetAppOpenShortcutItem();
@@ -93,14 +100,18 @@ namespace SA.iOS.UIKit
 
         }
 
-        void performActionForShortcutItem(string shortcutItemType) {
+        void performActionForShortcutItem(string shortcutItemType) 
+        {
             ISN_UIApplicationShortcutItem shortcutItem = GetShortcutByType(shortcutItemType);
             m_performActionForShortcutItem.Invoke(shortcutItem);
         }
 
-        ISN_UIApplicationShortcutItem GetShortcutByType(string type) {
-            foreach (var shortcut in ISN_Settings.Instance.ShortcutItems) {
-                if(shortcut.Type.Equals(type)) {
+        ISN_UIApplicationShortcutItem GetShortcutByType(string type) 
+        {
+            foreach (var shortcut in ISN_Settings.Instance.ShortcutItems) 
+            {
+                if(shortcut.Type.Equals(type)) 
+                {
                     return shortcut;
                 }
             }
@@ -120,18 +131,21 @@ namespace SA.iOS.UIKit
         /// For example, when the user uses Handoff to transfer an activity from a different device.
         /// Use this method to update your iOS app so that the user can continue the activity from where they left off. 
         /// </summary>
-        public SA_iEvent<string> ContinueUserActivity {
-            get {
+        public SA_iEvent<string> ContinueUserActivity 
+        {
+            get 
+            {
                 return m_continueUserActivity;
             }
         }
 
         /// <summary>
-        /// If applicaion was launched usning deeplinking, 
+        /// If application was launched usning deeplinking, 
         /// method will return URL that was used to launch the app. 
         /// An Empty string will be returns otherwise. 
         /// </summary>
-        public string GetLaunchUniversalLink() {
+        public string GetLaunchUniversalLink() 
+        {
             string launchUrl = string.Empty;
             #if (UNITY_IPHONE || UNITY_TVOS) && APP_DELEGATE_ENABLED && !UNITY_EDITOR
             launchUrl = _ISN_AppDelegate_GetLaunchUniversalLink();
@@ -140,14 +154,15 @@ namespace SA.iOS.UIKit
             return launchUrl;
         }
 
-        void continueUserActivity(string webpageURL) {
+        void continueUserActivity(string webpageURL) 
+        {
             m_continueUserActivity.Invoke(webpageURL);
         }
 
 
 
         //--------------------------------------
-        //  Application URL Sheme
+        //  Application URL Scheme
         //--------------------------------------
 
         /// <summary>
@@ -156,20 +171,23 @@ namespace SA.iOS.UIKit
         /// If a URL arrives while your app is suspended or running in the background, 
         /// the system moves your app to the foreground prior to calling this method.
         /// </summary>
-        public SA_iEvent<string> OpenURL {
-            get {
+        public SA_iEvent<string> OpenURL 
+        {
+            get 
+            {
                 return m_openURL;
             }
         }
 
       
         /// <summary>
-        /// If your app has received reques to open spesific URL, 
+        /// If your app has received request to open specific URL, 
         /// the URL will be saved and always accessible by this method. 
         /// Methods will return an empty string if no open URL was received
         /// </summary>
         /// <returns>The launch URL.</returns>
-        public string GetLaunchURL() {
+        public string GetLaunchURL() 
+        {
             string launchUrl = string.Empty;
             #if (UNITY_IPHONE || UNITY_TVOS) && APP_DELEGATE_ENABLED && !UNITY_EDITOR
             launchUrl = _ISN_AppDelegate_GetLaunchURL();
@@ -178,13 +196,14 @@ namespace SA.iOS.UIKit
             return launchUrl;
         }
 
-        void openURL(string url) {
+        void openURL(string url) 
+        {
             m_openURL.Invoke(url);
         }
 
 
         //--------------------------------------
-        // Push Notificagions
+        // Push Notifications
         //--------------------------------------
 
 
@@ -196,7 +215,7 @@ namespace SA.iOS.UIKit
         /// the app calls this method when device registration completes. 
         /// In your implementation of this method, connect with your push notification server and give the token to it. 
         /// APNs pushes notifications only to the device represented by the token.
-        /// Or act accordinally to a given error desribtion.
+        /// Or act accordingly to a given error description.
         /// 
         /// The app might call this method in other rare circumstances, 
         /// such as when the user launches an app after having restored a device from data 
@@ -206,14 +225,17 @@ namespace SA.iOS.UIKit
         /// For more information about how to implement remote notifications in your app, 
         /// see <see href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/index.html#//apple_ref/doc/uid/TP40008194">Local and Remote Notification Programming Guide.</see>
         /// </summary>
-        public SA_iEvent<ISN_UIRegisterRemoteNotificationsResult> DidRegisterForRemoteNotifications {
-            get {
+        public SA_iEvent<ISN_UIRegisterRemoteNotificationsResult> DidRegisterForRemoteNotifications 
+        {
+            get 
+            {
                 return m_didRegisterForRemoteNotifications;
             }
         }
 
 
-        void RemoteNotificationsRegisterationResult(string json) {
+        void RemoteNotificationsRegisterationResult(string json) 
+        {
             ISN_UIRegisterRemoteNotificationsResult result = JsonUtility.FromJson<ISN_UIRegisterRemoteNotificationsResult>(json); 
             m_didRegisterForRemoteNotifications.Invoke(result);
         }
@@ -233,13 +255,16 @@ namespace SA.iOS.UIKit
         /// 
         /// Your implementation of this method has approximately five seconds to perform any tasks and return.
         /// </summary>
-        public SA_iEvent ApplicationDidEnterBackground {
-            get {
+        public SA_iEvent ApplicationDidEnterBackground 
+        {
+            get 
+            {
                 return m_applicationDidEnterBackground;
             }
         }
 
-        void applicationDidEnterBackground(string data) {
+        private void applicationDidEnterBackground(string data) 
+        {
             m_applicationDidEnterBackground.Invoke();
         }
 
@@ -251,13 +276,16 @@ namespace SA.iOS.UIKit
         /// The call to this method is invariably followed by a call to the <see cref="ApplicationDidBecomeActive"/> method, 
         /// which then moves the app from the inactive to the active state.
         /// </summary>
-        public SA_iEvent ApplicationWillEnterForeground {
-            get {
+        public SA_iEvent ApplicationWillEnterForeground 
+        {
+            get 
+            {
                 return m_applicationWillEnterForeground;
             }
         }
 
-        void applicationWillEnterForeground(string data) {
+        private void applicationWillEnterForeground(string data) 
+        {
             m_applicationWillEnterForeground.Invoke();
         }
 
@@ -274,8 +302,10 @@ namespace SA.iOS.UIKit
         /// For example, you could use it to restart timers or throttle up OpenGL ES frame rates. 
         /// If your app was previously in the background, you could also use it to refresh your app’s user interface.
         /// </summary>
-        public SA_iEvent ApplicationDidBecomeActive {
-            get {
+        public SA_iEvent ApplicationDidBecomeActive 
+        {
+            get 
+            {
                 return m_applicationDidBecomeActive;
             }
         }
@@ -296,7 +326,8 @@ namespace SA.iOS.UIKit
         /// usually in response to specific actions. For example, save data when the user dismisses a data entry screen. 
         /// Do not rely on specific app state transitions to save all of your app’s critical data.
         /// </summary>
-        void applicationDidBecomeActive(string data) {
+        private void applicationDidBecomeActive(string data) 
+        {
             m_applicationDidBecomeActive.Invoke();
         }
 
@@ -319,13 +350,16 @@ namespace SA.iOS.UIKit
         /// For example, save data when the user dismisses a data entry screen. 
         /// Do not rely on specific app state transitions to save all of your app’s critical data.
         /// </summary>
-        public SA_iEvent ApplicationWillResignActive {
-            get {
+        public SA_iEvent ApplicationWillResignActive 
+        {
+            get 
+            {
                 return m_applicationWillResignActive;
             }
         }
 
-        void applicationWillResignActive(string data) {
+        void applicationWillResignActive(string data) 
+        {
             m_applicationDidBecomeActive.Invoke();
         }
 
@@ -339,13 +373,16 @@ namespace SA.iOS.UIKit
         /// It is strongly recommended that you implement this method. 
         /// If your app does not release enough memory during low-memory conditions, the system may terminate it outright. 
         /// </summary>
-        public SA_iEvent ApplicationDidReceiveMemoryWarning {
-            get {
+        public SA_iEvent ApplicationDidReceiveMemoryWarning 
+        {
+            get 
+            {
                 return m_applicationDidReceiveMemoryWarning;
             }
         }
 
-        void applicationDidReceiveMemoryWarning(string data) {
+        private void applicationDidReceiveMemoryWarning(string data) 
+        {
             m_applicationDidReceiveMemoryWarning.Invoke();
         }
 
@@ -358,17 +395,81 @@ namespace SA.iOS.UIKit
         /// Your implementation of this method has approximately five seconds to perform any tasks and return. 
         /// If the method does not return before time expires, the system may kill the process altogether.
         /// </summary>
-        public SA_iEvent ApplicationWillTerminate {
-            get {
+        public SA_iEvent ApplicationWillTerminate 
+        {
+            get 
+            {
                 return m_applicationWillTerminate;
             }
         }
 
-        void applicationWillTerminate(string data) {
+        private void applicationWillTerminate(string data) 
+        {
             m_applicationWillTerminate.Invoke();
         }
 
 
-
+        /// <summary>
+        /// ISN_UIApplicationDelegate listener method
+        /// </summary>
+        private void ISN_UIApplicationDelegateListener(ISN_UIApplicationDelegateResult result)
+        {
+            switch(result.EventName)
+            {
+                case "performActionForShortcutItem":
+                {
+                    performActionForShortcutItem(result.Data);
+                    break;
+                }
+                case "applicationDidEnterBackground":
+                {
+                    applicationDidEnterBackground(result.Data);
+                    break;
+                }
+                case "applicationWillEnterForeground":
+                {
+                    applicationWillEnterForeground(result.Data);
+                    break;
+                }
+                case "applicationDidBecomeActive":
+                {
+                    applicationDidBecomeActive(result.Data);
+                    break;
+                }
+                case "applicationWillResignActive":
+                {
+                    applicationWillResignActive(result.Data);
+                    break;
+                }
+                case "applicationDidReceiveMemoryWarning":
+                {
+                    applicationDidReceiveMemoryWarning(result.Data);
+                    break;
+                }
+                case "applicationWillTerminate":
+                {
+                    applicationWillTerminate(result.Data);
+                    break;
+                }
+                case "RemoteNotificationsRegisterationResult":
+                {
+                    RemoteNotificationsRegisterationResult(result.Data);
+                    break;
+                }
+                case "continueUserActivity":
+                {
+                    continueUserActivity(result.Data);
+                    break;
+                }
+                case "openURL":
+                {
+                    openURL(result.Data);
+                    break;
+                }
+                
+                default:
+                    throw new InvalidEnumArgumentException("result.EventName has invalid value: " + result.EventName);
+            }  
+        }
     }
 }

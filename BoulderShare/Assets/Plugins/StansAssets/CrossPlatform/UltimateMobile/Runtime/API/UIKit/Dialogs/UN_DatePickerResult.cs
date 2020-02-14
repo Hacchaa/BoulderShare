@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 
 using SA.Foundation.Templates;
@@ -13,7 +13,8 @@ namespace SA.CrossPlatform.UI
     {
         private DateTime m_date;
 
-        public UN_DatePickerResult(DateTime date):base() {
+        public UN_DatePickerResult(DateTime date):base() 
+        {
             m_date = date;
         }
 
@@ -23,8 +24,10 @@ namespace SA.CrossPlatform.UI
         /// <summary>
         /// User picked date.
         /// </summary>
-        public DateTime Date {
-            get {
+        public DateTime Date 
+        {
+            get 
+            {
                 return m_date;
             }
         }

@@ -12,6 +12,7 @@
 #include "ISN_Foundation.h"
 #include "ISN_RPCommunication.h"
 #include "ISN_RPPreviewViewControllerDelegate.h"
+#include "UnityAppController.h"
 
 
 
@@ -91,15 +92,21 @@ static ISN_RPScreenRecorder * s_sharedInstance;
     self.previewDelegate =[[ISN_RPPreviewViewControllerDelegate alloc] init];
     [self previewViewController].previewControllerDelegate = self.previewDelegate;
     
-    UIViewController *vc =  UnityGetGLViewController();
-    [self previewViewController].popoverPresentationController.sourceView = vc.view;
-    [vc presentViewController:[self previewViewController] animated:YES completion:nil];
+    RPPreviewViewController *vc =  [self previewViewController];
     
+   #if PLATFORM_TVOS
+           vc.modalPresentationStyle = UIModalPresentationFullScreen;
+   #else
+           vc.modalPresentationStyle = UIModalPresentationPopover;
+           if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+           {
+               vc.popoverPresentationController.sourceRect = CGRectMake(GetAppController().rootView.bounds.size.width / 2, 0, 0, 0);
+               vc.popoverPresentationController.sourceView = GetAppController().rootView;
+           }
+   #endif
+
+    [UnityGetGLViewController() presentViewController: vc animated: YES completion: nil];
 }
-
-
-
-
 
 
 -(ISN_RPStopResult* ) StopResultWithPreviewViewController:(RPPreviewViewController *)previewViewController error:(NSError *)error {
@@ -112,9 +119,6 @@ static ISN_RPScreenRecorder * s_sharedInstance;
     
     return result;
 }
-
-
-
 
 @end
 
@@ -146,7 +150,6 @@ static ISN_RPScreenRecorder * s_sharedInstance;
 
 
 @end
-
 
 
 extern "C" {
@@ -204,9 +207,4 @@ extern "C" {
         [[RPScreenRecorder sharedRecorder] setMicrophoneEnabled:enabled];
 #endif
     }
-    
-   
-    
-    
-   
 }

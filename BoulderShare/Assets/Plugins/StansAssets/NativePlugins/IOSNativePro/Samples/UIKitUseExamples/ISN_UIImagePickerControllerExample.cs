@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,7 +53,7 @@ public class ISN_UIImagePickerControllerExample : MonoBehaviour {
         
         m_VideoCapture.onClick.AddListener(() =>
         {
-            StartPicker(ISN_UIImagePickerControllerSourceType.Camera, ISN_UIMediaType.MOVIE);
+            StartPicker(ISN_UIImagePickerControllerSourceType.Camera, ISN_UIMediaType.MOVIE, ISN_UIImagePickerControllerCameraDevice.Front);
         });
 
         m_VideoLibrary.onClick.AddListener(() =>
@@ -103,17 +103,18 @@ public class ISN_UIImagePickerControllerExample : MonoBehaviour {
                                      || !m_LastPickerResult.MediaType.Equals(ISN_UIMediaType.MOVIE));
     }
     
-    private void StartPicker(ISN_UIImagePickerControllerSourceType sourceType,  string mediaType)
+    private void StartPicker(ISN_UIImagePickerControllerSourceType sourceType,  string mediaType, ISN_UIImagePickerControllerCameraDevice cameraDevice = ISN_UIImagePickerControllerCameraDevice.Rear)
     {
         ISN_UIImagePickerController picker = new ISN_UIImagePickerController
         {
+            CameraDevice = cameraDevice,
             SourceType = sourceType,
             MediaTypes = new List<string>() {mediaType},
             MaxImageSize = 512,
             ImageCompressionFormat = ISN_UIImageCompressionFormat.JPEG,
             ImageCompressionRate = 0.8f
         };
-
+        
         picker.Present(DisplayResult);
     }
 

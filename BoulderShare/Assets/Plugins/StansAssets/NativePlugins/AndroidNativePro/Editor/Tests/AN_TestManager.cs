@@ -1,10 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using SA.Android.Vending.BillingClient;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-
-using SA.Android.Vending.Billing;
+using UnityEngine;
 
 namespace SA.Android.Utilities {
 
@@ -19,13 +16,10 @@ namespace SA.Android.Utilities {
 
 
         public static void ApplyExampleConfig() {
-
-
+            Debug.Log("AN_TestManager::ApplyExampleConfig");
             PlayerSettings.productName = "Android Native";
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.stansassets.androidnative.pro");
-            
             PlayerSettings.Android.keystorePass = "89Regila";
-
             PlayerSettings.Android.keyaliasName = "android native pro";
             PlayerSettings.Android.keyaliasPass = "89Regila";
 
@@ -37,40 +31,29 @@ namespace SA.Android.Utilities {
             settings.LogLevel.Error = true;
 
             settings.WTFLogging = true;
+            
+            //App APIs - Media Player
+            settings.MediaPlayer = true;
 
             //Making environment for Vending Test
             settings.Vending = true;
+            
+            //Licensing
             settings.Licensing = true;
-
-
             settings.RSAPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAonqY2kxgUKeAioN2tnMB2jtS1tBVwm0RHvsrFkDewHfzMGyBZvHsg9UN47H1MO6omXtNvsVuOnACV02MWIY16w7TPnttYTY7e2pULARafq7GwPuh9F7gLDdGluIoi/dJGjhaCTzvY6TpslI/FegJ/tDXVsNZh7urAxO1pWP4vrs412lANAjN8O6KF2dxF0VSThejyjzhyL0QWVtXtB6mJ9Ulsw16+0ndY4/Y4gL0BYSiJ4Qa+y7Ron6IXEGOnimixvGWasQQSKZHtEOLrh593ssp4a9PKMLQHWP7Pu2AYDmzhfR/ZkR1ZupKattjsviPnz5fTpsZ3oggSK+7IDBWQwIDAQAB";
-
+            
+            //InApps
+            settings.GooglePlayBilling = true;
             settings.InAppProducts.Clear();
             
-            var p0 = new AN_Product("android.test.purchased", AN_ProductType.inapp);
-            p0.Title = "Android Purchased";
-            p0.IsConsumable = false;
-            settings.InAppProducts.Add(p0);
+            settings.AddInAppProduct("androidnative.test.product.1", AN_BillingClient.SkuType.inapp);
+            settings.AddInAppProduct("androidnative.product.test.2", AN_BillingClient.SkuType.inapp);
+            settings.AddInAppProduct("android.test.purchased", AN_BillingClient.SkuType.inapp, true);
 
-            var p1 = new AN_Product("example.product.1", AN_ProductType.inapp);
-            p1.Title = "Example 1";
-            settings.InAppProducts.Add(p1);
-
-            var p2 = new AN_Product("example.product.2", AN_ProductType.inapp);
-            p2.Title = "Example 2";
-            settings.InAppProducts.Add(p2);
-            
-            var p3 = new AN_Product("android.test.item_unavailable", AN_ProductType.inapp);
-            p3.Title = "Android Unavailable";
-            p3.IsConsumable = false;
-            settings.InAppProducts.Add(p3);
-            
-            
-
+           
             //Application
             settings.LocalNotifications = true;
             settings.SkipPermissionsDialog = true;
-
 
             //Contacts
             settings.Contacts = true;
@@ -80,7 +63,6 @@ namespace SA.Android.Utilities {
 
             //CameraAndGallery
             settings.CameraAndGallery = true;
-
 
             //Google Play
             settings.GooglePlay = true;

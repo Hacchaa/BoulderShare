@@ -1,3 +1,5 @@
+#if !TARGET_OS_TV
+
 #import "ISN_CLCommunication.h"
 
 
@@ -6,13 +8,13 @@
 -(id) initWithCLLocationCoordinate2D:(CLLocationCoordinate2D ) location {
     self = [super init];
     if(self) {
-        self.m_latitude = location.latitude;
-        self.m_longitude = location.longitude;
+        self.m_Latitude = location.latitude;
+        self.m_Longitude = location.longitude;
     }
     return self;
 }
 -(CLLocationCoordinate2D) getCLLocationCoordinate2D {
-   return  CLLocationCoordinate2DMake(self.m_latitude, self.m_longitude);
+   return  CLLocationCoordinate2DMake(self.m_Latitude, self.m_Longitude);
 }
 
 @end
@@ -52,19 +54,31 @@
     self = [super init];
     if(self) {
 
-        self.m_coordinate = [[ISN_CLLocationCoordinate2D alloc] initWithCLLocationCoordinate2D:location.coordinate];
-        self.m_altitude = location.altitude;
+        self.m_Coordinate = [[ISN_CLLocationCoordinate2D alloc] initWithCLLocationCoordinate2D:location.coordinate];
+        self.m_Altitude = location.altitude;
         if(location.floor != NULL) {
-            self.m_floor = (int) location.floor.level;
+            self.m_Floor = (int) location.floor.level;
         } else {
-             self.m_floor  = -1;
+             self.m_Floor  = -1;
         }
-        
-        self.m_speed = location.speed;
-        self.m_course = location.course;
-        self.m_timestamp = [location.timestamp timeIntervalSince1970];
+
+        self.m_Speed = location.speed;
+        self.m_Course = location.course;
+        self.m_Timestamp = [location.timestamp timeIntervalSince1970];
+        self.m_HorizontalAccuracy = location.horizontalAccuracy;
+        self.m_VerticalAccuracy = location.verticalAccuracy;
     }
     return self;
+}
+
+- (CLLocation *) getCLLocation {
+    
+    NSDate* timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:self.m_Timestamp];
+    CLLocationCoordinate2D coordinate2D = [self.m_Coordinate getCLLocationCoordinate2D];
+    
+    CLLocation * result = [[CLLocation alloc] initWithCoordinate:coordinate2D altitude:self.m_Altitude horizontalAccuracy:self.m_HorizontalAccuracy verticalAccuracy:self.m_VerticalAccuracy timestamp:timestamp];
+    
+    return result;
 }
 
 @end
@@ -73,4 +87,4 @@
     -(id) init {return [super init]; }
 @end
 
-
+#endif

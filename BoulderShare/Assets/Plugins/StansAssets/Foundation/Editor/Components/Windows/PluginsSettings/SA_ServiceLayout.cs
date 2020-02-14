@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -280,13 +280,15 @@ namespace SA.Foundation.Editor
 
             DrawGettingStartedBlock();
 
-            OnServiceUI();
-
-
+            EditorGUI.BeginChangeCheck();
+            {
+                OnServiceUI();
+            }
+            if (EditorGUI.EndChangeCheck())
+                Resolver.ResetRequirementsCache();
+            
             DrawServiceRequirements();
             DrawSupportedPlatformsBlock();
-
-
         }
 
         protected virtual void DrawGettingStartedBlock() {

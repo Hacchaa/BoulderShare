@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Koretsky Konstantin (Stan's Assets) 
@@ -81,6 +81,7 @@ namespace SA.iOS.Foundation
 
         /// <summary>
         /// Sets an object for the specified key in the key-value store.
+        /// Set object serialized using <see cref="UnityEngine.JsonUtility"/>
         /// </summary>
         public static void SetObject(string key, object obj) {
             ISN_NSLib.API.SetString(key, UnityEngine.JsonUtility.ToJson(obj));

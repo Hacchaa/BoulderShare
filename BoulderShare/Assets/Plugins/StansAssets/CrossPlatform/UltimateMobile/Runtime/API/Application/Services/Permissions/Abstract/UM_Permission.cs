@@ -30,14 +30,7 @@ namespace SA.CrossPlatform.App
                             }
                         }
 
-                        if (granted)
-                        {
-                            return AuthorizationStatus.Granted;
-                        }
-                        else
-                        {
-                            return AuthorizationStatus.Denied;
-                        }
+                        return granted ? AuthorizationStatus.Granted : AuthorizationStatus.Denied;
                         
                     case RuntimePlatform.IPhonePlayer:
                         return IOSAuthorization;

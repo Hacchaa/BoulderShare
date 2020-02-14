@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace SA.CrossPlatform.InApp
 {
@@ -11,7 +11,8 @@ namespace SA.CrossPlatform.InApp
         public const string TEST_ITEM_PURCHASED = "android.test.purchased";
         public const string TEST_ITEM_UNAVAILABLE = "android.test.item_unavailable";
         
-        private static UM_iInAppClient m_client = null;
+        private static UM_iInAppClient s_Client;
+        private static UM_AndroidInAppUtilities s_AndroidInAppUtilities;
 
         /// <summary>
         /// Returns a new instance of <see cref="UM_iInAppClient"/>
@@ -19,21 +20,35 @@ namespace SA.CrossPlatform.InApp
         public static UM_iInAppClient Client {
             get {
 
-                if(m_client == null) {
+                if(s_Client == null) {
                     switch(Application.platform) {
                         case RuntimePlatform.Android:
-                            m_client = new UM_AndroidInAppClient();
+                            s_Client = new UM_AndroidInAppClient();
                             break;
                         case RuntimePlatform.IPhonePlayer:
-                            m_client = new UM_IOSInAppClient();
+                            s_Client = new UM_IOSInAppClient();
                             break;
                         default:
-                            m_client = new UM_EditorInAppClient();
+                            s_Client = new UM_EditorInAppClient();
                             break;
                     }
                 }
 
-                return m_client;
+                return s_Client;
+            }
+        }
+
+        /// <summary>
+        /// Utilities collection for the Android platform
+        /// </summary>
+        public static UM_AndroidInAppUtilities AndroidUtilities
+        {
+            get
+            {
+                if (s_AndroidInAppUtilities == null)
+                    s_AndroidInAppUtilities = new UM_AndroidInAppUtilities();
+
+                return s_AndroidInAppUtilities;
             }
         }
     }

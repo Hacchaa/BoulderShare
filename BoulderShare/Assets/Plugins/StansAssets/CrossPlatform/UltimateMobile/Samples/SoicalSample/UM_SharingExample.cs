@@ -1,4 +1,4 @@
-﻿using SA.CrossPlatform.Social;
+using SA.CrossPlatform.Social;
 using SA.CrossPlatform.UI;
 using SA.Foundation.Templates;
 using SA.Foundation.Utility;

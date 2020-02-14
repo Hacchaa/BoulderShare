@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using SA.CrossPlatform.UI;
 using UnityEngine.TestTools;
 

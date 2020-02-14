@@ -1,4 +1,6 @@
-﻿using SA.CrossPlatform.App;
+using SA.CrossPlatform.App;
+using SA.iOS.Foundation;
+using SA.iOS.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +13,7 @@ public class UM_BuildInfoExample : MonoBehaviour
     {
         PrintBuildInfo();
         PrintLocaleInfo();
+        PrintTimezoneInfo();
         
         UM_iBuildInfo buildInfo = UM_Build.Info;
 
@@ -40,5 +43,25 @@ public class UM_BuildInfoExample : MonoBehaviour
             currentLocale.LanguageCode,
             currentLocale.CurrencyCode,
             currentLocale.CurrencySymbol);
+    }
+
+    private void PrintTimezoneInfo()
+    {
+        var zone = ISN_NSTimeZone.LocalTimeZone;
+        ISN_Logger.Log("LocalTimeZone.Name: " + zone.Name);
+        ISN_Logger.Log("LocalTimeZone.Description: " + zone.Description);
+        ISN_Logger.Log("LocalTimeZone.SecondsFromGMT: " + zone.SecondsFromGMT);
+
+
+        zone = ISN_NSTimeZone.DefaultTimeZone;
+        ISN_Logger.Log("DefaultTimeZone.Name: " + zone.Name);
+        ISN_Logger.Log("DefaultTimeZone.Description: " + zone.Description);
+        ISN_Logger.Log("DefaultTimeZone.SecondsFromGMT: " + zone.SecondsFromGMT);
+
+
+        zone = ISN_NSTimeZone.SystemTimeZone;
+        ISN_Logger.Log("SystemTimeZone.Name: " + zone.Name);
+        ISN_Logger.Log("SystemTimeZone.Description: " + zone.Description);
+        ISN_Logger.Log("SystemTimeZone.SecondsFromGMT: " + zone.SecondsFromGMT);
     }
 }

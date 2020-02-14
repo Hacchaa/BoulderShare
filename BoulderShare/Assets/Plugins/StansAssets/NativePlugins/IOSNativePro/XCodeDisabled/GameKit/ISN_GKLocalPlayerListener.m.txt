@@ -18,7 +18,7 @@
     ISN_GKSavedGameSaveResult *result = [[ISN_GKSavedGameSaveResult alloc] initWithGKSavedGameData:game];
     [[ISN_GKLocalPlayerManager sharedInstance] cacheSavedGame:savedGame withId:uniqueId];
     
-    ISN_SendMessage(UNITY_GK_LISTENER, "DidModifySavedGameEvent", [result toJSONString]);
+    ISN_SendCallbackToUnity([self didModifySavedGameCallback], [result toJSONString]);
 }
 
 // Called when a conflict has arisen between different versions of the same saved game. This can happen when multiple devices write to the same saved game while one or more is offline. The application should determine the correct data to use, then call resolveConflictingSavedGames:withData:completionHandler:. This may require data merging or asking the user.
@@ -35,7 +35,7 @@
     }
     
     ISN_GKSavedGameFetchResult *result = [[ISN_GKSavedGameFetchResult alloc] initWithSKSavedGamesArray:savedGamesArray];
-    ISN_SendMessage(UNITY_GK_LISTENER, "HasConflictingSavedGamesEvent", [result toJSONString]);
+    ISN_SendCallbackToUnity([self hasConflictingSavedGamesCallback], [result toJSONString]);
 }
 #endif
 

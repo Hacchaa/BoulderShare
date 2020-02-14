@@ -7,22 +7,15 @@
 @property (nonatomic, readonly) NSString *localizedPrice;
 @end
 
-
 @interface SKProductDiscount (LocalizedPrice)
 @property (nonatomic, readonly) NSString *localizedPrice;
 @end
 
-
-
-
 @interface ISN_SKProductSubscriptionPeriod : JSONModel
-
 //Getting Subscription Period Details
 @property (nonatomic) NSUInteger m_numberOfUnits;
 @property (nonatomic) SKProductPeriodUnit m_unit;
-
 @end
-
 
 
 @interface ISN_SKProductDiscount : JSONModel
@@ -62,7 +55,6 @@
 @property (nonatomic) NSString *m_localizedPrice;
 @end
 
-
 @interface ISN_SKPaymentTransaction : SA_Result
 -(id) initWithSKPaymentTransaction:(SKPaymentTransaction *) transaction;
 
@@ -72,20 +64,8 @@
 
 @property (nonatomic) NSString *m_transactionIdentifier;
 @property (nonatomic) SKPaymentTransactionState m_state;
-@property (nonatomic) long m_unitxDate;
+@property (nonatomic) long m_unixDate;
 @end
-
-
-
-/*
-
- // Only valid if state is SKPaymentTransactionStateRestored.
- @property(nonatomic, readonly, nullable) SKPaymentTransaction *originalTransaction NS_AVAILABLE_IOS(3_0);
-
-*/
-
-
-
 
 @interface SA_PluginSettingsWindowStylesitResult : SA_Result
 @property (nonatomic)  NSArray <ISN_SKProduct> *m_products;
@@ -94,21 +74,24 @@
 -(id) initWithSKProductsRespons:(SKProductsResponse*) response;
 @end
 
-
-
 @interface SA_PluginSettingsWindowStylesitRequest : JSONModel
 @property (nonatomic) NSArray <NSString *> *ProductIdentifiers;
 @end
 
+@protocol ISN_SKStorefront;
+@interface ISN_SKStorefront : JSONModel
+@property (nonatomic) NSString *m_CountryCode;
+@property (nonatomic) NSString *m_Identifier;
+-(id) initWithSKStorefront:(SKStorefront*) storefront API_AVAILABLE(ios(13.0));
+@end
 
 
-
-
-
-
-
-
-
+@protocol ISN_SKStorefrontChageEvent;
+@interface ISN_SKStorefrontChageEvent : JSONModel
+@property (nonatomic) ISN_SKStorefront *m_Storefront;
+@property (nonatomic) ISN_SKPaymentTransaction *m_Transaction;
+-(id) initWithSKModels:(SKStorefront*) storefront transaction: (SKPaymentTransaction*) transaction API_AVAILABLE(ios(13.0));
+@end
 
 
 

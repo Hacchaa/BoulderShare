@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 #if AN_FIREBASE_MESSAGING && (UNITY_IOS || UNITY_ANDROID)

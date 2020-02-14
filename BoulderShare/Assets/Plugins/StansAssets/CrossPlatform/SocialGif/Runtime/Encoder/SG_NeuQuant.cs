@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * Copyright (c) 1994 Anthony Dekker
  * Ported to Java by Kevin Weiner, FM Software
  *

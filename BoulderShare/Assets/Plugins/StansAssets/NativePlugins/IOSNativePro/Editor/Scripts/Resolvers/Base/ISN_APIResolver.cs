@@ -1,35 +1,24 @@
-﻿using System.Collections;
-using System.IO;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-
 using SA.Foundation.Editor;
-using SA.Foundation.Utility;
 using SA.Foundation.UtilitiesEditor;
-
 using SA.iOS.XCode;
-
 
 namespace SA.iOS
 {
     public abstract class ISN_APIResolver : SA_iAPIResolver
     {
-        private ISN_XcodeRequirements m_requirements;
-
-
+        private ISN_XcodeRequirements m_Requirements;
+        
         //--------------------------------------
         // Virtual
         //--------------------------------------
 
         public virtual void RunAdditionalPreprocess() {}
-
-
+        
         //--------------------------------------
         // Abstract
         //--------------------------------------
-
-
+        
         protected abstract string LibFolder { get; }
         public abstract string DefineName { get; }
 
@@ -37,17 +26,21 @@ namespace SA.iOS
         //Resolvers can be refreshed from the editor, and GenerateRequirements will be triggered again
         //Those requirement will apply / remove only on build stage 
         protected abstract ISN_XcodeRequirements GenerateRequirements();
-
-
         public abstract bool IsSettingsEnabled { get; set; }
+       
+        public void ResetRequirementsCache()
+        {
+            m_Requirements = null;
+        }
+
         public ISN_XcodeRequirements XcodeRequirements {
              get {
                
-                if(m_requirements == null) {
-                    m_requirements = GenerateRequirements();
+                if(m_Requirements == null) {
+                    m_Requirements = GenerateRequirements();
                 }
 
-                return m_requirements;
+                return m_Requirements;
              }
         }
 
@@ -180,16 +173,13 @@ namespace SA.iOS
         }
 
        
-        private void ChangeDefines(bool IsEnabled) {
-
-            if(IsEnabled) {
-                SA_EditorDefines.AddCompileDefine(DefineName, BuildTarget.iOS);
-            } else {
-                SA_EditorDefines.RemoveCompileDefine(DefineName, BuildTarget.iOS);
-            }
-           
+        private void ChangeDefines(bool IsEnabled) 
+        {
+            if(IsEnabled) 
+                SA_EditorDefines.AddCompileDefine(DefineName, BuildTarget.iOS, BuildTarget.tvOS, BuildTarget.StandaloneOSX);
+            else 
+                SA_EditorDefines.RemoveCompileDefine(DefineName, BuildTarget.iOS, BuildTarget.tvOS, BuildTarget.StandaloneOSX);
+            
         }
-
-
     }
 }

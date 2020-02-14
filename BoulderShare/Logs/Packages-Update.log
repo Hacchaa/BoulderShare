@@ -20,3 +20,12 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.package-manager-ui from version 2.0.3 to 2.0.7
+
+=== Fri Feb 14 18:32:07 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.burst from version 1.0.4 to 1.1.2
+  com.unity.package-manager-ui from version 2.0.7 to 2.0.8

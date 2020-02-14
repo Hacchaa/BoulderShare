@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using SA.Foundation.Editor;
+using SA.iOS.Editor;
 
 namespace SA.iOS
 {
@@ -49,6 +48,30 @@ namespace SA.iOS
                     if (pressed) {
                         ISN_Preprocessor.DropToDefault();
                     }
+                }
+            }
+
+            using (new SA_WindowBlockWithSpace("Export/import settings"))
+            {
+                EditorGUILayout.HelpBox("Export settings to file.", MessageType.Info);
+                var pressed = GUILayout.Button("Export settings");
+                if (pressed)
+                {
+                    string path = EditorUtility.SaveFilePanel("Save settings as JSON",
+                    "",
+                    "ISN_Settings",
+                    "isn_settings");
+                    ISN_SettingsManager.Export(path);
+                }
+
+                EditorGUILayout.HelpBox("Import settings from file.", MessageType.Info);
+                pressed = GUILayout.Button("Import settings");
+                if (pressed)
+                {
+                    string path = EditorUtility.OpenFilePanel("Import settings from json",
+                        "",
+                        "isn_settings");
+                    ISN_SettingsManager.Import(path);
                 }
             }
         }

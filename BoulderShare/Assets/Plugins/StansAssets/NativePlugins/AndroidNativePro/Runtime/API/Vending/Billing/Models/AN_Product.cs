@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+using SA.Android.Vending.BillingClient;
 using UnityEngine;
 
 using SA.Foundation.Utility;
@@ -11,6 +11,7 @@ namespace SA.Android.Vending.Billing
     /// An object to define Google Play in-app product.
     /// </summary>
     [Serializable]
+    [Obsolete("Use AN_BillingClient API instead")]
     public class AN_Product
     {
 
@@ -28,12 +29,12 @@ namespace SA.Android.Vending.Billing
         [SerializeField] string m_originalJson = string.Empty;
 
 
-        [SerializeField] String m_subscriptionPeriod = string.Empty;
-        [SerializeField] String m_freeTrialPeriod = string.Empty;
-        [SerializeField] String m_introductoryPrice = string.Empty;
-        [SerializeField] String m_introductoryPriceAmountMicros = string.Empty;
-        [SerializeField] String m_introductoryPricePeriod = string.Empty;
-        [SerializeField] String m_introductoryPriceCycles = string.Empty;
+        [SerializeField] string m_subscriptionPeriod = string.Empty;
+        [SerializeField] string m_freeTrialPeriod = string.Empty;
+        [SerializeField] string m_introductoryPrice = string.Empty;
+        [SerializeField] string m_introductoryPriceAmountMicros = string.Empty;
+        [SerializeField] string m_introductoryPricePeriod = string.Empty;
+        [SerializeField] string m_introductoryPriceCycles = string.Empty;
 
         [SerializeField] Texture2D m_icon;
         [SerializeField] bool m_isConsumable = true;
@@ -41,6 +42,25 @@ namespace SA.Android.Vending.Billing
         private bool m_isValid = false;
 
 
+        public AN_Product(AN_SkuDetails skuDetails)
+        {
+            m_productId = skuDetails.Sku;
+            m_price = skuDetails.Price;
+            m_type = skuDetails.Type.ToString();
+            m_description = skuDetails.Description;
+            m_priceAmountMicros = skuDetails.PriceAmountMicros.ToString();
+            m_priceCurrencyCode = skuDetails.PriceCurrencyCode;
+            m_originalJson = skuDetails.OriginalJson;
+            m_subscriptionPeriod = skuDetails.SubscriptionPeriod;
+            m_freeTrialPeriod = skuDetails.FreeTrialPeriod;
+            m_introductoryPrice = skuDetails.IntroductoryPrice;
+            m_introductoryPriceAmountMicros = skuDetails.IntroductoryPriceAmountMicros.ToString();
+            m_introductoryPricePeriod = skuDetails.IntroductoryPricePeriod;
+            m_introductoryPriceCycles = skuDetails.IntroductoryPriceCycles;
+            m_isConsumable = skuDetails.IsConsumable;
+
+        }
+        
         public AN_Product(string productId, AN_ProductType type) {
             m_productId = productId;
             m_type = type.ToString();

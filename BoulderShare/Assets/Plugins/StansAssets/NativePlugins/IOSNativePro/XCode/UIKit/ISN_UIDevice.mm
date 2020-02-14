@@ -2,8 +2,6 @@
 #import <UIKit/UIKit.h>
 #import "ISN_Foundation.h"
 
-
-
 @interface ISN_UIDevice : JSONModel
 @property (nonatomic) NSString *m_name;
 @property (nonatomic) NSString *m_systemName;
@@ -47,13 +45,9 @@
         }
        
     }
-    
     return self;
 }
 @end
-
-
-
 
 
 extern "C" {
@@ -65,8 +59,6 @@ extern "C" {
         strcpy(res, string);
         return res;
     }
-
-  
 }
 
     

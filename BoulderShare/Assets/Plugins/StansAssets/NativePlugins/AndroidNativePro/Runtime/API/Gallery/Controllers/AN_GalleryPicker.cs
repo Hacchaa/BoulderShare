@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SA.Android.App;
 using SA.Android.Gallery.Internal;

@@ -1,4 +1,4 @@
-﻿
+
 namespace SA.iOS.StoreKit.Internal
 {
 

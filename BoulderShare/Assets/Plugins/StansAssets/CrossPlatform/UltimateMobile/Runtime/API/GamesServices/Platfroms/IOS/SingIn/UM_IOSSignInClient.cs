@@ -1,37 +1,52 @@
-﻿using System;
-using UnityEngine;
-
+using System;
 using SA.Foundation.Templates;
-
 using SA.iOS.GameKit;
 
 namespace SA.CrossPlatform.GameServices
 {
     internal class UM_IOSSignInClient : UM_AbstractSignInClient, UM_iSignInClient
     {
+        private bool m_Subscribed;
+        private Action<SA_Result> m_SingInCallback;
+        
+        protected override void StartSingInFlow(Action<SA_Result> callback) 
+        {
+            if(m_Subscribed)
+                return;
 
-
-        protected override void StartSingInFlow(Action<SA_Result> callback) {
-            ISN_GKLocalPlayer.Authenticate((SA_Result result) => {
-                if (result.IsSucceeded) {
-                    ISN_GKLocalPlayer player = ISN_GKLocalPlayer.LocalPlayer;
-                    UpdatePlayerInfo(player);
-                } 
-
-                callback.Invoke(result);
-            });
+            m_Subscribed = true;
+            m_SingInCallback = callback;
+            ISN_GKLocalPlayer.setAuthenticateHandler(HandleAuthentication);
         }
 
-        public void SingOut(Action<SA_Result> callback) {
-            //We will jus do nothingt for iOS
+        private void HandleAuthentication(SA_Result result)
+        {
+            if (m_SingInCallback != null)
+            {
+                m_SingInCallback.Invoke(result);
+                m_SingInCallback = null;
+            }
+
+            if (result.IsSucceeded)
+                UpdatePlayerInfo(ISN_GKLocalPlayer.LocalPlayer);
+            else
+                UpdatePlayerInfo(null);
         }
 
+        public void SingOut(Action<SA_Result> callback) 
+        {
+            //We will jus do nothing for iOS
+        }
 
-
-        private void UpdatePlayerInfo(ISN_GKLocalPlayer player) {
-            var localPlayer = new UM_IOSPlayer(player);
-            var playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedIn, localPlayer);
-            UpdateSignedPlater(playerInfo);
+        private void UpdatePlayerInfo(ISN_GKLocalPlayer player)
+        {
+            UM_PlayerInfo playerInfo;
+            if (player != null)
+                playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedIn, new UM_IOSPlayer(player));
+            else
+               playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedOut, null);
+            
+            UpdateSignedPlayer(playerInfo);
         }
     }
 }

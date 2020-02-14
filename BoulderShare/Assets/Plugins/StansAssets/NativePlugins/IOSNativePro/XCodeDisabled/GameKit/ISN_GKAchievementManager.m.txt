@@ -19,7 +19,7 @@ static ISN_GKAchievementManager * s_sharedInstance;
 }
 
 
--(void) reportAchievements:(NSString *) requestId withAchievementsArray:(NSArray<ISN_GKAchievement> *) achievementsArray {
+-(void) reportAchievements:(UnityAction) callback withAchievementsArray:(NSArray<ISN_GKAchievement> *) achievementsArray {
     
     NSMutableArray<GKAchievement*> *reportAchievementsList =  [[NSMutableArray<GKAchievement*> alloc] init];
     
@@ -27,8 +27,6 @@ static ISN_GKAchievementManager * s_sharedInstance;
       
         GKAchievement* achieve = [[GKAchievement alloc] initWithIdentifier:achievement.m_identifier];
         achieve.percentComplete = achievement.m_percentComplete;
-       
-        
         if(achieve.percentComplete >= 100.0) {
             achieve.percentComplete = 100.0;
             achieve.showsCompletionBanner = true;
@@ -44,13 +42,12 @@ static ISN_GKAchievementManager * s_sharedInstance;
         } else {
             result = [[SA_Result alloc] initWithNSError:error];
         }
-        [result setRequestId:requestId];
         
-        ISN_SendMessage(UNITY_GK_LISTENER, "onAchievementProgressChangedResponse", [result toJSONString]);
+        ISN_SendCallbackToUnity(callback, [result toJSONString]);
     }];
 }
 
-- (void) loadAchievements:(NSString *) requestId {
+- (void) loadAchievements:(UnityAction) callback {
      [GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements, NSError *error) {
          ISN_GKAchievementsResult *result;
          if (error == nil) {
@@ -64,13 +61,12 @@ static ISN_GKAchievementManager * s_sharedInstance;
          } else {
              result = [[ISN_GKAchievementsResult alloc] initWithNSError:error];
          }
-         [result setRequestId:requestId];
          
-         ISN_SendMessage(UNITY_GK_LISTENER, "onAchievementsLoadedResponse", [result toJSONString]);
+         ISN_SendCallbackToUnity(callback, [result toJSONString]);
      }];
  }
 
--(void) resetAchievements:(NSString *) requestId {
+-(void) resetAchievements:(UnityAction) callback {
      [GKAchievement resetAchievementsWithCompletionHandler: ^(NSError *error)  { 
          SA_Result *result;
          if (error == nil) {
@@ -78,9 +74,8 @@ static ISN_GKAchievementManager * s_sharedInstance;
          } else {
              result = [[SA_Result alloc] initWithNSError:error];
          }
-         [result setRequestId:requestId];
          
-         ISN_SendMessage(UNITY_GK_LISTENER, "onAchievementsResetResponse", [result toJSONString]);
+         ISN_SendCallbackToUnity(callback, [result toJSONString]);
      }];
 }
 
@@ -90,20 +85,18 @@ static ISN_GKAchievementManager * s_sharedInstance;
 extern "C" {
 #endif
     
-    void _ISN_GKAchievement_LoadAchievements(char* requestId) {
-        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_loadAchievements" data:requestId];
-        
-        [[ISN_GKAchievementManager sharedInstance] loadAchievements:ISN_ConvertToString(requestId)];
+    void _ISN_GKAchievement_LoadAchievements(UnityAction callbackd) {
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_loadAchievements" data:""];
+        [[ISN_GKAchievementManager sharedInstance] loadAchievements:callbackd];
     }
     
-    void _ISN_GKAchievement_ResetAchievements(char* requestId) {
-        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_resetAchievements" data:requestId];
-        
-        [[ISN_GKAchievementManager sharedInstance] resetAchievements:ISN_ConvertToString(requestId)];
+    void _ISN_GKAchievement_ResetAchievements(UnityAction callbackd) {
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_resetAchievements" data:""];
+        [[ISN_GKAchievementManager sharedInstance] resetAchievements:callbackd];
     }
     
-    void _ISN_GKAchievement_ReportAchievements(char* requestId, char* contentJSON) {
-        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_submitAchievements" data:ISN_ConvertToChar([NSString stringWithFormat:@"requestId: %s contentJSON: %s", requestId, contentJSON])];
+    void _ISN_GKAchievement_ReportAchievements(char* contentJSON, UnityAction callbackd) {
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_GKAchievement_submitAchievements" data:ISN_ConvertToChar([NSString stringWithFormat:@"contentJSON: %s", contentJSON])];
         
         NSError *jsonError;
         ISN_GKAchievementsResult *requestData = [[ISN_GKAchievementsResult alloc] initWithChar:contentJSON error:&jsonError];
@@ -111,7 +104,7 @@ extern "C" {
             [ISN_Logger LogError:@"ISN_GKAchievementSubmitRequest JSON parsing error: %@", jsonError.description];
         }
         
-        [[ISN_GKAchievementManager sharedInstance] reportAchievements:ISN_ConvertToString(requestId) withAchievementsArray:requestData.m_achievements];
+        [[ISN_GKAchievementManager sharedInstance] reportAchievements:callbackd withAchievementsArray:requestData.m_achievements];
     }
     
 #if __cplusplus

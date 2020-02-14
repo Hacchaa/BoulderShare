@@ -3,9 +3,9 @@
 #import "ISN_Foundation.h"
 #import "ISN_GKCommunication.h"
 
-//viwe close callback
+//view close callback
 static UnityAction s_callback;
-static GKGameCenterViewController* leaderboardsView;
+static GKGameCenterViewController* gameCenterViewController;
 
 
 @interface INS_GKGameCenterControllerDelegate : NSObject<GKGameCenterControllerDelegate>
@@ -14,6 +14,7 @@ static GKGameCenterViewController* leaderboardsView;
 @implementation INS_GKGameCenterControllerDelegate
 
 -(void)gameCenterViewControllerDidFinish:(GKGameCenterViewController *)gameCenterViewController {
+   
     [gameCenterViewController dismissViewControllerAnimated:YES completion:nil];
     SA_Result* result = [[SA_Result alloc] init];
     ISN_SendCallbackToUnity(s_callback, [result toJSONString]);
@@ -41,33 +42,35 @@ static ISN_GKGameCenterViewController * s_sharedInstance;
 
 - (void) present:(ISN_GKGameCenterViewControllerShowResult *) request {
     UIViewController *vc =  UnityGetGLViewController();
-    leaderboardsView     = [[GKGameCenterViewController alloc] init];
-    self.m_viewDelegate  = [[INS_GKGameCenterControllerDelegate alloc] init];
-    leaderboardsView.gameCenterDelegate = self.m_viewDelegate;
     
-      #if !TARGET_OS_TV
+    if(gameCenterViewController == nil) {
+        gameCenterViewController  = [[GKGameCenterViewController alloc] init];
+        self.m_viewDelegate  = [[INS_GKGameCenterControllerDelegate alloc] init];
+        gameCenterViewController.gameCenterDelegate = self.m_viewDelegate;
+    }
+   
+    #if !TARGET_OS_TV
     switch (request.m_viewState) {
         case -1:
-             leaderboardsView.viewState = GKGameCenterViewControllerStateDefault;
+             gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
              break;
         case 0:
-            leaderboardsView.leaderboardIdentifier  = request.m_leaderboardIdentifier;
-            leaderboardsView.leaderboardTimeScope   = request.m_leaderboardTimeScope;
-            leaderboardsView.viewState = GKGameCenterViewControllerStateLeaderboards;
+            gameCenterViewController.leaderboardIdentifier  = request.m_leaderboardIdentifier;
+            gameCenterViewController.leaderboardTimeScope   = request.m_leaderboardTimeScope;
+            gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
             break;
         case 1:
-            leaderboardsView.viewState = GKGameCenterViewControllerStateAchievements;
+            gameCenterViewController.viewState = GKGameCenterViewControllerStateAchievements;
             break;
         case 2:
-            leaderboardsView.viewState = GKGameCenterViewControllerStateChallenges;
+            gameCenterViewController.viewState = GKGameCenterViewControllerStateChallenges;
             break;
-            
         default:
             break;
     }
     #endif
     
-    [vc presentViewController: leaderboardsView animated: YES completion:nil];
+    [vc presentViewController: gameCenterViewController animated: YES completion:nil];
 }
 
 @end

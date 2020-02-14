@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace SA.Android.Utilities
 {
@@ -15,7 +15,6 @@ namespace SA.Android.Utilities
             if(s_nativeLogger == null) {
                 InitNativeLogger();
             }
-           
         }
 
         private static void InitNativeLogger() {

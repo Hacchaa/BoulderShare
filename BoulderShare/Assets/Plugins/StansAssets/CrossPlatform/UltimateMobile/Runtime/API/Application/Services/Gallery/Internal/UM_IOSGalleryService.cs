@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
+using System;
 using UnityEngine;
 
 using SA.Foundation.Templates;
 using SA.iOS.UIKit;
-using SA.iOS.AVFoundation;
-using System.IO;
 
 namespace SA.CrossPlatform.App
 {
@@ -21,8 +17,7 @@ namespace SA.CrossPlatform.App
         {
             UM_IOSCameraService.CaptureMedia(thumbnailSize, UM_MediaType.Video, ISN_UIImagePickerControllerSourceType.Album, callback);
         }
-
-       
+        
         public override void SaveImage(Texture2D image, string fileName, Action<SA_Result> callback) 
         {
             ISN_UIImagePickerController.SaveTextureToCameraRoll(image, callback);

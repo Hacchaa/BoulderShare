@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SA.Android.App;
 using SA.Foundation.Templates;
 using SA.Android.Manifest;
@@ -11,12 +11,12 @@ namespace SA.CrossPlatform.Notifications
         public UM_AndroidNotificationsClient() {
             AN_NotificationManager.OnNotificationClick.AddSafeListener(this, (android_request) => {
                 var request = ToUMRequest(android_request);
-                m_onNotificationClick.Invoke(request);
+                m_OnNotificationClick.Invoke(request);
             });
 
             AN_NotificationManager.OnNotificationReceived.AddSafeListener(this, (android_request) => {
                 var request = ToUMRequest(android_request);
-                m_onNotificationReceived.Invoke(request);
+                m_OnNotificationReceived.Invoke(request);
             });
         }
 
@@ -61,11 +61,13 @@ namespace SA.CrossPlatform.Notifications
         }
 
         protected override void AddNotificationRequestInternal(UM_NotificationRequest request, Action<SA_Result> callback) {
-
-            try {
+            try 
+            {
                 var builder = new AN_NotificationCompat.Builder();
                 builder.SetContentTitle(request.Content.Title);
                 builder.SetContentText(request.Content.Body);
+                if (request.Content.BadgeNumber != -1)
+                    builder.SetNumber(request.Content.BadgeNumber);
 
                 if (string.IsNullOrEmpty(request.Content.SoundName)) {
                     builder.SetDefaults(AN_Notification.DEFAULT_LIGHTS | AN_Notification.DEFAULT_SOUND);

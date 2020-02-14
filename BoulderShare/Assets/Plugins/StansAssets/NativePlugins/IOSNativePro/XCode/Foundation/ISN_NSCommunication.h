@@ -40,6 +40,9 @@
 @property (nonatomic) long Year;
 @property (nonatomic) long Month;
 @property (nonatomic) long Day;
+@property (nonatomic) long Weekday;
+
+
 
 -(id) initWithNSDateComponents:(NSDateComponents *) date;
 -(NSDateComponents *) getNSDateComponents;
@@ -74,4 +77,16 @@
 
 
 -(id) initWithNSLocale:(NSLocale *) locale;
+@end
+
+
+@interface ISN_NSPersonNameComponents : JSONModel
+@property (nonatomic) NSString *m_NamePrefix;
+@property (nonatomic) NSString *m_GivenName;
+@property (nonatomic) NSString *m_MiddleName;
+@property (nonatomic) NSString *m_FamilyName;
+@property (nonatomic) NSString *m_NameSuffix;
+@property (nonatomic) NSString *m_Nickname;
+
+-(id) initWithData:(NSPersonNameComponents *) date;
 @end

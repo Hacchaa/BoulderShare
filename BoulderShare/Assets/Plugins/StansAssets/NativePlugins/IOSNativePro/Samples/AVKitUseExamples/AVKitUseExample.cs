@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native Plugin
 // @author Osipov Stanislav (Stan's Assets) 
@@ -40,7 +40,7 @@ namespace SA.iOS.Examples
 
                 viewController.ShowsPlaybackControls = true;
                 viewController.AllowsPictureInPicturePlayback = false;
-				viewController.ShoudCloseWhenFinished = false;
+				viewController.ShouldCloseWhenFinished = false;
 
                 viewController.Show();
               

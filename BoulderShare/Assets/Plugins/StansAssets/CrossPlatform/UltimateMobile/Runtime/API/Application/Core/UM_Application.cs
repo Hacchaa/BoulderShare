@@ -1,4 +1,4 @@
-﻿using SA.Android.App;
+using SA.Android.App;
 using SA.iOS.UIKit;
 using UnityEngine;
 
@@ -10,15 +10,17 @@ namespace SA.CrossPlatform.App
     /// </summary>
     public static class UM_Application 
     {
-
         /// <summary>
         /// Returns a shared instance of <see cref="UM_iGalleryService"/>
         /// </summary>
-        private static UM_iGalleryService m_galleryService = null;
-        public static UM_iGalleryService GalleryService {
+        private static UM_iGalleryService m_galleryService;
+        public static UM_iGalleryService GalleryService 
+        {
             get {
-                if(m_galleryService == null) {
-                    switch (Application.platform) {
+                if(m_galleryService == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
                             m_galleryService = new UM_AndroidGalleryService();
                             break;
@@ -34,15 +36,17 @@ namespace SA.CrossPlatform.App
             }
         }
 
-
         /// <summary>
         /// Returns a shared instance of <see cref="UM_iCameraService"/>
         /// </summary>
         private static UM_iCameraService m_cameraService;
-        public static UM_iCameraService CameraService {
+        public static UM_iCameraService CameraService 
+        {
             get {
-                if (m_cameraService == null) {
-                    switch (Application.platform) {
+                if (m_cameraService == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
                             m_cameraService = new UM_AndroidCameraService();
                             break;
@@ -58,15 +62,17 @@ namespace SA.CrossPlatform.App
             }
         }
 
-
         /// <summary>
         /// Returns a shared instance of <see cref="UM_iContactsService"/>
         /// </summary>
         private static UM_iContactsService m_contactsService;
-        public static UM_iContactsService ContactsService {
+        public static UM_iContactsService ContactsService 
+        {
             get {
-                if (m_contactsService == null) {
-                    switch (Application.platform) {
+                if (m_contactsService == null) 
+                {
+                    switch (Application.platform) 
+                    {
                         case RuntimePlatform.Android:
                             m_contactsService = new UM_AndroidContactsService();
                             break;
@@ -81,15 +87,15 @@ namespace SA.CrossPlatform.App
                 return m_contactsService;
             }
         }
-
-
+        
         /// <summary>
         /// Will send an application to background.
         /// The method can be used to emulate pressing a Home button.
         /// </summary>
         public static void SendToBackground()
         {
-            switch (Application.platform) {
+            switch (Application.platform) 
+            {
                 case RuntimePlatform.Android:
                     AN_MainActivity.Instance.MoveTaskToBack(true);
                     break;
@@ -98,7 +104,5 @@ namespace SA.CrossPlatform.App
                     break;
             }
         }
-
     }
-
 }

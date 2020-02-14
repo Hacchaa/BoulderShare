@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //  
 // @module IOS Native 2018 - New Generation
 // @author Stan's Assets team 
@@ -17,7 +17,7 @@ namespace SA.iOS.StoreKit.Internal
 		
         void LoadStore (ISN_SKLib.SA_PluginSettingsWindowStylesitRequest request , Action<ISN_SKInitResult> callback);
         void AddPayment(string productIdentifier);
-        void FinishTransaction (ISN_SKPaymentTransaction transaction);
+        void FinishTransaction (ISN_iSKPaymentTransaction transaction);
         void RestoreCompletedTransactions ();
         void SetTransactionObserverState(bool enabled);
 
@@ -26,16 +26,18 @@ namespace SA.iOS.StoreKit.Internal
         ISN_SKAppStoreReceipt RetrieveAppStoreReceipt();
         void RefreshRequest(ISN_SKReceiptDictionary dictionary, Action<SA_Result> callback);
         void StoreRequestReview();
-
-        SA_iEvent<ISN_SKPaymentTransaction> TransactionUpdated { get; }
-        SA_iEvent<ISN_SKPaymentTransaction> TransactionRemoved { get; }
+        ISN_SKStorefront PaymentQueue_Storefront();
+        
+        SA_iEvent<ISN_iSKPaymentTransaction> TransactionUpdated { get; }
+        SA_iEvent<ISN_iSKPaymentTransaction> TransactionRemoved { get; }
         SA_iEvent<ISN_SKProduct> ShouldAddStorePayment { get; }
         SA_iEvent<SA_Result> RestoreTransactionsComplete { get; }
+        SA_iEvent DidChangeStorefront { get; }
 
 
 
 
 
 
-	}
+    }
 }

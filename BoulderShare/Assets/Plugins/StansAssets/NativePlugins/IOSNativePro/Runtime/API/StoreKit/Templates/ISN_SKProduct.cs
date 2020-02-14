@@ -8,6 +8,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Globalization;
 using UnityEngine;
 
 using SA.iOS.Foundation;
@@ -15,10 +16,9 @@ using SA.iOS.StoreKit.Internal;
 
 namespace SA.iOS.StoreKit
 {
-
     [Serializable]
-	public class ISN_SKProduct  {
-
+	public class ISN_SKProduct  
+	{
 		//Getting the Product Identifier
 		[SerializeField] string m_productIdentifier = string.Empty;
 
@@ -28,7 +28,7 @@ namespace SA.iOS.StoreKit
 
 		//Getting Pricing Information
 		[SerializeField] float m_price = 0.99f;
-        [SerializeField] ISN_NSLocale m_priceLocale  = null;
+		[SerializeField] private ISN_NSLocale m_priceLocale = null;
 		[SerializeField] ISN_SKProductDiscount m_introductoryPrice  = null;
 
 		//Getting the Subscription Period and Duration
@@ -131,7 +131,7 @@ namespace SA.iOS.StoreKit
 		public string LocalizedPrice {
 			get {
 				if (string.IsNullOrEmpty (m_localizedPrice)) {
-					return Price.ToString () + " " + "$";
+					return Price.ToString (CultureInfo.InvariantCulture) + " " + "$";
 				} else {
 					return m_localizedPrice;
 				}
@@ -178,7 +178,7 @@ namespace SA.iOS.StoreKit
 
 
         /// <summary>
-        /// Contains data that is only can be set using the Edito Plugin Settings
+        /// Contains data that is only can be set using the Editor Plugin Settings
         /// </summary>
         public ISN_SKProductEditorData EditorData {
             get { return m_editorData; }

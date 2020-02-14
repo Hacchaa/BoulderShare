@@ -24,45 +24,21 @@
 
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
-    NSLog(@"yiiiii bad bad abad");
     SA_Result* result = [[SA_Result alloc] initWithNSError:error];
     ISN_SendCallbackToUnity(self.callback, [result toJSONString]);
 }
 
 - (void)requestDidFinish:(SKRequest *)request  {
-    NSLog(@"requestDidFinish yioooo");
-    
     SA_Result* result = [[SA_Result alloc] init];
     ISN_SendCallbackToUnity(self.callback, [result toJSONString]);
 }
 
 @end
 
-
 static ISN_SKRequestDelegate* requestDelegate;
 
-
 extern "C" {
-    
-    
-    /*
-    void ISN_TestCB(char* key, UnityAction callback) {
-        NSString * helloWorld = @"hello world";
-        ISN_SendCallbackDataToUnity(callback, helloWorld);
-    }
-    
-    void ISN_TestCB2( UnityAction callback) {
-       
-        ISN_SKReceiptDictionary* result  = [[ISN_SKReceiptDictionary alloc] init];
-        NSMutableArray* ar = [[NSMutableArray alloc] init];
-        [ar addObject:[NSNumber numberWithInt:0]];
-        [ar addObject:[NSNumber numberWithInt:2]];
-        
-        [result setM_keys:ar];
-        
-        ISN_SendCallbackDataToUnity(callback, [result toJSONString]);
-    }*/
-    
+
     void _ISN_SK_RefreshRequest(char * data, UnityAction callback) {
         
         [ISN_Logger LogNativeMethodInvoke:"ISN_SK_RefreshRequest" data:data];
@@ -109,10 +85,5 @@ extern "C" {
         [refreshRequest setDelegate:requestDelegate];
         [refreshRequest start];
     }
-    
-   
-    
-    
-    
 }
 

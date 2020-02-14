@@ -1,11 +1,8 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-
-using SA.Foundation.Async;
 using SA.Foundation.Templates;
 using SA.Foundation.Time;
-
 
 namespace SA.CrossPlatform.GameServices
 {

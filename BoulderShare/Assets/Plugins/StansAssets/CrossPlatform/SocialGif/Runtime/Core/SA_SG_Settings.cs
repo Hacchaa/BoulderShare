@@ -1,4 +1,4 @@
-﻿using SA.Foundation.Config;
+using SA.Foundation.Config;
 
 public static class SA_SG_Settings 
 {

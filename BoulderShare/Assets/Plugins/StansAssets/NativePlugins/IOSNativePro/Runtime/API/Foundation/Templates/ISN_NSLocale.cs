@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 using SA.iOS.Foundation.Internal;
@@ -12,14 +12,12 @@ namespace SA.iOS.Foundation
     [Serializable]
     public class ISN_NSLocale 
     {
-#pragma warning disable 649
-        [SerializeField] string m_identifier;
-        [SerializeField] string m_countryCode;
-        [SerializeField] string m_languageCode;
-        [SerializeField] string m_currencySymbol;
-        [SerializeField] string m_currencyCode;
+        [SerializeField] string m_identifier = string.Empty;
+        [SerializeField] string m_countryCode = "US";
+        [SerializeField] string m_languageCode = "US";
+        [SerializeField] string m_currencySymbol = "$";
+        [SerializeField] string m_currencyCode = "USD";
 
-#pragma warning restore 649
         /// <summary>
         /// A locale representing the user's region settings at the time the property is read.
         /// 
@@ -50,19 +48,37 @@ namespace SA.iOS.Foundation
         /// use the locale given by the <see cref="CurrentLocale"/> property instead.
         /// </summary>
         /// <value>The current locale.</value>
-        public static ISN_NSLocale AutoUpdatingCurrentLocale {
+        public static ISN_NSLocale AutoUpdatingCurrentLocale 
+        {
             get {
                 return ISN_NSLib.API.AutoUpdatingCurrentLocale;
             }
         }
-
-
+        
+        /// <summary>
+        /// Users choose a primary language when configuring a device, as described in
+        /// <see href="https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/SpecifyingPreferences/SpecifyingPreferences.html#//apple_ref/doc/uid/10000171i-CH12">Reviewing Language and Region Settings.</see>
+        /// They may also specify one or more secondary languages in order of preference for use
+        /// when localization is unavailable in a higher priority language.
+        /// Use this property to obtain the current user's  language.
+        ///  For more information about language localization in your app, see
+        /// <see href="https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPInternational/LanguageandLocaleIDs/LanguageandLocaleIDs.html#//apple_ref/doc/uid/10000171i-CH15"/> Language and Locale IDs.</see>
+        /// </summary>
+        public static string PreferredLanguage
+        {
+            get
+            {
+                return ISN_NSLib.API.PreferredLanguage; 
+            }
+        }
 
         /// <summary>
         /// The identifier for the locale.
         /// </summary>
-        public string Identifier {
-            get {
+        public string Identifier 
+        {
+            get 
+            {
                 return m_identifier;
             }
         }
@@ -72,8 +88,10 @@ namespace SA.iOS.Foundation
         /// The country code for the locale.
         /// Examples of country codes include "GB", "FR", and "HK".
         /// </summary>
-        public string CountryCode {
-            get {
+        public string CountryCode 
+        {
+            get 
+            {
                 return m_countryCode;
             }
         }
@@ -82,8 +100,10 @@ namespace SA.iOS.Foundation
         /// The language code for the locale.
         /// Examples of language codes include "en", "es", and "zh".
         /// </summary>
-        public string LanguageCode {
-            get {
+        public string LanguageCode 
+        {
+            get 
+            {
                 return m_languageCode;
             }
         }
@@ -92,8 +112,10 @@ namespace SA.iOS.Foundation
         /// The currency symbol for the locale.
         /// Example currency symbols include "$", "€", and "¥".
         /// </summary>
-        public string CurrencySymbol {
-            get {
+        public string CurrencySymbol 
+        {
+            get 
+            {
                 return m_currencySymbol;
             }
         }
@@ -103,8 +125,10 @@ namespace SA.iOS.Foundation
         /// The currency code for the locale.
         /// Example currency codes include "USD", "EUR", and "JPY".
         /// </summary>
-        public string CurrencyCode {
-            get {
+        public string CurrencyCode 
+        {
+            get 
+            {
                 return m_currencyCode;
             }
         }

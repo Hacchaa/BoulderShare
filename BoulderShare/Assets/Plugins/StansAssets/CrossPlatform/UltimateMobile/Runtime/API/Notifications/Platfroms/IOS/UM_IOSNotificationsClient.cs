@@ -1,37 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-
+using System;
 using SA.iOS.UserNotifications;
 using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.Notifications
 {
+    
     public class UM_IOSNotificationsClient : UM_AbstractNotificationsClient, UM_iNotificationsClient {
 
-
-        public override void RequestAuthorization(Action<SA_Result> callback) {
-            int options = ISN_UNAuthorizationOptions.Alert | ISN_UNAuthorizationOptions.Sound;
+        public override void RequestAuthorization(Action<SA_Result> callback) 
+        {
+            var options = ISN_UNAuthorizationOptions.Alert | ISN_UNAuthorizationOptions.Sound | ISN_UNAuthorizationOptions.Badge;
             ISN_UNUserNotificationCenter.RequestAuthorization(options, callback);
         }
 
-
-        public UM_IOSNotificationsClient() {
-            ISN_UNUserNotificationCenterDelegate.WillPresentNotification.AddListener((ISN_UNNotification notification) => {
+        public UM_IOSNotificationsClient() 
+        {
+            ISN_UNUserNotificationCenterDelegate.WillPresentNotification.AddListener(notification => 
+            {
                 UM_NotificationRequest request = ToUMRequest(notification.Request);
-                m_onNotificationReceived.Invoke(request);
+                m_OnNotificationReceived.Invoke(request);
             });
 
-            ISN_UNUserNotificationCenterDelegate.DidReceiveNotificationResponse.AddListener((ISN_UNNotificationResponse responce) => {
+            ISN_UNUserNotificationCenterDelegate.DidReceiveNotificationResponse.AddListener((ISN_UNNotificationResponse responce) => 
+            {
                 if(responce.ActionIdentifier.Equals(ISN_UNNotificationAction.DefaultActionIdentifier)) {
-                    UM_NotificationRequest request = ToUMRequest(responce.Notification.Request);
-                    m_onNotificationClick.Invoke(request);
+                    var request = ToUMRequest(responce.Notification.Request);
+                    m_OnNotificationClick.Invoke(request);
                 }
             }); 
         }
 
-
-        public UM_NotificationRequest LastOpenedNotification {
+        public UM_NotificationRequest LastOpenedNotification 
+        {
             get {
                 var responce = ISN_UNUserNotificationCenterDelegate.LastReceivedResponse;
                 if (responce == null) {
@@ -42,29 +42,34 @@ namespace SA.CrossPlatform.Notifications
             }
         }
 
-
-        public void RemoveAllPendingNotifications() {
+        public void RemoveAllPendingNotifications() 
+        {
             ISN_UNUserNotificationCenter.RemoveAllPendingNotificationRequests();
         }
 
-        public void RemovePendingNotification(int identifier) {
+        public void RemovePendingNotification(int identifier) 
+        {
             ISN_UNUserNotificationCenter.RemovePendingNotificationRequests(identifier.ToString());
         }
 
-        public void RemoveAllDeliveredNotifications() {
+        public void RemoveAllDeliveredNotifications() 
+        {
             ISN_UNUserNotificationCenter.RemoveAllDeliveredNotifications();
         }
 
-        public void RemoveDeliveredNotification(int identifier) {
+        public void RemoveDeliveredNotification(int identifier) 
+        {
             ISN_UNUserNotificationCenter.RemoveDeliveredNotifications(identifier.ToString());
         }
 
-
-
-        protected override void AddNotificationRequestInternal(UM_NotificationRequest request, Action<SA_Result> callback) {
+        protected override void AddNotificationRequestInternal(UM_NotificationRequest request, Action<SA_Result> callback) 
+        {
             var content = new ISN_UNNotificationContent();
             content.Title = request.Content.Title;
             content.Body = request.Content.Body;
+            if (request.Content.BadgeNumber != -1)
+                content.Badge = request.Content.BadgeNumber;
+            
 
             if (string.IsNullOrEmpty(request.Content.SoundName)) {
                 content.Sound = ISN_UNNotificationSound.DefaultSound;
@@ -72,12 +77,10 @@ namespace SA.CrossPlatform.Notifications
                 content.Sound = ISN_UNNotificationSound.SoundNamed(request.Content.SoundName);
             }
            
-
-
             ISN_UNNotificationTrigger trigger = null;
 
             if (request.Trigger is UM_TimeIntervalNotificationTrigger) {
-                UM_TimeIntervalNotificationTrigger timeIntervalTrigger = (UM_TimeIntervalNotificationTrigger)request.Trigger;
+                var timeIntervalTrigger = (UM_TimeIntervalNotificationTrigger)request.Trigger;
                 trigger = new ISN_UNTimeIntervalNotificationTrigger(timeIntervalTrigger.Interval, timeIntervalTrigger.Repeating);
             }
 
@@ -85,28 +88,23 @@ namespace SA.CrossPlatform.Notifications
             ISN_UNUserNotificationCenter.AddNotificationRequest(ios_request, callback);
         }
 
-        public void RemovePendingNotificationRequest(int Identifier) {
-            ISN_UNUserNotificationCenter.RemovePendingNotificationRequests(new string[] { Identifier.ToString() });
-        }
-
-
-        private UM_NotificationRequest ToUMRequest(ISN_UNNotificationRequest ios_request) {
+        private UM_NotificationRequest ToUMRequest(ISN_UNNotificationRequest ios_request) 
+        {
             
-            UM_Notification content = new UM_Notification();
+            var content = new UM_Notification();
             content.SetTitle(ios_request.Content.Title);
             content.SetBody(ios_request.Content.Body);
 
-            ISN_UNTimeIntervalNotificationTrigger timeIntervalTrigger = (ISN_UNTimeIntervalNotificationTrigger)ios_request.Trigger;
+            var timeIntervalTrigger = (ISN_UNTimeIntervalNotificationTrigger)ios_request.Trigger;
 
 
-
-            long interval = timeIntervalTrigger.TimeInterval;
-            bool repeating = timeIntervalTrigger.Repeats;
-            UM_TimeIntervalNotificationTrigger trigger = new UM_TimeIntervalNotificationTrigger(interval);
+            var interval = timeIntervalTrigger.TimeInterval;
+            var repeating = timeIntervalTrigger.Repeats;
+            var trigger = new UM_TimeIntervalNotificationTrigger(interval);
             trigger.SerRepeating(repeating);
 
-            int Identifier = Convert.ToInt32(ios_request.Identifier);
-            UM_NotificationRequest request = new UM_NotificationRequest(Identifier, content, trigger);
+            var Identifier = Convert.ToInt32(ios_request.Identifier);
+            var request = new UM_NotificationRequest(Identifier, content, trigger);
 
             return request;
         }

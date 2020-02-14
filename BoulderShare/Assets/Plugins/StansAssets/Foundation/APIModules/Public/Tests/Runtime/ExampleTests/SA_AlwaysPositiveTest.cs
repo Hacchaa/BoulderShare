@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using SA.Foundation.Tests;
 namespace SA.Foundation.Tests {

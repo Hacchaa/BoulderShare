@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using SA.Foundation.Templates;
 
@@ -15,7 +15,7 @@ namespace SA.iOS.GameKit
         [SerializeField] string m_publicKeyUrl;
         [SerializeField] string m_signature;
         [SerializeField] string m_salt;
-        [SerializeField] long m_timestamp;
+        [SerializeField] private long m_timestamp;
 #pragma warning restore 649
 
         public ISN_GKIdentityVerificationSignatureResult(SA_Error error) : base(error) {

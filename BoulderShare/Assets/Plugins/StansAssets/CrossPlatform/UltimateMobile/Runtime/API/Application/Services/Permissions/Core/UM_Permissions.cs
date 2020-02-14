@@ -1,4 +1,4 @@
-﻿namespace SA.CrossPlatform.App
+namespace SA.CrossPlatform.App
 {
 	/// <summary>
 	/// Main entry point for the Permissions Services APIs. 
@@ -10,7 +10,8 @@
 		/// Contacts Permissions Client.
 		/// Requires Contacts framework on IOS. 
 		/// </summary>
-		public static UM_IPermission Contacts {
+		public static UM_IPermission Contacts 
+		{
 			get { return new UM_ContactsPermission();}
 		}
 		
@@ -18,14 +19,16 @@
 		/// Notifications Permissions Client.
 		/// Requires UserNotifications framework on IOS.
 		/// </summary>
-		public static UM_IPermission Notifications {
+		public static UM_IPermission Notifications 
+		{
 			get { return new UM_NotificationsPermission();}
 		}
 		
 		/// <summary>
 		/// Camera Permissions Client.
 		/// </summary>
-		public static UM_IPermission Camera {
+		public static UM_IPermission Camera 
+		{
 			get { return new UM_CameraPermission();}
 		}
 		
@@ -33,9 +36,9 @@
 		/// Photo Gallery Permissions Client.
 		/// Requires Photos framework on IOS. 
 		/// </summary>
-		public static UM_IPermission Photos {
+		public static UM_IPermission Photos 
+		{
 			get { return new UM_PhotosPermission();}
 		}
 	}
-
 }

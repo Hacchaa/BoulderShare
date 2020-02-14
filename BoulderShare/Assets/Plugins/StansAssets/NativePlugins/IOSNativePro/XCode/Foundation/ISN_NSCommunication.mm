@@ -41,6 +41,7 @@
 }
 @end
 
+
 //So far those models are only used for a user notifications API
 
 
@@ -58,10 +59,12 @@
         self.Year = date.year;
         self.Month = date.month;
         self.Day = date.day;
+        self.Weekday = date.weekday;
 
     }
     return self;
 }
+
 -(NSDateComponents *) getNSDateComponents {
     NSDateComponents* date = [[NSDateComponents alloc] init];
     if(self.Hour != 0) {date.hour = self.Hour; }
@@ -72,9 +75,11 @@
     if(self.Year != 0) {date.year = self.Year; }
     if(self.Month != 0) {date.month = self.Month; }
     if(self.Day != 0) {date.day = self.Day; }
+    if(self.Weekday != 0) {date.weekday = self.Weekday; }
     
     return  date;
 }
+
 @end
 
 
@@ -132,4 +137,17 @@
 
 @end
 
-
+@implementation ISN_NSPersonNameComponents
+-(id) initWithData:(NSPersonNameComponents *) date {
+    self = [super init];
+    if(self) {
+        if(date.namePrefix != nil) { self.m_NamePrefix = date.namePrefix; }
+        if(date.givenName != nil)  { self.m_GivenName = date.givenName; }
+        if(date.middleName != nil) { self.m_MiddleName = date.middleName; }
+        if(date.familyName != nil) { self.m_FamilyName = date.familyName; }
+        if(date.nameSuffix != nil) { self.m_NameSuffix = date.nameSuffix; }
+        if(date.nickname != nil) { self.m_Nickname = date.nickname; }
+    }
+    return self;
+}
+@end

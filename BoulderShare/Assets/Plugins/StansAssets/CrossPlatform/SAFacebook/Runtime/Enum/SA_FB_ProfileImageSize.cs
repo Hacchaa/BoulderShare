@@ -1,4 +1,4 @@
-﻿namespace SA.Facebook
+namespace SA.Facebook
 {
     public enum SA_FB_ProfileImageSize
     {
