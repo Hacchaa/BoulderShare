@@ -55,7 +55,7 @@ MonoBehaviour:
   text: {fileID: 2789690922931239253}
   firstSprite:
     m_AssetGUID: c4b199de27d2db247be9255ad6acbe31
-    m_SubObjectName: square
+    m_SubObjectName: 
   firstColor: {r: 0.9568628, g: 0.2627451, b: 0.21176472, a: 1}
 --- !u!222 &3876420603639019992
 CanvasRenderer:

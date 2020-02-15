@@ -59,6 +59,7 @@ public class EditRouteTapeView: BNScreen
 
     }
     private void OnLoadHoldMarkSprite(Sprite sprite){
+        //Debug.Log("onload :"+sprite.name);
         //ホールドマークを参照させる
         int priority = RouteTapePriority.Entity.GetPriority(sprite.name);
         if (priority == -1){
