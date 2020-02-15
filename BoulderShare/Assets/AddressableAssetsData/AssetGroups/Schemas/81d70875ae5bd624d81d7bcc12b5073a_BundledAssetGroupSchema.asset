@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5d17a21594effb4e9591490b009e7aa, type: 3}
-  m_Name: f01d546aa84de3340abfb1db83df7a46_BundledAssetGroupSchema
+  m_Name: 81d70875ae5bd624d81d7bcc12b5073a_BundledAssetGroupSchema
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: fa6f7f40fa91780439ec98ec5a254ef8, type: 2}
+  m_Group: {fileID: 11400000, guid: 0a60225dffc04ce4aaf6aba6c2dfd4cc, type: 2}
   m_Compression: 1
   m_IncludeInBuild: 1
   m_BundledAssetProviderType:
@@ -26,9 +26,9 @@ MonoBehaviour:
   m_RedirectLimit: -1
   m_RetryCount: 0
   m_BuildPath:
-    m_Id: 6fc44be10b54d9b4eb163ee814ed51fa
+    m_Id: Assets/StreamingAssets/iOS
   m_LoadPath:
-    m_Id: 9edb04d4df35a0b44b19e942ec61546f
+    m_Id: Assets/StreamingAssets/iOS
   m_BundleMode: 0
   m_AssetBundleProviderType:
     m_AssemblyName: Unity.ResourceManager, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null

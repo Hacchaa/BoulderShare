@@ -18,7 +18,7 @@ public class BNScreen : MonoBehaviour
     [SerializeField] private RectTransform safeAreaInHeadBG;
     [SerializeField] private bool changeTop = true;
     [SerializeField] private bool changeBot = true;
-
+  
     [SerializeField] private List<Transition> transitions;
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> fromMap;
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> toMap;
@@ -35,7 +35,7 @@ public class BNScreen : MonoBehaviour
 
     //新しい画面として設定されてから始めてTransitionする時呼び出される
     public virtual void InitForFirstTransition(){
-
+ 
     }
 
     //Transition時に遷移する側であるときと、stackが変更されて表示されたときに呼び出される
