@@ -1,0 +1,22 @@
+1.9.6:
+Bugfixes + Support for Rich Text pairs with one parameter, such as color
+
+1.9.5:
+Bugfixes + AutofillType property for Autofill Services on mobile devices
+
+1.9.4:
+Bugfixes + custom dropdown class for suggestions
+
+1.9.3:
+Several bugfixes
+
+1.9.2:
+Added example for password visibility toggle + fixed some caret position bugs
+
+1.9.1:
+Fixed some mobile issues
+
+1.9.0:
+Experimental Rich Text support added (can be enabled by toggling the "richTextEditing" property on)
+Only basic effects are supported atm (italic, bold, underline), more to be added in future releases
+See the sample scene "RichText" for an example

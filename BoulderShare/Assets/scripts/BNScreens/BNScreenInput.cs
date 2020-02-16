@@ -7,7 +7,7 @@ public class BNScreenInput : BNScreen
     [SerializeField] protected InputItemsView.TargetItem currentTargetItem;
     [SerializeField] protected WallTypeMap.Type wallType;
     protected BNGradeMap.Grade grade;
-    protected RTape tape;
+    [SerializeField] protected RTape tape;
 
     public virtual void ClearFields(){
         tape = null;
@@ -30,6 +30,7 @@ public class BNScreenInput : BNScreen
             return;
         }
         tape = t.Clone();
+        Debug.Log("z in screeninput :"+ tape.imageRot.eulerAngles.z);
     }
 
     public RTape GetTape(){

@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class NPCanvas : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler{
     private const int FINGER_NONE = -10;
     private int finger = FINGER_NONE;
-    [SerializeField] private Camera camera;
+    [SerializeField] private Camera cam;
     [SerializeField] private float lengthOfEdge = 0.1f;
     [SerializeField] private Material mat;
     [SerializeField] private GameObject npPrefab;
@@ -147,7 +147,7 @@ public class NPCanvas : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
     }
 
     public Vector3 GetWorldPoint(Vector2 v){
-        return camera.ScreenToWorldPoint(new Vector3(v.x, v.y, camera.transform.InverseTransformPoint(this.transform.position).z));
+        return cam.ScreenToWorldPoint(new Vector3(v.x, v.y, cam.transform.InverseTransformPoint(this.transform.position).z));
     }
 
     private void AddPoint(Vector3 vec){

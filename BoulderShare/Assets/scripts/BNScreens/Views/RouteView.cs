@@ -9,9 +9,7 @@ namespace BoulderNotes{
 public class RouteView : BNScreen
 {
     [SerializeField] private TextMeshProUGUI gradeText;
-    [SerializeField] private TextMeshProUGUI tryStatusText;
     [SerializeField] private TextMeshProUGUI periodText; 
-    [SerializeField] private TextMeshProUGUI finishText;
     [SerializeField] private TextMeshProUGUI kanteText;
     [SerializeField] private GameObject finishedObj;
 
@@ -38,9 +36,7 @@ public class RouteView : BNScreen
 
     public void ClearFields(){
         gradeText.text ="";
-        tryStatusText.text ="";
         periodText.text = "";
-        finishText.text = "";
         kanteText.text = "";
         gym = null;
         wall = null;
@@ -58,14 +54,8 @@ public class RouteView : BNScreen
            
             if (route != null){
                 gradeText.text = route.GetGrade() + "級";
-                tryStatusText.text = "" + route.GetTotalClearStatus();
                 periodText.text = route.GetPeriod();
-                if (route.IsFinished()){
-                    finishText.text = "yes";
 
-                }else{
-                    finishText.text = "no";
-                }
                 finishedObj.SetActive(route.IsFinished());
                 if (route.IsFavorite()){
                     favoriteImage.sprite = favoriteOn;

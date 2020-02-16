@@ -1,0 +1,5 @@
+1.9.6:
+- Bugfix: Fixed NO_SCROLL setting on ScrollBehaviourOnTextEdit property
+- Bugfix: Fixed Selection Renderer not visible bug when using small font size
+- Bugfix Mobile: Fixed horizontal positioning of ActionBar
+- Improvement: Support for Rich Text pairs with one parameter, such as color

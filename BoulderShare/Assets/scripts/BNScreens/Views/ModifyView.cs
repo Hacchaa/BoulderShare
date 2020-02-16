@@ -89,7 +89,9 @@ public class ModifyView: BNScreenInput
             KanteToggle.isOn = route.IsUsedKante();
             if (route.GetTape() != null){
                 SetTape(route.GetTape());
-                routeTape.LoadTape(tape);              
+
+                //updatescreenで行う
+                //routeTape.LoadTape(tape);              
             }else{
                 routeTape.LoadDefault();
             }

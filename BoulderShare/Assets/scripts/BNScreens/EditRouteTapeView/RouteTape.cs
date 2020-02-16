@@ -41,7 +41,6 @@ public class RouteTape : MonoBehaviour
         if (t == null){
             return ;
         }
-
         if (!string.IsNullOrEmpty(t.spriteName)){
             //Debug.Log("t.spriteName:"+t.spriteName);
             Addressables.LoadAssetsAsync<Sprite>(t.spriteName, OnLoad);
@@ -61,7 +60,7 @@ public class RouteTape : MonoBehaviour
     }
 
     private void OnLoad(Sprite sprite){
-        ChangeShape(sprite);
+        img.sprite = sprite;
     }
 }
 }
