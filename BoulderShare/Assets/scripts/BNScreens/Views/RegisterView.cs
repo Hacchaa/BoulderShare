@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes{
 public class RegisterView: BNScreenInput
@@ -12,7 +13,7 @@ public class RegisterView: BNScreenInput
     [SerializeField] private GameObject wallInfo;
     [SerializeField] private GameObject routeInfo;
 
-    [SerializeField] private TMP_InputField gymNameTextIF;
+    [SerializeField] private AdvancedInputField gymNameTextIF;
     [SerializeField] private TextMeshProUGUI wallTypeText;
 
     [SerializeField] private TextMeshProUGUI gradeText;
@@ -29,7 +30,7 @@ public class RegisterView: BNScreenInput
     public override void ClearFields(){
         base.ClearFields();
         titleText.text = "";
-        gymNameTextIF.text = "";
+        gymNameTextIF.Text = "";
         wallType = WallTypeMap.Type.Slab;
         wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
         gradeText.text = "";
@@ -105,7 +106,7 @@ public class RegisterView: BNScreenInput
 
         if (type == ViewType.All || type == ViewType.Gym){
             BNGym gym = new BNGym();
-            gym.SetGymName(gymNameTextIF.text);
+            gym.SetGymName(gymNameTextIF.Text);
             s.WriteGym(gym);
         }
 

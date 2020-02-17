@@ -605,6 +605,7 @@ PlayerSettings:
     1: ADVANCEDINPUTFIELD_TEXTMESHPRO
     4: ADVANCEDINPUTFIELD_TEXTMESHPRO
     7: 2
+    13: ADVANCEDINPUTFIELD_TEXTMESHPRO
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

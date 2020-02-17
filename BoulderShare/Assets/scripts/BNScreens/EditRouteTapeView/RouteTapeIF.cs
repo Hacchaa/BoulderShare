@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes{
 public class RouteTapeIF : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private AdvancedInputField inputField;
     [SerializeField] private EditRouteTapeView view;
     private bool noNeedChange;
     public void OnValueChanged(string str){
@@ -19,7 +20,7 @@ public class RouteTapeIF : MonoBehaviour
 
     public void Clear(){
         noNeedChange = true;
-        inputField.text = "";
+        inputField.Text = "";
     }
 }
 }

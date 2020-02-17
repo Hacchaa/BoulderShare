@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes{
 public class ModifyView: BNScreenInput
@@ -13,7 +14,7 @@ public class ModifyView: BNScreenInput
     [SerializeField] private GameObject wallInfo;
     [SerializeField] private GameObject routeInfo;
 
-    [SerializeField] private TMP_InputField gymNameTextIF;
+    [SerializeField] private AdvancedInputField gymNameTextIF;
     [SerializeField] private TextMeshProUGUI wallTypeText;
     [SerializeField] private Toggle finishedWallToggle;
 
@@ -40,7 +41,7 @@ public class ModifyView: BNScreenInput
         route = null;
 
         titleText.text = "";
-        gymNameTextIF.text = "";
+        gymNameTextIF.Text = "";
         wallTypeText.text = "";
         gradeText.text = "";     
 
@@ -61,7 +62,7 @@ public class ModifyView: BNScreenInput
             wall = stack.GetTargetWall();
             if (wall == null){
                 //gym編集
-                gymNameTextIF.text = gym.GetGymName();
+                gymNameTextIF.Text = gym.GetGymName();
                 type = ViewType.Gym;
                 titleText.text = "ジム編集";
                 deleteText.text = "ジム削除";
@@ -143,7 +144,7 @@ public class ModifyView: BNScreenInput
         BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
         if (type == ViewType.Gym){
             BNGym newGym = gym.Clone();
-            newGym.SetGymName(gymNameTextIF.text);
+            newGym.SetGymName(gymNameTextIF.Text);
             stack.ModifyGym(newGym);
 
         }else if(type == ViewType.Wall){

@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes {
 public class RegisterRecordView : BNScreen
@@ -13,7 +14,7 @@ public class RegisterRecordView : BNScreen
     [SerializeField] private TextMeshProUGUI tryNumberText;
     [SerializeField] private Slider completeRateSlider;
     [SerializeField] private Slider conditionSlider;
-    [SerializeField] private TMP_InputField commentIF; 
+    [SerializeField] private AdvancedInputField commentIF;
 
     [SerializeField] private Image selectedConditon;
     [SerializeField] private Sprite[] conditionImages;
@@ -48,7 +49,7 @@ public class RegisterRecordView : BNScreen
                 tryNumberText.text = record.GetTryNumber()+"";
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
-                commentIF.text = record.GetComment();
+                commentIF.Text = record.GetComment();
 
                 deleteButton.SetActive(true);                
             }
@@ -61,7 +62,7 @@ public class RegisterRecordView : BNScreen
         completeRateSlider.value = 50f;
         conditionSlider.value = 2f;
         SetSelectedCondition(2);
-        commentIF.text = "";
+        commentIF.Text = "";
         tryNumberText.text = "";
         record = null;
     }
@@ -79,7 +80,7 @@ public class RegisterRecordView : BNScreen
             record.SetTryNumber(int.Parse(tryNumberText.text));
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            record.SetComment(commentIF.text);
+            record.SetComment(commentIF.Text);
             if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
                 (belongingStack as BNScreenStackWithTargetGym).ModifyRecord(record);
             }
@@ -88,7 +89,7 @@ public class RegisterRecordView : BNScreen
             rec.SetTryNumber(int.Parse(tryNumberText.text));
             rec.SetCompleteRate((int)completeRateSlider.value);
             rec.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            rec.SetComment(commentIF.text);
+            rec.SetComment(commentIF.Text);
             if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
                 (belongingStack as BNScreenStackWithTargetGym).WriteRecord(rec);
             }               
