@@ -72,7 +72,7 @@ namespace AdvancedInputFieldPlugin
 			bool foundEnd = false;
 			for(int i = 0; i < length; i++)
 			{
-				LineInfo lineInfo = TextRenderer.GetLineInfo(i);
+				LineInfo lineInfo = TextRenderer.GetLineInfo(i); 
 
 				int startCharIndex = GetLineStartCharIndex(i);
 				int endCharIndex = GetLineEndCharIndex(i);

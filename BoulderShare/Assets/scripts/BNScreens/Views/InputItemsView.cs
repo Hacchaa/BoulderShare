@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes{
 public class InputItemsView: BNScreen
 {
-    public enum TargetItem{None, WallType, Grade, Texts, Tape};
+    public enum TargetItem{None, WallType, Grade, Texts, Tape, Image};
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TargetItem currentTargetItem;
     private BNScreenInput screen;
@@ -15,7 +15,10 @@ public class InputItemsView: BNScreen
     [SerializeField] private WallTypeToggleGroup wallTypeGroup;
     [SerializeField] private GradeToggleGroup gradeGroup;
     [SerializeField] private GameObject textObj;
-    [SerializeField] private ScrollRect scroller;
+    [SerializeField] private GameObject walltypeObj;
+    [SerializeField] private GameObject gradeObj;
+    [SerializeField] private AdvancedInputField advancedIF;
+
     public override void InitForFirstTransition(){
         screen = null;
         
@@ -34,20 +37,20 @@ public class InputItemsView: BNScreen
                     titleText.text = "グレード";
                     gradeGroup.Init(screen.GetGrade());
                 }else if (currentTargetItem == TargetItem.Texts){
-                
+                    titleText.text = "テキスト";
+                    advancedIF.Text = screen.GetText();
                 }
             }
         }
-        scroller.verticalNormalizedPosition = 0.0f;
     }
     private void ShowObj(){
-        wallTypeGroup.gameObject.SetActive(false);
-        gradeGroup.gameObject.SetActive(false);
+        walltypeObj.SetActive(false);
+        gradeObj.SetActive(false);
         textObj.SetActive(false);
         if (currentTargetItem == TargetItem.WallType){
-            wallTypeGroup.gameObject.SetActive(true);
+            walltypeObj.SetActive(true);
         }else if(currentTargetItem == TargetItem.Grade){
-            gradeGroup.gameObject.SetActive(true);
+            gradeObj.SetActive(true);
         }else if (currentTargetItem == TargetItem.Texts){
             textObj.SetActive(true);
         }
@@ -67,6 +70,8 @@ public class InputItemsView: BNScreen
                 screen.SetWallType(wallTypeGroup.GetWallType());
             }else if(currentTargetItem == TargetItem.Grade){
                 screen.SetGrade(gradeGroup.GetGrade());
+            }else if(currentTargetItem == TargetItem.Texts){
+                screen.SetText(advancedIF.Text);
             }
         }
 

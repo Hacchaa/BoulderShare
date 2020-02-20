@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
 
 namespace BoulderNotes {
 public class RecordView : BNScreen
@@ -13,7 +14,7 @@ public class RecordView : BNScreen
     [SerializeField] private TextMeshProUGUI commentText; 
     [SerializeField] private Image condition;
 
-    [SerializeField] private Sprite[] conditionImages;
+    [SerializeField] private AssetReference[] conditionRef;
 
     [SerializeField] private BNRoute route;
     [SerializeField] private BNRecord record;
@@ -44,9 +45,13 @@ public class RecordView : BNScreen
             dayText.text = record.GetDate();
             tryNumberText.text = "" + record.GetTryNumber();
             completeRateText.text = record.GetCompleteRate() + "%";
-            condition.sprite = conditionImages[(int)record.GetCondition()];
+            Addressables.LoadAssetsAsync<Sprite>(conditionRef[(int)record.GetCondition()], OnLoadSprite);
             commentText.text = record.GetComment();
         }
+    }
+
+    private void OnLoadSprite(Sprite sprite){
+        condition.sprite = sprite;
     }
 /*
     public void SaveTargerRecordInStack(string id){

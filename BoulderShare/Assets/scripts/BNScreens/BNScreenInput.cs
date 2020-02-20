@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace BoulderNotes{
 public class BNScreenInput : BNScreen
 {
@@ -8,10 +9,18 @@ public class BNScreenInput : BNScreen
     [SerializeField] protected WallTypeMap.Type wallType;
     protected BNGradeMap.Grade grade;
     [SerializeField] protected RTape tape;
-
+    protected string inputedText;
+    protected Sprite inputedSprite;
     public virtual void ClearFields(){
         tape = null;
+        inputedSprite = null;
+        inputedText = "";
     }
+
+    public void SetSprite(Sprite spr){
+        inputedSprite = spr;
+    }
+    
     public void SetWallType(WallTypeMap.Type t){
         wallType = t;
     }
@@ -22,6 +31,10 @@ public class BNScreenInput : BNScreen
 
     public void SetGrade(BNGradeMap.Grade g){
         grade = g;
+    }
+
+    public void SetText(string txt){
+        inputedText = txt;
     }
 
     public void SetTape(RTape t){
@@ -43,6 +56,10 @@ public class BNScreenInput : BNScreen
     public BNGradeMap.Grade GetGrade(){
         return grade;
     }    
+
+    public string GetText(){
+        return inputedText;
+    }
 
     public InputItemsView.TargetItem GetCurrentTargetItem(){
         return currentTargetItem;
@@ -67,12 +84,18 @@ public class BNScreenInput : BNScreen
         currentTargetItem = InputItemsView.TargetItem.Tape;
         ToEditRouteTapeView();        
     }
+    public void InputWallImage(){
+        ToSelecteWallImageView();        
+    }
     public void ToEditRouteTapeView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.EditRouteTapeView, BNScreens.TransitionType.Push);
     }
 
     public void ToInputItemsView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.InputItemsView, BNScreens.TransitionType.Push);
+    }
+    public void ToSelecteWallImageView(){
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.SelecteWallImageView, BNScreens.TransitionType.Push);
     }
 }
 public interface IBNScreenInputable{

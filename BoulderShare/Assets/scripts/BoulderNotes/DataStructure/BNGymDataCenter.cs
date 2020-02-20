@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.Threading.Tasks;
 
 //##ジムの読み書きを行うクラス
 //##各画面はジムの更新のためにこのクラスにアクセスする
 
 namespace BoulderNotes{
+    public delegate void LoadImageDelegate(Sprite spr);
     public class BNGymDataCenter : SingletonMonoBehaviour<BNGymDataCenter>
     {
         public const string FORMAT_ID = "yyyyMMddHHmmssffff";
@@ -18,6 +21,7 @@ namespace BoulderNotes{
         public const string PREFIX_ID_ROUTE = "R";
         //try
         public const string PREFIX_ID_RECORD = "T";
+        public const string PREFIX_ID_WALLIMAGE = "WI";
         private const string ES3_ROOTPATH = "Gyms";
         private const string ES3_FILE_BNGYMIDS = "gymIDs";
         private const string ES3_KEY_BNGYMIDS = "BNGymIDs";
@@ -25,9 +29,11 @@ namespace BoulderNotes{
         private const string ES3_KEY_WALL = "BNWall";
         private const string ES3_KEY_ROUTE = "BNRoute";
         private const string ES3_EXTENSION = ".es3";
+        public const string WALLIMAGE_EXTENSION = ".png";
         private const string ES3_FILE_GYM = "gym";
         private const string ES3_FILE_WALL = "wall";
         private const string ES3_FILE_ROUTE = "route";
+        private const string ES3_DIC_WALLIMAGE = "wallimages";
    
 /*
         public void Init(){
@@ -168,7 +174,7 @@ namespace BoulderNotes{
             return true;
         }
 
-        public bool WriteWall(BNWall wall, BNGym gym){
+        public bool WriteWall(BNWall wall, List<BNWallImage> wallImageList, BNGym gym){
             if (gym == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
                 return false;
             }
@@ -182,11 +188,24 @@ namespace BoulderNotes{
 
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_FILE_WALL + ES3_EXTENSION;
             ES3.Save<BNWall>(ES3_KEY_WALL, wall, path);  
+            
+            if (wallImageList == null){
+                return true;
+            }
+
+            //画像を保存
+            path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_DIC_WALLIMAGE + "/";
+            foreach(BNWallImage wallImage in wallImageList){
+                if (string.IsNullOrEmpty(wallImage.fileName) || wallImage.texture == null){
+                    continue;
+                }
+                ES3.SaveImage(wallImage.texture, path+wallImage.fileName);
+            }
             return true;            
         }
 
-        public bool WriteWall(BNWall wall, string gymID){
-            return WriteWall(wall, ReadGym(gymID));          
+        public bool WriteWall(BNWall wall, List<BNWallImage> wallImageList, string gymID){
+            return WriteWall(wall, wallImageList, ReadGym(gymID));          
         }
 
         public bool WriteRoute(BNRoute route, BNWall wall, BNGym gym){
@@ -199,7 +218,7 @@ namespace BoulderNotes{
                 return false;
             }
             wall.AddRouteID(route.GetID());
-            ModifyWall(wall, gym.GetID());
+            ModifyWall(wall, null, null, gym.GetID());
 
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + route.GetID() + "/" + ES3_FILE_ROUTE + ES3_EXTENSION;
             ES3.Save<BNRoute>(ES3_KEY_ROUTE, route, path);       
@@ -233,7 +252,7 @@ namespace BoulderNotes{
             ES3.Save<BNGym>(ES3_KEY_GYM, gym, path);
             return true;
         }
-        public bool ModifyWall(BNWall wall, BNGym gym){
+        public bool ModifyWall(BNWall wall, List<BNWallImage> addWallImageList, List<string> removeWallImageList, BNGym gym){
             if (gym == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
                 return false;
             }
@@ -246,16 +265,35 @@ namespace BoulderNotes{
                 return false;
             }
 
-            //画像等の参照フィールドが変更された場合、参照先を削除する
+            //画像等の参照フィールドが変更された場合
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_DIC_WALLIMAGE + "/";
+            List<string> list = wall.GetWallImageFileNames();
+            if (addWallImageList != null){
+                foreach(BNWallImage wallImage in addWallImageList){
+                    if (!string.IsNullOrEmpty(wallImage.fileName)){
+                        list.Add(wallImage.fileName);
+                        ES3.SaveImage(wallImage.texture, path+wallImage.fileName);
+                    }
+                }
+            }
+
+            if (removeWallImageList != null){
+                foreach(string str in removeWallImageList){
+                    list.Remove(str);
+                    ES3.DeleteFile(path+str);
+                }
+            }
+
+            wall.SetWallImageFileNames(list);
   
             //ES3に上書き
             //wall
-            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_FILE_WALL + ES3_EXTENSION;
+            path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_FILE_WALL + ES3_EXTENSION;
             ES3.Save<BNWall>(ES3_KEY_WALL, wall, path);   
             return true;
         }
-        public bool ModifyWall(BNWall wall, string gymID){
-            return ModifyWall(wall, ReadGym(gymID)); 
+        public bool ModifyWall(BNWall wall, List<BNWallImage> addWallImageList, List<string> removeWallImageList, string gymID){
+            return ModifyWall(wall, addWallImageList, removeWallImageList, ReadGym(gymID)); 
         }
 
         public bool ModifyRoute(BNRoute route, BNWall wall, BNGym gym){
@@ -299,7 +337,41 @@ namespace BoulderNotes{
             ES3.DeleteDirectory(path);
         }
 
+        public Texture2D LoadWallImage(BNGym gym, BNWall wall, string fileName){
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_DIC_WALLIMAGE + "/";
+            return ES3.LoadImage(path+fileName);
+        }
 
+        public string GetWallImagePath(BNGym gym, BNWall wall){
+            return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_DIC_WALLIMAGE;
+        }
+        public IEnumerator LoadImage(string path, LoadImageDelegate del)
+        {
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                    Debug.Log(uwr.error);
+                    Debug.Log("path" + path);
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    var texture = DownloadHandlerTexture.GetContent(uwr);
+                    //Debug.Log("texture:"+texture.width);
+                    Sprite sprite = Sprite.Create(
+                        texture, 
+                        new Rect(0.0f, 0.0f, texture.width, texture.height), 
+                        new Vector2(0.5f, 0.5f),
+                        texture.height/4);
+                    if (del != null){
+                        del(sprite);
+                    }
+                }
+            }
+        }
         public void TestForSettingGym(){
             BNGym gym = new BNGym();
             gym.SetGymName("Noborock");
@@ -309,25 +381,25 @@ namespace BoulderNotes{
             wall.SetWallType(WallTypeMap.Type.Slab);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
-            WriteWall(wall, gym.GetID());
+            WriteWall(wall, null, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.Vertical);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
-            WriteWall(wall, gym.GetID());
+            WriteWall(wall, null, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.HOverHang);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
-            WriteWall(wall, gym.GetID());
+            WriteWall(wall, null, gym.GetID());
 
             wall = new BNWall();
             wall.SetWallType(WallTypeMap.Type.Bulge);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
-            WriteWall(wall, gym.GetID());             
+            WriteWall(wall, null, gym.GetID());             
 
             BNRoute route = new BNRoute();
             route.SetGrade(BNGradeMap.Grade.Q3);

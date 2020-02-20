@@ -4,20 +4,20 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using AdvancedInputFieldPlugin;
+using UnityEngine.AddressableAssets;
 
 namespace BoulderNotes {
-public class RegisterRecordView : BNScreen
+public class RegisterRecordView : BNScreenInput
 {
     [SerializeField] private GameObject deleteButton;
     [SerializeField] private TextMeshProUGUI dayText;
     [SerializeField] private TextMeshProUGUI tryNumberText;
     [SerializeField] private Slider completeRateSlider;
     [SerializeField] private Slider conditionSlider;
-    [SerializeField] private AdvancedInputField commentIF;
+    [SerializeField] private TextMeshProUGUI commentText;
 
     [SerializeField] private Image selectedConditon;
-    [SerializeField] private Sprite[] conditionImages;
+    [SerializeField] private AssetReference[] conditionRef;
 
     [SerializeField] private BNRecord record;
     [SerializeField] private BNRoute route;
@@ -49,26 +49,28 @@ public class RegisterRecordView : BNScreen
                 tryNumberText.text = record.GetTryNumber()+"";
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
-                commentIF.Text = record.GetComment();
+                inputedText = record.GetComment();
 
                 deleteButton.SetActive(true);                
             }
-
+            commentText.text = inputedText.Replace(Environment.NewLine, "");
         }
     }
 
-    public void ClearFields(){
+    public override void ClearFields(){
+        base.ClearFields();
         dayText.text = "";
         completeRateSlider.value = 50f;
         conditionSlider.value = 2f;
         SetSelectedCondition(2);
-        commentIF.Text = "";
+        commentText.text = "";
         tryNumberText.text = "";
         record = null;
+        route = null;
     }
 
     public override void UpdateScreen(){
-
+        commentText.text = inputedText.Replace(Environment.NewLine, "");
     }
 
     public void Register(){
@@ -80,7 +82,7 @@ public class RegisterRecordView : BNScreen
             record.SetTryNumber(int.Parse(tryNumberText.text));
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            record.SetComment(commentIF.Text);
+            record.SetComment(inputedText);
             if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
                 (belongingStack as BNScreenStackWithTargetGym).ModifyRecord(record);
             }
@@ -89,7 +91,7 @@ public class RegisterRecordView : BNScreen
             rec.SetTryNumber(int.Parse(tryNumberText.text));
             rec.SetCompleteRate((int)completeRateSlider.value);
             rec.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            rec.SetComment(commentIF.Text);
+            rec.SetComment(inputedText);
             if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
                 (belongingStack as BNScreenStackWithTargetGym).WriteRecord(rec);
             }               
@@ -101,7 +103,6 @@ public class RegisterRecordView : BNScreen
         if (route == null || record == null){
             return ;
         }
-        
         route.DeleteRecord(record);
         record = null;
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
@@ -134,7 +135,11 @@ public class RegisterRecordView : BNScreen
     }
 
     private void SetSelectedCondition(int index){
-        selectedConditon.sprite = conditionImages[index];
+        Addressables.LoadAssetsAsync<Sprite>(conditionRef[index], OnLoadSprite);
+    }
+
+    private void OnLoadSprite(Sprite spr){
+        selectedConditon.sprite = spr;
     }
 
 }

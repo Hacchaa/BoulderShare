@@ -24,6 +24,12 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 0889cc1efa2be944694de3613773f81d
+    m_Address: 24_condition_4
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 0a9c82fcab1c6924a9393fe75e9bb68f
     m_Address: m-shape
     m_ReadOnly: 0
@@ -66,11 +72,23 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 399d0eb5ef21f1440965d1c7cf7626f1
+    m_Address: 24_condition_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 3c2ffd5c96a42b74989d2b5f027aa057
     m_Address: asterisk
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 44f26a15ebc1a2847ab3f868af4b535c
+    m_Address: 24_condiiton_3
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 4e5c9701345d10041895e1ceec6f7267
@@ -92,6 +110,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 5a82c3143f85f524b978f98c61460ae1
+    m_Address: 24_condition_5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 72f2776eea0edc947b9d6f95c99e99e9
@@ -210,6 +234,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: f2d30ccdc910819458dafef520cf3cfc
+    m_Address: 24_condition_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_ReadOnly: 0

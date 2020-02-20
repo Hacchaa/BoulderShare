@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+
 namespace BoulderNotes{
 public class RecordScrollerData : RecordScrollerDataBase{
     public string date;
@@ -8,7 +10,7 @@ public class RecordScrollerData : RecordScrollerDataBase{
     public int completeRate;
     public string comment;
     public int tryNumber;
-    public BNRecord.Condition bodyCondition; 
+    public AssetReference conditionImageRef; 
 }
 public class RecordOverviewScrollerData : RecordScrollerDataBase {
     public int days;

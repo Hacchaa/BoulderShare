@@ -2004,7 +2004,7 @@ namespace AdvancedInputFieldPlugin
 		#region EDITOR_METHODS
 		/// <summary>Editor method: Applies the character limit change. Don't call this method directly, use CharacterLimit property instead.</summary>
 		/// <param name="characterLimit">The new character limit value</param>
-		public void ApplyCharacterLimit(int characterLimit)
+		public void ApplyCharacterLimit(int characterLimit) 
 		{
 			if(characterLimit > 0 && text.Length > characterLimit)
 			{

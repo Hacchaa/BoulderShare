@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace BoulderNotes {
 public class BNScreenStackWithTargetGym : BNTStack
@@ -10,6 +11,13 @@ public class BNScreenStackWithTargetGym : BNTStack
     [SerializeField] private BNRoute targetRoute;
     [SerializeField] private BNRecord targetRecord;
 
+    public override void Init(){
+        base.Init();
+        targetGym = null;
+        targetWall = null;
+        targetRecord = null;
+        targetRecord = null;
+    }
     public BNGym GetTargetGym(){
         if (targetGym == null){
             return null;
@@ -85,17 +93,42 @@ public class BNScreenStackWithTargetGym : BNTStack
         targetRecord = targetRoute.GetRecord(id);
     }
 
+    public Sprite LoadWallImage(string fileName){
+        if (targetGym == null || targetWall == null){
+            return null;
+        }
+
+        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(targetGym, targetWall, fileName);
+        Sprite sprite = Sprite.Create(
+            texture, 
+            new Rect(0.0f, 0.0f, texture.width, texture.height), 
+            new Vector2(0.5f, 0.5f),
+            texture.height/4);
+
+        return sprite;
+    }
+
+    public void LoadImage(BNWall wall, string fileName, LoadImageDelegate del){
+        if (targetGym == null || wall == null){
+            return ;
+        }
+        string path = BNGymDataCenter.Instance.GetWallImagePath(targetGym, wall) + "/" + fileName;
+        StartCoroutine(BNGymDataCenter.Instance.LoadImage(path, del));
+    }
+
+
+
     public void WriteGym(BNGym gym){
         bool success = BNGymDataCenter.Instance.WriteGym(gym);
         if (success){
             targetGym = gym;
         }
     }
-    public void WriteWall(BNWall wall){
+    public void WriteWall(BNWall wall, List<BNWallImage> wallImageList){
         if (targetGym == null || wall == null){
             return ;
         }
-        bool success = BNGymDataCenter.Instance.WriteWall(wall, targetGym);
+        bool success = BNGymDataCenter.Instance.WriteWall(wall, wallImageList, targetGym);
         if (success){
             targetWall = wall;
         }
@@ -135,12 +168,12 @@ public class BNScreenStackWithTargetGym : BNTStack
             targetGym = gym;
         }
     }
-    public void ModifyWall(BNWall wall){
+    public void ModifyWall(BNWall wall, List<BNWallImage> addImageWallList, List<string> removeWallImageList){
         if (targetGym == null || wall == null){
             return ;
         }
         ClearRoute();
-        bool success = BNGymDataCenter.Instance.ModifyWall(wall, targetGym);
+        bool success = BNGymDataCenter.Instance.ModifyWall(wall, addImageWallList, removeWallImageList, targetGym);
         if (success){
             targetWall = wall;
         }

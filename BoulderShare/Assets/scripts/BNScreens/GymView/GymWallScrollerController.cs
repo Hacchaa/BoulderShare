@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EnhancedUI.EnhancedScroller;
+using System.Linq;
 
 namespace BoulderNotes{
 public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
@@ -35,15 +36,22 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
         //Debug.Log("wall.COunt;"+walls.Count);
         _data.Clear();
 
-        foreach(BNWall wall in walls){
-            if (wall.IsFinished()){
-                continue;
+        BNScreenStackWithTargetGym stack = null;
+        if (view.GetBelongingStack() is BNScreenStackWithTargetGym){
+            stack = view.GetBelongingStack() as BNScreenStackWithTargetGym;
+        }
+        IEnumerable<BNWall> sortedList ;
+        if (walls.Any()){
+            sortedList = walls.OrderByDescending(x => x.GetID());
+            foreach(BNWall wall in sortedList){
+                if (wall.IsFinished()){
+                    continue;
+                }
+                GymWallScrollerData data = new GymWallScrollerData();
+                data.wall = wall;
+                data.stack = stack;
+                _data.Add(data);
             }
-            GymWallScrollerData data = new GymWallScrollerData();
-            data.gymWallTypeName = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
-            data.gymWallPeriod = wall.GetPeriod();
-            data.wall = wall;
-            _data.Add(data);
         }
         _data.Add(new GymWallAddScrollerData());
         _data.Add(new GymWallPastScrollerData());

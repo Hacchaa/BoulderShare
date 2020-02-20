@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine.UI;
+using UnityEngine.AddressableAssets;
 
 namespace BoulderNotes{
 public class RecordCellView : EnhancedScrollerCellView
@@ -20,7 +21,7 @@ public class RecordCellView : EnhancedScrollerCellView
     public string date;
     public OnButtonClickedDelegateWithBNRecord clickDel;
 
-    public void SetData(RecordScrollerData data, Sprite conditionImage){
+    public void SetData(RecordScrollerData data){
         completeRateText.text = data.completeRate + "";
         //色設定
         if (data.completeRate <= 25){
@@ -35,9 +36,13 @@ public class RecordCellView : EnhancedScrollerCellView
         }
         tryNumberText.text = data.tryNumber + "回目";
         commentText.text = data.comment;
-        condition.sprite = conditionImage;
+        Addressables.LoadAssetsAsync<Sprite>(data.conditionImageRef, OnLoadSprite);
         record = data.record;
         date = data.date;
+    }
+
+    private void OnLoadSprite(Sprite spr){
+        condition.sprite = spr;
     }
 
     public void OnClicked(){

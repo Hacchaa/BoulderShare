@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using EnhancedUI.EnhancedScroller;
 using System.Linq;
+using UnityEngine.AddressableAssets;
 
 namespace BoulderNotes{
 public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
     [SerializeField] private RouteView view;
+    [SerializeField] private AssetReference[] conditionImageRef;
     private List<RecordScrollerDataBase> _data;
 
     public EnhancedScroller myScroller;
@@ -16,8 +18,6 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     public RecordOverviewCellView recordOverviewCellViewPrefab;
     public RecordDateTitleCellView recordDateTitleCellViewPrefab;
     public RecordLineCellView recordLineCellViewPrefab;
-
-    public Sprite[] conditionImages;
 
     public void Init(){
         _data = new List<RecordScrollerDataBase>();
@@ -46,7 +46,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
                 data.completeRate = record.GetCompleteRate();
                 data.comment = record.GetComment();
                 data.tryNumber = record.GetTryNumber();
-                data.bodyCondition = record.GetCondition();
+                data.conditionImageRef = conditionImageRef[(int)record.GetCondition()];
 
                 if (maxCompleteRate < data.completeRate){
                     maxCompleteRate = data.completeRate;
@@ -116,7 +116,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (_data[dataIndex] is RecordScrollerData){
             RecordCellView recordCellView = scroller.GetCellView(recordCellViewPrefab) as RecordCellView;
             RecordScrollerData data = _data[dataIndex] as RecordScrollerData;
-            recordCellView.SetData(data, conditionImages[(int)data.bodyCondition]);
+            recordCellView.SetData(data);
             recordCellView.clickDel = ToRecordView;
             return recordCellView;
         }

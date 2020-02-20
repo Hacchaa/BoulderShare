@@ -28,15 +28,17 @@ public class GymPastScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
 
     public void FetchData(IReadOnlyList<BNWall> walls){
         _data.Clear();
-
+        BNScreenStackWithTargetGym stack = null;
+        if (view.GetBelongingStack() is BNScreenStackWithTargetGym){
+            stack = view.GetBelongingStack() as BNScreenStackWithTargetGym;
+        }
         foreach(BNWall wall in walls){
             if (!wall.IsFinished()){
                 continue;
             }
             GymWallScrollerData data = new GymWallScrollerData();
-            data.gymWallTypeName = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
-            data.gymWallPeriod = wall.GetPeriod();
             data.wall = wall;
+            data.stack = stack;
             _data.Add(data);
         }
 

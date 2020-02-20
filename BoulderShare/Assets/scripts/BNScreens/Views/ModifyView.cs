@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using AdvancedInputFieldPlugin;
+using System.Threading.Tasks;
 
 namespace BoulderNotes{
 public class ModifyView: BNScreenInput
@@ -15,10 +16,13 @@ public class ModifyView: BNScreenInput
     [SerializeField] private GameObject routeInfo;
 
     [SerializeField] private AdvancedInputField gymNameTextIF;
-    [SerializeField] private TextMeshProUGUI wallTypeText;
+    [SerializeField] private TMP_InputField wallTypeText;
     [SerializeField] private Toggle finishedWallToggle;
+    [SerializeField] private Image wallImage;
+    [SerializeField] private GameObject wallImageNoSelectedObj;
+    [SerializeField] private GameObject wallImageSelectedObj;
 
-    [SerializeField] private TextMeshProUGUI gradeText;
+    [SerializeField] private TMP_InputField gradeText;
     [SerializeField] private Toggle finishedRouteToggle;
     [SerializeField] private Toggle KanteToggle;
     [SerializeField] private RouteTape routeTape;
@@ -79,6 +83,7 @@ public class ModifyView: BNScreenInput
                 titleText.text = "壁編集";
                 deleteText.text = "壁削除";
                 finishedWallToggle.isOn = wall.IsFinished();
+                StartCoroutine(LoadWallImage(wall.GetWallImageFileNames()));
                 ShowTargetObj();
                 return ;
             }
@@ -104,6 +109,19 @@ public class ModifyView: BNScreenInput
         }
     }
 
+    private IEnumerator LoadWallImage(List<string> nameList){
+        if (belongingStack == null || !(belongingStack is BNScreenStackWithTargetGym)){
+            yield break;
+        }
+        BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
+        foreach(string str in nameList){
+            Sprite spr = stack.LoadWallImage(str);
+            wallImage.sprite = spr;
+            inputedSprite = spr;
+            yield return null;
+        }
+    }
+
     private void ShowTargetObj(){
         if(type == ViewType.Gym){
             gymInfo.SetActive(true);
@@ -117,7 +135,22 @@ public class ModifyView: BNScreenInput
             gymInfo.SetActive(false);
             wallInfo.SetActive(false);
             routeInfo.SetActive(true);            
-        }        
+        }
+        if (tape != null){
+            tapeSelectedObj.SetActive(true);
+            tapeNoSelectedObj.SetActive(false); 
+        }else{
+            tapeSelectedObj.SetActive(false);
+            tapeNoSelectedObj.SetActive(true);             
+        }
+
+        if (inputedSprite != null){
+            wallImageNoSelectedObj.SetActive(false);
+            wallImageSelectedObj.SetActive(true);
+        }else{
+            wallImageNoSelectedObj.SetActive(true);
+            wallImageSelectedObj.SetActive(false);            
+        }                    
     }
 
     public override void UpdateScreen(){
@@ -125,12 +158,12 @@ public class ModifyView: BNScreenInput
         gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
         if (tape != null){
             routeTape.LoadTape(tape);
-            tapeSelectedObj.SetActive(true);
-            tapeNoSelectedObj.SetActive(false); 
-        }else{
-            tapeSelectedObj.SetActive(false);
-            tapeNoSelectedObj.SetActive(true);             
         }
+        if (inputedSprite != null){
+            wallImage.sprite = inputedSprite;
+        }
+
+        ShowTargetObj();
     }
 
     public void ReverseTransition(){
@@ -156,7 +189,16 @@ public class ModifyView: BNScreenInput
             }else{
                 newWall.ClearEnd();
             }
-            stack.ModifyWall(newWall);
+            
+            List<BNWallImage> list = new List<BNWallImage>();
+            List<string> removeList = null;
+            if (inputedSprite != null){
+                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                list.Add(wallImage);
+                removeList = wall.GetWallImageFileNames();
+                wall.AddWallImageFileName(wallImage.fileName);
+            }
+            stack.ModifyWall(wall, list, removeList);
 
         }else if(type == ViewType.Route){
             BNRoute newRoute = route.Clone();

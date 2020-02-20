@@ -13,7 +13,7 @@ public class BNTStack : MonoBehaviour
     private Stack<RectTransform> levels;
 
     private int restRTCount;
-    public void Init(){
+    public virtual void Init(){
         screenList = new List<BNScreen>();
         controllers = new Stack<BNTransitionController>();
         levels = new Stack<RectTransform>();

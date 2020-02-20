@@ -74,13 +74,14 @@ namespace BoulderNotes{
         [SerializeField] private string period;
         [SerializeField] private string start;
         [SerializeField] private string end;
-        [SerializeField] private string wallImagePath;
+        [SerializeField] private List<string> wallImagefileNames;
         [SerializeField] private List<string> routeIDs;
         [SerializeField] private bool isFinished;
 
         public BNWall(){
             id = BNGymDataCenter.PREFIX_ID_WALL + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             routeIDs = new List<string>();
+            wallImagefileNames = new List<string>();
             SetStart(DateTime.Now);
             isFinished = false;
         }
@@ -93,6 +94,16 @@ namespace BoulderNotes{
 
         public WallTypeMap.Type GetWallType(){
             return wallType;
+        }
+
+        public List<string> GetWallImageFileNames(){
+            return new List<string>(wallImagefileNames);
+        }
+        public void AddWallImageFileName(string wallImage){
+            wallImagefileNames.Add(wallImage);
+        }
+        public void SetWallImageFileNames(List<string> list){
+            wallImagefileNames = new List<string>(list);
         }
 
         public bool IsFinished(){
@@ -141,6 +152,17 @@ namespace BoulderNotes{
         public List<string> GetRouteIDs(){
             return new List<string>(routeIDs);
         }
+    }
+
+    public class BNWallImage{
+        public string fileName;
+        public Texture2D texture;
+
+        public BNWallImage(Texture2D tex){
+            fileName = BNGymDataCenter.PREFIX_ID_WALLIMAGE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID) + BNGymDataCenter.WALLIMAGE_EXTENSION;
+            texture = tex;
+        }
+
     }
     [Serializable]
     public class BNRoute{
@@ -282,7 +304,14 @@ namespace BoulderNotes{
         }
 
         public void DeleteRecord(BNRecord rec){
-            records.Remove(rec);
+            BNRecord deleteTarget = null;
+            foreach(BNRecord r in records){
+                if(r.GetID().Equals(rec.GetID())){
+                    deleteTarget = r;
+                    break;
+                }
+            }
+            records.Remove(deleteTarget);
             ResetRecordTryNumbers();
         }
 
@@ -323,6 +352,10 @@ namespace BoulderNotes{
         public BNRecord(){
             id = BNGymDataCenter.PREFIX_ID_RECORD + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             SetDate(DateTime.Now);
+        }
+
+        public bool IsSame(BNRecord rec){
+            return id.Equals(rec.GetID());
         }
         public BNRecord Clone(){
             return (BNRecord)this.MemberwiseClone();

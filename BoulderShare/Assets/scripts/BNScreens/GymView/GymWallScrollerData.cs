@@ -5,8 +5,7 @@ namespace BoulderNotes{
 public class GymWallScrollerData : GymWallScrollerDataBase
 {
     public BNWall wall;
-    public string gymWallTypeName;
-    public string gymWallPeriod;
+    public BNScreenStackWithTargetGym stack;
     
 }
 

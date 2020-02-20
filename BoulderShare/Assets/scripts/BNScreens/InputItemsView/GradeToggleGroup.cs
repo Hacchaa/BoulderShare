@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace BoulderNotes{
 public class GradeToggleGroup : MonoBehaviour
@@ -8,8 +9,9 @@ public class GradeToggleGroup : MonoBehaviour
     [SerializeField] private List<GradeToggle> toggles;
     [SerializeField] private InputItemsView view;
     [SerializeField] private BNGradeMap.Grade selectedGrade;
-
+    [SerializeField] private ScrollRect scroller;
     public void Init(BNGradeMap.Grade g){
+        scroller.verticalNormalizedPosition = 0.0f;
         selectedGrade = g;
         foreach(GradeToggle tog in toggles){
             tog.Init(g);

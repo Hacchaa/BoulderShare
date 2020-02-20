@@ -2,31 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
+using System.Linq; 
 namespace BoulderNotes {
 public class GymWallView : BNScreen
 {
     [SerializeField] private GymRouteScrollerController scroller;
     [SerializeField] private TextMeshProUGUI gymWallText;
+    [SerializeField] private Image wallImage;
+    [SerializeField] private Sprite defaultWallImage;
     public override void InitForFirstTransition(){
         scroller.Init();
     }
 
     public override void UpdateScreen(){
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+            BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
             //gymIDとwallIDだけ記憶
-            (belongingStack as BNScreenStackWithTargetGym).ClearRoute();
-            BNGym gym = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym();
-            BNWall wall = (belongingStack as BNScreenStackWithTargetGym).GetTargetWall();
+            stack.ClearRoute();
+            BNGym gym = stack.GetTargetGym();
+            BNWall wall = stack.GetTargetWall();
+            wallImage.sprite = defaultWallImage;
 
             string name = "";
             if (wall != null){
                 scroller.FetchData(BNGymDataCenter.Instance.ReadRoutes(wall, gym.GetID()));
                 name = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
+                List<string> list = wall.GetWallImageFileNames();
+
+                if (list != null && list.Any()){
+                    stack.LoadImage(wall, list[0], OnLoadImage);
+                }
             }
 
             gymWallText.text = name;
         }
+    }
+
+    private void OnLoadImage(Sprite spr){
+        wallImage.sprite = spr;
     }
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();

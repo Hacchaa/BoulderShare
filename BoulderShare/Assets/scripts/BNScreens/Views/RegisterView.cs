@@ -14,9 +14,12 @@ public class RegisterView: BNScreenInput
     [SerializeField] private GameObject routeInfo;
 
     [SerializeField] private AdvancedInputField gymNameTextIF;
-    [SerializeField] private TextMeshProUGUI wallTypeText;
+    [SerializeField] private TMP_InputField wallTypeIF;
+    [SerializeField] private Image wallImage;
+    [SerializeField] private GameObject wallImageNoSelectedObj;
+    [SerializeField] private GameObject wallImageSelectedObj;
 
-    [SerializeField] private TextMeshProUGUI gradeText;
+    [SerializeField] private TMP_InputField gradeIF;
     [SerializeField] private Toggle kanteToggle;
     [SerializeField] private GameObject tapeSelectedObj;
     [SerializeField] private GameObject tapeNoSelectedObj;
@@ -32,8 +35,8 @@ public class RegisterView: BNScreenInput
         titleText.text = "";
         gymNameTextIF.Text = "";
         wallType = WallTypeMap.Type.Slab;
-        wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
-        gradeText.text = "";
+        wallTypeIF.text = WallTypeMap.Entity.GetWallTypeName(wallType);
+        gradeIF.text = "";
         kanteToggle.isOn = false;
 
         routeTape.LoadDefault();        
@@ -42,6 +45,7 @@ public class RegisterView: BNScreenInput
     public override void InitForFirstTransition(){
         ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+            Debug.Log("path");
             BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
             BNGym gym = stack.GetTargetGym();
             BNWall wall = stack.GetTargetWall();
@@ -60,7 +64,10 @@ public class RegisterView: BNScreenInput
             type = ViewType.All;
             titleText.text = "新規登録";
         }
+        Show();
+    }
 
+    private void Show(){
         if (type == ViewType.All){
             gymInfo.SetActive(true);
             wallInfo.SetActive(true);
@@ -78,18 +85,31 @@ public class RegisterView: BNScreenInput
             wallInfo.SetActive(false);
             routeInfo.SetActive(true);
         }
-    }
-
-    public override void UpdateScreen(){
-        wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
-        gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
         if (tape != null){
-            routeTape.LoadTape(tape);
             tapeSelectedObj.SetActive(true);
             tapeNoSelectedObj.SetActive(false); 
         }else{
             tapeSelectedObj.SetActive(false);
             tapeNoSelectedObj.SetActive(true);             
+        }
+        if (inputedSprite != null){
+            wallImageNoSelectedObj.SetActive(false);
+            wallImageSelectedObj.SetActive(true);
+        }else{
+            wallImageNoSelectedObj.SetActive(true);
+            wallImageSelectedObj.SetActive(false);            
+        }       
+    }
+
+    public override void UpdateScreen(){
+        wallTypeIF.text = WallTypeMap.Entity.GetWallTypeName(wallType);
+        gradeIF.text = BNGradeMap.Entity.GetGradeName(grade);
+        Show();
+        if (tape != null){
+            routeTape.LoadTape(tape);
+        }
+        if (inputedSprite != null){
+            wallImage.sprite = inputedSprite;
         }
     }
 
@@ -112,9 +132,16 @@ public class RegisterView: BNScreenInput
 
         if(type == ViewType.All || type == ViewType.Wall){
             BNWall wall = new BNWall();
-            //Debug.Log(wallTypeTextIF.text);
+            //Debug.Log(wallTypeIFIF.text);
             wall.SetWallType(wallType);
-            s.WriteWall(wall);
+
+            List<BNWallImage> list = new List<BNWallImage>();
+            if (inputedSprite != null){
+                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                list.Add(wallImage);
+                wall.AddWallImageFileName(wallImage.fileName);
+            }
+            s.WriteWall(wall, list);
         }
         
         if(type == ViewType.All || type == ViewType.Route){
