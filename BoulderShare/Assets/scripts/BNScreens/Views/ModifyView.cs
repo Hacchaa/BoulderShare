@@ -195,10 +195,10 @@ public class ModifyView: BNScreenInput
             if (inputedSprite != null){
                 BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
                 list.Add(wallImage);
-                removeList = wall.GetWallImageFileNames();
-                wall.AddWallImageFileName(wallImage.fileName);
+                removeList = newWall.GetWallImageFileNames();
+                newWall.AddWallImageFileName(wallImage.fileName);
             }
-            stack.ModifyWall(wall, list, removeList);
+            stack.ModifyWall(newWall, list, removeList);
 
         }else if(type == ViewType.Route){
             BNRoute newRoute = route.Clone();

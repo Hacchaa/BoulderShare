@@ -345,6 +345,7 @@ namespace BoulderNotes{
         public string GetWallImagePath(BNGym gym, BNWall wall){
             return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + wall.GetID() + "/" + ES3_DIC_WALLIMAGE;
         }
+
         public IEnumerator LoadImage(string path, LoadImageDelegate del)
         {
             using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))

@@ -12,20 +12,28 @@ public class GymWallCellView : EnhancedScrollerCellView
 {   
     public BNWall wall;
     public Image wallImage;
+    private float fitWidth;
+    private float fitHeight;
     [SerializeField] private RectTransform fitTarget;
     [SerializeField] private Sprite defaultSprite;
     public TextMeshProUGUI wallTypeName;
     public TextMeshProUGUI period;
     public OnButtonClickedDelegateWithBNWall clickDel;
+
+    private RectTransform rect;
     public void SetData(GymWallScrollerData data){
+        rect = wallImage.GetComponent<RectTransform>();
         wall = data.wall;
-        wallImage.sprite = defaultSprite;
+        fitWidth = data.fitWidth;
+        fitHeight = data.fitHeight;
         wallTypeName.text = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
         period.text = wall.GetPeriod();
         List<string> list = wall.GetWallImageFileNames();
 
         if (list != null && list.Any()){
-            data.stack.LoadImage(wall, list[0], OnLoadImage);
+            OnLoadImage(data.stack.LoadWallImage(wall, list[0]));
+        }else{
+            OnLoadImage(defaultSprite);
         }
     }
     public void OnClicked(){
@@ -37,8 +45,6 @@ public class GymWallCellView : EnhancedScrollerCellView
     private void OnLoadImage(Sprite spr){
         wallImage.sprite = spr;
 
-        float fitWidth = fitTarget.rect.width;
-        float fitHeight = fitTarget.rect.height;
         float texWidth = spr.texture.width;
         float texHeight = spr.texture.height;
 
@@ -68,7 +74,7 @@ public class GymWallCellView : EnhancedScrollerCellView
                 w = texWidth * (fitHeight / texHeight);                 
             }
         }   
-        RectTransform rect = wallImage.GetComponent<RectTransform>();
+        Debug.Log("w="+w+" h="+h);
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         rect.sizeDelta = new Vector2(w, h);

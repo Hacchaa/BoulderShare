@@ -98,7 +98,21 @@ public class BNScreenStackWithTargetGym : BNTStack
             return null;
         }
 
-        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(targetGym, targetWall, fileName);
+        return LoadWallImage(targetGym, targetWall, fileName);
+    }
+    public Sprite LoadWallImage(BNWall wall, string fileName){
+        if (targetGym == null || wall == null){
+            return null;
+        }
+
+        return LoadWallImage(targetGym, wall, fileName);
+    }
+
+    public Sprite LoadWallImage(BNGym gym, BNWall wall, string fileName){
+        if (gym == null || wall == null){
+            return null;
+        }
+        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(gym, wall, fileName);
         Sprite sprite = Sprite.Create(
             texture, 
             new Rect(0.0f, 0.0f, texture.width, texture.height), 

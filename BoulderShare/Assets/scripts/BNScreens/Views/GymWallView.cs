@@ -31,7 +31,7 @@ public class GymWallView : BNScreen
                 List<string> list = wall.GetWallImageFileNames();
 
                 if (list != null && list.Any()){
-                    stack.LoadImage(wall, list[0], OnLoadImage);
+                    wallImage.sprite = stack.LoadWallImage(wall, list[0]);
                 }
             }
 

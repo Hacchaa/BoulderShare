@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EnhancedUI.EnhancedScroller;
+using System.Linq;
 
 namespace BoulderNotes{
 public class GymPastScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
@@ -10,6 +11,7 @@ public class GymPastScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
     private List<GymWallScrollerData> _data;
     public EnhancedScroller myScroller;
     public GymWallCellView gymWallCellViewPrefab;
+    [SerializeField] private float wallCellHeight = 240f;
 /*
     void Start(){
         _data = new List<GymWallScrollerData>();
@@ -28,20 +30,28 @@ public class GymPastScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
 
     public void FetchData(IReadOnlyList<BNWall> walls){
         _data.Clear();
+
         BNScreenStackWithTargetGym stack = null;
         if (view.GetBelongingStack() is BNScreenStackWithTargetGym){
             stack = view.GetBelongingStack() as BNScreenStackWithTargetGym;
         }
-        foreach(BNWall wall in walls){
-            if (!wall.IsFinished()){
-                continue;
+        IEnumerable<BNWall> sortedList ;
+        if (walls.Any()){
+            sortedList = walls.OrderByDescending(x => x.GetID());
+            RectTransform cellRect = myScroller.GetComponent<RectTransform>();
+            //Debug.Log("width:"+cellRect.rect.width);
+            foreach(BNWall wall in sortedList){
+                if (!wall.IsFinished()){
+                    continue;
+                }
+                GymWallScrollerData data = new GymWallScrollerData();
+                data.wall = wall;
+                data.stack = stack;
+                data.fitHeight = wallCellHeight;
+                data.fitWidth = cellRect.rect.width - (myScroller.padding.left + myScroller.padding.right);
+                _data.Add(data);
             }
-            GymWallScrollerData data = new GymWallScrollerData();
-            data.wall = wall;
-            data.stack = stack;
-            _data.Add(data);
         }
-
         myScroller.ReloadData();
     }
 

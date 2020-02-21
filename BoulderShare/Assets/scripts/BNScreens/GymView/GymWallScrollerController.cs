@@ -14,6 +14,8 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
     public GymWallCellView gymWallCellViewPrefab;
     public GymWallAddCellView gymWallAddCellViewPrefab;
     public GymWallPastCellView gymWallPastCellViewPrefab;
+
+    [SerializeField] private float wallCellHeight = 240f;
 /*
     void Start(){
         _data = new List<GymWallScrollerDataBase>();
@@ -43,6 +45,8 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
         IEnumerable<BNWall> sortedList ;
         if (walls.Any()){
             sortedList = walls.OrderByDescending(x => x.GetID());
+            RectTransform cellRect = myScroller.GetComponent<RectTransform>();
+            //Debug.Log("width:"+cellRect.rect.width);
             foreach(BNWall wall in sortedList){
                 if (wall.IsFinished()){
                     continue;
@@ -50,6 +54,8 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
                 GymWallScrollerData data = new GymWallScrollerData();
                 data.wall = wall;
                 data.stack = stack;
+                data.fitHeight = wallCellHeight;
+                data.fitWidth = cellRect.rect.width - (myScroller.padding.left + myScroller.padding.right);
                 _data.Add(data);
             }
         }
@@ -64,7 +70,7 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
 
     public float GetCellViewSize(EnhancedScroller scroller, int dataIndex){
         if (_data[dataIndex] is GymWallScrollerData){
-            return 240f;
+            return wallCellHeight;
         }
 
         return 50f;

@@ -6,6 +6,8 @@ public class GymWallScrollerData : GymWallScrollerDataBase
 {
     public BNWall wall;
     public BNScreenStackWithTargetGym stack;
+    public float fitWidth;
+    public float fitHeight;
     
 }
 
