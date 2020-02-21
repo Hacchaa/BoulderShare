@@ -152,6 +152,7 @@ public class SelecteWallImageView : BNScreen
                 ReverseTransition();
             } else {
                 Debug.Log("Madia picker failed with reason: " + result.Error.Message);
+                ReverseTransition();
             }
         });
 	}
@@ -185,6 +186,7 @@ public class SelecteWallImageView : BNScreen
     }
 
     private void LoadImageForEditor(){
+        #if UNITY_EDITOR
         var path = EditorUtility.OpenFilePanel("load image", "","png");
         if (path.Length != 0) {
             string destination = Application.persistentDataPath + "/" + "pickImage.png";
@@ -194,8 +196,8 @@ public class SelecteWallImageView : BNScreen
             Debug.Log ("PickerOSX:" + destination);
      
             StartCoroutine(LoadImage(destination));
-        
         }      
+        #endif
     }
 
 

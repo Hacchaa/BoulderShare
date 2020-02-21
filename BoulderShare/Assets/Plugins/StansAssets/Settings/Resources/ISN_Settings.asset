@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d5455d6d21d4ea98ea2c10c4aab299, type: 3}
   m_Name: ISN_Settings
   m_EditorClassIdentifier: 
-  LastVersionCode: 
+  LastVersionCode: 2020.2b2
   Contacts: 0
   Photos: 0
   ReplayKit: 0
   Social: 0
   AdSupport: 0
-  AVKit: 0
+  AVKit: 1
   CoreLocation: 0
   AssetsLibrary: 0
   AppDelegate: 0
@@ -35,7 +35,7 @@ MonoBehaviour:
   MediaLibraryUsageDescriptionEnabled: 0
   PhotoLibraryUsageDescriptionEnabled: 1
   PhotoLibraryAddUsageDescriptionEnabled: 1
-  MicrophoneUsageDescriptionEnabled: 0
+  MicrophoneUsageDescriptionEnabled: 1
   ContactsUsageDescription: Please change 'Contacts Usage Description' with IOS Native
     Contacts Editor Settings
   LocationAlwaysAndWhenInUseUsageDescription: Please change 'Location Always And When

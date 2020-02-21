@@ -70,7 +70,7 @@ public class RegisterRecordView : BNScreenInput
     }
 
     public override void UpdateScreen(){
-        commentText.text = inputedText.Replace(Environment.NewLine, "");
+        commentText.text = inputedText;
     }
 
     public void Register(){
