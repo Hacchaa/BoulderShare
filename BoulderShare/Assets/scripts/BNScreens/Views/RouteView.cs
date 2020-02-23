@@ -16,8 +16,6 @@ public class RouteView : BNScreen
     [SerializeField] private RecordScrollerController scroller;
     
 
-    private BNGym gym;
-    private BNWall wall;
     [SerializeField] private BNRoute route;
 
     [SerializeField] private Image favoriteImage;
@@ -38,8 +36,6 @@ public class RouteView : BNScreen
         gradeText.text ="";
         periodText.text = "";
         kanteText.text = "";
-        gym = null;
-        wall = null;
         route = null;
     }
 
@@ -48,8 +44,6 @@ public class RouteView : BNScreen
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             //recordIDを削除
             (belongingStack as BNScreenStackWithTargetGym).ClearRecord();
-            gym = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym();
-            wall = (belongingStack as BNScreenStackWithTargetGym).GetTargetWall();
             route = (belongingStack as BNScreenStackWithTargetGym).GetTargetRoute();
            
             if (route != null){
@@ -77,7 +71,7 @@ public class RouteView : BNScreen
 
     public void SaveTargerRecordInStack(BNRecord rec){
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRecord(rec);
+            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRecord(rec.GetID());
         }
     }
     public void ReverseTransition(){
@@ -120,7 +114,9 @@ public class RouteView : BNScreen
         //routeを保存
         if (route != null){
             route.SetIsFavorite(isFavorite);
-            BNGymDataCenter.Instance.ModifyRoute(route, wall.GetID(), gym.GetID());
+            if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+                (belongingStack as BNScreenStackWithTargetGym).ModifyRoute(route);
+            }
         }
     }
 }

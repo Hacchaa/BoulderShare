@@ -176,42 +176,45 @@ public class ModifyView: BNScreenInput
         }
         BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
         if (type == ViewType.Gym){
-            BNGym newGym = gym.Clone();
-            newGym.SetGymName(gymNameTextIF.Text);
-            stack.ModifyGym(newGym);
-
+            gym.SetGymName(gymNameTextIF.Text);
+            stack.ModifyGym(gym);
+            stack.ClearWall();
+            stack.StoreTargetGym(gym.GetID());
         }else if(type == ViewType.Wall){
-            BNWall newWall = wall.Clone();
-            newWall.SetWallType(wallType);
-            newWall.SetIsFinished(finishedWallToggle.isOn);
+            wall.SetWallType(wallType);
+            wall.SetIsFinished(finishedWallToggle.isOn);
             if (finishedWallToggle.isOn){
-                newWall.SetEnd(DateTime.Now);
+                wall.SetEnd(DateTime.Now);
             }else{
-                newWall.ClearEnd();
+                wall.ClearEnd();
             }
             
             List<BNWallImage> list = new List<BNWallImage>();
-            List<string> removeList = null;
+            List<string> files = new List<string>();
             if (inputedSprite != null){
+                wall.SetWallImageFileNames(files);
                 BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
                 list.Add(wallImage);
-                removeList = newWall.GetWallImageFileNames();
-                newWall.AddWallImageFileName(wallImage.fileName);
+                wall.AddWallImageFileName(wallImage.fileName);
             }
-            stack.ModifyWall(newWall, list, removeList);
+            stack.ModifyWall(wall, list);
+            stack.ClearRoute();
+            stack.StoreTargetWall(wall.GetID());
 
         }else if(type == ViewType.Route){
-            BNRoute newRoute = route.Clone();
-            newRoute.SetGrade(grade);
-            newRoute.SetIsFinished(finishedRouteToggle.isOn);
+            route.SetGrade(grade);
+            route.SetIsFinished(finishedRouteToggle.isOn);
             if (finishedRouteToggle.isOn){
-                newRoute.SetEnd(DateTime.Now);
+                route.SetEnd(DateTime.Now);
             }else{
-                newRoute.ClearEnd();
+                route.ClearEnd();
             }
-            newRoute.SetIsUsedKante(KanteToggle.isOn);
-            newRoute.SetTape(tape);
-            stack.ModifyRoute(newRoute);
+            route.SetIsUsedKante(KanteToggle.isOn);
+            route.SetTape(tape);
+            stack.ModifyRoute(route);
+
+            stack.ClearRecord();
+            stack.StoreTargetRoute(route.GetID());
         }
 
         ReverseTransition();

@@ -26,12 +26,12 @@ public class GymWallView : BNScreen
 
             string name = "";
             if (wall != null){
-                scroller.FetchData(BNGymDataCenter.Instance.ReadRoutes(wall, gym.GetID()));
+                scroller.FetchData(wall.GetRoutes());
                 name = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
                 List<string> list = wall.GetWallImageFileNames();
 
                 if (list != null && list.Any()){
-                    wallImage.sprite = stack.LoadWallImage(wall, list[0]);
+                    wallImage.sprite = stack.LoadWallImage(list[0]);
                 }
             }
 
@@ -47,7 +47,7 @@ public class GymWallView : BNScreen
     }
     public void SaveTargetRouteInStack(BNRoute route){
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRoute(route);
+            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRoute(route.GetID());
         }
     }
     public void ToRouteView(){

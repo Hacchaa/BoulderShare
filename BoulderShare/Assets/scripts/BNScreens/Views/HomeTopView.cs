@@ -30,7 +30,8 @@ public class HomeTopView : BNScreen
             return ;
         }
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).StoreTargetGym(gym);
+            (belongingStack as BNScreenStackWithTargetGym).ClearGym();
+            (belongingStack as BNScreenStackWithTargetGym).StoreTargetGym(gym.GetID());
         }
     }
 }

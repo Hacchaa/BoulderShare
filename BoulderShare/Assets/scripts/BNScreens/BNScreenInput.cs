@@ -15,6 +15,8 @@ public class BNScreenInput : BNScreen
         tape = null;
         inputedSprite = null;
         inputedText = "";
+        wallType = WallTypeMap.Type.Slab;
+        grade = BNGradeMap.Grade.None;
     }
 
     public void SetSprite(Sprite spr){

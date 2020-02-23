@@ -21,20 +21,26 @@ public class RegisterRecordView : BNScreenInput
 
     [SerializeField] private BNRecord record;
     [SerializeField] private BNRoute route;
+    [SerializeField] private ClearStatusToggle[] toggles;
+    [SerializeField] private GameObject clearStatusObj;
+    private BNScreenStackWithTargetGym stack;
   
     public override void InitForFirstTransition(){
         ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            BNGym gym = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym();
-            BNWall wall = (belongingStack as BNScreenStackWithTargetGym).GetTargetWall();
-            route = (belongingStack as BNScreenStackWithTargetGym).GetTargetRoute();
+            stack = (belongingStack as BNScreenStackWithTargetGym);
+            route = stack.GetTargetRoute();
 
             if (route == null){
                 //あるはずがない処理
                 return ;
             }
+            BNRoute.ClearStatus status = route.GetTotalClearStatus();
+            for(int i = 0 ; i < toggles.Length ; i++){
+                toggles[i].Init(status);
+            }
 
-            record = (belongingStack as BNScreenStackWithTargetGym).GetTargetRecord();
+            record = stack.GetTargetRecord();
 
             if (record == null){
                 //Debug.Log("new");
@@ -42,6 +48,7 @@ public class RegisterRecordView : BNScreenInput
                 dayText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_DATE);
                 tryNumberText.text = route.GetNewTryNumber()+"";
                 deleteButton.SetActive(false);
+                clearStatusObj.SetActive(false);
             }else{
                 //Debug.Log("edit");
                 //編集
@@ -51,9 +58,8 @@ public class RegisterRecordView : BNScreenInput
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
                 inputedText = record.GetComment();
 
-                deleteButton.SetActive(true);                
+                deleteButton.SetActive(true);
             }
-            commentText.text = inputedText.Replace(Environment.NewLine, "");
         }
     }
 
@@ -67,6 +73,7 @@ public class RegisterRecordView : BNScreenInput
         tryNumberText.text = "";
         record = null;
         route = null;
+        stack = null;
     }
 
     public override void UpdateScreen(){
@@ -74,39 +81,51 @@ public class RegisterRecordView : BNScreenInput
     }
 
     public void Register(){
-        if (route == null){
+        if (route == null || stack == null){
             return ;
         }
+
         if (record != null){
             //record.SetTime(time);
             record.SetTryNumber(int.Parse(tryNumberText.text));
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
             record.SetComment(inputedText);
-            if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-                (belongingStack as BNScreenStackWithTargetGym).ModifyRecord(record);
+
+            BNRecord oldRecord = null;
+            foreach(BNRecord r in route.GetRecords()){
+                if (r.GetID().Equals(record.GetID())){
+                    oldRecord = r;
+                    break;
+                }
+            }
+
+            if (oldRecord != null){
+                route.DeleteRecord(oldRecord);
+                route.AddRecord(record);
             }
         }else{
-            BNRecord rec = new BNRecord();
-            rec.SetTryNumber(int.Parse(tryNumberText.text));
-            rec.SetCompleteRate((int)completeRateSlider.value);
-            rec.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            rec.SetComment(inputedText);
-            if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-                (belongingStack as BNScreenStackWithTargetGym).WriteRecord(rec);
-            }               
+            record = new BNRecord();
+            record.SetTryNumber(int.Parse(tryNumberText.text));
+            record.SetCompleteRate((int)completeRateSlider.value);
+            record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
+            record.SetComment(inputedText);
+
+            route.AddRecord(record);           
         }
-   
+        route.ReCalculateClearStatus();
+        stack.ModifyRoute(route);
+        stack.StoreTargetRecord(record.GetID());  
     }
 
     private void DeleteRecord(){
-        if (route == null || record == null){
+        if (record == null){
             return ;
         }
-        route.DeleteRecord(record);
-        record = null;
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).ModifyRoute(route);
+        if (stack != null){
+            route.DeleteRecord(record);
+            route.ReCalculateClearStatus();
+            stack.ModifyRoute(route);
         }
     }
 
@@ -141,6 +160,26 @@ public class RegisterRecordView : BNScreenInput
     private void OnLoadSprite(Sprite spr){
         selectedConditon.sprite = spr;
     }
+    public void SetHasInsight(BNRoute.ClearStatus s){
+        if (s == BNRoute.ClearStatus.Flash){
+            route.SetHasInsight(true);
+        }else if(s == BNRoute.ClearStatus.Onsight){
+            route.SetHasInsight(false);
+        }
+    }
 
+    public void OnClearSliderValueChanged(float v){
+        if (v == 100f){
+            if (record != null && record.GetTryNumber() == 1){
+                clearStatusObj.SetActive(true);
+            }else if(record == null && route.GetNewTryNumber() == 1){
+                clearStatusObj.SetActive(true);
+            }else{
+                clearStatusObj.SetActive(false);
+            }
+        }else{
+            clearStatusObj.SetActive(false);
+        }
+    }
 }
 }

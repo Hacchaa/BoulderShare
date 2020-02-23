@@ -21,6 +21,7 @@ namespace BoulderNotes{
     public class BNGym{
         [SerializeField]private string id;
         [SerializeField]private List<string> wallIDs;
+        [SerializeField] private List<BNWall> walls;
         [SerializeField]private string gradeTableImagePath;
         [SerializeField]private string gymName;
         [SerializeField]private string gymBoardImagePath;
@@ -28,6 +29,7 @@ namespace BoulderNotes{
         public BNGym(){
             id = BNGymDataCenter.PREFIX_ID_GYM + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             wallIDs = new List<string>();
+            walls = new List<BNWall>();
         }
         public BNGym Clone(){
             return (BNGym)this.MemberwiseClone();
@@ -58,6 +60,21 @@ namespace BoulderNotes{
         public List<string> GetWallIDs(){
             return new List<string>(wallIDs);
         }
+
+        public void SetWalls(List<BNWall> list){
+            walls = new List<BNWall>(list);
+        }
+
+        public void DeleteWall(BNWall wall){
+            walls.Remove(wall);
+        }
+
+        public void AddWall(BNWall wall){
+            walls.Add(wall);
+        }
+        public List<BNWall> GetWalls(){
+            return new List<BNWall>(walls);
+        }
     }
     [Serializable]
     public class BNGymIDs{
@@ -76,11 +93,13 @@ namespace BoulderNotes{
         [SerializeField] private string end;
         [SerializeField] private List<string> wallImagefileNames;
         [SerializeField] private List<string> routeIDs;
+        [SerializeField] private List<BNRoute> routes;
         [SerializeField] private bool isFinished;
 
         public BNWall(){
             id = BNGymDataCenter.PREFIX_ID_WALL + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             routeIDs = new List<string>();
+            routes = new List<BNRoute>();
             wallImagefileNames = new List<string>();
             SetStart(DateTime.Now);
             isFinished = false;
@@ -152,6 +171,21 @@ namespace BoulderNotes{
         public List<string> GetRouteIDs(){
             return new List<string>(routeIDs);
         }
+
+        public void SetRoutes(List<BNRoute> list){
+            routes = new List<BNRoute>(list);
+        }
+        public void AddRoute(BNRoute route){
+            routes.Add(route);
+        }
+
+        public void DeleteRoute(BNRoute route){
+            routes.Remove(route);
+        }
+
+        public List<BNRoute> GetRoutes(){
+            return new List<BNRoute>(routes);
+        }
     }
 
     public class BNWallImage{
@@ -166,13 +200,13 @@ namespace BoulderNotes{
     }
     [Serializable]
     public class BNRoute{
-
+        public enum ClearStatus {NoAchievement, RP, Flash, Onsight};
         [SerializeField] private string id;
         [SerializeField] private RTape tape;
         [SerializeField] private List<BNMark> marks;
         [SerializeField] private string routeImagePath;
         [SerializeField] private BNGradeMap.Grade grade;
-        [SerializeField] private int totalClearStatus;
+        [SerializeField] private ClearStatus totalClearStatus;
         [SerializeField] private string start;
         [SerializeField] private string end;
 
@@ -180,6 +214,8 @@ namespace BoulderNotes{
         [SerializeField] private bool isFinished;
         [SerializeField] private bool usedKante;
         [SerializeField] private bool isFavorite;
+        [SerializeField] private bool hasInsight;
+
 
         public BNRoute(){
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
@@ -192,6 +228,8 @@ namespace BoulderNotes{
             isFinished = false;
             usedKante = false;
             isFavorite = false;
+            hasInsight = true;
+            totalClearStatus = ClearStatus.NoAchievement;
         }
         public BNRoute Clone(){
             return (BNRoute)this.MemberwiseClone();
@@ -212,8 +250,11 @@ namespace BoulderNotes{
         public void SetGrade(BNGradeMap.Grade g){
             grade = g;
         }
+        public void SetHasInsight(bool b){
+            hasInsight = b;
+        }
 
-        public int GetTotalClearStatus(){
+        public ClearStatus GetTotalClearStatus(){
             return totalClearStatus;
         }
         public bool IsFinished(){
@@ -245,13 +286,7 @@ namespace BoulderNotes{
         }
 
         public int GetNewTryNumber(){
-            int n = 0;
-            foreach(BNRecord rec in records){
-                if (n < rec.GetTryNumber()){
-                    n = rec.GetTryNumber();
-                }
-            }
-            return n + 1;
+            return records.Count + 1;
         }
         public void SetID(string str){
             id = str;
@@ -264,7 +299,7 @@ namespace BoulderNotes{
             }
             tape = t.Clone();
         }
-        public void SetTotalClearStatus(int s){
+        public void SetTotalClearStatus(ClearStatus s){
             totalClearStatus = s;
         }
         public string GetPeriod(){
@@ -317,10 +352,33 @@ namespace BoulderNotes{
 
         private void ResetRecordTryNumbers(){
             int n = 1;
-            IEnumerable<BNRecord> sorted = records.OrderBy(x => x.GetDate());
+            IEnumerable<BNRecord> sorted = records.OrderBy(x => x.GetID());
             foreach(BNRecord rec in sorted){
                 rec.SetTryNumber(n);
                 n++;
+            }
+        }
+        public void ReCalculateClearStatus(){
+            bool isComplete = false;
+            foreach(BNRecord record in records){
+                if (record.GetTryNumber() == 1 && record.GetCompleteRate() == 100){
+                    if (hasInsight){
+                        totalClearStatus = BNRoute.ClearStatus.Flash;
+                    }else{
+                        totalClearStatus = BNRoute.ClearStatus.Onsight;
+                    }
+                    return ;
+                }
+
+                if (record.GetCompleteRate() == 100){
+                    isComplete = true;
+                }
+            }
+
+            if (isComplete){
+                totalClearStatus = BNRoute.ClearStatus.RP;
+            }else{
+                totalClearStatus = BNRoute.ClearStatus.NoAchievement;
             }
         }
     }
@@ -349,6 +407,7 @@ namespace BoulderNotes{
         [SerializeField] private string comment;
         [SerializeField] private int completeRate;
         [SerializeField] private int tryNumber;
+
         public BNRecord(){
             id = BNGymDataCenter.PREFIX_ID_RECORD + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
             SetDate(DateTime.Now);

@@ -45,7 +45,6 @@ public class RegisterView: BNScreenInput
     public override void InitForFirstTransition(){
         ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            Debug.Log("path");
             BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
             BNGym gym = stack.GetTargetGym();
             BNWall wall = stack.GetTargetWall();
@@ -128,6 +127,7 @@ public class RegisterView: BNScreenInput
             BNGym gym = new BNGym();
             gym.SetGymName(gymNameTextIF.Text);
             s.WriteGym(gym);
+            s.StoreTargetGym(gym.GetID());
         }
 
         if(type == ViewType.All || type == ViewType.Wall){
@@ -142,6 +142,7 @@ public class RegisterView: BNScreenInput
                 wall.AddWallImageFileName(wallImage.fileName);
             }
             s.WriteWall(wall, list);
+            s.StoreTargetWall(wall.GetID());
         }
         
         if(type == ViewType.All || type == ViewType.Route){
@@ -150,6 +151,7 @@ public class RegisterView: BNScreenInput
             route.SetIsUsedKante(kanteToggle.isOn);
             route.SetTape(tape);
             s.WriteRoute(route);
+            s.StoreTargetRoute(route.GetID());
         }
 
         ReverseTransition();

@@ -31,7 +31,7 @@ public class GymWallCellView : EnhancedScrollerCellView
         List<string> list = wall.GetWallImageFileNames();
 
         if (list != null && list.Any()){
-            OnLoadImage(data.stack.LoadWallImage(wall, list[0]));
+            OnLoadImage(data.stack.LoadWallImage(list[0]));
         }else{
             OnLoadImage(defaultSprite);
         }

@@ -9,6 +9,7 @@ public class BNManager : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60; 
         CanvasResolutionManager.Instance.InitHeights();
+        BNGymDataCenter.Instance.Init();
         BNScreens.Instance.Init();
     }
 }

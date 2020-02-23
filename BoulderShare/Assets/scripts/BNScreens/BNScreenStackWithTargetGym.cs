@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace BoulderNotes {
 public class BNScreenStackWithTargetGym : BNTStack
@@ -48,71 +49,65 @@ public class BNScreenStackWithTargetGym : BNTStack
 
     //gym,wall,routeは階層構造を維持する
     //gymの参照が変わると、wallとrouteの参照ができないようにしなくてはいけない
-    public void StoreTargetGym(BNGym gym){
-        targetGym = gym;
-    }
     public void StoreTargetGym(string gymID){
-        ClearGym();
-        if (string.IsNullOrEmpty(gymID)){
-            return ;
-        }
-        targetGym = BNGymDataCenter.Instance.ReadGym(gymID);
+        targetGym = BNGymDataCenter.Instance.ReadGymFromCache(gymID);
     }
 
-    public void StoreTargetWall(BNWall wall){
-        targetWall = wall;
-    }
-  
     public void StoreTargetWall(string wallID){
         ClearWall();
-        if (targetGym == null || string.IsNullOrEmpty(wallID)){
+        if (targetGym == null){
             return ;
         }
-        targetWall = BNGymDataCenter.Instance.ReadWall(wallID, targetGym.GetID());
-    }
 
-    public void StoreTargetRoute(BNRoute route){
-        targetRoute = route;
+        foreach(BNWall w in targetGym.GetWalls()){
+            if (w.GetID().Equals(wallID)){
+                targetWall = w;
+                break;
+            }
+        }
     }
 
     public void StoreTargetRoute(string routeID){
         ClearRoute();
-        if (targetGym == null || targetWall == null || string.IsNullOrEmpty(routeID)){
+        if (targetWall == null){
             return ;
         }
-        targetRoute = BNGymDataCenter.Instance.ReadRoute(routeID, targetWall.GetID(), targetGym.GetID());
+
+        foreach(BNRoute r in targetWall.GetRoutes()){
+            if (r.GetID().Equals(routeID)){
+                targetRoute = r;
+                break;
+            }
+        }
     }
-    public void StoreTargetRecord(BNRecord rec){
-        targetRecord = rec;
-    }
-    public void StoreTargetRecord(string id){
+
+    public void StoreTargetRecord(string recordID){
         ClearRecord();
         if (targetRoute == null){
             return ;
         }
-        targetRecord = targetRoute.GetRecord(id);
+
+        foreach(BNRecord r in targetRoute.GetRecords()){
+            if (r.GetID().Equals(recordID)){
+                targetRecord = r;
+                break;
+            }
+        }
     }
 
     public Sprite LoadWallImage(string fileName){
-        if (targetGym == null || targetWall == null){
+        if (targetGym == null){
             return null;
         }
 
-        return LoadWallImage(targetGym, targetWall, fileName);
-    }
-    public Sprite LoadWallImage(BNWall wall, string fileName){
-        if (targetGym == null || wall == null){
-            return null;
-        }
-
-        return LoadWallImage(targetGym, wall, fileName);
+        return LoadWallImage(targetGym, fileName);
     }
 
-    public Sprite LoadWallImage(BNGym gym, BNWall wall, string fileName){
-        if (gym == null || wall == null){
+    public Sprite LoadWallImage(BNGym gym, string fileName){
+        if (gym == null){
             return null;
         }
-        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(gym, wall, fileName);
+        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(gym,fileName);
         Sprite sprite = Sprite.Create(
             texture, 
             new Rect(0.0f, 0.0f, texture.width, texture.height), 
@@ -122,124 +117,128 @@ public class BNScreenStackWithTargetGym : BNTStack
         return sprite;
     }
 
-    public void LoadImage(BNWall wall, string fileName, LoadImageDelegate del){
-        if (targetGym == null || wall == null){
-            return ;
-        }
-        string path = BNGymDataCenter.Instance.GetWallImagePath(targetGym, wall) + "/" + fileName;
-        StartCoroutine(BNGymDataCenter.Instance.LoadImage(path, del));
-    }
-
-
-
     public void WriteGym(BNGym gym){
-        bool success = BNGymDataCenter.Instance.WriteGym(gym);
-        if (success){
-            targetGym = gym;
-        }
+        BNGymDataCenter.Instance.WriteGym(gym);
     }
+    
     public void WriteWall(BNWall wall, List<BNWallImage> wallImageList){
-        if (targetGym == null || wall == null){
+        if (targetGym == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
             return ;
         }
-        bool success = BNGymDataCenter.Instance.WriteWall(wall, wallImageList, targetGym);
-        if (success){
-            targetWall = wall;
+
+        //既にwallIDが存在する場合、作らない
+        string wallID = wall.GetID();
+        if (targetGym.GetWalls().Any(x => x.GetID().Equals(wallID))){
+            return ;
         }
+        targetGym.AddWall(wall);
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
+
+        if (wallImageList == null){
+            return ;
+        }
+        BNGymDataCenter.Instance.SaveWallImages(targetGym, wallImageList);
     }
     public void WriteRoute(BNRoute route){
-        if (targetGym == null || targetWall == null || route == null){
+        if (targetGym == null || targetWall == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
-        bool success = BNGymDataCenter.Instance.WriteRoute(route, targetWall, targetGym);
-        if (success){
-            targetRoute = route;
+        //既にrouteIDが存在する場合、作らない
+        string routeID = route.GetID();
+        if (targetWall.GetRoutes().Any(x => x.GetID().Equals(routeID))){
+            return ;
         }
+        targetWall.AddRoute(route);
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
     }
     public void WriteRecord(BNRecord record){
-        if (targetGym == null || targetWall == null || targetRoute == null || record == null){
+        if (targetGym == null || targetWall == null || targetRoute == null || record == null || string.IsNullOrEmpty(record.GetID())){
             return ;
         }
-        targetRecord = record;
+        //既にrecordIDが存在する場合、作らない
+        string recordID = record.GetID();
+        if (targetRoute.GetRecords().Any(x => x.GetID().Equals(recordID))){
+            return ;
+        }
         targetRoute.AddRecord(record);
-
-        bool success = BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);
-
-        //失敗した場合、targetrouteの参照を元に戻す
-        if (!success){
-            targetRoute.DeleteRecord(record);
-        }
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
     }
 
-    //targetgymをgymに変更する
+    //targetgymを保存
+    public void ModifyGym(){
+        ModifyGym(targetGym);
+    }
+
     public void ModifyGym(BNGym gym){
-        ClearWall();
-        
-        bool success = BNGymDataCenter.Instance.ModifyGym(gym);
-
-        //成功した場合、targetgymをgymに変更する
-        if (success){
-            targetGym = gym;
-        }
-    }
-    public void ModifyWall(BNWall wall, List<BNWallImage> addImageWallList, List<string> removeWallImageList){
-        if (targetGym == null || wall == null){
+        if (targetGym == null || gym == null){
             return ;
         }
-        ClearRoute();
-        bool success = BNGymDataCenter.Instance.ModifyWall(wall, addImageWallList, removeWallImageList, targetGym);
-        if (success){
-            targetWall = wall;
+        if (!targetGym.GetID().Equals(gym.GetID())){
+            return ;
         }
+        bool success = BNGymDataCenter.Instance.ModifyGym(gym);
+        if (success){
+            ClearWall();
+            targetGym = gym;                
+        }       
+    }
+    
+    //wallは必ずcloneしたものにする
+    public void ModifyWall(BNWall wall, List<BNWallImage> addWallImageList){
+        if (targetGym == null || targetWall == null || wall == null || string.IsNullOrEmpty(wall.GetID())){
+            return ;
+        }
+ 
+        if (!targetWall.GetID().Equals(wall.GetID())){
+            return ;
+        }
+
+        List<string> newList = wall.GetWallImageFileNames();
+        List<string> oldList = targetWall.GetWallImageFileNames();
+        if (addWallImageList != null){
+            BNGymDataCenter.Instance.SaveWallImages(targetGym, addWallImageList);
+        }
+
+        
+        List<string> remList = new List<string>(oldList.Except(newList));
+        BNGymDataCenter.Instance.DeleteWallImages(targetGym, remList);
+
+        targetGym.DeleteWall(targetWall);
+        targetGym.AddWall(wall);
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
+        ClearRoute();
+        targetWall = wall;
     }
     public void ModifyRoute(BNRoute route){
-        if (targetGym == null || targetWall == null || route == null){
+        if (targetGym == null || targetWall == null || targetRoute == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
-        ClearRecord();
-        
-        bool success = BNGymDataCenter.Instance.ModifyRoute(route, targetWall, targetGym);
-        if (success){
+
+        if (targetRoute.GetID().Equals(route.GetID())){
+            targetWall.DeleteRoute(targetRoute);
+            targetWall.AddRoute(route);
+            BNGymDataCenter.Instance.ModifyGym(targetGym);
+            ClearRecord();
             targetRoute = route;
         }
     }
     public void ModifyRecord(BNRecord record){
-        if (targetGym == null || targetWall == null || targetRoute == null || record == null){
+        if (targetGym == null || targetWall == null || targetRoute == null || targetRecord == null || record == null || string.IsNullOrEmpty(record.GetID())){
             return ;
         }
-        targetRecord = record;
-        List<BNRecord> recList = new List<BNRecord>(targetRoute.GetRecords());
 
-        int i = 0;
-        bool hasRecord = false;
-        foreach(BNRecord rec in recList){
-            if (rec.GetID().Equals(record.GetID())){
-                hasRecord = true;
-                break;
-            }
-            i++;
-        }
-        if (!hasRecord){
-            return ;
-        }
-        BNRecord oldRecord = recList[i];
-        recList.RemoveAt(i);
-        recList.Insert(i, record);
-        targetRoute.SetRecords(recList);
-
-        bool success = BNGymDataCenter.Instance.ModifyRoute(targetRoute, targetWall, targetGym);
-        //失敗した場合元に戻す
-        if (!success){
-            recList.RemoveAt(i);
-            recList.Insert(i, oldRecord);
-            targetRoute.SetRecords(recList);
-        }        
+        if (targetRecord.GetID().Equals(record.GetID())){
+            targetRoute.DeleteRecord(targetRecord);
+            targetRoute.AddRecord(record);
+            BNGymDataCenter.Instance.ModifyGym(targetGym);
+            targetRecord = record;
+        }   
     }
-
     public void DeleteGym(){
         if (targetGym == null){
             return ;
         }
+
         BNGymDataCenter.Instance.DeleteGym(targetGym.GetID());
         ClearGym();
     }
@@ -247,16 +246,35 @@ public class BNScreenStackWithTargetGym : BNTStack
         if (targetGym == null || targetWall == null){
             return ;
         }
-        BNGymDataCenter.Instance.DeleteWall(targetWall.GetID(), targetGym.GetID());
+
+        targetGym.DeleteWall(targetWall);
+        BNGymDataCenter.Instance.DeleteWallImages(targetGym, targetWall.GetWallImageFileNames());
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
         ClearWall();
     }
     public void DeleteRoute(){
         if (targetGym == null || targetWall == null || targetRoute == null){
             return ;
         }
-        BNGymDataCenter.Instance.DeleteRoute(targetRoute.GetID(), targetWall.GetID(), targetGym.GetID());
+        BNWall tWall = targetWall;
+
+        targetWall.DeleteRoute(targetRoute);
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
         ClearRoute();
     }
+    public void DeleteRecord(){
+        if (targetGym == null || targetWall == null || targetRoute == null || targetRecord == null){
+            return ;
+        }
+
+        BNWall tWall = targetWall;
+        BNRoute tRoute = targetRoute;
+
+        targetRoute.DeleteRecord(targetRecord);
+        BNGymDataCenter.Instance.ModifyGym(targetGym);
+        ClearRecord();
+    }
+
     public void ClearGym(){
         targetGym = null;
         targetWall = null;

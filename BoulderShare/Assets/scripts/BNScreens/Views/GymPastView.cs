@@ -19,7 +19,7 @@ public class GymPastView : BNScreen
             BNGym gym = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym();
             string name = "";
             if (gym != null){
-                scroller.FetchData(BNGymDataCenter.Instance.ReadWalls(gym));
+                scroller.FetchData(gym.GetWalls());
                 name = gym.GetGymName();
             }
 
@@ -28,7 +28,7 @@ public class GymPastView : BNScreen
     }
 
     public void SaveTargetWallInStack(BNWall wall){
-        (belongingStack as BNScreenStackWithTargetGym).StoreTargetWall(wall);
+        (belongingStack as BNScreenStackWithTargetGym).StoreTargetWall(wall.GetID());
     }
     public void ToGymWallView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.GymWallView, BNScreens.TransitionType.Push);
