@@ -17,6 +17,7 @@ public class SelecteWallImageView : BNScreen
 {
     private BNScreenInput screen;
     [SerializeField] private Image image;
+
     public override void InitForFirstTransition(){
         ClearField();
         if (belongingStack != null){
@@ -40,7 +41,7 @@ public class SelecteWallImageView : BNScreen
 
     public void OpenMediaActiveSheet(){
 		#if UNITY_IPHONE
-        BNScreens.Instance.Interactive(false);
+        //BNScreens.Instance.Interactive(false);
 		if (Application.platform != RuntimePlatform.IPhonePlayer){
             #if UNITY_EDITOR
 			LoadImageForEditor();

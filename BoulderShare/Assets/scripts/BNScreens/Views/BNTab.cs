@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace BoulderNotes{
-public class BNTab : MonoBehaviour
+public class BNTab : SingletonMonoBehaviour<BNTab>
 {
     [SerializeField] private List<BNTabItem> tabItems;
     [SerializeField] private Color focusColor;

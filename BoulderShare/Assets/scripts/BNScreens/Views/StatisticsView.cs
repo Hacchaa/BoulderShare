@@ -15,7 +15,9 @@ public class StatisticsView : BNScreen
     //gradeMapと同期させる
     [SerializeField] private AssetReference[] medalImagesRef;
     [SerializeField] private SVMedalView[] medals;
+    [SerializeField] private ClassificationView cView;
     public override void InitForFirstTransition(){
+        cView.Init();
     }
 
     public override void UpdateScreen(){

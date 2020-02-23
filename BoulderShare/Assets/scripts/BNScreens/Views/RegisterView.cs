@@ -24,12 +24,13 @@ public class RegisterView: BNScreenInput
     [SerializeField] private GameObject tapeSelectedObj;
     [SerializeField] private GameObject tapeNoSelectedObj;
     [SerializeField] private RouteTape routeTape;
-
+    
+    [SerializeField] private GameObject backButton;
 
     
     private enum ViewType{All, Gym, Wall, Route};
     private ViewType type ;
-
+    private BNScreenStackWithTargetGym stack;
     public override void ClearFields(){
         base.ClearFields();
         titleText.text = "";
@@ -38,14 +39,14 @@ public class RegisterView: BNScreenInput
         wallTypeIF.text = WallTypeMap.Entity.GetWallTypeName(wallType);
         gradeIF.text = "";
         kanteToggle.isOn = false;
-
+        stack = null;
         routeTape.LoadDefault();        
     }
 
     public override void InitForFirstTransition(){
         ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
+            stack = belongingStack as BNScreenStackWithTargetGym;
             BNGym gym = stack.GetTargetGym();
             BNWall wall = stack.GetTargetWall();
             BNRoute route = stack.GetTargetRoute();
@@ -67,21 +68,20 @@ public class RegisterView: BNScreenInput
     }
 
     private void Show(){
+        gymInfo.SetActive(false);
+        wallInfo.SetActive(false);
+        routeInfo.SetActive(false);
+        backButton.SetActive(true);
         if (type == ViewType.All){
             gymInfo.SetActive(true);
-            wallInfo.SetActive(true);
+            wallInfo.SetActive(true); 
             routeInfo.SetActive(true);
+            backButton.SetActive(false);
         }else if(type == ViewType.Gym){
-            gymInfo.SetActive(true);
-            wallInfo.SetActive(false);
-            routeInfo.SetActive(false);            
+            gymInfo.SetActive(true);           
         }else if(type == ViewType.Wall){
-            gymInfo.SetActive(false);
-            wallInfo.SetActive(true);
-            routeInfo.SetActive(false);            
+            wallInfo.SetActive(true);          
         }else if(type == ViewType.Route){
-            gymInfo.SetActive(false);
-            wallInfo.SetActive(false);
             routeInfo.SetActive(true);
         }
         if (tape != null){
@@ -117,44 +117,62 @@ public class RegisterView: BNScreenInput
     }
 
     public void Register(){
-        BNScreenStackWithTargetGym s = null;
-        if (belongingStack == null || !(belongingStack is BNScreenStackWithTargetGym)){
-            return ;
-        }
-        s = belongingStack as BNScreenStackWithTargetGym;
+        if (stack != null){
+            if (type == ViewType.Gym){
+                BNGym gym = new BNGym();
+                gym.SetGymName(gymNameTextIF.Text);
+                stack.WriteGym(gym);
+                stack.StoreTargetGym(gym.GetID());
+            }else if(type == ViewType.Wall){
+                BNWall wall = new BNWall();
+                //Debug.Log(wallTypeIFIF.text);
+                wall.SetWallType(wallType);
 
-        if (type == ViewType.All || type == ViewType.Gym){
-            BNGym gym = new BNGym();
-            gym.SetGymName(gymNameTextIF.Text);
-            s.WriteGym(gym);
-            s.StoreTargetGym(gym.GetID());
-        }
-
-        if(type == ViewType.All || type == ViewType.Wall){
-            BNWall wall = new BNWall();
-            //Debug.Log(wallTypeIFIF.text);
-            wall.SetWallType(wallType);
-
-            List<BNWallImage> list = new List<BNWallImage>();
-            if (inputedSprite != null){
-                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                list.Add(wallImage);
-                wall.AddWallImageFileName(wallImage.fileName);
+                List<BNWallImage> list = new List<BNWallImage>();
+                if (inputedSprite != null){
+                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                    list.Add(wallImage);
+                    wall.AddWallImageFileName(wallImage.fileName);
+                }
+                stack.WriteWall(wall, list);
+                stack.StoreTargetWall(wall.GetID());
+            }else if(type == ViewType.Route){
+                BNRoute route = new BNRoute();
+                route.SetGrade(grade);
+                route.SetIsUsedKante(kanteToggle.isOn);
+                route.SetTape(tape);
+                stack.WriteRoute(route);
+                stack.StoreTargetRoute(route.GetID());
             }
-            s.WriteWall(wall, list);
-            s.StoreTargetWall(wall.GetID());
-        }
-        
-        if(type == ViewType.All || type == ViewType.Route){
-            BNRoute route = new BNRoute();
-            route.SetGrade(grade);
-            route.SetIsUsedKante(kanteToggle.isOn);
-            route.SetTape(tape);
-            s.WriteRoute(route);
-            s.StoreTargetRoute(route.GetID());
-        }
+            ReverseTransition();
+        }else{
+            if (type == ViewType.All){
+                BNGym gym = new BNGym();
+                gym.SetGymName(gymNameTextIF.Text);
 
-        ReverseTransition();
+                BNWall wall = new BNWall();
+                wall.SetWallType(wallType);
+
+                List<BNWallImage> list = new List<BNWallImage>();
+                if (inputedSprite != null){
+                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                    list.Add(wallImage);
+                    wall.AddWallImageFileName(wallImage.fileName);
+                }
+                gym.AddWall(wall);
+
+                BNRoute route = new BNRoute();
+                route.SetGrade(grade);
+                route.SetIsUsedKante(kanteToggle.isOn);
+                route.SetTape(tape);
+                wall.AddRoute(route);
+
+                BNGymDataCenter.Instance.WriteGym(gym);
+                BNGymDataCenter.Instance.SaveWallImages(gym, list);
+            }
+            ClearFields();
+            BNTab.Instance.ToHomeTab();
+        }
     }
 }
 }
