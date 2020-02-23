@@ -26,6 +26,7 @@ public class WallTypeToggle : MonoBehaviour
     public void OnValueChanged(bool b){
         if (!noProc && b){
             group.SetWallType(type);
+            group.Register();
         }
         noProc = false;
     }

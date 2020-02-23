@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LastVersionCode: 2020.2b2
   Contacts: 0
-  Photos: 0
+  Photos: 1
   ReplayKit: 0
   Social: 0
   AdSupport: 0

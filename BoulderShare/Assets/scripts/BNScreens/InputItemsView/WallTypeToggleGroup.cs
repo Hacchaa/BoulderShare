@@ -22,7 +22,9 @@ public class WallTypeToggleGroup : MonoBehaviour
     public void SetWallType(WallTypeMap.Type t){
         selectedType = t;
     }
-
+    public void Register(){
+        view.Register();
+    }
     public WallTypeMap.Type GetWallType(){
         return selectedType;
     }

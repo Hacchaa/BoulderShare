@@ -26,6 +26,7 @@ public class GradeToggle : MonoBehaviour
     public void OnValueChanged(bool b){
         if (!noProc && b){
             group.SetGrade(grade);
+            group.Register();
         }
         noProc = false;
     }

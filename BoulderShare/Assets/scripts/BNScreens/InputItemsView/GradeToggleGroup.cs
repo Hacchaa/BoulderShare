@@ -22,6 +22,9 @@ public class GradeToggleGroup : MonoBehaviour
         //Debug.Log("setGrade "+g.ToString());
         selectedGrade = g;
     }
+    public void Register(){
+        view.Register();
+    }
 
     public BNGradeMap.Grade GetGrade(){
         return selectedGrade;
