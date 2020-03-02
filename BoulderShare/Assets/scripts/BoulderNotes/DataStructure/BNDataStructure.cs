@@ -87,7 +87,6 @@ namespace BoulderNotes{
     [Serializable]
     public class BNWall{
         [SerializeField] private string id;
-        [SerializeField] private WallTypeMap.Type wallType;
         [SerializeField] private string period;
         [SerializeField] private string start;
         [SerializeField] private string end;
@@ -111,10 +110,6 @@ namespace BoulderNotes{
             return id;
         }
 
-        public WallTypeMap.Type GetWallType(){
-            return wallType;
-        }
-
         public List<string> GetWallImageFileNames(){
             return new List<string>(wallImagefileNames);
         }
@@ -132,10 +127,6 @@ namespace BoulderNotes{
         public void SetID(string str){
             id = str;
         }
-        public void SetWallType(WallTypeMap.Type t){
-            wallType = t;
-        }
-
         public string GetPeriod(){
             return start + "～" + end;
         }
@@ -202,6 +193,8 @@ namespace BoulderNotes{
     public class BNRoute{
         public enum ClearStatus {NoAchievement, RP, Flash, Onsight};
         [SerializeField] private string id;
+
+        [SerializeField] private WallTypeMap.Type wallType;
         [SerializeField] private RTape tape;
         [SerializeField] private List<BNMark> marks;
         [SerializeField] private string routeImagePath;
@@ -215,13 +208,14 @@ namespace BoulderNotes{
         [SerializeField] private bool usedKante;
         [SerializeField] private bool isFavorite;
         [SerializeField] private bool hasInsight;
+        [SerializeField] private int totalClearRate;
 
 
         public BNRoute(){
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
+            wallType = WallTypeMap.Type.Slab;
             marks = new List<BNMark>();
             records = new List<BNRecord>();
-            totalClearStatus = 0;
             tape = null;
             grade = BNGradeMap.Grade.None;
             SetStart(DateTime.Now);
@@ -230,6 +224,7 @@ namespace BoulderNotes{
             isFavorite = false;
             hasInsight = true;
             totalClearStatus = ClearStatus.NoAchievement;
+            totalClearRate = 0;
         }
         public BNRoute Clone(){
             return (BNRoute)this.MemberwiseClone();
@@ -247,11 +242,18 @@ namespace BoulderNotes{
         public BNGradeMap.Grade GetGrade(){
             return grade;
         }
+        public string GetGradeName(){
+            return BNGradeMap.Entity.GetGradeName(grade);
+        }
         public void SetGrade(BNGradeMap.Grade g){
             grade = g;
         }
         public void SetHasInsight(bool b){
             hasInsight = b;
+        }
+
+        public int GetTotalClearRate(){
+            return totalClearRate;
         }
 
         public ClearStatus GetTotalClearStatus(){
@@ -299,9 +301,7 @@ namespace BoulderNotes{
             }
             tape = t.Clone();
         }
-        public void SetTotalClearStatus(ClearStatus s){
-            totalClearStatus = s;
-        }
+
         public string GetPeriod(){
             return start + "～" + end;
         }
@@ -330,48 +330,70 @@ namespace BoulderNotes{
         }
 
         public void SetRecords(IReadOnlyList<BNRecord> list){
-            records = new List<BNRecord>(list);
+            records = list.OrderBy(x=>x.GetID()).ToList();
+            ReCalculateInfo();
         }
 
         //同じIDを持つBNRecordがrecordsに存在しないと仮定
         public void AddRecord(BNRecord rec){
-            records.Add(rec);
+            int i = 0;
+            foreach(BNRecord r in records){
+                if (r.GetID().CompareTo(rec.GetID()) > 0){
+                    break;
+                }
+                i++;
+            }
+            records.Insert(i, rec);
+            ReCalculateInfo();
         }
 
-        public void DeleteRecord(BNRecord rec){
+        public void DeleteRecord(string recID){
             BNRecord deleteTarget = null;
             foreach(BNRecord r in records){
-                if(r.GetID().Equals(rec.GetID())){
+                if(r.GetID().Equals(recID)){
                     deleteTarget = r;
                     break;
                 }
             }
             records.Remove(deleteTarget);
-            ResetRecordTryNumbers();
+            ReCalculateInfo();
         }
 
+        //recordsはidでソートされていると仮定している
         private void ResetRecordTryNumbers(){
             int n = 1;
-            IEnumerable<BNRecord> sorted = records.OrderBy(x => x.GetID());
-            foreach(BNRecord rec in sorted){
+ 
+            foreach(BNRecord rec in records){
                 rec.SetTryNumber(n);
                 n++;
             }
         }
-        public void ReCalculateClearStatus(){
+        public void ReCalculateInfo(){
+            CalculateStatus();
+            ResetRecordTryNumbers();
+        }
+        private void CalculateStatus(){
             bool isComplete = false;
+            int maxClearRate = 0;
+    
             foreach(BNRecord record in records){
-                if (record.GetTryNumber() == 1 && record.GetCompleteRate() == 100){
+                int rate = record.GetCompleteRate();
+                if (record.GetTryNumber() == 1 && rate == 100){
                     if (hasInsight){
                         totalClearStatus = BNRoute.ClearStatus.Flash;
                     }else{
                         totalClearStatus = BNRoute.ClearStatus.Onsight;
                     }
+                    totalClearRate = 100;
                     return ;
                 }
 
-                if (record.GetCompleteRate() == 100){
+                if (rate == 100){
                     isComplete = true;
+                }
+
+                if (maxClearRate < rate){
+                    maxClearRate = rate;
                 }
             }
 
@@ -380,7 +402,21 @@ namespace BoulderNotes{
             }else{
                 totalClearStatus = BNRoute.ClearStatus.NoAchievement;
             }
+
+            totalClearRate = maxClearRate;
         }
+
+        public string GetWallTypeName(){
+            return WallTypeMap.Entity.GetWallTypeName(wallType);
+        }
+        public WallTypeMap.Type GetWallType(){
+            return wallType;
+        }        
+
+        public void SetWallType(WallTypeMap.Type t){
+            wallType = t;
+        }
+
     }
 	[Serializable]
     public class BNMark{
@@ -463,6 +499,18 @@ namespace BoulderNotes{
         }
         public void SetComment(string str){
             comment = str;
+        }
+    }
+
+    public class BNTriple{
+        public BNRoute route;
+        public BNWall wall;
+        public BNGym gym;
+
+        public BNTriple(BNGym g, BNWall w, BNRoute r){
+            route = r;
+            gym = g;
+            wall = w;
         }
     }
 }

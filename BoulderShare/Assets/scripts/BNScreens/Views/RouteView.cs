@@ -9,6 +9,7 @@ namespace BoulderNotes{
 public class RouteView : BNScreen
 {
     [SerializeField] private TextMeshProUGUI gradeText;
+    [SerializeField] private TextMeshProUGUI wallTypeText;
     [SerializeField] private TextMeshProUGUI periodText; 
     [SerializeField] private TextMeshProUGUI kanteText;
     [SerializeField] private GameObject finishedObj;
@@ -48,6 +49,7 @@ public class RouteView : BNScreen
            
             if (route != null){
                 gradeText.text = route.GetGrade() + "級";
+                wallTypeText.text = route.GetWallTypeName();
                 periodText.text = route.GetPeriod();
 
                 finishedObj.SetActive(route.IsFinished());
@@ -64,7 +66,7 @@ public class RouteView : BNScreen
                     kanteText.text = "カンテなし";
                 }
 
-                scroller.FetchData(route.GetRecords());
+                scroller.FetchData(route);
             }
         }
     }

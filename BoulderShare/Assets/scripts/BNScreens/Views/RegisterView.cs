@@ -126,7 +126,6 @@ public class RegisterView: BNScreenInput
             }else if(type == ViewType.Wall){
                 BNWall wall = new BNWall();
                 //Debug.Log(wallTypeIFIF.text);
-                wall.SetWallType(wallType);
 
                 List<BNWallImage> list = new List<BNWallImage>();
                 if (inputedSprite != null){
@@ -139,6 +138,7 @@ public class RegisterView: BNScreenInput
             }else if(type == ViewType.Route){
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
+                route.SetWallType(wallType);
                 route.SetIsUsedKante(kanteToggle.isOn);
                 route.SetTape(tape);
                 stack.WriteRoute(route);
@@ -151,7 +151,6 @@ public class RegisterView: BNScreenInput
                 gym.SetGymName(gymNameTextIF.Text);
 
                 BNWall wall = new BNWall();
-                wall.SetWallType(wallType);
 
                 List<BNWallImage> list = new List<BNWallImage>();
                 if (inputedSprite != null){
@@ -163,6 +162,7 @@ public class RegisterView: BNScreenInput
 
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
+                route.SetWallType(wallType);
                 route.SetIsUsedKante(kanteToggle.isOn);
                 route.SetTape(tape);
                 wall.AddRoute(route);

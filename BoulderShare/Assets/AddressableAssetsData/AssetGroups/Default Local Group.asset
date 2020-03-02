@@ -37,6 +37,18 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 151d6f1384a720d49bec709060eae223
+    m_Address: medal_q5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 16e3ac8f03bf6d740a9600f9422a8b1f
+    m_Address: medal_1q
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 183c1ef9c9d7bf345a9a631e1f3204c4
     m_Address: confetti
     m_ReadOnly: 0
@@ -44,8 +56,14 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 1d632f3e0080a28469f1a625cfcc1933
-    m_Address: 100_medal_1q
+  - m_GUID: 18a8062fda8bf2f4c8f57269e0920ecb
+    m_Address: medal_q9
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 20989d1bfe96c714cacb1761216a962c
+    m_Address: medal_d1
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -55,6 +73,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 2bf149ef97880c2479ef48b4a15236dd
+    m_Address: medal_q7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 2c77ccaf3092ae2469e5b8483ecfa488
@@ -84,12 +108,6 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 3a22d00f052202746a9cabaee9a37d88
-    m_Address: 100_medal_2q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - m_GUID: 3c2ffd5c96a42b74989d2b5f027aa057
     m_Address: asterisk
     m_ReadOnly: 0
@@ -97,20 +115,14 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 409bed5679ceaa948ad67878a97741e8
+    m_Address: medal_2q
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 44f26a15ebc1a2847ab3f868af4b535c
     m_Address: 24_condiiton_3
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: 452c952e000d0ce4192e294bf5072236
-    m_Address: 100_medal_10q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: 48f878dac8313b3438983b675cb82a06
-    m_Address: 100_medal_8q
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -120,6 +132,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 4e74156e5602c1f40baf5c1f7ba9a26e
+    m_Address: medal_d6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 4ee3bdee99d5656479a9de211c055298
+    m_Address: medal_q6
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 5383a19b8ba188e49903c3f73be2ddbd
@@ -136,20 +160,14 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 546cea8c5367d6f4cb3b56019b6b22f6
-    m_Address: 100_medal_1d
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - m_GUID: 5a82c3143f85f524b978f98c61460ae1
     m_Address: 24_condition_5
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 65ecd7d631b897b479174e89c9166029
-    m_Address: 100_medal_6q
+  - m_GUID: 6fb1930e93b50154cae709345c22fdfe
+    m_Address: medal_q3
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -161,14 +179,14 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 834d7058a23aa02439dc0998024e24d7
-    m_Address: 100_medal_6d
+  - m_GUID: 7e1cbd24cf24c7a45b9415236613900c
+    m_Address: medal_q10
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 8852f509d027c674980a76997e01d574
-    m_Address: 100_medal_5d
+  - m_GUID: 8035da3835a8aec47afb1704a690837e
+    m_Address: medal_d4
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -215,12 +233,6 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: abfa051834a65b341a254eb53e052f9c
-    m_Address: 100_medal_9q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - m_GUID: b771fef4b768f234eb42b0c9b60d1c75
     m_Address: squareRectangle
     m_ReadOnly: 0
@@ -235,23 +247,11 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: c410b90e49e2b8c43974f1392a2d4692
-    m_Address: 100_medal_5q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - m_GUID: c4b199de27d2db247be9255ad6acbe31
     m_Address: square
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: c7a2a1bb64d237e4eb8de6f746445130
-    m_Address: 100_medal_7q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: c92b1c1474c216d4796f456c464d940d
@@ -261,8 +261,14 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: cb1173128af30684492262dcbf567d54
-    m_Address: 100_medal_4d
+  - m_GUID: ce65fc39e6cf3344f820443bda866a56
+    m_Address: medal_d2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: cf3e93aa76aa3b047875c5b07bbed920
+    m_Address: medal_q4
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -281,20 +287,8 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: d1b6063abd84da5408b711ece2a7c798
-    m_Address: 100_medal_4q
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: d6360254ca06daf46808ff7c70a60f79
-    m_Address: 100_medal_3d
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  - m_GUID: d642856f430e0274881b8f108a988b75
-    m_Address: 100_medal_2d
+  - m_GUID: d64a44a0deba3754cacca55d4c38213b
+    m_Address: medal_q8
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -319,6 +313,12 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: ee53e430e2e21374da7d2d51b9a4c287
+    m_Address: medal_d5
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: efb79950b5411ac4d9540cd352f7a650
     m_Address: 24_other_faq
     m_ReadOnly: 0
@@ -338,8 +338,8 @@ MonoBehaviour:
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: fd2fa179dd9fcb040ac3a2102324cb9d
-    m_Address: 100_medal_3q
+  - m_GUID: fc1195f34ea63f44e90c488d862a3153
+    m_Address: medal_d3
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,

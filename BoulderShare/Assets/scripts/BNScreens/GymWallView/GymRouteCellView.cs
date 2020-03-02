@@ -12,7 +12,7 @@ public class GymRouteCellView : EnhancedScrollerCellView
     public OnButtonClickedDelegate onAddClicked;
     public GameObject addButton;
 
-    public void SetData(ref List<GymRouteScrollerDataBase> data, int startingIndex, int dataCount, OnButtonClickedDelegateWithBNRoute routeDel, OnButtonClickedDelegate addDel){
+    public void SetData(ref List<GymRouteScrollerDataBase> data, int startingIndex, int dataCount, OnButtonClickedDelegateWithString routeDel, OnButtonClickedDelegate addDel){
         onAddClicked = addDel;
         addButton.SetActive(false);
         for(int i = 0 ; i < rowData.Length ; i++){

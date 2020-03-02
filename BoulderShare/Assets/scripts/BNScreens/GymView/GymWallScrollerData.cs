@@ -4,7 +4,9 @@ using UnityEngine;
 namespace BoulderNotes{
 public class GymWallScrollerData : GymWallScrollerDataBase
 {
-    public BNWall wall;
+    public string wallID;
+    public string period;
+    public List<string> fileNames;
     public BNScreenStackWithTargetGym stack;
     public float fitWidth;
     public float fitHeight;

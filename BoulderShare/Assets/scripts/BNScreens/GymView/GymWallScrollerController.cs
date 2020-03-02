@@ -52,7 +52,9 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
                     continue;
                 }
                 GymWallScrollerData data = new GymWallScrollerData();
-                data.wall = wall;
+                data.wallID = wall.GetID();
+                data.fileNames = wall.GetWallImageFileNames();
+                data.period = wall.GetPeriod();
                 data.stack = stack;
                 data.fitHeight = wallCellHeight;
                 data.fitWidth = cellRect.rect.width - (myScroller.padding.left + myScroller.padding.right);
@@ -93,8 +95,8 @@ public class GymWallScrollerController : MonoBehaviour, IEnhancedScrollerDelegat
         }
     }
 
-    public void ToGymWallView(BNWall wall){
-        view.SaveTargetWallInStack(wall);
+    public void ToGymWallView(string wallID){
+        view.SaveTargetWallInStack(wallID);
         view.ToGymWallView();
     }
     public void ToGymPastView(){

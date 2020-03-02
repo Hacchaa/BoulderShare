@@ -6,7 +6,7 @@ namespace BoulderNotes{
 public class GymScrollerData : GymScrollerDataBase
 {
     public string gymName;
-    public BNGym gym;
+    public string gymID;
     
 }
 }

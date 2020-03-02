@@ -27,8 +27,8 @@ public class GymPastView : BNScreen
         }
     }
 
-    public void SaveTargetWallInStack(BNWall wall){
-        (belongingStack as BNScreenStackWithTargetGym).StoreTargetWall(wall.GetID());
+    public void SaveTargetWallInStack(string wallID){
+        (belongingStack as BNScreenStackWithTargetGym).StoreTargetWall(wallID);
     }
     public void ToGymWallView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.GymWallView, BNScreens.TransitionType.Push);

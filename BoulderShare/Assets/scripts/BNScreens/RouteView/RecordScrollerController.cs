@@ -24,16 +24,15 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         myScroller.Delegate = this;        
     }
 
-    public void FetchData(IReadOnlyList<BNRecord> list){
+    public void FetchData(BNRoute route){
         _data.Clear();
         List<List<RecordScrollerData>> dataList = new List<List<RecordScrollerData>>();
         List<string> dateList = new List<string>();
-
         string curDate = "";
         List<RecordScrollerData> targetList = new List<RecordScrollerData>();
-        int maxCompleteRate = 0;
 
         //listを日付で並び変える
+        IReadOnlyList<BNRecord> list = route.GetRecords();
         IEnumerable<BNRecord> sortedList ;
         if (list.Any()){
             sortedList = list.OrderByDescending(x => x.GetDate()).ThenByDescending(x => x.GetTryNumber());
@@ -47,10 +46,6 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
                 data.comment = record.GetComment();
                 data.tryNumber = record.GetTryNumber();
                 data.conditionImageRef = conditionImageRef[(int)record.GetCondition()];
-
-                if (maxCompleteRate < data.completeRate){
-                    maxCompleteRate = data.completeRate;
-                }
 
                 if (string.IsNullOrEmpty(curDate) || !curDate.Equals(data.date)){
                     dateList.Add(data.date);
@@ -66,7 +61,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         //_dataを作る
         int dayN = dateList.Count;
         int tryN = list.Count;
-        _data.Add(new RecordOverviewScrollerData(){days = dayN, tryCount = tryN, completeRate = maxCompleteRate});
+        _data.Add(new RecordOverviewScrollerData(){days = dayN, tryCount = tryN, completeRate = route.GetTotalClearRate()});
         _data.Add(new RecordSubTitleScrollerData());
 
         int n = dateList.Count;

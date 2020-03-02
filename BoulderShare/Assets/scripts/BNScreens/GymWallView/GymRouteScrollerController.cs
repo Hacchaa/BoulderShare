@@ -43,7 +43,7 @@ public class GymRouteScrollerController : MonoBehaviour, IEnhancedScrollerDelega
         //Debug.Log("rotues:"+routes.Count);
         foreach(BNRoute route in routes){
             GymRouteScrollerData data = new GymRouteScrollerData();
-            data.route = route;
+            data.routeID = route.GetID();
             data.period = route.GetPeriod();
             data.grade = route.GetGrade();
             data.isRoute = true;
@@ -98,8 +98,8 @@ public class GymRouteScrollerController : MonoBehaviour, IEnhancedScrollerDelega
 
     }
 
-    public void ToRouteView(BNRoute route){
-        view.SaveTargetRouteInStack(route);
+    public void ToRouteView(string routeID){
+        view.SaveTargetRouteInStack(routeID);
         view.ToRouteView();
     }
 

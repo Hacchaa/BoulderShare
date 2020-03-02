@@ -5,7 +5,7 @@ using UnityEngine;
 namespace BoulderNotes{
 public class GymRouteScrollerData : GymRouteScrollerDataBase
 {
-    public BNRoute route;
+    public string routeID;
     public string markPath;
     public string period;
     public BNGradeMap.Grade grade;

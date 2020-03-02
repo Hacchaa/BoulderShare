@@ -77,7 +77,6 @@ public class ModifyView: BNScreenInput
             route = stack.GetTargetRoute();
             if (route == null){
                 //wall編集
-                wallType = wall.GetWallType();
                 wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
                 type = ViewType.Wall;
                 titleText.text = "壁編集";
@@ -90,6 +89,7 @@ public class ModifyView: BNScreenInput
 
             //route編集
             grade = route.GetGrade();
+            wallType = route.GetWallType();
             gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
             finishedRouteToggle.isOn = route.IsFinished();
             KanteToggle.isOn = route.IsUsedKante();
@@ -181,7 +181,6 @@ public class ModifyView: BNScreenInput
             stack.ClearWall();
             stack.StoreTargetGym(gym.GetID());
         }else if(type == ViewType.Wall){
-            wall.SetWallType(wallType);
             wall.SetIsFinished(finishedWallToggle.isOn);
             if (finishedWallToggle.isOn){
                 wall.SetEnd(DateTime.Now);
@@ -203,6 +202,7 @@ public class ModifyView: BNScreenInput
 
         }else if(type == ViewType.Route){
             route.SetGrade(grade);
+            route.SetWallType(wallType);
             route.SetIsFinished(finishedRouteToggle.isOn);
             if (finishedRouteToggle.isOn){
                 route.SetEnd(DateTime.Now);

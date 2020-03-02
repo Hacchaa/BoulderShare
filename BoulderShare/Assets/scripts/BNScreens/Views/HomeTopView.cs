@@ -25,13 +25,13 @@ public class HomeTopView : BNScreen
         BNScreens.Instance.Transition(BNScreens.BNScreenType.RegisterView, BNScreens.TransitionType.Push);
     }
 
-    public void SaveTargetGymInStack(BNGym gym){
-        if (gym == null || string.IsNullOrEmpty(gym.GetID())){
+    public void SaveTargetGymInStack(string gymID){
+        if (string.IsNullOrEmpty(gymID)){
             return ;
         }
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             (belongingStack as BNScreenStackWithTargetGym).ClearGym();
-            (belongingStack as BNScreenStackWithTargetGym).StoreTargetGym(gym.GetID());
+            (belongingStack as BNScreenStackWithTargetGym).StoreTargetGym(gymID);
         }
     }
 }

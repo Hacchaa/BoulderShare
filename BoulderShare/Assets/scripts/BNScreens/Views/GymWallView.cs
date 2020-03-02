@@ -24,10 +24,10 @@ public class GymWallView : BNScreen
             BNWall wall = stack.GetTargetWall();
             wallImage.sprite = defaultWallImage;
 
-            string name = "";
+            //string name = "";
             if (wall != null){
                 scroller.FetchData(wall.GetRoutes());
-                name = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
+                //name = WallTypeMap.Entity.GetWallTypeName(wall.GetWallType());
                 List<string> list = wall.GetWallImageFileNames();
 
                 if (list != null && list.Any()){
@@ -35,7 +35,7 @@ public class GymWallView : BNScreen
                 }
             }
 
-            gymWallText.text = name;
+            //gymWallText.text = name;
         }
     }
 
@@ -45,9 +45,9 @@ public class GymWallView : BNScreen
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();
     }
-    public void SaveTargetRouteInStack(BNRoute route){
+    public void SaveTargetRouteInStack(string routeID){
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRoute(route.GetID());
+            (belongingStack as BNScreenStackWithTargetGym).StoreTargetRoute(routeID);
         }
     }
     public void ToRouteView(){

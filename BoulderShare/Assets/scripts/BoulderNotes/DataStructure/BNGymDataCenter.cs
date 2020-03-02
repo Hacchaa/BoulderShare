@@ -421,6 +421,10 @@ namespace BoulderNotes{
             return ES3.LoadImage(path+fileName);
         }
 
+        public Texture2D LoadWallImage(string path){
+            return ES3.LoadImage(path);
+        }
+
         public string GetWallImagePath(BNGym gym){
             return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
         }
@@ -457,30 +461,27 @@ namespace BoulderNotes{
             gym.SetGymName("Noborock");
             
             BNWall wall = new BNWall();
-            wall.SetWallType(WallTypeMap.Type.Slab);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
             gym.AddWall(wall);
 
             wall = new BNWall();
-            wall.SetWallType(WallTypeMap.Type.Vertical);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(true);
             gym.AddWall(wall);
 
             wall = new BNWall();
-            wall.SetWallType(WallTypeMap.Type.HOverHang);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
             gym.AddWall(wall);
 
             wall = new BNWall();
-            wall.SetWallType(WallTypeMap.Type.Bulge);
             wall.SetStart(DateTime.Now);
             wall.SetIsFinished(false);
             gym.AddWall(wall);          
 
             BNRoute route = new BNRoute();
+            route.SetWallType(WallTypeMap.Type.Slab);
             route.SetGrade(BNGradeMap.Grade.Q3);
             route.SetStart(DateTime.Now);
             wall.AddRoute(route);

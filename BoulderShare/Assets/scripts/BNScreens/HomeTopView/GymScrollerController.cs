@@ -24,7 +24,7 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         foreach(BNGym gym in list){
             GymScrollerData data = new GymScrollerData();
             data.gymName = gym.GetGymName();
-            data.gym = gym;
+            data.gymID = gym.GetID();
             _data.Add(data);
         }
         _data.Add(new GymScrollerDataBase());
@@ -56,8 +56,8 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
     }
 
-    public void ToGymView(BNGym gym){
-        view.SaveTargetGymInStack(gym);
+    public void ToGymView(string gymID){
+        view.SaveTargetGymInStack(gymID);
         view.ToGymView();
     }
 

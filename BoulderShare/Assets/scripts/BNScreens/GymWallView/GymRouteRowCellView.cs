@@ -8,15 +8,15 @@ using UnityEngine.AddressableAssets;
 namespace BoulderNotes {
 public class GymRouteRowCellView : MonoBehaviour
 {
-    public BNRoute route;
+    public string routeID;
     public RouteTape tape;
     public TextMeshProUGUI period;
     public TextMeshProUGUI grade;
     public GameObject container;
     public GameObject finishedObj;
     [SerializeField] private AssetReference defaultSprite;
-    public OnButtonClickedDelegateWithBNRoute onRouteClicked;
-    public void SetData(GymRouteScrollerData data, OnButtonClickedDelegateWithBNRoute routeDel){
+    public OnButtonClickedDelegateWithString onRouteClicked;
+    public void SetData(GymRouteScrollerData data, OnButtonClickedDelegateWithString routeDel){
         if (data == null){
             container.SetActive(false);
         }else{
@@ -29,7 +29,7 @@ public class GymRouteRowCellView : MonoBehaviour
                 period.text = data.period;
                 //とりあえず
                 grade.text = BNGradeMap.Entity.GetGradeName(data.grade);  
-                route = data.route;   
+                routeID = data.routeID;   
                 onRouteClicked = routeDel;
                 if (data.routeTape != null && !string.IsNullOrEmpty(data.routeTape.spriteName)){
                     tape.LoadTape(data.routeTape);
@@ -49,7 +49,7 @@ public class GymRouteRowCellView : MonoBehaviour
 
     public void OnRouteClicked(){
         if (onRouteClicked != null){
-            onRouteClicked(route);
+            onRouteClicked(routeID);
         }
     }
 }

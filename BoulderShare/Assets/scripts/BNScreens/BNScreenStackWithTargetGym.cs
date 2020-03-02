@@ -228,7 +228,7 @@ public class BNScreenStackWithTargetGym : BNTStack
         }
 
         if (targetRecord.GetID().Equals(record.GetID())){
-            targetRoute.DeleteRecord(targetRecord);
+            targetRoute.DeleteRecord(targetRecord.GetID());
             targetRoute.AddRecord(record);
             BNGymDataCenter.Instance.ModifyGym(targetGym);
             targetRecord = record;
@@ -270,7 +270,7 @@ public class BNScreenStackWithTargetGym : BNTStack
         BNWall tWall = targetWall;
         BNRoute tRoute = targetRoute;
 
-        targetRoute.DeleteRecord(targetRecord);
+        targetRoute.DeleteRecord(targetRecord.GetID());
         BNGymDataCenter.Instance.ModifyGym(targetGym);
         ClearRecord();
     }

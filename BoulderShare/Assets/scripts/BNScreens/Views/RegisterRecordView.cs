@@ -101,7 +101,7 @@ public class RegisterRecordView : BNScreenInput
             }
 
             if (oldRecord != null){
-                route.DeleteRecord(oldRecord);
+                route.DeleteRecord(oldRecord.GetID());
                 route.AddRecord(record);
             }
         }else{
@@ -113,7 +113,6 @@ public class RegisterRecordView : BNScreenInput
 
             route.AddRecord(record);           
         }
-        route.ReCalculateClearStatus();
         stack.ModifyRoute(route);
         stack.StoreTargetRecord(record.GetID());  
     }
@@ -123,8 +122,7 @@ public class RegisterRecordView : BNScreenInput
             return ;
         }
         if (stack != null){
-            route.DeleteRecord(record);
-            route.ReCalculateClearStatus();
+            route.DeleteRecord(record.GetID());
             stack.ModifyRoute(route);
         }
     }
