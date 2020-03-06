@@ -7,13 +7,11 @@ namespace BoulderNotes{
     public class BarGraph : MonoBehaviour
     {
         [SerializeField] private Color[] colors;
-        [SerializeField] private GameObject barPrefab;
-        [SerializeField] private BarLabelsBase labels;
-        [SerializeField] private int barNum;
-        [SerializeField] private int startIndex;
-        [SerializeField] private float barWidth ;
-        [SerializeField] private float space ;
+        [SerializeField] private BGBar barPrefab;
+        [SerializeField] private string[] labels;
+   
         [SerializeField] private Slider slider;
+        [SerializeField] private Transform contentRoot;
 
         private BGBar bar;
         private BGBar[] bars;
@@ -21,42 +19,33 @@ namespace BoulderNotes{
         private RectTransform rectTransform;
 
         public void Test(){
-            Init(5, 3);
+            Init(BNGradeMap.Entity.GetGradeNames(), colors);
         }
-        public void Init(int barNum, int startIndex){
-            int i;
-            this.barNum = barNum;
-            this.startIndex = startIndex;
-
-            bars = new BGBar[barNum];
-
+        public void Init(string[] labels, Color[] colors){
+            this.labels = labels;
             rectTransform = GetComponent<RectTransform>();
-            float baseWidth = space;
-            for(i = 0 ; i < barNum ; i++){
-                GameObject obj = Instantiate(barPrefab, this.transform);
-                obj.name = labels.GetLabelName(i + startIndex);
-                obj.SetActive(true);
-                
-                RectTransform rec = obj.GetComponent<RectTransform>();
-                rec.anchorMin = Vector2.zero;
-                rec.anchorMax = Vector2.zero;
-                rec.sizeDelta = new Vector2(barWidth, rectTransform.rect.height);
-                rec.anchoredPosition = new Vector2(baseWidth + (barWidth / 2.0f), rec.sizeDelta.y / 2.0f);
-                baseWidth += barWidth + space;
+        
+            bars = new BGBar[labels.Length];
+            for(int i = 0 ; i < bars.Length ; i++){
+                bars[i] = Instantiate<BGBar>(barPrefab, contentRoot);
 
-                bars[i] = obj.GetComponent<BGBar>();
-                bars[i].Init(colors);
+                bars[i].gameObject.SetActive(true);
+                bars[i].Init(labels[i], colors);
                 bars[i].SetHeightPerValue(rectTransform.rect.height / 20.0f);
-
             }
         }
-        public void SetBarNum(int n){
-            barNum = n;
-        }
-        public void SetStartLabelIndex(int ind){
-            startIndex = ind;
-        }
+
         public void SetData(float[][] arr){
+            float maxBarValue = 0f;
+            for(int i = 0 ; i < arr.Length ; i++){
+                float barValue = 0f;
+                for(int j = 0 ; j < arr[i].Length ; j++){
+                    barValue += arr[i][j];
+                }
+                if (maxBarValue < barValue){
+                    maxBarValue = barValue;
+                }
+            }
             for(int i = 0 ; i < bars.Length ; i++){
                 bars[i].StoreData(arr[i]);
             }
@@ -83,7 +72,7 @@ namespace BoulderNotes{
 
             for(int i = 0 ; i < arr.Length ; i++){
                 for(int j = 0 ; j < arr[0].Length ; j++){
-                    arr[i][j] = Random.Range(0.0f, 5.0f);
+                    arr[i][j] = Random.Range(0.0f, 10.0f);
                 }
             }
             SetData(arr);

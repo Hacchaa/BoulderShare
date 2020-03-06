@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace BoulderNotes{
     [CreateAssetMenu]
@@ -18,6 +19,13 @@ namespace BoulderNotes{
         public string GetGradeName(Grade g){
             return GetGradeName((int)g);
         }
+
+        public string[] GetGradeNames(){
+            string[] copy = new string[gradeNames.Length];
+            Array.Copy(gradeNames, copy, gradeNames.Length);
+            return copy;
+        }
+
         
         private static BNGradeMap _entity;
         public static BNGradeMap Entity{

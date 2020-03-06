@@ -28,6 +28,9 @@ public class RouteView : BNScreen
     private DateTime pushedTime;
     private bool isFavorite;
 
+    [SerializeField] private Transform tagRoot;
+    [SerializeField] private RouteTagView tagPrefab;
+
     public override void InitForFirstTransition(){
         scroller.Init();
         classView.Init();
@@ -38,6 +41,11 @@ public class RouteView : BNScreen
         periodText.text = "";
         kanteText.text = "";
         route = null;
+        if (tagRoot != null){
+            foreach(Transform t in tagRoot){
+                Destroy(t.gameObject);
+            }
+        }
     }
 
     public override void UpdateScreen(){
@@ -65,6 +73,15 @@ public class RouteView : BNScreen
                 }else{
                     kanteText.text = "カンテなし";
                 }
+                //Debug.Log("route.gettags().count "+route.GetTags().Count);
+                //tag
+                foreach(string str in route.GetTags()){
+
+                    RouteTagView view = Instantiate<RouteTagView>(tagPrefab, tagRoot);
+                    view.gameObject.SetActive(true);
+                    view.SetData(str);
+                    view.DeactiveDeleteButton();
+                }
 
                 scroller.FetchData(route);
             }
@@ -89,6 +106,9 @@ public class RouteView : BNScreen
 
     public void ToRegisterRecordView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.RegisterRecordView, BNScreens.TransitionType.Push);
+    }
+    public void ToSelectRouteTagView(){
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.SelectRouteTagView, BNScreens.TransitionType.Push);
     }
     public void OnFavoriteClicked(){
         if (pushedTime == null){

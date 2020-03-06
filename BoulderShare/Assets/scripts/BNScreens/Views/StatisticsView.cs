@@ -41,7 +41,8 @@ public class StatisticsView : BNScreen
 
     private async void ProcRecommendedRoute(){
         int num = 2;
-        BNTriple[] info = await Task<BNTriple[]>.Run(() => AggregateRecommendedRoute(num));
+        float rate = 0.7f;
+        BNTriple[] info = await Task<BNTriple[]>.Run(() => AggregateRecommendedRoute(num, rate));
 
         recommended.SetData(info);
     }
@@ -91,7 +92,7 @@ public class StatisticsView : BNScreen
         return list.OrderByDescending(x=>x.days).ThenByDescending(x=>x.lastTryID).ToList();
     }
 
-    private BNTriple[] AggregateRecommendedRoute(int num){
+    private BNTriple[] AggregateRecommendedRoute(int num, float rate){
         if (num < 1){
             return null;
         }
@@ -108,7 +109,7 @@ public class StatisticsView : BNScreen
         }
 
         IEnumerable<BNTriple> ite = list
-            .Where(x=>x.route.GetTotalClearStatus() == BNRoute.ClearStatus.NoAchievement && !x.route.IsFinished())
+            .Where(x=>x.route.GetTotalClearStatus() == BNRoute.ClearStatus.NoAchievement && !x.route.IsFinished() && x.route.GetTotalClearRate() >= rate)
             .OrderByDescending(x => x.route.GetTotalClearRate());
 
         int i = 0;

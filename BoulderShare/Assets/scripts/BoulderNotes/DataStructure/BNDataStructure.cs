@@ -209,7 +209,7 @@ namespace BoulderNotes{
         [SerializeField] private bool isFavorite;
         [SerializeField] private bool hasInsight;
         [SerializeField] private int totalClearRate;
-
+        [SerializeField] private List<string> tags;
 
         public BNRoute(){
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
@@ -225,6 +225,7 @@ namespace BoulderNotes{
             hasInsight = true;
             totalClearStatus = ClearStatus.NoAchievement;
             totalClearRate = 0;
+            tags = new List<string>();
         }
         public BNRoute Clone(){
             return (BNRoute)this.MemberwiseClone();
@@ -415,6 +416,24 @@ namespace BoulderNotes{
 
         public void SetWallType(WallTypeMap.Type t){
             wallType = t;
+        }
+
+        public void AddTag(string str){
+            if (!HasTag(str)){
+                return ;
+            }
+
+            tags.Add(str);
+        }
+        public List<string> GetTags(){
+            return new List<string>(tags);
+        }
+        public void SetTags(List<string> list){
+            tags = new List<string>(list);
+        }
+
+        public bool HasTag(string str){
+            return tags.Contains(str);
         }
 
     }

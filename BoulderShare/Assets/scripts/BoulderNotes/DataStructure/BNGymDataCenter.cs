@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Threading.Tasks;
+using System.Linq;
 
 //##ジムの読み書きを行うクラス
 //##各画面はジムの更新のためにこのクラスにアクセスする
@@ -36,9 +37,10 @@ namespace BoulderNotes{
         private const string ES3_DIC_IMAGES = "images";
 
         private List<BNGym> gyms;
-
+        private List<string> routeTags;
         public void Init(){
             gyms = new List<BNGym>();
+            routeTags = new List<string>();
 
             //全ジム情報をキャッシュ
             List<string> ids = ReadGymIDs();
@@ -46,8 +48,15 @@ namespace BoulderNotes{
                 BNGym g = ReadGym(id);
                 if (g != null){
                      gyms.Add(g);
+                     foreach(BNWall w in g.GetWalls()){
+                        foreach(BNRoute r in w.GetRoutes()){
+                            routeTags.AddRange(r.GetTags());
+                        }
+                     }
                 }
             }
+
+            routeTags = routeTags.Distinct().OrderBy(x=>x).ToList();
         }
    
 /*
@@ -429,7 +438,11 @@ namespace BoulderNotes{
             return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
         }
 
-        public IEnumerator LoadImage(string path, LoadImageDelegate del)
+        public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){
+            StartCoroutine(LoadImage(GetWallImagePath(gym)+fileName, del));
+        }
+
+        private IEnumerator LoadImage(string path, LoadImageDelegate del)
         {
             using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
             {

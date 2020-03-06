@@ -116,6 +116,18 @@ public class BNScreenStackWithTargetGym : BNTStack
 
         return sprite;
     }
+    public void LoadImageAsync(string fileName, LoadImageDelegate del){
+        if (targetGym == null){
+            return ;
+        }
+        LoadImageAsync(targetGym, fileName, del);
+    }
+    public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){
+        if (gym == null){
+            return ;
+        }
+        BNGymDataCenter.Instance.LoadImageAsync(gym,fileName, del);
+    }
 
     public void WriteGym(BNGym gym){
         BNGymDataCenter.Instance.WriteGym(gym);
