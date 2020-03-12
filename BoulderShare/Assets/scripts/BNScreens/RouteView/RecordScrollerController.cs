@@ -18,7 +18,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     public RecordOverviewCellView recordOverviewCellViewPrefab;
     public RecordDateTitleCellView recordDateTitleCellViewPrefab;
     public RecordLineCellView recordLineCellViewPrefab;
-
+    public RecordBrankCellView recordBrankCellViewPrefab;
     public void Init(){
         _data = new List<RecordScrollerDataBase>();
         myScroller.Delegate = this;        
@@ -57,6 +57,9 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
                 targetList.Add(data);
             }
         }
+
+        //壁画像が表示される場所を空けておく
+        _data.Add(new RecordBrankScrollerData());
 
         //_dataを作る
         int dayN = dateList.Count;
@@ -101,6 +104,9 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (_data[dataIndex] is RecordDateTitleScrollerData){
             return 30f;
         }
+        if (_data[dataIndex] is RecordBrankScrollerData){
+            return 240f;
+        }
 
         //case in RecordLineScrollerData
         return 1f;
@@ -130,9 +136,12 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             recordDateTitleCellView.SetData((_data[dataIndex] as RecordDateTitleScrollerData));
             return recordDateTitleCellView ;
         }
+        if (_data[dataIndex] is RecordLineCellView){
+            return scroller.GetCellView(recordLineCellViewPrefab) as RecordLineCellView;
+        }
 
         //case in RecordLineScrollerData
-        return scroller.GetCellView(recordLineCellViewPrefab) as RecordLineCellView;
+        return scroller.GetCellView(recordBrankCellViewPrefab) as RecordBrankCellView;
 
     }
  

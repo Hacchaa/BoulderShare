@@ -8,7 +8,6 @@ namespace BoulderNotes{
     public delegate void OnButtonClickedDelegate();
     public delegate void OnButtonClickedDelegateWithString(string str);
     public delegate void OnButtonClickedDelegateWithBNGym(BNGym gym);
-    public delegate void OnButtonClickedDelegateWithBNWall(BNWall wall);
     public delegate void OnButtonClickedDelegateWithBNRoute(BNRoute route);
     public delegate void OnButtonClickedDelegateWithBNRecord(BNRecord record);
     
@@ -19,17 +18,15 @@ namespace BoulderNotes{
 
     [Serializable]
     public class BNGym{
-        [SerializeField]private string id;
-        [SerializeField]private List<string> wallIDs;
-        [SerializeField] private List<BNWall> walls;
-        [SerializeField]private string gradeTableImagePath;
-        [SerializeField]private string gymName;
-        [SerializeField]private string gymBoardImagePath;
+        [SerializeField] private string id;
+        [SerializeField] private List<BNRoute> routes;
+        [SerializeField] private string gradeTableImagePath;
+        [SerializeField] private string gymName;
+        [SerializeField] private string gymBoardImagePath;
 
         public BNGym(){
             id = BNGymDataCenter.PREFIX_ID_GYM + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
-            wallIDs = new List<string>();
-            walls = new List<BNWall>();
+            routes = new List<BNRoute>();
         }
         public BNGym Clone(){
             return (BNGym)this.MemberwiseClone();
@@ -50,119 +47,6 @@ namespace BoulderNotes{
             gymName = name;
         }
 
-        public void SetWallIDs(List<string> list){
-            wallIDs = new List<string>(list);
-        }
-
-        public void AddWallID(string wallID){
-            wallIDs.Add(wallID);
-        }
-        public List<string> GetWallIDs(){
-            return new List<string>(wallIDs);
-        }
-
-        public void SetWalls(List<BNWall> list){
-            walls = new List<BNWall>(list);
-        }
-
-        public void DeleteWall(BNWall wall){
-            walls.Remove(wall);
-        }
-
-        public void AddWall(BNWall wall){
-            walls.Add(wall);
-        }
-        public List<BNWall> GetWalls(){
-            return new List<BNWall>(walls);
-        }
-    }
-    [Serializable]
-    public class BNGymIDs{
-        public List<string> idList;
-
-        public BNGymIDs(){
-            idList = new List<string>();
-        }
-    }
-    [Serializable]
-    public class BNWall{
-        [SerializeField] private string id;
-        [SerializeField] private string period;
-        [SerializeField] private string start;
-        [SerializeField] private string end;
-        [SerializeField] private List<string> wallImagefileNames;
-        [SerializeField] private List<string> routeIDs;
-        [SerializeField] private List<BNRoute> routes;
-        [SerializeField] private bool isFinished;
-
-        public BNWall(){
-            id = BNGymDataCenter.PREFIX_ID_WALL + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
-            routeIDs = new List<string>();
-            routes = new List<BNRoute>();
-            wallImagefileNames = new List<string>();
-            SetStart(DateTime.Now);
-            isFinished = false;
-        }
-        public BNWall Clone(){
-            return (BNWall)this.MemberwiseClone();
-        }
-        public string GetID(){
-            return id;
-        }
-
-        public List<string> GetWallImageFileNames(){
-            return new List<string>(wallImagefileNames);
-        }
-        public void AddWallImageFileName(string wallImage){
-            wallImagefileNames.Add(wallImage);
-        }
-        public void SetWallImageFileNames(List<string> list){
-            wallImagefileNames = new List<string>(list);
-        }
-
-        public bool IsFinished(){
-            return isFinished;
-        }
-
-        public void SetID(string str){
-            id = str;
-        }
-        public string GetPeriod(){
-            return start + "～" + end;
-        }
-
-        public string GetStart(){
-            return start;
-        }
-
-        public string GetEnd(){
-            return end;
-        }
-
-        public void SetStart(DateTime t){
-            start = t.ToString(BNGymDataCenter.FORMAT_DATE);
-        }
-
-        public void SetEnd(DateTime t){
-            end = t.ToString(BNGymDataCenter.FORMAT_DATE);
-        }
-        public void ClearEnd(){
-            end = "";
-        }
-        public void SetIsFinished(bool b){
-            isFinished = b;
-        }
-        public void SetRouteIDs(List<string> list){
-            routeIDs = new List<string>(list);
-        }
-        public void AddRouteID(string routeID){
-            routeIDs.Add(routeID);
-        }
-
-        public List<string> GetRouteIDs(){
-            return new List<string>(routeIDs);
-        }
-
         public void SetRoutes(List<BNRoute> list){
             routes = new List<BNRoute>(list);
         }
@@ -176,6 +60,15 @@ namespace BoulderNotes{
 
         public List<BNRoute> GetRoutes(){
             return new List<BNRoute>(routes);
+        }
+
+    }
+    [Serializable]
+    public class BNGymIDs{
+        public List<string> idList;
+
+        public BNGymIDs(){
+            idList = new List<string>();
         }
     }
 
@@ -193,7 +86,7 @@ namespace BoulderNotes{
     public class BNRoute{
         public enum ClearStatus {NoAchievement, RP, Flash, Onsight};
         [SerializeField] private string id;
-
+        [SerializeField] private List<string> wallImageFileNames;
         [SerializeField] private WallTypeMap.Type wallType;
         [SerializeField] private RTape tape;
         [SerializeField] private List<BNMark> marks;
@@ -213,6 +106,7 @@ namespace BoulderNotes{
 
         public BNRoute(){
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
+            wallImageFileNames = new List<string>();
             wallType = WallTypeMap.Type.Slab;
             marks = new List<BNMark>();
             records = new List<BNRecord>();
@@ -232,6 +126,17 @@ namespace BoulderNotes{
         }
         public string GetID(){
             return id;
+        }
+
+        public List<string> GetWallImageFileNames(){
+            return new List<string>(wallImageFileNames);
+        }
+
+        public void AddWallImageFileName(string str){
+            wallImageFileNames.Add(str);
+        }
+        public void SetWallImageFileNames(List<string> list){
+            wallImageFileNames = new List<string>(list);
         }
 
         public RTape GetTape(){
@@ -521,15 +426,13 @@ namespace BoulderNotes{
         }
     }
 
-    public class BNTriple{
+    public class BNPair{
         public BNRoute route;
-        public BNWall wall;
         public BNGym gym;
 
-        public BNTriple(BNGym g, BNWall w, BNRoute r){
+        public BNPair(BNGym g, BNRoute r){
             route = r;
             gym = g;
-            wall = w;
         }
     }
 }

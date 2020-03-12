@@ -16,8 +16,7 @@ public class BNScreen : MonoBehaviour
     [SerializeField] private RectTransform botSafeAreaInset;
     [SerializeField] private RectTransform statusBar;
     [SerializeField] private RectTransform safeAreaInHeadBG;
-    [SerializeField] private bool changeTop = true;
-    [SerializeField] private bool changeBot = true;
+    [SerializeField] private bool stretchContentToTop = false;
   
     [SerializeField] private List<Transition> transitions;
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> fromMap;
@@ -54,85 +53,79 @@ public class BNScreen : MonoBehaviour
         if (content != null){
             content.anchorMin = new Vector2(0.0f, 0.0f);
             content.anchorMax = new Vector2(1.0f, 1.0f);
-            float h;
-            if (changeBot){
-                if (tab != null){
-                    h = tab.rect.height;
-                }else{
-                    h = 0.0f;
-                }
-                content.offsetMin = new Vector2(0.0f, h);                
-            }
+            float h = 0f;
 
-            if (changeTop){
+            if (tab != null){
+                h = tab.rect.height;
+            }
+            content.offsetMin = new Vector2(0.0f, h);                
+
+            if (stretchContentToTop){
+                content.offsetMax = new Vector2(0f, 0f);
+            }else{
+                h = 0f;
                 if (safeAreaInHeadBG != null){
                     h = topHeight + headHeight;
                 }else if (statusBar != null){
                     h = topHeight;
-                }else{
-                    h = 0.0f;
                 }
-                content.offsetMax = new Vector2(0.0f, -h);           
-            }
+                content.offsetMax = new Vector2(0.0f, -h);      
+            }     
         }
 
-        if (changeBot){
-            if (botSafeAreaInset != null){
-                botSafeAreaInset.anchorMin = new Vector2(0.0f, 0.0f);
-                botSafeAreaInset.anchorMax = new Vector2(1.0f, 0.0f);
-                botSafeAreaInset.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
-                botSafeAreaInset.sizeDelta = new Vector2(0.0f, botHeight);
+        if (botSafeAreaInset != null){
+            botSafeAreaInset.anchorMin = new Vector2(0.0f, 0.0f);
+            botSafeAreaInset.anchorMax = new Vector2(1.0f, 0.0f);
+            botSafeAreaInset.anchoredPosition = new Vector2(0.0f, botHeight/2.0f);
+            botSafeAreaInset.sizeDelta = new Vector2(0.0f, botHeight);
 
-                if (safeAreaInContent != null){
-                    safeAreaInContent.anchorMin = new Vector2(0.0f, 0.0f);
-                    safeAreaInContent.anchorMax = new Vector2(1.0f, 1.0f);
-                    safeAreaInContent.offsetMin = new Vector2(0.0f, botHeight);
-                    safeAreaInContent.offsetMax = new Vector2(0.0f, 0.0f);
-                }
+            if (safeAreaInContent != null){
+                safeAreaInContent.anchorMin = new Vector2(0.0f, 0.0f);
+                safeAreaInContent.anchorMax = new Vector2(1.0f, 1.0f);
+                safeAreaInContent.offsetMin = new Vector2(0.0f, botHeight);
+                safeAreaInContent.offsetMax = new Vector2(0.0f, 0.0f);
+            }
+        }else{
+            if (safeAreaInContent != null){
+                safeAreaInContent.anchorMin = new Vector2(0.0f, 0.0f);
+                safeAreaInContent.anchorMax = new Vector2(1.0f, 1.0f);
+                safeAreaInContent.offsetMin = new Vector2(0.0f, 0.0f);
+                safeAreaInContent.offsetMax = new Vector2(0.0f, 0.0f);
+            }            
+        }
+
+        if (head != null){
+            head.anchorMin = new Vector2(0.0f, 1.0f);
+            head.anchorMax = new Vector2(1.0f, 1.0f);
+            head.anchoredPosition = new Vector2(0.0f, -(topHeight + headHeight/2.0f));
+            head.sizeDelta = new Vector2(0.0f, headHeight);           
+        }
+
+        if (headBG != null){
+            headBG.anchorMin = new Vector2(0.0f, 1.0f);
+            headBG.anchorMax = new Vector2(1.0f, 1.0f);
+            float h ;
+            if (safeAreaInHeadBG != null){
+                h = topHeight + headHeight;
             }else{
-                if (safeAreaInContent != null){
-                    safeAreaInContent.anchorMin = new Vector2(0.0f, 0.0f);
-                    safeAreaInContent.anchorMax = new Vector2(1.0f, 1.0f);
-                    safeAreaInContent.offsetMin = new Vector2(0.0f, 0.0f);
-                    safeAreaInContent.offsetMax = new Vector2(0.0f, 0.0f);
-                }            
+                h = topHeight;
+            }
+            headBG.anchoredPosition = new Vector2(0.0f, -h / 2.0f);
+            headBG.sizeDelta = new Vector2(0.0f, h);
+        }
+        if (statusBar != null){
+            statusBar.anchorMin = new Vector2(0.0f, 1.0f);
+            statusBar.anchorMax = new Vector2(1.0f, 1.0f);
+            statusBar.anchoredPosition = new Vector2(0.0f, -topHeight/2.0f);
+            statusBar.sizeDelta = new Vector2(0.0f, topHeight);
+
+            if (safeAreaInHeadBG != null){
+                safeAreaInHeadBG.anchorMin = new Vector2(0.0f, 0.0f);
+                safeAreaInHeadBG.anchorMax = new Vector2(1.0f, 1.0f);
+                safeAreaInHeadBG.offsetMin = new Vector2(0.0f, 0.0f);
+                safeAreaInHeadBG.offsetMax = new Vector2(0.0f, -topHeight);
             }
         }
-
-        if (changeTop){
-            if (head != null){
-                head.anchorMin = new Vector2(0.0f, 1.0f);
-                head.anchorMax = new Vector2(1.0f, 1.0f);
-                head.anchoredPosition = new Vector2(0.0f, -(topHeight + headHeight/2.0f));
-                head.sizeDelta = new Vector2(0.0f, headHeight);           
-            }
-
-            if (headBG != null){
-                headBG.anchorMin = new Vector2(0.0f, 1.0f);
-                headBG.anchorMax = new Vector2(1.0f, 1.0f);
-                float h ;
-                if (safeAreaInHeadBG != null){
-                    h = topHeight + headHeight;
-                }else{
-                    h = topHeight;
-                }
-                headBG.anchoredPosition = new Vector2(0.0f, -h / 2.0f);
-                headBG.sizeDelta = new Vector2(0.0f, h);
-            }
-            if (statusBar != null){
-                statusBar.anchorMin = new Vector2(0.0f, 1.0f);
-                statusBar.anchorMax = new Vector2(1.0f, 1.0f);
-                statusBar.anchoredPosition = new Vector2(0.0f, -topHeight/2.0f);
-                statusBar.sizeDelta = new Vector2(0.0f, topHeight);
-
-                if (safeAreaInHeadBG != null){
-                    safeAreaInHeadBG.anchorMin = new Vector2(0.0f, 0.0f);
-                    safeAreaInHeadBG.anchorMax = new Vector2(1.0f, 1.0f);
-                    safeAreaInHeadBG.offsetMin = new Vector2(0.0f, 0.0f);
-                    safeAreaInHeadBG.offsetMax = new Vector2(0.0f, -topHeight);
-                }
-            }
-       }
 
         foreach(Transition t in transitions){
             t.transition.Init(this, content, head, headBG, tab);

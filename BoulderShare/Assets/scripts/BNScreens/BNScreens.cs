@@ -8,13 +8,13 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     public enum TransitionType {Push, Modal};
     public enum BNScreenType {
         FirstView, SecondView, ThirdView, FourthView, FifthView, SixthView, HomeTopView, GymView, 
-        GymWallView, GymPastView, RegisterView, RouteView, ModifyView, RegisterRecordView, RecordView,
+        RegisterView, RouteView, ModifyView, RegisterRecordView, RecordView,
         InputItemsView, EditRouteTapeView, SelecteWallImageView, StatisticsView, SelectRouteTagView};
     public enum BNTabName{Home=0, Favorite, Add, Statistics, Other};
-    [SerializeField] private CanvasGroup blockTouchCG;
+    [SerializeField] private CanvasGroup blockTouchCG;  
     [SerializeField] private List<BNTStack> stacks;
     [SerializeField] private List<BNScreenData> screenPrefabs;
-    [SerializeField] private BNTab bnTab;
+    [SerializeField] private BNTab bnTab;  
 
     private Dictionary<BNScreenType, BNScreen> map;
     private int currentStackIndex;
@@ -70,13 +70,16 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     }
     public BNScreen RecycleScreen(BNScreens.BNScreenType screenType, Transform parent){
         BNScreen screen = null;
+        Debug.Log("screenType:"+screenType.ToString());
         foreach(BNScreen s in usedScreens){
+            Debug.Log("s.getscreentype():"+s.GetScreenType().ToString());
             if (s.GetScreenType() == screenType){
                 screen = s;
                 break;
             }
         }
         if (screen != null){
+            Debug.Log("found:"+screen.GetScreenType().ToString());
             screen.transform.SetParent(parent, false);
             usedScreens.Remove(screen);            
         }
@@ -84,6 +87,7 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     }
 
     public void AddUsedScreen(BNScreen screen){
+        Debug.Log("addusedScreen:"+screen.GetScreenType().ToString());
         usedScreens.Add(screen);
         screen.transform.SetParent(usedScreenRoot, false);
     }

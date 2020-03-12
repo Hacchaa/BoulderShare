@@ -7,7 +7,7 @@ public class RecommendedRouteController : MonoBehaviour
 {
     [SerializeField] private RecommendedRouteView[] views;
     [SerializeField] private GameObject[] showObjs;
-    public void SetData(BNTriple[] arr){
+    public void SetData(BNPair[] arr){
         foreach(GameObject obj in showObjs){
             obj.SetActive(false);
         }

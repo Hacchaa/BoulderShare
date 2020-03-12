@@ -10,7 +10,6 @@ public class RegisterView: BNScreenInput
 {
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private GameObject gymInfo;
-    [SerializeField] private GameObject wallInfo;
     [SerializeField] private GameObject routeInfo;
 
     [SerializeField] private AdvancedInputField gymNameTextIF;
@@ -28,7 +27,7 @@ public class RegisterView: BNScreenInput
     [SerializeField] private GameObject backButton;
 
     
-    private enum ViewType{All, Gym, Wall, Route};
+    private enum ViewType{All, Gym, Route};
     private ViewType type ;
     private BNScreenStackWithTargetGym stack;
     public override void ClearFields(){
@@ -48,14 +47,10 @@ public class RegisterView: BNScreenInput
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             stack = belongingStack as BNScreenStackWithTargetGym;
             BNGym gym = stack.GetTargetGym();
-            BNWall wall = stack.GetTargetWall();
             BNRoute route = stack.GetTargetRoute();
             if (gym == null){
                 type = ViewType.Gym;
                 titleText.text = "ジム登録";
-            }else if (wall == null){
-                type = ViewType.Wall;
-                titleText.text = "壁登録";
             }else if (route == null){
                 type = ViewType.Route;
                 titleText.text = "課題登録";
@@ -69,18 +64,14 @@ public class RegisterView: BNScreenInput
 
     private void Show(){
         gymInfo.SetActive(false);
-        wallInfo.SetActive(false);
         routeInfo.SetActive(false);
         backButton.SetActive(true);
         if (type == ViewType.All){
             gymInfo.SetActive(true);
-            wallInfo.SetActive(true); 
             routeInfo.SetActive(true);
             backButton.SetActive(false);
         }else if(type == ViewType.Gym){
             gymInfo.SetActive(true);           
-        }else if(type == ViewType.Wall){
-            wallInfo.SetActive(true);          
         }else if(type == ViewType.Route){
             routeInfo.SetActive(true);
         }
@@ -123,25 +114,19 @@ public class RegisterView: BNScreenInput
                 gym.SetGymName(gymNameTextIF.Text);
                 stack.WriteGym(gym);
                 stack.StoreTargetGym(gym.GetID());
-            }else if(type == ViewType.Wall){
-                BNWall wall = new BNWall();
-                //Debug.Log(wallTypeIFIF.text);
-
-                List<BNWallImage> list = new List<BNWallImage>();
-                if (inputedSprite != null){
-                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                    list.Add(wallImage);
-                    wall.AddWallImageFileName(wallImage.fileName);
-                }
-                stack.WriteWall(wall, list);
-                stack.StoreTargetWall(wall.GetID());
             }else if(type == ViewType.Route){
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
                 route.SetWallType(wallType);
                 route.SetIsUsedKante(kanteToggle.isOn);
                 route.SetTape(tape);
-                stack.WriteRoute(route);
+                List<BNWallImage> list = new List<BNWallImage>();
+                if (inputedSprite != null){
+                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                    list.Add(wallImage);
+                    route.AddWallImageFileName(wallImage.fileName);
+                }
+                stack.WriteRoute(route, list);
                 stack.StoreTargetRoute(route.GetID());
             }
             ReverseTransition();
@@ -150,22 +135,19 @@ public class RegisterView: BNScreenInput
                 BNGym gym = new BNGym();
                 gym.SetGymName(gymNameTextIF.Text);
 
-                BNWall wall = new BNWall();
-
-                List<BNWallImage> list = new List<BNWallImage>();
-                if (inputedSprite != null){
-                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                    list.Add(wallImage);
-                    wall.AddWallImageFileName(wallImage.fileName);
-                }
-                gym.AddWall(wall);
-
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
                 route.SetWallType(wallType);
                 route.SetIsUsedKante(kanteToggle.isOn);
                 route.SetTape(tape);
-                wall.AddRoute(route);
+                
+                List<BNWallImage> list = new List<BNWallImage>();
+                if (inputedSprite != null){
+                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                    list.Add(wallImage);
+                    route.AddWallImageFileName(wallImage.fileName);
+                }
+                gym.AddRoute(route);
 
                 BNGymDataCenter.Instance.WriteGym(gym);
                 BNGymDataCenter.Instance.SaveWallImages(gym, list);

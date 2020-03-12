@@ -28,6 +28,9 @@ public class RecordDateTitleScrollerData : RecordScrollerDataBase {
 public class RecordLineScrollerData : RecordScrollerDataBase{
     
 }
+public class RecordBrankScrollerData : RecordScrollerDataBase{
+    
+}
 public class RecordScrollerDataBase{
 
 }

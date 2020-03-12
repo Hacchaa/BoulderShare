@@ -79,7 +79,9 @@ public class BNTransitionPushFrom : BNTransitionBase
 
     override public void Ready(){
         base.Ready();
-
+        if (tab != null){
+            tab.gameObject.SetActive(true);
+        }
         isNeedHeadBG = false;
         if (HasHeadBG()){
             /*
@@ -99,6 +101,9 @@ public class BNTransitionPushFrom : BNTransitionBase
             }
         }else{
             screen.gameObject.SetActive(isActiveWhenHiding);
+            if (HasTab() && !isAnotherWithTab){
+                tab.gameObject.SetActive(false);
+            }
         }
     }
 }

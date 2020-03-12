@@ -17,7 +17,7 @@ public class BNTransitionPushTo : BNTransitionBase
     private Vector2 backTitleBase;
     private Vector2 headBGBase;
     private Vector2 contentBase;
-    
+    private Vector2 tabBase;
 
     public override void Init(BNScreen screen, RectTransform content, RectTransform head, RectTransform headBG, RectTransform tab){
         base.Init(screen, content, head, headBG, tab);
@@ -34,6 +34,9 @@ public class BNTransitionPushTo : BNTransitionBase
         }
         if (content != null){
             contentBase = content.anchoredPosition;
+        }
+        if (tab != null){
+            tabBase = tab.anchoredPosition;
         }
     }
     override public void TransitionLerp(float t){
@@ -52,6 +55,9 @@ public class BNTransitionPushTo : BNTransitionBase
                 headBG.anchoredPosition = headBGBase + new Vector2(width * (1.0f - t), 0.0f);
             }*/
             headBG.anchoredPosition = headBGBase + new Vector2(width * (1.0f - t), 0.0f);
+        }
+        if (HasTab() && !isAnotherWithTab){
+            tab.anchoredPosition = tabBase + new Vector2(-width * t, 0.0f);
         }
         //title and backTitle
         if (title != null){
@@ -73,6 +79,9 @@ public class BNTransitionPushTo : BNTransitionBase
 
     override public void Ready(){
         base.Ready();
+        if (HasTab()){
+            tab.gameObject.SetActive(true);
+        }
 /*
         if (HasHeadBG()){
             headBG.gameObject.SetActive(true);
@@ -83,6 +92,9 @@ public class BNTransitionPushTo : BNTransitionBase
         if (isReverse){
             if (screen != null){
                 screen.gameObject.SetActive(false);
+            }
+            if (HasTab() && !isAnotherWithTab){
+                tab.gameObject.SetActive(false);
             }
         }else{
             SetAllBlocksRaycasts(true);

@@ -18,7 +18,6 @@ namespace BoulderNotes{
         public const string FORMAT_TIME = "yyyyMMddHHmmssffff";
         public const string FORMAT_DATE = "yyyy年M月d日";
         public const string PREFIX_ID_GYM = "G";
-        public const string PREFIX_ID_WALL = "W";
         public const string PREFIX_ID_ROUTE = "R";
         //try
         public const string PREFIX_ID_RECORD = "T";
@@ -27,12 +26,10 @@ namespace BoulderNotes{
         private const string ES3_FILE_BNGYMIDS = "gymIDs";
         private const string ES3_KEY_BNGYMIDS = "BNGymIDs";
         private const string ES3_KEY_GYM = "BNGym";
-        private const string ES3_KEY_WALL = "BNWall";
         private const string ES3_KEY_ROUTE = "BNRoute";
         private const string ES3_EXTENSION = ".es3";
         public const string WALLIMAGE_EXTENSION = ".png";
         private const string ES3_FILE_GYM = "gym";
-        private const string ES3_FILE_WALL = "wall";
         private const string ES3_FILE_ROUTE = "route";
         private const string ES3_DIC_IMAGES = "images";
 
@@ -48,41 +45,15 @@ namespace BoulderNotes{
                 BNGym g = ReadGym(id);
                 if (g != null){
                      gyms.Add(g);
-                     foreach(BNWall w in g.GetWalls()){
-                        foreach(BNRoute r in w.GetRoutes()){
-                            routeTags.AddRange(r.GetTags());
-                        }
-                     }
+                    foreach(BNRoute r in g.GetRoutes()){
+                        routeTags.AddRange(r.GetTags());
+                    }
                 }
             }
 
             routeTags = routeTags.Distinct().OrderBy(x=>x).ToList();
         }
    
-/*
-        public void Init(){
-            gymMap = new Dictionary<string, int>();
-            gyms = new List<BNGym>();
-            gymIDs = new BNGymIDs();
-            ReadGyms();
-        }
-
-        public void ReadGyms(){ 
-            string path = ES3_ROOTPATH +"/"+ ES3_FILE_BNGYMIDS;
-            if (ES3.KeyExists(ES3_KEY_BNGYMIDS, path)){
-                gymIDs = ES3.Load<BNGymIDs>(ES3_KEY_BNGYMIDS, path);
-                int n = gymIDs.idList.Count;
-                for(int i = 0 ; i < n ; i++){
-                    path = ES3_ROOTPATH + "/" + gymIDs.idList[i] + ES3_EXTENSION;
-    
-                    if (ES3.KeyExists(ES3_KEY_GYM, path)){
-                        gyms.Add(ES3.Load<BNGym>(ES3_KEY_GYM, path));
-                        gymMap.Add(gymIDs.idList[i], i);
-                    }
-                }
-            }
-        }*/
-
         public List<string> ReadGymIDs(){
             List<string> ids;
             string path = ES3_ROOTPATH + "/" + ES3_FILE_BNGYMIDS + ES3_EXTENSION;
@@ -439,11 +410,12 @@ namespace BoulderNotes{
         }
 
         public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){
-            StartCoroutine(LoadImage(GetWallImagePath(gym)+fileName, del));
+            StartCoroutine(LoadImage("file:///"+GetWallImagePath(gym)+fileName, del));
         }
 
         private IEnumerator LoadImage(string path, LoadImageDelegate del)
         {
+            Debug.Log("path:"+path);
             using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
             {
                 yield return uwr.SendWebRequest();
@@ -471,34 +443,13 @@ namespace BoulderNotes{
         }
         public void TestForSettingGym(){
             BNGym gym = new BNGym();
-            gym.SetGymName("Noborock");
-            
-            BNWall wall = new BNWall();
-            wall.SetStart(DateTime.Now);
-            wall.SetIsFinished(true);
-            gym.AddWall(wall);
-
-            wall = new BNWall();
-            wall.SetStart(DateTime.Now);
-            wall.SetIsFinished(true);
-            gym.AddWall(wall);
-
-            wall = new BNWall();
-            wall.SetStart(DateTime.Now);
-            wall.SetIsFinished(false);
-            gym.AddWall(wall);
-
-            wall = new BNWall();
-            wall.SetStart(DateTime.Now);
-            wall.SetIsFinished(false);
-            gym.AddWall(wall);          
+            gym.SetGymName("Noborock");      
 
             BNRoute route = new BNRoute();
             route.SetWallType(WallTypeMap.Type.Slab);
             route.SetGrade(BNGradeMap.Grade.Q3);
             route.SetStart(DateTime.Now);
-            wall.AddRoute(route);
-            gym.AddWall(wall);
+            gym.AddRoute(route);
 
             WriteGym(gym);
         }

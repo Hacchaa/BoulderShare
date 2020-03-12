@@ -17,22 +17,22 @@ public class RecommendedRouteView : MonoBehaviour
     [SerializeField] private RouteTape tape;
     [SerializeField] private Image wallImage;
     [SerializeField] private Sprite defaultSprite;
-    public void SetData(BNTriple triple){
-        clearRateText.text = "達成度" + triple.route.GetTotalClearRate() + "%";
-        gymNameText.text = triple.gym.GetGymName();
-        wallTypeText.text = triple.route.GetWallTypeName();
-        gradeText.text = triple.route.GetGradeName();
+    public void SetData(BNPair pair){
+        clearRateText.text = "達成度" + pair.route.GetTotalClearRate() + "%";
+        gymNameText.text = pair.gym.GetGymName();
+        wallTypeText.text = pair.route.GetWallTypeName();
+        gradeText.text = pair.route.GetGradeName();
 
-        if (triple.route.IsUsedKante()){
+        if (pair.route.IsUsedKante()){
             kanteText.text = "あり";
         }else{
             kanteText.text = "なし";
         }
 
-        tape.LoadTape(triple.route.GetTape());
-        IReadOnlyList<string> list = triple.wall.GetWallImageFileNames();
+        tape.LoadTape(pair.route.GetTape());
+        IReadOnlyList<string> list = pair.route.GetWallImageFileNames();
         if (list.Any()){
-            string path = BNGymDataCenter.Instance.GetWallImagePath(triple.gym);
+            string path = BNGymDataCenter.Instance.GetWallImagePath(pair.gym);
             LoadImage(path+list[0]);
         }else{
             wallImage.sprite = defaultSprite;

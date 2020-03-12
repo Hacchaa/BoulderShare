@@ -12,12 +12,10 @@ public class ModifyView: BNScreenInput
 {
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private GameObject gymInfo;
-    [SerializeField] private GameObject wallInfo;
     [SerializeField] private GameObject routeInfo;
 
     [SerializeField] private AdvancedInputField gymNameTextIF;
     [SerializeField] private TMP_InputField wallTypeText;
-    [SerializeField] private Toggle finishedWallToggle;
     [SerializeField] private Image wallImage;
     [SerializeField] private GameObject wallImageNoSelectedObj;
     [SerializeField] private GameObject wallImageSelectedObj;
@@ -32,16 +30,15 @@ public class ModifyView: BNScreenInput
     [SerializeField] private TextMeshProUGUI deleteText;
 
     private BNGym gym;
-    private BNWall wall;
+
     private BNRoute route;
     
-    private enum ViewType{Gym, Wall, Route};
+    private enum ViewType{Gym, Route};
     private ViewType type ;
 
     public override void ClearFields(){
         base.ClearFields();
         gym = null;
-        wall = null;
         route = null;
 
         titleText.text = "";
@@ -63,26 +60,13 @@ public class ModifyView: BNScreenInput
                 return ;
             }
 
-            wall = stack.GetTargetWall();
-            if (wall == null){
+            route = stack.GetTargetRoute();
+            if (route == null){
                 //gym編集
                 gymNameTextIF.Text = gym.GetGymName();
                 type = ViewType.Gym;
                 titleText.text = "ジム編集";
                 deleteText.text = "ジム削除";
-                ShowTargetObj();
-                return ;
-            }
-
-            route = stack.GetTargetRoute();
-            if (route == null){
-                //wall編集
-                wallTypeText.text = WallTypeMap.Entity.GetWallTypeName(wallType);
-                type = ViewType.Wall;
-                titleText.text = "壁編集";
-                deleteText.text = "壁削除";
-                finishedWallToggle.isOn = wall.IsFinished();
-                StartCoroutine(LoadWallImage(wall.GetWallImageFileNames()));
                 ShowTargetObj();
                 return ;
             }
@@ -125,15 +109,9 @@ public class ModifyView: BNScreenInput
     private void ShowTargetObj(){
         if(type == ViewType.Gym){
             gymInfo.SetActive(true);
-            wallInfo.SetActive(false);
-            routeInfo.SetActive(false);            
-        }else if(type == ViewType.Wall){
-            gymInfo.SetActive(false);
-            wallInfo.SetActive(true);
             routeInfo.SetActive(false);            
         }else if(type == ViewType.Route){
             gymInfo.SetActive(false);
-            wallInfo.SetActive(false);
             routeInfo.SetActive(true);            
         }
         if (tape != null){
@@ -178,28 +156,8 @@ public class ModifyView: BNScreenInput
         if (type == ViewType.Gym){
             gym.SetGymName(gymNameTextIF.Text);
             stack.ModifyGym(gym);
-            stack.ClearWall();
-            stack.StoreTargetGym(gym.GetID());
-        }else if(type == ViewType.Wall){
-            wall.SetIsFinished(finishedWallToggle.isOn);
-            if (finishedWallToggle.isOn){
-                wall.SetEnd(DateTime.Now);
-            }else{
-                wall.ClearEnd();
-            }
-            
-            List<BNWallImage> list = new List<BNWallImage>();
-            List<string> files = new List<string>();
-            if (inputedSprite != null){
-                wall.SetWallImageFileNames(files);
-                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                list.Add(wallImage);
-                wall.AddWallImageFileName(wallImage.fileName);
-            }
-            stack.ModifyWall(wall, list);
             stack.ClearRoute();
-            stack.StoreTargetWall(wall.GetID());
-
+            stack.StoreTargetGym(gym.GetID());
         }else if(type == ViewType.Route){
             route.SetGrade(grade);
             route.SetWallType(wallType);
@@ -211,7 +169,17 @@ public class ModifyView: BNScreenInput
             }
             route.SetIsUsedKante(KanteToggle.isOn);
             route.SetTape(tape);
-            stack.ModifyRoute(route);
+
+            List<BNWallImage> list = new List<BNWallImage>();
+            List<string> files = new List<string>();
+            if (inputedSprite != null){
+                route.SetWallImageFileNames(files);
+                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
+                list.Add(wallImage);
+                route.AddWallImageFileName(wallImage.fileName);
+            }
+
+            stack.ModifyRoute(route, list);
 
             stack.ClearRecord();
             stack.StoreTargetRoute(route.GetID());
@@ -227,8 +195,6 @@ public class ModifyView: BNScreenInput
         BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
         if (type == ViewType.Gym){
             stack.DeleteGym();
-        }else if(type == ViewType.Wall){
-            stack.DeleteWall();
         }else if(type == ViewType.Route){
             stack.DeleteRoute();
         }

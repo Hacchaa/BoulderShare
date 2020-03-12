@@ -30,10 +30,24 @@ public class RouteView : BNScreen
 
     [SerializeField] private Transform tagRoot;
     [SerializeField] private RouteTagView tagPrefab;
+    [SerializeField] private List<Image> headBGImages;
+    [SerializeField] private float headBGThreshold = 200f;
 
+    [SerializeField] private Image wallImage;
+    [SerializeField] private float defaultWallImageHeight = 240f;
+    private RectTransform wallImageRect;
+    private RectTransform wallImageParent;
+    [SerializeField] ScrollRect scrollRect;
+    private RectTransform scrollRectRect;
     public override void InitForFirstTransition(){
         scroller.Init();
         classView.Init();
+        GradHeadBG(0f);
+
+        wallImageRect = wallImage.GetComponent<RectTransform>();
+        wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
+        scrollRectRect = scrollRect.GetComponent<RectTransform>();
+        FitWallImageToParent();
     }
 
     public void ClearFields(){
@@ -140,6 +154,82 @@ public class RouteView : BNScreen
                 (belongingStack as BNScreenStackWithTargetGym).ModifyRoute(route);
             }
         }
+    }
+
+    public void GradHeadBG(float r){
+        foreach(Image img in headBGImages){
+            img.color = new Color(img.color.r, img.color.g, img.color.b, r);
+        }
+    }
+
+    public void GradHeadBGFromScroller(Vector2 v){
+        //現在スクロールpt量を計算
+        float cur = (scrollRect.content.rect.height - scrollRectRect.rect.height)*(1f - v.y);
+        float r = cur / 200f;
+        r = Mathf.Clamp(r, 0f, 1f);
+        GradHeadBG(r);
+    }
+ 
+    public void DebugScroll(Vector2 v){
+        //Debug.Log("v="+v.y);
+        //Debug.Log("diffHeight:"+(scrollRect.content.rect.height - scrollRectRect.rect.height)*(v.y-1f));
+        float deltaH = Mathf.Abs(scrollRect.content.anchoredPosition.y);
+        float r = (defaultWallImageHeight + (-scrollRect.content.anchoredPosition.y)) / defaultWallImageHeight;
+        if (v.y >= 1f){
+            wallImageParent.anchoredPosition = Vector2.zero;
+            wallImageParent.sizeDelta = new Vector2(0f, defaultWallImageHeight + deltaH);
+            wallImageRect.localScale = Vector3.one * (defaultWallImageHeight + deltaH ) / defaultWallImageHeight;
+        }else{
+            wallImageParent.anchoredPosition = scrollRect.content.anchoredPosition;
+        }
+    }
+
+    private void FitWallImageToParent(){
+        float fitHeight = wallImageParent.rect.height;
+        float fitWidth = wallImageParent.rect.width;
+
+        float texWidth = wallImage.mainTexture.width;
+        float texHeight = wallImage.mainTexture.height;
+
+        float difW = fitWidth - texWidth;
+        float difH = fitHeight - texHeight;
+      
+        float w, h;
+        if (fitHeight / fitWidth >= texHeight / texWidth){
+            h = fitHeight;
+            w = texWidth * (fitHeight / texHeight); 
+        }else{
+            w = fitWidth;
+            h = texHeight * (fitWidth / texWidth);
+        }
+        /*
+        //texのwidthかheightがfitTargetのwidhtかheightより大きいか小さいか
+        if (fitWidth > texWidth || fitHeight > texHeight){
+            //小さい場合、textureのwidthかheightどちらかを拡大する
+            //差の大きいほうをfitTargetに合わせて拡大
+            if (difW < difH){
+                h = fitHeight;
+                w = texWidth * (fitHeight / texHeight); 
+            }else{
+                w = fitWidth;
+                h = texHeight * (fitWidth / texWidth);
+            }
+        }else{
+            //大きい場合、textureのwidthかheightどちらかを縮小する
+            //差の小さいほうをfitTargetに合わせて縮小
+            // fit - tex であることに注意（符号がマイナス）
+            if (difW > difH){
+                w = fitWidth;
+                h = texHeight * (fitWidth / texWidth);
+            }else{
+                h = fitHeight;
+                w = texWidth * (fitHeight / texHeight);                 
+            }
+        }   */
+        //Debug.Log("w="+w+" h="+h);
+        wallImageRect.anchorMin = new Vector2(0.5f, 0.5f);
+        wallImageRect.anchorMax = new Vector2(0.5f, 0.5f);
+        wallImageRect.sizeDelta = new Vector2(w, h);
     }
 }
 }

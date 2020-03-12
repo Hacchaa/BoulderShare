@@ -42,7 +42,7 @@ public class StatisticsView : BNScreen
     private async void ProcRecommendedRoute(){
         int num = 2;
         float rate = 0.7f;
-        BNTriple[] info = await Task<BNTriple[]>.Run(() => AggregateRecommendedRoute(num, rate));
+        BNPair[] info = await Task<BNPair[]>.Run(() => AggregateRecommendedRoute(num, rate));
 
         recommended.SetData(info);
     }
@@ -75,13 +75,11 @@ public class StatisticsView : BNScreen
             GymPair pair = new GymPair(gym);
             days.Clear();
             string lastTryID = "";
-            foreach(BNWall wall in gym.GetWalls()){
-                foreach(BNRoute route in wall.GetRoutes()){
-                    foreach(BNRecord record in route.GetRecords()){
-                        days.Add(record.GetDate());
-                        if (string.IsNullOrEmpty(lastTryID) || lastTryID.CompareTo(record.GetID()) < 0){
-                            lastTryID = record.GetID();
-                        }
+            foreach(BNRoute route in gym.GetRoutes()){
+                foreach(BNRecord record in route.GetRecords()){
+                    days.Add(record.GetDate());
+                    if (string.IsNullOrEmpty(lastTryID) || lastTryID.CompareTo(record.GetID()) < 0){
+                        lastTryID = record.GetID();
                     }
                 }
             }
@@ -92,28 +90,26 @@ public class StatisticsView : BNScreen
         return list.OrderByDescending(x=>x.days).ThenByDescending(x=>x.lastTryID).ToList();
     }
 
-    private BNTriple[] AggregateRecommendedRoute(int num, float rate){
+    private BNPair[] AggregateRecommendedRoute(int num, float rate){
         if (num < 1){
             return null;
         }
-        BNTriple[] info = new BNTriple[num];
-        List<BNTriple> list = new List<BNTriple>();
+        BNPair[] info = new BNPair[num];
+        List<BNPair> list = new List<BNPair>();
         IReadOnlyList<BNGym> gyms = BNGymDataCenter.Instance.ReadGyms();
 
         foreach(BNGym gym in gyms){
-            foreach(BNWall wall in gym.GetWalls()){
-                foreach(BNRoute route in wall.GetRoutes()){
-                    list.Add(new BNTriple(gym, wall, route));
-                }
+            foreach(BNRoute route in gym.GetRoutes()){
+                list.Add(new BNPair(gym, route));
             }
         }
 
-        IEnumerable<BNTriple> ite = list
+        IEnumerable<BNPair> ite = list
             .Where(x=>x.route.GetTotalClearStatus() == BNRoute.ClearStatus.NoAchievement && !x.route.IsFinished() && x.route.GetTotalClearRate() >= rate)
             .OrderByDescending(x => x.route.GetTotalClearRate());
 
         int i = 0;
-        foreach(BNTriple t in ite){
+        foreach(BNPair t in ite){
             if (i >= num){
                 break;
             }
@@ -129,14 +125,12 @@ public class StatisticsView : BNScreen
         IReadOnlyList<BNGym> gyms = BNGymDataCenter.Instance.ReadGyms();
 
         foreach(BNGym gym in gyms){
-            foreach(BNWall wall in gym.GetWalls()){
-                foreach(BNRoute route in wall.GetRoutes()){
-                    int status = (int)route.GetTotalClearStatus();
-                    int grade = (int)route.GetGrade();
+            foreach(BNRoute route in gym.GetRoutes()){
+                int status = (int)route.GetTotalClearStatus();
+                int grade = (int)route.GetGrade();
 
-                    if (grade > (int)bestGrades[status]){
-                        bestGrades[status] = (BNGradeMap.Grade)grade;
-                    }
+                if (grade > (int)bestGrades[status]){
+                    bestGrades[status] = (BNGradeMap.Grade)grade;
                 }
             }
         }
@@ -160,10 +154,8 @@ public class StatisticsView : BNScreen
         IReadOnlyList<BNGym> gyms = BNGymDataCenter.Instance.ReadGyms();
 
         foreach(BNGym gym in gyms){
-            foreach(BNWall wall in gym.GetWalls()){
-                foreach(BNRoute route in wall.GetRoutes()){
-                    clears[(int)route.GetTotalClearStatus()]++;
-                }
+            foreach(BNRoute route in gym.GetRoutes()){
+                clears[(int)route.GetTotalClearStatus()]++;
             }
         }
 

@@ -88,6 +88,12 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 2c973cf9e6a613940a32ee0448117c16
+    m_Address: sample
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 2e5db8f1e3fc79a409713e934ce54cc6
     m_Address: doubleSquare
     m_ReadOnly: 0
