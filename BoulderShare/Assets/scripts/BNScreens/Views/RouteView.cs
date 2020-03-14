@@ -39,6 +39,7 @@ public class RouteView : BNScreen
     private RectTransform wallImageParent;
     [SerializeField] ScrollRect scrollRect;
     private RectTransform scrollRectRect;
+    [SerializeField] private TextMeshProUGUI title;
     public override void InitForFirstTransition(){
         scroller.Init();
         classView.Init();
@@ -164,10 +165,29 @@ public class RouteView : BNScreen
 
     public void GradHeadBGFromScroller(Vector2 v){
         //現在スクロールpt量を計算
-        float cur = (scrollRect.content.rect.height - scrollRectRect.rect.height)*(1f - v.y);
-        float r = cur / 200f;
+        float cur = scrollRect.content.anchoredPosition.y;
+        float r = cur / headBGThreshold;
         r = Mathf.Clamp(r, 0f, 1f);
         GradHeadBG(r);
+
+        if (r == 1f){
+            ShowHeaderContent();
+        }else{
+            HideHeaderContent();
+        }
+    }
+    private void ShowHeaderContent(){
+        /*
+        if(belongingStack is BNScreenStackWithTargetGym){
+            title.text = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym().GetGymName();
+            title.gameObject.SetActive(true);
+        }*/
+        title.text = route.GetGradeName();
+        title.gameObject.SetActive(true);
+        
+    }
+    private void HideHeaderContent(){
+        title.gameObject.SetActive(false);
     }
  
     public void DebugScroll(Vector2 v){

@@ -18,6 +18,14 @@ public class RecordOverviewScrollerData : RecordScrollerDataBase {
     public int completeRate;
 }
 
+public class RecordMainInfoScrollerData : RecordScrollerDataBase{
+    public RTape tape;
+    public string gymName;
+    public string grade;
+    public string date;
+    public bool usedKante;
+}
+
 public class RecordSubTitleScrollerData : RecordScrollerDataBase {
 }
 

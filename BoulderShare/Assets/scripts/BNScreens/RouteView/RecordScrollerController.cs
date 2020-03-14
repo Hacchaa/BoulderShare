@@ -19,6 +19,8 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     public RecordDateTitleCellView recordDateTitleCellViewPrefab;
     public RecordLineCellView recordLineCellViewPrefab;
     public RecordBrankCellView recordBrankCellViewPrefab;
+    public RecordMainInfoCellView recordMainInfoCellViewPrefab;
+
     public void Init(){
         _data = new List<RecordScrollerDataBase>();
         myScroller.Delegate = this;        
@@ -60,6 +62,15 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 
         //壁画像が表示される場所を空けておく
         _data.Add(new RecordBrankScrollerData());
+        RecordMainInfoScrollerData d = new RecordMainInfoScrollerData();
+        if (view.GetBelongingStack() is BNScreenStackWithTargetGym){
+            d.gymName = (view.GetBelongingStack() as BNScreenStackWithTargetGym).GetTargetGym().GetGymName();
+        }
+        d.tape = route.GetTape();
+        d.grade = route.GetGradeName();
+        d.date = route.GetPeriod();
+        d.usedKante = route.IsUsedKante();
+        _data.Add(d);
 
         //_dataを作る
         int dayN = dateList.Count;
@@ -107,6 +118,9 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (_data[dataIndex] is RecordBrankScrollerData){
             return 240f;
         }
+        if (_data[dataIndex] is RecordMainInfoScrollerData){
+            return 160f;
+        }
 
         //case in RecordLineScrollerData
         return 1f;
@@ -136,8 +150,13 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             recordDateTitleCellView.SetData((_data[dataIndex] as RecordDateTitleScrollerData));
             return recordDateTitleCellView ;
         }
-        if (_data[dataIndex] is RecordLineCellView){
+        if (_data[dataIndex] is RecordLineScrollerData){
             return scroller.GetCellView(recordLineCellViewPrefab) as RecordLineCellView;
+        }
+        if (_data[dataIndex] is RecordMainInfoScrollerData){
+            RecordMainInfoCellView recordMainCellView = scroller.GetCellView(recordMainInfoCellViewPrefab) as RecordMainInfoCellView;
+            recordMainCellView.SetData((_data[dataIndex] as RecordMainInfoScrollerData));
+            return recordMainCellView;
         }
 
         //case in RecordLineScrollerData
