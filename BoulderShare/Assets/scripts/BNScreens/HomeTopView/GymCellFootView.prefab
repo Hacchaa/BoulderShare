@@ -59,13 +59,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u30B8\u30E0\u306E\u307F\u8FFD\u52A0"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 51f09b22bdf8f32469d1d9382ddd3641, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d31f65fcc10a75b45924be3b30f4dcc6, type: 2}
   m_sharedMaterial: {fileID: 21147604081784772, guid: 51f09b22bdf8f32469d1d9382ddd3641,
     type: 2}
   m_fontSharedMaterials: []
@@ -133,18 +133,18 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 8921640478892906566}
-    characterCount: 6
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
