@@ -13,8 +13,6 @@ TrueTypeFontImporter:
   - Noto Sans JP
   fallbackFontReferences:
   - {fileID: 12800000, guid: 4bfbe4e36d7f2f14ba5a1a05be181944, type: 3}
-  - {fileID: 12800000, guid: 3a066f39e98130b44a962281a1b69172, type: 3}
-  - {fileID: 12800000, guid: 000c683afe040624eb3ff3517197749e, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

@@ -19,7 +19,7 @@ public class HomeTopView : BNScreen
         }
     }
     public void ToGymView(){
-        BNScreens.Instance.Transition(BNScreens.BNScreenType.GymView, BNScreens.TransitionType.Push);
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.GymRoutesView, BNScreens.TransitionType.Push);
     }
     public void ToRegisterView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.RegisterView, BNScreens.TransitionType.Push);
