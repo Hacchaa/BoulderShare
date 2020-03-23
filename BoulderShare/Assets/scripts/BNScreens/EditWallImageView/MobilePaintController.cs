@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 
 namespace BoulderNotes{
-public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler{
+public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IBeginDragHandler{
     [SerializeField] private unitycoder_MobilePaint.MobilePaint mobilePaint;
 	private int[] eTouches;
 	private const int FINGER_NONE = -10;
@@ -17,13 +17,17 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	private bool isOperationDetermined = false;
 	[SerializeField] private Camera cam;
 	private const float WEIGHT = 0.2f;
-    [SerializeField] private float orthoZoomSpeed = 0.5f;
-    [SerializeField] private float maxOrthoZoom = 300f;
+    [SerializeField] private float orthoZoomSpeed = 0.1f;
+    [SerializeField] private float maxOrthoZoom = 200f;
     [SerializeField] private float minOrthoZoom = 10f;
 
+    private enum TouchMode {None, Draw, Move};
+    private TouchMode touchMode;
+    private bool isDrawing ;
 	// Use this for initialization
 	void Awake () {
 		prevLength = -1;
+        touchMode = TouchMode.None;
 	}
 	void Start () {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
@@ -36,8 +40,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	public void OnPointerDown(PointerEventData data){
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
-            mobilePaint.RegisterFingerID(data.pointerId);
-		}else if(eTouches[1] == FINGER_NONE){
+		}else if(eTouches[1] == FINGER_NONE && (touchMode == TouchMode.None || touchMode == TouchMode.Move)){
 			eTouches[1] = data.pointerId;
 			prevLength = -1;
 			isOperationDetermined = false;
@@ -49,11 +52,23 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 					baseP2 = touch.position;
 				}
 			}
+
+            //mobilePaint.ClearFingerID();
 		}
 	}
+    public void OnBeginDrag(PointerEventData data){
+        if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
+            mobilePaint.RegisterFingerID(data.pointerId);
+            touchMode = TouchMode.Draw;
+        }else if (eTouches[0] != FINGER_NONE && eTouches[1] != FINGER_NONE && (eTouches[0] == data.pointerId || eTouches[1] == data.pointerId)){
+            touchMode = TouchMode.Move;
+        }
+    }
 
 	public void OnDrag(PointerEventData data){
-		DragNormal(data);
+        if (touchMode == TouchMode.Move){
+            DragNormal(data);
+        }
 	}
 
 	public void DragNormal(PointerEventData data){
@@ -109,7 +124,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
         }
 
 
-		if(isMove){
+		//if(isMove){
             //壁を移動させる
             Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
                 cam.gameObject.transform.InverseTransformPoint(cam.transform.position).z));
@@ -117,7 +132,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
                 cam.gameObject.transform.InverseTransformPoint(cam.transform.position).z));
 
             cam.transform.Translate(wP1Old - wP1, Space.World);
-		}else{
+		//}else{
 	
 			// Find the position in the previous frame of each touch.
 			Vector2 touchZeroPrevPos = p1 - dP1;
@@ -139,7 +154,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 				// Make sure the orthographic size never drops below zero.
 				cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minOrthoZoom, maxOrthoZoom); //Mathf.Max(cam.orthographicSize, 0.1f);
 			}
-		}
+		//}
 		isUpdate = true;
     }
 
@@ -148,10 +163,10 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
             if (eTouches[1] != FINGER_NONE){
                 eTouches[0] = eTouches[1];
                 eTouches[1] = FINGER_NONE;
-                mobilePaint.RegisterFingerID(eTouches[0]);
             }else{
                 eTouches[0] = FINGER_NONE;
                 mobilePaint.ClearFingerID();
+                touchMode = TouchMode.None;
             }
 		}else if(eTouches[1] == data.pointerId){
 			eTouches[1] = FINGER_NONE;
