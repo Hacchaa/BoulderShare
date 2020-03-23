@@ -395,7 +395,7 @@ namespace BoulderNotes{
                 ES3.SaveImage(bnImage.texture, path+bnImage.fileName);
             }
         }
-
+/*
         public Texture2D LoadWallImage(BNGym gym, string fileName){
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
             return ES3.LoadImage(path+fileName);
@@ -403,19 +403,24 @@ namespace BoulderNotes{
 
         public Texture2D LoadWallImage(string path){
             return ES3.LoadImage(path);
-        }
+        }*/
 
         public string GetWallImagePath(BNGym gym){
             return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
         }
 
         public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){
-            StartCoroutine(LoadImage("file:///"+GetWallImagePath(gym)+fileName, del));
+            //StartCoroutine(LoadImage("file:///"+GetWallImagePath(gym)+fileName, del));
+            StartCoroutine(LoadImage(GetWallImagePath(gym)+fileName, del));
+        }
+        public void LoadImageAsync(string path, LoadImageDelegate del){
+            //StartCoroutine(LoadImage("file:///"+path, del));
+            StartCoroutine(LoadImage(path, del));
         }
 
         private IEnumerator LoadImage(string path, LoadImageDelegate del)
         {
-            Debug.Log("path:"+path);
+            //Debug.Log("path:"+path);
             using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
             {
                 yield return uwr.SendWebRequest();

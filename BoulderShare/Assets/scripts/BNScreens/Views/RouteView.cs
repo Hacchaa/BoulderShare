@@ -125,6 +125,9 @@ public class RouteView : BNScreen
     public void ToSelectRouteTagView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.SelectRouteTagView, BNScreens.TransitionType.Push);
     }
+    public void ToEditWallImageView(){
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.EditWallImageView, BNScreens.TransitionType.Push);
+    }
     public void OnFavoriteClicked(){
         if (pushedTime == null){
             pushedTime = DateTime.Now;

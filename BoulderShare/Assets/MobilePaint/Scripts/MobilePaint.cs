@@ -173,7 +173,7 @@ namespace unitycoder_MobilePaint
         private int texHeight;
         private Touch touch; // touch reference
         private bool wasTouching = false; // in previous frame we had touch
-        private Camera cam; // main camera reference
+        public Camera cam; // main camera reference
         private Renderer myRenderer;
 
         private RaycastHit hit;
@@ -207,10 +207,21 @@ namespace unitycoder_MobilePaint
         // zoom pan
         private bool isZoomingOrPanning = false;
 
+        //** for bouldernotes
+        private int targetFingerID;
+        private const int fingerNone = -100;
+        public void RegisterFingerID(int id){
+            targetFingerID = id;
+        }
+        public void ClearFingerID(){
+            targetFingerID = fingerNone;
+        }
         void Awake()
-        {
+        {   
             // cache components
-            cam = Camera.main;
+            if (cam == null){
+                cam = Camera.main;
+            }
             myRenderer = GetComponent<Renderer>();
 
 
@@ -335,7 +346,7 @@ namespace unitycoder_MobilePaint
         // rebuilds everything and reloads masks,textures..
         public void InitializeEverything()
         {
-
+            OnDestroy();
             // for drawing lines preview
             if (GetComponent<LineRenderer>() != null)
             {
@@ -529,7 +540,8 @@ namespace unitycoder_MobilePaint
             {
                 // Only if we hit something, then we continue
                 if (!Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity, paintLayerMask)) { wentOutside = true; return; }
-
+                //Debug.Log("mouseInput:"+Input.mousePosition.x + " "+ Input.mousePosition.y);
+                //Debug.Log("texcord:"+hit.textureCoord.x + " "+ hit.textureCoord.y);
                 pixelUVOld = pixelUV; // take previous value, so can compare them
                 pixelUV = hit.textureCoord;
                 pixelUV.x *= texWidth;
@@ -684,7 +696,7 @@ namespace unitycoder_MobilePaint
             while (i < Input.touchCount)
             {
                 touch = Input.GetTouch(i);
-                if (eventSystem.IsPointerOverGameObject(touch.fingerId)) return;
+                //** if (eventSystem.IsPointerOverGameObject(touch.fingerId)) return;
                 i++;
             }
             if (eventSystem.currentSelectedGameObject != null) return;
@@ -693,8 +705,12 @@ namespace unitycoder_MobilePaint
             // loop until all touches are processed
             while (i < Input.touchCount)
             {
-
                 touch = Input.GetTouch(i);
+                //**targetFingerIDでない場合、処理しない
+                if (touch.fingerId != targetFingerID){
+                    i++;
+                    continue;
+                }
                 if (touch.phase == TouchPhase.Began)
                 {
                     wasTouching = true;
@@ -2722,6 +2738,7 @@ namespace unitycoder_MobilePaint
 
             // add mesh collider
             if (gameObject.GetComponent<MeshCollider>() == null) gameObject.AddComponent<MeshCollider>();
+            gameObject.GetComponent<MeshCollider>().sharedMesh = go_Mesh;
         }
 
 
@@ -2922,9 +2939,10 @@ namespace unitycoder_MobilePaint
             maskPixels = null;
             clearPixels = null;
             lockMaskPixels = null;
-            if (undoEnabled) undoPixels.Clear();
+            if (undoEnabled && undoPixels != null) undoPixels.Clear();
 
             // System.GC.Collect();
+            targetFingerID = fingerNone;
         }
 
 

@@ -92,7 +92,7 @@ public class ModifyView: BNScreenInput
             ShowTargetObj();
         }
     }
-
+/*
     private IEnumerator LoadWallImage(List<string> nameList){
         if (belongingStack == null || !(belongingStack is BNScreenStackWithTargetGym)){
             yield break;
@@ -104,7 +104,7 @@ public class ModifyView: BNScreenInput
             inputedSprite = spr;
             yield return null;
         }
-    }
+    }*/
 
     private void ShowTargetObj(){
         if(type == ViewType.Gym){

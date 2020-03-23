@@ -1735,6 +1735,278 @@ MonoBehaviour:
   userInterface: {fileID: 353257471}
   hideUIWhilePainting: 1
   debugMode: 0
+--- !u!1 &1311910328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1311910332}
+  - component: {fileID: 1311910331}
+  - component: {fileID: 1311910330}
+  - component: {fileID: 1311910329}
+  m_Layer: 0
+  m_Name: Easy Save 3 Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1311910329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311910328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9107aee0ced90422da95f0b31680501f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 981286c5-083d-4f05-9601-d18e728a9946
+  saveEvent: 1
+  loadEvent: 1
+  settings:
+    _location: 0
+    path: SaveData.es3
+    encryptionType: 0
+    encryptionPassword: boulderNotesIsGreat
+    directory: 0
+    format: 0
+    bufferSize: 2048
+    saveChildren: 0
+    typeChecking: 1
+    safeReflection: 1
+    memberReferenceMode: 0
+    referenceMode: 2
+    assemblyNames:
+    - Assembly-CSharp
+    - Assembly-CSharp-firstpass
+    showAdvancedSettings: 0
+  autoSaves: []
+--- !u!114 &1311910330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311910328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a83408fcc9044c4fbc7e5d09a369ab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openReferences: 0
+  openPrefabs: 0
+  idRef:
+    _Keys: 2f47dce13734291a4dbfc1b23fb22c70cc6cc83b284e836fe66fd046ff01a9004a823784c738c66e82d12df7b714f54e7dcbd2bdd7b2221f3b9203389b1ce44f69c1fcc2eab1376c59a645a8de73472f867d3b342b9828035aa83fa5c301f561b67d607911b738336c999ccf9385bf38b52b4de11e50dc2f99f867417192a858b1e35d5cd3c0403d4a915f3acb0869209988a510b1287f645ecfedf6e0855b0143f48076e31b0c756c8b988df1a1645e9f782506c746f52563c2fd04d34a5d30ed60f8d687f23c7d83d05ada6f0d8c00344c9458aa61c90401a52559e7efb74917365f6f56712953c45775675e306a55ca0330794afb794e2bfcd72d1796646be8ee3dc751e2553cdebe6bac149e5a2e3bd023ea20309412b0ad995248576b5abce14f4d6d31a619520c64737032c574a2a868e7b94f8b17845077ff7ca88534d639960a12576309290a9813cb21a27de825f4f1bf53140c93992e4256596a0492999d369cbb6106f38eee3b18601c5bf3f5e8a19c77f47ddb7563547959a07d749d8132836be12dc3edfd3164d8f30d4976af9f8e3797098d1a11121eb5804dd29339842016285d29ea9a758bda1e4c968f6210f6c0f43d0578a56859ce0f0d6db003f711782d5f62f28a5b63de824dfcc57c8e536f576d78897566446f485adb8c08dad7263b1d9ffd8e17b5af5f1c060d936bad7f460259957f8702c71b2f3ce437efe65c242a8a5f2d51fe6e2227e9926c5102b4085a2ef57ebe594ce565e642242f8790ca57e968f50cac97001473589e705bca2c10ed92c2f1de65d12944926abb4af2a059c8153a6baa14076a0b96cd4e14a93f1c15141c1953bb357c98cc513f02bb5f7f49ba57ba703e9a019a2dfd7433203d65534ea535d687060c2142fd8899b89238f54d97cf01f98c5452e24c7f47564f7770136daf9e6ba9303f9c66d2bfee981f653b967f48f2995ac15187b9d4855336f386f9ad2642d7755d986f9b6c456a3f85941a7d1330407e87ec12b21c0fa346b7cf3aba18baba58120cdce16235c6074539ccbf952add23c77727392f24594d0bd61b62f54fd83f4e736a07545e1b444ce5911cbc1b4e730de80c5f6d7ed6376529d68b1a63126b120b0e0894e47725946c8515b6760a107858aaf3bc872d2f64cd5ed57770d5172ddad137d5a8f70da0cd0d26fb13122334e703720e052875dedfa4c786a1ae22699117235b2cc430619c53ee7a07334fbc3a095e74482532fdb8a609fccf7902e0157072d4ca800722d3d3ab5917f029ac550c4c984fae4e49b5d95d7945cb30eaaa3070885adb7abc1181471bd18b1ac87db551dcc59a2fc4beba8aa3dd816862fc3e51197f5e0531879187cd673376d640da0905e2f3241000abc99f51d7676d151ae16dc5fe48dbba82635621fd2c0ece4c9dfc889c44109c9ee6d4d85a7da1070a1c7eeb1b11bf6dd2b59f703211fd812891618b9b0ab25ed1d0261873036005c24f16e1ae06eb5ddf8fb5e7a47fcfb0e25500ebdf2da314691f1a4bea281f2ae95bcd7ed721302fa604ac0c546603500176361d0274db6a54fe88711335b7f750202fffb250283f7ad06d1c265069cf1cc94974f20227753538d2d6aa41e48e435ba28b6a039db09e7597d2e142bbfb98a871228043054ef8baca7a7e01eabcb4fb5f82f22264192b98d57d6a556d0c8229c1fe303d0dff565393b03823329c5e5487dda13d1245bca709179278e4a326d7fda7c3158d76095fd846b54b20f799c6e0ea324a513fe883be77cb256f30910f769ed974d848e0fee7011634917088117ecb98312b8f794240bfa803bdd00e584a5a2a7fe1db60d635cfce4f29b3132effdca35d995fe5e724963467f1e34016f2bdea1565f70da6d49199065ec96bf3d3d7031f2cb1f1aa4011a478
+    _Values:
+    - {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 1301386320, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 2109663825, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: -1184210157, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 11500000, guid: ac775cd371ed4824f8b81ae9a2d1fa34, type: 3}
+    - {fileID: 11500000, guid: a5a5402604e43174f81a75d36d64c623, type: 3}
+    - {fileID: 11500000, guid: f7b4df2f3ab8bcf488401ea8c10980a4, type: 3}
+    - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10906, guid: 0000000000000000f000000000000000, type: 0}
+    - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+    - {fileID: 21300000, guid: 4901718a38c8c0648a265546c1f66a09, type: 3}
+    - {fileID: 1321293023}
+    - {fileID: 1321293027}
+    - {fileID: 1321293026}
+    - {fileID: 1321293025}
+    - {fileID: 1396522805}
+    - {fileID: 1396522807}
+    - {fileID: 1396522808}
+    - {fileID: 2058240970}
+    - {fileID: 1465584578}
+    - {fileID: 1465584581}
+    - {fileID: 1465584580}
+    - {fileID: 1465584579}
+    - {fileID: 1514598567}
+    - {fileID: 1514598570}
+    - {fileID: 2800000, guid: 8a21a7c73fd3eb24c9e7918fab77b4a3, type: 3}
+    - {fileID: 209041084}
+    - {fileID: 209041086}
+    - {fileID: 209041085}
+    - {fileID: 1042360670}
+    - {fileID: 218154372}
+    - {fileID: 218154374}
+    - {fileID: 218154373}
+    - {fileID: 1465584582}
+    - {fileID: 353257471}
+    - {fileID: 353257475}
+    - {fileID: 353257474}
+    - {fileID: 353257473}
+    - {fileID: 353257472}
+    - {fileID: 1943441880}
+    - {fileID: 2028367487}
+    - {fileID: 2096439115}
+    - {fileID: 354351330}
+    - {fileID: 354351331}
+    - {fileID: 354351333}
+    - {fileID: 354351332}
+    - {fileID: 493043616}
+    - {fileID: 388358743}
+    - {fileID: 388358744}
+    - {fileID: 388358747}
+    - {fileID: 388358746}
+    - {fileID: 21300000, guid: 1c41f815961770c4f894df090816a07a, type: 3}
+    - {fileID: 21300000, guid: 8a21a7c73fd3eb24c9e7918fab77b4a3, type: 3}
+    - {fileID: 21300000, guid: d8c685859f4d60143b4b3a545f9fd076, type: 3}
+    - {fileID: 21300000, guid: 5946129ff974cc24daec2b89565ad272, type: 3}
+    - {fileID: 1143721210}
+    - {fileID: 1143721213}
+    - {fileID: 1143721212}
+    - {fileID: 1152665563}
+    - {fileID: 1152665564}
+    - {fileID: 1152665566}
+    - {fileID: 1152665565}
+    - {fileID: 1321293024}
+    - {fileID: 1168564964}
+    - {fileID: 1168564967}
+    - {fileID: 1968785800}
+    - {fileID: 71982786}
+    - {fileID: 388358745}
+    - {fileID: 1918235202}
+    - {fileID: 396123008}
+    - {fileID: 396123009}
+    - {fileID: 396123010}
+    - {fileID: 396123011}
+    - {fileID: 1168564965}
+    - {fileID: 485758065}
+    - {fileID: 1168564966}
+    - {fileID: 1968785801}
+    - {fileID: 1514598571}
+    - {fileID: 418745569}
+    - {fileID: 418745570}
+    - {fileID: 418745572}
+    - {fileID: 418745571}
+    - {fileID: 1579661185}
+    - {fileID: 485758064}
+    - {fileID: 485758067}
+    - {fileID: 485758066}
+    - {fileID: 493043615}
+    - {fileID: 493043619}
+    - {fileID: 493043618}
+    - {fileID: 493043617}
+    - {fileID: 515641210}
+    - {fileID: 515641211}
+    - {fileID: 515641214}
+    - {fileID: 515641213}
+    - {fileID: 515641212}
+    - {fileID: 1143721211}
+    - {fileID: 1042360669}
+    - {fileID: 1042360672}
+    - {fileID: 1042360671}
+    - {fileID: 1396522806}
+    - {fileID: 1514598569}
+    - {fileID: 1579661184}
+    - {fileID: 1579661188}
+    - {fileID: 1579661187}
+    - {fileID: 1579661186}
+    - {fileID: 1657987658}
+    - {fileID: 1657987660}
+    - {fileID: 1657987659}
+    - {fileID: 1918235201}
+    - {fileID: 1918235204}
+    - {fileID: 1918235203}
+    - {fileID: 1943441879}
+    - {fileID: 1943441882}
+    - {fileID: 1943441881}
+    - {fileID: 1968785799}
+    - {fileID: 1968785802}
+    - {fileID: 2028367486}
+    - {fileID: 2028367489}
+    - {fileID: 2028367488}
+    - {fileID: 2028367490}
+    - {fileID: 2058240969}
+    - {fileID: 2058240972}
+    - {fileID: 2058240971}
+    - {fileID: 2096439114}
+    - {fileID: 2096439117}
+    - {fileID: 2096439116}
+    - {fileID: 2800000, guid: 5946129ff974cc24daec2b89565ad272, type: 3}
+    - {fileID: 2800000, guid: d8c685859f4d60143b4b3a545f9fd076, type: 3}
+    - {fileID: 71982787}
+    - {fileID: 71982790}
+    - {fileID: 71982789}
+    - {fileID: 71982788}
+    - {fileID: 1657987661}
+    - {fileID: 1514598568}
+    - {fileID: 209041083}
+    - {fileID: 218154371}
+    - {fileID: 2800000, guid: 1c41f815961770c4f894df090816a07a, type: 3}
+    - {fileID: 2800000, guid: 4901718a38c8c0648a265546c1f66a09, type: 3}
+    - {fileID: 916120784}
+    - {fileID: 916120785}
+    - {fileID: 11500000, guid: 39222dc8d1f813a45b663c1d11e1d3f6, type: 3}
+    - {fileID: 916120782}
+    - {fileID: 916120786}
+    - {fileID: 916120780}
+    - {fileID: 916120781}
+    - {fileID: 916120783}
+    - {fileID: -619905303, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 1077351063, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 1997211142, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+    - {fileID: 2136084462}
+    - {fileID: 2136084466}
+    - {fileID: 2136084465}
+    - {fileID: 2136084464}
+    - {fileID: 2136084463}
+    - {fileID: 1199865695}
+    - {fileID: 11500000, guid: a329d585c217af74f8e7769cad76c730, type: 3}
+    - {fileID: 1199865692}
+    - {fileID: 1199865693}
+    - {fileID: 1199865696}
+    - {fileID: 4800000, guid: 59e607214e2e5914b96b96e4b4e815aa, type: 3}
+    - {fileID: 2800000, guid: 4f95ea0b4e328564588bc9025eb14b72, type: 3}
+    - {fileID: 1199865697}
+    - {fileID: 2100000, guid: 4f2644aaaf88ed6438cd34c468822d57, type: 2}
+    - {fileID: 11500000, guid: fe03dce33feda1c439d2a8012cdec0a4, type: 3}
+    - {fileID: 1572524207}
+    - {fileID: 1572524209}
+    - {fileID: 1572524208}
+  prefabs: []
+--- !u!114 &1311910331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311910328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8714d999c5ae749538494c1347e5a3ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  message: 'The Easy Save 3 Manager is required in any scenes which use Easy Save,
+    and is automatically added to your scene when you enter Play mode.
+
+
+    To stop this from automatically being added to your scene, go to ''Window > Easy
+    Save 3 > Settings'' and deselect the ''Auto Add Manager to Scene'' checkbox.'
+--- !u!4 &1311910332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1311910328}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1321293023
 GameObject:
   m_ObjectHideFlags: 0

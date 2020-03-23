@@ -39,16 +39,12 @@ public class RecommendedRouteView : MonoBehaviour
         }
     }
     private void LoadImage(string path){
-        Texture2D texture = BNGymDataCenter.Instance.LoadWallImage(path);
-        Sprite spr = Sprite.Create(
-            texture, 
-            new Rect(0.0f, 0.0f, texture.width, texture.height), 
-            new Vector2(0.5f, 0.5f),
-            texture.height/4);
-
-        wallImage.sprite = spr;
-        FitImage(spr);
+        BNGymDataCenter.Instance.LoadImageAsync(path, OnLoad);
     }   
+    private void OnLoad(Sprite spr){
+        wallImage.sprite = spr;
+        FitImage(spr);        
+    }
     private void FitImage(Sprite spr){
         RectTransform rect = wallImage.GetComponent<RectTransform>();
         RectTransform parent = wallImage.transform.parent.GetComponent<RectTransform>();

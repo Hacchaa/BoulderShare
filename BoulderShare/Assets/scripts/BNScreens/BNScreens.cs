@@ -10,7 +10,7 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
         FirstView, SecondView, ThirdView, FourthView, FifthView, SixthView, HomeTopView, GymView, 
         RegisterView, RouteView, ModifyView, RegisterRecordView, RecordView,
         InputItemsView, EditRouteTapeView, SelecteWallImageView, StatisticsView, SelectRouteTagView,
-        GymRoutesView};
+        GymRoutesView, EditWallImageView};
     public enum BNTabName{Home=0, Favorite, Add, Statistics, Other};
     [SerializeField] private CanvasGroup blockTouchCG;  
     [SerializeField] private List<BNTStack> stacks;
@@ -71,16 +71,16 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     }
     public BNScreen RecycleScreen(BNScreens.BNScreenType screenType, Transform parent){
         BNScreen screen = null;
-        Debug.Log("screenType:"+screenType.ToString());
+        //Debug.Log("screenType:"+screenType.ToString());
         foreach(BNScreen s in usedScreens){
-            Debug.Log("s.getscreentype():"+s.GetScreenType().ToString());
+            //Debug.Log("s.getscreentype():"+s.GetScreenType().ToString());
             if (s.GetScreenType() == screenType){
                 screen = s;
                 break;
             }
         }
         if (screen != null){
-            Debug.Log("found:"+screen.GetScreenType().ToString());
+            //Debug.Log("found:"+screen.GetScreenType().ToString());
             screen.transform.SetParent(parent, false);
             usedScreens.Remove(screen);            
         }
@@ -88,7 +88,7 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     }
 
     public void AddUsedScreen(BNScreen screen){
-        Debug.Log("addusedScreen:"+screen.GetScreenType().ToString());
+        //Debug.Log("addusedScreen:"+screen.GetScreenType().ToString());
         usedScreens.Add(screen);
         screen.transform.SetParent(usedScreenRoot, false);
     }

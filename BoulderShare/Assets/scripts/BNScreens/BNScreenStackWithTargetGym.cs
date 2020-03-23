@@ -70,7 +70,7 @@ public class BNScreenStackWithTargetGym : BNTStack
             }
         }
     }
-
+/*
     public Sprite LoadWallImage(string fileName){
         if (targetGym == null){
             return null;
@@ -91,7 +91,7 @@ public class BNScreenStackWithTargetGym : BNTStack
             texture.height/4);
 
         return sprite;
-    }
+    }*/
     public void LoadImageAsync(string fileName, LoadImageDelegate del){
         if (targetGym == null){
             return ;
