@@ -743,7 +743,7 @@ namespace unitycoder_MobilePaint
                     }
                 }
                 // check state
-                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Moved /*|| touch.phase == TouchPhase.Began*/)
                 {
 
                     // do raycast on touch position

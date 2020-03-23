@@ -40,6 +40,8 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	public void OnPointerDown(PointerEventData data){
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
+            mobilePaint.RegisterFingerID(data.pointerId);
+            touchMode = TouchMode.Draw;
 		}else if(eTouches[1] == FINGER_NONE && (touchMode == TouchMode.None || touchMode == TouchMode.Move)){
 			eTouches[1] = data.pointerId;
 			prevLength = -1;
