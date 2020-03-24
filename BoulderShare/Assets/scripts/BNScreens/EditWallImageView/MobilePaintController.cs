@@ -40,8 +40,6 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	public void OnPointerDown(PointerEventData data){
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
-            mobilePaint.RegisterFingerID(data.pointerId);
-            touchMode = TouchMode.Draw;
 		}else if(eTouches[1] == FINGER_NONE && (touchMode == TouchMode.None || touchMode == TouchMode.Move)){
 			eTouches[1] = data.pointerId;
 			prevLength = -1;
@@ -59,6 +57,9 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 		}
 	}
     public void OnBeginDrag(PointerEventData data){
+		if (touchMode != TouchMode.None){
+			return ;
+		}
         if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
             mobilePaint.RegisterFingerID(data.pointerId);
             touchMode = TouchMode.Draw;
@@ -70,9 +71,27 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	public void OnDrag(PointerEventData data){
         if (touchMode == TouchMode.Move){
             DragNormal(data);
-        }
+        }else if(touchMode == TouchMode.Draw){
+			mobilePaint.OnDrag(data);
+		}
 	}
+	public void OnPointerUp(PointerEventData data){
+		if (eTouches[0] == data.pointerId){
+            if (eTouches[1] != FINGER_NONE){
+                eTouches[0] = eTouches[1];
+                eTouches[1] = FINGER_NONE;
+            }else{
+                eTouches[0] = FINGER_NONE;
 
+				if (touchMode == TouchMode.Draw){
+					mobilePaint.OnEndDrag(data);
+				}
+                touchMode = TouchMode.None;
+            }
+		}else if(eTouches[1] == data.pointerId){
+			eTouches[1] = FINGER_NONE;
+		}
+    }
 	public void DragNormal(PointerEventData data){
 		Vector2 p1, p2, dP1, dP2;
 		p1 = p2 = dP1 = dP2 = Vector2.zero;
@@ -158,21 +177,6 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			}
 		//}
 		isUpdate = true;
-    }
-
-	public void OnPointerUp(PointerEventData data){
-		if (eTouches[0] == data.pointerId){
-            if (eTouches[1] != FINGER_NONE){
-                eTouches[0] = eTouches[1];
-                eTouches[1] = FINGER_NONE;
-            }else{
-                eTouches[0] = FINGER_NONE;
-                mobilePaint.ClearFingerID();
-                touchMode = TouchMode.None;
-            }
-		}else if(eTouches[1] == data.pointerId){
-			eTouches[1] = FINGER_NONE;
-		}
     }
 }
 }

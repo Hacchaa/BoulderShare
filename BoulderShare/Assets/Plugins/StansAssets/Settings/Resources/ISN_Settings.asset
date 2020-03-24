@@ -18,7 +18,7 @@ MonoBehaviour:
   ReplayKit: 0
   Social: 0
   AdSupport: 0
-  AVKit: 1
+  AVKit: 0
   CoreLocation: 0
   AssetsLibrary: 0
   AppDelegate: 0

@@ -890,6 +890,169 @@ namespace unitycoder_MobilePaint
 
         }
 
+        public void OnBeginDrag(PointerEventData data){
+            if (targetFingerID == fingerNone){
+                targetFingerID = data.pointerId;
+
+                if (hideUIWhilePainting && isUIVisible) HideUI();
+
+                // when starting to draw, grab undo buffer first, FIXME: do this after painting, so it wont slowdown
+                if (undoEnabled)
+                {
+                    GrabUndoBufferNow();
+                }
+
+                if (useLockArea)
+                {
+                    if (!Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask)) { wentOutside = true; return; }
+
+                    pixelUVs[data.pointerId] = hit.textureCoord;
+                    pixelUVs[data.pointerId].x *= texWidth;
+                    pixelUVs[data.pointerId].y *= texHeight;
+                    if (wentOutside) { pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId]; wentOutside = false; }
+                    CreateAreaLockMask((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                }
+
+                if (Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask))
+                {
+                    // get hit texture coordinate
+                    pixelUVs[data.pointerId] = hit.textureCoord;
+                    pixelUVs[data.pointerId].x *= texWidth;
+                    pixelUVs[data.pointerId].y *= texHeight; 
+                }       
+            }
+        }
+
+        public void OnDrag(PointerEventData data){
+            if (data.pointerId != targetFingerID){
+                return ;
+            }
+            // do raycast on touch position
+            if (Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask))
+            {
+                // take previous value, so can compare them
+                pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId];
+                // get hit texture coordinate
+                pixelUVs[data.pointerId] = hit.textureCoord;
+                pixelUVs[data.pointerId].x *= texWidth;
+                pixelUVs[data.pointerId].y *= texHeight;
+
+                // paint where we hit
+                switch (drawMode)
+                {
+                    case DrawMode.Default:
+                        DrawCircle((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        break;
+
+                    case DrawMode.CustomBrush:
+                        DrawCustomBrush((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        break;
+
+                    case DrawMode.Pattern:
+                        DrawPatternCircle((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        break;
+
+                    case DrawMode.FloodFill:
+                        CallFloodFill((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        break;
+
+                    case DrawMode.ShapeLines:
+                        if (snapLinesToGrid)
+                        {
+                            DrawShapeLinePreview(SnapToGrid((int)pixelUVs[data.pointerId].x), SnapToGrid((int)pixelUVs[data.pointerId].y));
+                        }
+                        else {
+                            DrawShapeLinePreview((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        }
+                        break;
+
+                    case DrawMode.Eraser:
+                        if (eraserMode == EraserMode.Default)
+                        {
+                            EraseWithImage((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        }
+                        else {
+                            EraseWithBackgroundColor((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        }
+                        break;
+
+
+                    default:
+                        // unknown mode
+                        break;
+                }
+
+                if (connectBrushStokes)
+                {
+                    switch (drawMode)
+                    {
+                        case DrawMode.Default:
+                            DrawLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            break;
+
+                        case DrawMode.CustomBrush:
+                            DrawLineWithBrush(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            break;
+
+                        case DrawMode.Pattern:
+                            DrawLineWithPattern(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            break;
+
+                        case DrawMode.Eraser:
+                            if (eraserMode == EraserMode.Default)
+                            {
+                                EraseWithImageLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            }
+                            else {
+                                EraseWithBackgroundColorLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            }
+                            break;
+
+                        default:
+                            // unknown mode
+                            break;
+                    }
+                }
+                textureNeedsUpdate = true;
+            }
+        }
+
+        public void OnEndDrag(PointerEventData data){
+            if (data.pointerId != targetFingerID){
+                return ;
+            }
+            targetFingerID = fingerNone;
+            
+            if (useLockArea && useMaskLayerOnly && drawMode == DrawMode.Default)
+            {
+                LockAreaFillWithThresholdMaskOnlyGetArea(initialX, initialY, true);
+            }
+
+            // end shape line here
+            if (drawMode == DrawMode.ShapeLines)
+            {
+                // hide preview line
+                lineRenderer.SetPosition(0, Vector3.one * 99999);
+                lineRenderer.SetPosition(1, Vector3.one * 99999);
+                haveStartedLine = false;
+
+                previewLineCircleStart.position = Vector3.one * 99999;
+                previewLineCircleEnd.position = Vector3.one * 99999;
+
+                // draw actual line from start to current pos
+                if (snapLinesToGrid)
+                {
+                    DrawLine(new Vector2(firstClickX, firstClickY), new Vector2(SnapToGrid((int)pixelUVs[data.pointerId].x), SnapToGrid((int)pixelUVs[data.pointerId].y)));
+                }
+                else {
+                    DrawLine(new Vector2(firstClickX, firstClickY), pixelUVs[data.pointerId]);
+                }
+                textureNeedsUpdate = true;
+            }
+
+            if (hideUIWhilePainting && !isUIVisible) ShowUI();            
+        }
+
         public virtual void HideUI()
         {
             isUIVisible = false;
