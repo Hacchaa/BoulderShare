@@ -61,7 +61,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			return ;
 		}
         if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
-            mobilePaint.OnDrag(data);
+            mobilePaint.OnBeginDrag(data);
             touchMode = TouchMode.Draw;
         }else if (eTouches[0] != FINGER_NONE && eTouches[1] != FINGER_NONE && (eTouches[0] == data.pointerId || eTouches[1] == data.pointerId)){
             touchMode = TouchMode.Move;

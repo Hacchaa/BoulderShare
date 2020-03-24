@@ -210,7 +210,7 @@ namespace unitycoder_MobilePaint
         //** for bouldernotes
         private int targetFingerID;
         private const int fingerNone = -100;
-
+        private bool goneOut;
         void Awake()
         {   
             // cache components
@@ -925,6 +925,7 @@ namespace unitycoder_MobilePaint
             // do raycast on touch position
             if (Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask))
             {
+
                 // take previous value, so can compare them
                 pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId];
                 // get hit texture coordinate
@@ -979,6 +980,12 @@ namespace unitycoder_MobilePaint
 
                 if (connectBrushStokes)
                 {
+
+                    if (goneOut){
+                        goneOut = false;
+                        pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId];
+                    }
+
                     switch (drawMode)
                     {
                         case DrawMode.Default:
@@ -1009,6 +1016,8 @@ namespace unitycoder_MobilePaint
                     }
                 }
                 textureNeedsUpdate = true;
+            }else{
+                goneOut = true;
             }
         }
 
