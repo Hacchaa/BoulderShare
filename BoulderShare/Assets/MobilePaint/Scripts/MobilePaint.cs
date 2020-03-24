@@ -1,4 +1,4 @@
-// Optimized Mobile Painter - Unitycoder.com
+ // Optimized Mobile Painter - Unitycoder.com
 
 using UnityEngine;
 using System.Collections;
@@ -743,7 +743,7 @@ namespace unitycoder_MobilePaint
                     }
                 }
                 // check state
-                if (touch.phase == TouchPhase.Moved /*|| touch.phase == TouchPhase.Began*/)
+                if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Began)
                 {
 
                     // do raycast on touch position
@@ -755,52 +755,56 @@ namespace unitycoder_MobilePaint
                         pixelUVs[touch.fingerId] = hit.textureCoord;
                         pixelUVs[touch.fingerId].x *= texWidth;
                         pixelUVs[touch.fingerId].y *= texHeight;
-                        // paint where we hit
-                        switch (drawMode)
-                        {
-                            case DrawMode.Default:
-                                DrawCircle((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                break;
 
-                            case DrawMode.CustomBrush:
-                                DrawCustomBrush((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                break;
+                        //**touchpahse.began では描画しない
+                        if (touch.phase == TouchPhase.Moved){
+                            // paint where we hit
+                            switch (drawMode)
+                            {
+                                case DrawMode.Default:
+                                    DrawCircle((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    break;
 
-                            case DrawMode.Pattern:
-                                DrawPatternCircle((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                break;
+                                case DrawMode.CustomBrush:
+                                    DrawCustomBrush((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    break;
 
-                            case DrawMode.FloodFill:
-                                CallFloodFill((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                break;
+                                case DrawMode.Pattern:
+                                    DrawPatternCircle((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    break;
 
-                            case DrawMode.ShapeLines:
-                                if (snapLinesToGrid)
-                                {
-                                    DrawShapeLinePreview(SnapToGrid((int)pixelUVs[touch.fingerId].x), SnapToGrid((int)pixelUVs[touch.fingerId].y));
-                                }
-                                else {
-                                    DrawShapeLinePreview((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                }
-                                break;
+                                case DrawMode.FloodFill:
+                                    CallFloodFill((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    break;
 
-                            case DrawMode.Eraser:
-                                if (eraserMode == EraserMode.Default)
-                                {
-                                    EraseWithImage((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                }
-                                else {
-                                    EraseWithBackgroundColor((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
-                                }
-                                break;
+                                case DrawMode.ShapeLines:
+                                    if (snapLinesToGrid)
+                                    {
+                                        DrawShapeLinePreview(SnapToGrid((int)pixelUVs[touch.fingerId].x), SnapToGrid((int)pixelUVs[touch.fingerId].y));
+                                    }
+                                    else {
+                                        DrawShapeLinePreview((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    }
+                                    break;
+
+                                case DrawMode.Eraser:
+                                    if (eraserMode == EraserMode.Default)
+                                    {
+                                        EraseWithImage((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    }
+                                    else {
+                                        EraseWithBackgroundColor((int)pixelUVs[touch.fingerId].x, (int)pixelUVs[touch.fingerId].y);
+                                    }
+                                    break;
 
 
-                            default:
-                                // unknown mode
-                                break;
+                                default:
+                                    // unknown mode
+                                    break;
+                            }
+                            // set flag that texture needs to be applied
+                            textureNeedsUpdate = true;
                         }
-                        // set flag that texture needs to be applied
-                        textureNeedsUpdate = true;
                     }
                 }
                 // if we just touched screen, set this finger id texture paint start position to that place
@@ -810,7 +814,7 @@ namespace unitycoder_MobilePaint
                 }
                 // check distance from previous drawing point
                 //if (connectBrushStokes && Vector2.Distance (pixelUVs[touch.fingerId], pixelUVOlds[touch.fingerId]) > brushSize) 
-                if (connectBrushStokes && textureNeedsUpdate)
+                if (connectBrushStokes && textureNeedsUpdate && touch.phase == TouchPhase.Moved)
                 {
                     switch (drawMode)
                     {
