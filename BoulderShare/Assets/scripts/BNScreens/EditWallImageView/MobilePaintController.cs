@@ -17,9 +17,9 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	private bool isOperationDetermined = false;
 	[SerializeField] private Camera cam;
 	private const float WEIGHT = 0.2f;
-    [SerializeField] private float orthoZoomSpeed = 0.1f;
-    [SerializeField] private float maxOrthoZoom = 200f;
-    [SerializeField] private float minOrthoZoom = 10f;
+    [SerializeField] private float perspectiveZoomSpeed = 0.1f;
+    [SerializeField] private float maxPerspectiveZoom = 100f;
+    [SerializeField] private float minPerspectiveZoom = 10f;
 
     private enum TouchMode {None, Draw, Move};
     private TouchMode touchMode;
@@ -61,7 +61,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			return ;
 		}
         if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
-            mobilePaint.RegisterFingerID(data.pointerId);
+            mobilePaint.OnDrag(data);
             touchMode = TouchMode.Draw;
         }else if (eTouches[0] != FINGER_NONE && eTouches[1] != FINGER_NONE && (eTouches[0] == data.pointerId || eTouches[1] == data.pointerId)){
             touchMode = TouchMode.Move;
@@ -166,14 +166,14 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			// Find the difference in the distances between each frame.
 			float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 			
-			// If the camera is orthographic...
-			if (cam.orthographic)
+			// If the camera is perspectivegraphic...
+			if (!cam.orthographic)
 			{
-				// ... change the orthographic size based on the change in distance between the touches.
-				cam.orthographicSize += deltaMagnitudeDiff * orthoZoomSpeed;
+				// ... change the perspectivegraphic size based on the change in distance between the touches.
+				cam.fieldOfView += deltaMagnitudeDiff * perspectiveZoomSpeed;
 				
-				// Make sure the orthographic size never drops below zero.
-				cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minOrthoZoom, maxOrthoZoom); //Mathf.Max(cam.orthographicSize, 0.1f);
+				// Make sure the perspectivegraphic size never drops below zero.
+				cam.fieldOfView = Mathf.Clamp(cam.fieldOfView, minPerspectiveZoom, maxPerspectiveZoom); //Mathf.Max(cam.perspectivegraphicSize, 0.1f);
 			}
 		//}
 		isUpdate = true;

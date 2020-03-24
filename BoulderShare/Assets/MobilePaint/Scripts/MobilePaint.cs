@@ -210,12 +210,7 @@ namespace unitycoder_MobilePaint
         //** for bouldernotes
         private int targetFingerID;
         private const int fingerNone = -100;
-        public void RegisterFingerID(int id){
-            targetFingerID = id;
-        }
-        public void ClearFingerID(){
-            targetFingerID = fingerNone;
-        }
+
         void Awake()
         {   
             // cache components
@@ -496,10 +491,10 @@ namespace unitycoder_MobilePaint
         {
             if (enableTouch)
             {
-                TouchPaint();
+                //TouchPaint();
             }
             else {
-                MousePaint();
+                //MousePaint();
             }
 
             if (textureNeedsUpdate && (realTimeTexUpdate || Time.time > nextTextureUpdate))
@@ -1022,7 +1017,6 @@ namespace unitycoder_MobilePaint
                 return ;
             }
             targetFingerID = fingerNone;
-            
             if (useLockArea && useMaskLayerOnly && drawMode == DrawMode.Default)
             {
                 LockAreaFillWithThresholdMaskOnlyGetArea(initialX, initialY, true);

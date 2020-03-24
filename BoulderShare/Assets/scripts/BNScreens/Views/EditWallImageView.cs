@@ -21,7 +21,7 @@ public class EditWallImageView: BNScreen
     [SerializeField] private float maskThreshould = 0.2f;
     [SerializeField] private Image testImage;
     private float ptPerTexsize;
-    private float defaultOrthoSize;
+    private float defaultFOV;
     private Renderer rend;
     private int texWidth;
     private int texHeight;
@@ -39,7 +39,7 @@ public class EditWallImageView: BNScreen
         brushSlider.value = mobilePaint.brushSize;
         brushPreview.gameObject.SetActive(false);
 
-        defaultOrthoSize = mobilePaintCamera.orthographicSize;
+        defaultFOV = mobilePaintCamera.fieldOfView;
 
         texWidth = texture.width;
         texHeight = texture.height;
@@ -106,7 +106,7 @@ public class EditWallImageView: BNScreen
             v = mobilePaint.brushSize;
         }
         //brushsizeは半径
-        brushPreview.sizeDelta = Vector2.one * v * ptPerTexsize * 2f / ( mobilePaintCamera.orthographicSize / defaultOrthoSize);
+        brushPreview.sizeDelta = Vector2.one * v * ptPerTexsize * 2f / ( mobilePaintCamera.fieldOfView / defaultFOV);
     }
     public void ShowBrush(){
         brushPreview.gameObject.SetActive(true);
