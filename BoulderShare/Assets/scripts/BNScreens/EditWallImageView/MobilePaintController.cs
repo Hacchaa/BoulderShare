@@ -13,8 +13,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	private Vector2 baseP1;
 	private Vector2 baseP2;
 	private bool isUpdate = false;
-	private bool isMove = false;
-	private bool isOperationDetermined = false;
+
 	[SerializeField] private Camera cam;
 	private const float WEIGHT = 0.2f;
     [SerializeField] private float perspectiveZoomSpeed = 0.1f;
@@ -26,7 +25,6 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
     private bool isDrawing ;
 	// Use this for initialization
 	void Awake () {
-		prevLength = -1;
         touchMode = TouchMode.None;
 	}
 	void Start () {
@@ -42,16 +40,8 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			eTouches[0] = data.pointerId;
 		}else if(eTouches[1] == FINGER_NONE && (touchMode == TouchMode.None || touchMode == TouchMode.Move)){
 			eTouches[1] = data.pointerId;
-			prevLength = -1;
-			isOperationDetermined = false;
+
 			//扱っている指の情報を取得する
-			foreach(Touch touch in Input.touches){
-				if (touch.fingerId == eTouches[0]){
-					baseP1 = touch.position;
-				}else if (touch.fingerId == eTouches[1]){
-					baseP2 = touch.position;
-				}
-			}
 
             //mobilePaint.ClearFingerID();
 		}
@@ -122,35 +112,20 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 
 		float length = Vector2.Distance(p1, p2);
 
-		if(!isOperationDetermined){
-			Vector2 vecP1, vecP2;
-			vecP1 = p1 - baseP1;
-			vecP2 = p2 - baseP2;
-			//Debug.Log("vecp1magnitude "+ vecP1.magnitude + ", vecp2magnitude "+ vecP2.magnitude);
-			if(vecP1.magnitude < 10 || vecP2.magnitude < 10){
-				return ;
-			}
-			//Debug.Log(Vector2.Angle(vecP1, vecP2));
-			if(Vector2.Angle(vecP1, vecP2) < 80.0f){
-				isMove = true;
-			}else{
-				isMove = false;
-			}
-			isOperationDetermined = true;
-		}
 
         //一本指の場合何もしない
         if (eTouches[1] == FINGER_NONE){
             return ;
         }
+		
 
 
 		//if(isMove){
             //壁を移動させる
             Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f, 
-                cam.gameObject.transform.InverseTransformPoint(cam.transform.position).z));
+                cam.gameObject.transform.InverseTransformPoint(mobilePaint.transform.position).z));
             Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f,
-                cam.gameObject.transform.InverseTransformPoint(cam.transform.position).z));
+                cam.gameObject.transform.InverseTransformPoint(mobilePaint.transform.position).z));
 
             cam.transform.Translate(wP1Old - wP1, Space.World);
 		//}else{
