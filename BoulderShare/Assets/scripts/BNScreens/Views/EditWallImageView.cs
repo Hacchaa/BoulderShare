@@ -13,6 +13,7 @@ public class EditWallImageView: BNScreen
     [SerializeField] private Texture2D texture;
     [SerializeField] private RectTransform drawArea;
     [SerializeField] private float offsetTop = 88f;
+    [SerializeField] private float offsetWidth = 60f;
 
     [SerializeField] private Slider brushSlider;
     [SerializeField] private RectTransform brushPreview;
@@ -56,7 +57,7 @@ public class EditWallImageView: BNScreen
         drawArea.offsetMin = new Vector2(0f, 0f);
         drawArea.offsetMax = new Vector2(0f, 0f);
 
-        float parentW = drawArea.rect.width;
+        float parentW = drawArea.rect.width - offsetWidth;
         float parentH = drawArea.rect.height - offsetTop;
         int texW = texture.width;
         int texH = texture.height;
@@ -80,8 +81,8 @@ public class EditWallImageView: BNScreen
         drawArea.anchorMin = Vector2.zero;
         drawArea.anchorMax = Vector2.one;
 
-        drawArea.offsetMin = new Vector2((parentW - drawW)/2f, (parentH - drawH + offsetTop)/2f);
-        drawArea.offsetMax = new Vector2((parentW - drawW)/2f, -(parentH - drawH + offsetTop)/2f);
+        drawArea.offsetMin = new Vector2((parentW - drawW + offsetWidth)/2f, (parentH - drawH + offsetTop)/2f);
+        drawArea.offsetMax = new Vector2(-(parentW - drawW + offsetWidth)/2f, -(parentH - drawH + offsetTop)/2f);
     }
 
     public void ReverseTransition(){

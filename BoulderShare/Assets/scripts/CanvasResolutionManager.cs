@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace BoulderNotes{
 public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionManager>
 {
     [SerializeField] private float PT_STATUSBAR = 20.0f;
@@ -62,7 +63,7 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         return true;
     }
 
-    public static float GetRatioOfPtToPx(){
+    public float GetRatioOfPtToPx(){
         float width = Screen.width;
         float height = Screen.height;
 
@@ -93,7 +94,7 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         }
         return 1.0f;
     }
-    public static float GetMarginPt(){
+    public float GetMarginPt(){
         float width = Screen.width;
         float height = Screen.height;
 
@@ -109,4 +110,5 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
         }
         return 16.0f;
     }
+}
 }

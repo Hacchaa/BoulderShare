@@ -7,6 +7,7 @@ using System;
 namespace BoulderNotes{
 public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IBeginDragHandler{
     [SerializeField] private unitycoder_MobilePaint.MobilePaint mobilePaint;
+	[SerializeField] private RectTransform boundsArea;
 	private int[] eTouches;
 	private const int FINGER_NONE = -10;
 	private float prevLength;
@@ -16,9 +17,10 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 
 	[SerializeField] private Camera cam;
 	private const float WEIGHT = 0.2f;
-    [SerializeField] private float perspectiveZoomSpeed = 0.1f;
-    [SerializeField] private float maxPerspectiveZoom = 100f;
-    [SerializeField] private float minPerspectiveZoom = 10f;
+    [SerializeField] private float perspectiveZoomSpeed = 0.05f;
+    [SerializeField] private float maxPerspectiveZoom = 60f;
+    [SerializeField] private float minPerspectiveZoom = 20f;
+	private MeshFilter meshFilter;
 
     private enum TouchMode {None, Draw, Move};
     private TouchMode touchMode;
@@ -29,6 +31,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 	}
 	void Start () {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
+		meshFilter = mobilePaint.GetComponent<MeshFilter>();
 	}	
 
 	void LateUpdate(){
@@ -128,6 +131,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
                 cam.gameObject.transform.InverseTransformPoint(mobilePaint.transform.position).z));
 
             cam.transform.Translate(wP1Old - wP1, Space.World);
+
 		//}else{
 	
 			// Find the position in the previous frame of each touch.
@@ -150,8 +154,68 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 				// Make sure the perspectivegraphic size never drops below zero.
 				cam.fieldOfView = Mathf.Clamp(cam.fieldOfView, minPerspectiveZoom, maxPerspectiveZoom); //Mathf.Max(cam.perspectivegraphicSize, 0.1f);
 			}
+			//clampする
+			Bounds();
 		//}
 		isUpdate = true;
     }
+
+	public void Bounds(){
+		float canvasScaleFactor = CanvasResolutionManager.Instance.GetRatioOfPtToPx();
+		float depth = cam.transform.InverseTransformPoint(mobilePaint.transform.position).z;
+		Vector3 botLeft = new Vector3(boundsArea.offsetMin.x * canvasScaleFactor, boundsArea.offsetMin.y * canvasScaleFactor, depth);
+		Vector3 topRight = new Vector3(Screen.width + boundsArea.offsetMax.x * canvasScaleFactor, Screen.height + boundsArea.offsetMax.y * canvasScaleFactor, depth);
+
+		botLeft = cam.ScreenToWorldPoint(botLeft);
+		topRight = cam.ScreenToWorldPoint(topRight);
+
+		Mesh mesh = meshFilter.mesh;
+		Vector3 wallSize = mesh.vertices[2] - mesh.vertices[0];
+/*
+		Debug.Log("botLeft:"+botLeft.x + " "+ botLeft.y+" "+botLeft.z);
+		Debug.Log("topRight:"+topRight.x + " "+ topRight.y+" "+topRight.z);
+		Debug.Log("mesh.vertices[0]:"+mesh.vertices[0].x + " "+ mesh.vertices[0].y+" "+mesh.vertices[0].z);
+		Debug.Log("mesh.vertices[2]:"+mesh.vertices[2].x + " "+ mesh.vertices[2].y+" "+mesh.vertices[2].z);
+		Debug.Log("wallSize:"+wallSize.x + " "+ wallSize.y+" "+wallSize.z);
+*/
+		float x = cam.transform.position.x;
+		float y = cam.transform.position.y;
+		float z = cam.transform.position.z;
+
+		float diff = x - botLeft.x;
+		bool isInnerBounds = Mathf.Abs(botLeft.x - topRight.x) > wallSize.x;
+		if (isInnerBounds){
+			if (botLeft.x > mesh.vertices[0].x){
+				x = mesh.vertices[0].x + diff;
+			}else if (topRight.x < mesh.vertices[2].x){
+				x = mesh.vertices[2].x - diff;
+			}
+		}else{
+			if (botLeft.x < mesh.vertices[0].x){
+				x = mesh.vertices[0].x + diff;
+			}else if (topRight.x > mesh.vertices[2].x){
+				x = mesh.vertices[2].x - diff;
+			}
+		}
+
+		diff = y - botLeft.y;
+		isInnerBounds = Mathf.Abs(botLeft.y - topRight.y) > wallSize.y;
+		if (isInnerBounds){
+			if (botLeft.y > mesh.vertices[0].y){
+				y = mesh.vertices[0].y + diff;
+			}else if (topRight.y < mesh.vertices[2].y){
+				y = mesh.vertices[2].y - diff;
+			}
+		}else{
+			if (botLeft.y < mesh.vertices[0].y){
+				y = mesh.vertices[0].y + diff;
+			}else if (topRight.y > mesh.vertices[2].y){
+				y = mesh.vertices[2].y - diff;
+			}
+		}	
+
+		cam.transform.position = new Vector3(x, y, z);
+		//Debug.Log("cam.transform.position:"+cam.transform.position.x + " "+ cam.transform.position.y+" "+cam.transform.position.z);
+	}
 }
 }
