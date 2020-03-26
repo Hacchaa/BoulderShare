@@ -9,7 +9,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
     [SerializeField] private unitycoder_MobilePaint.MobilePaint mobilePaint;
 	[SerializeField] private RectTransform boundsArea;
 	private int[] eTouches;
-	private const int FINGER_NONE = -10;
+	private const int FINGER_NONE = -100;
 	private float prevLength;
 	private Vector2 baseP1;
 	private Vector2 baseP2;
@@ -54,7 +54,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			return ;
 		}
         if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
-            mobilePaint.OnBeginDrag(data);
+            //mobilePaint.OnBeginDrag(data);
             touchMode = TouchMode.Draw;
         }else if (eTouches[0] != FINGER_NONE && eTouches[1] != FINGER_NONE && (eTouches[0] == data.pointerId || eTouches[1] == data.pointerId)){
             touchMode = TouchMode.Move;
@@ -67,6 +67,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
         }else if(touchMode == TouchMode.Draw){
 			mobilePaint.OnDrag(data);
 		}
+		//MoveWall(data);
 	}
 	public void OnPointerUp(PointerEventData data){
 		if (eTouches[0] == data.pointerId){
@@ -77,7 +78,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
                 eTouches[0] = FINGER_NONE;
 
 				if (touchMode == TouchMode.Draw){
-					mobilePaint.OnEndDrag(data);
+					//mobilePaint.OnEndDrag(data);
 				}
                 touchMode = TouchMode.None;
             }
@@ -159,7 +160,57 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 		//}
 		isUpdate = true;
     }
+	
+	public void MoveWall(PointerEventData data){
+		Vector2 p1, p2, dP1, dP2;
+		p1 = p2 = dP1 = dP2 = Vector2.zero;
+/*
+		//扱っている２本の指かどうか
+		if (data.pointerId != eTouches[0] && data.pointerId != eTouches[1]){
+			return ;
+		}
+		cameras.transform.parent.Rotate(0, data.delta.x * WEIGHT, 0);
 
+		return ;*/
+
+		//data.pointerIdが現在扱っている指かどうか
+		if (isUpdate || (data.pointerId != eTouches[0] && data.pointerId != eTouches[1])){
+			//return ;
+		}
+
+		//扱っている指の情報を取得する
+		foreach(Touch touch in Input.touches){
+			if (touch.fingerId == eTouches[0]){
+				p1 = touch.position;
+				dP1 = touch.deltaPosition;
+			}else if (touch.fingerId == eTouches[1]){
+				p2 = touch.position;
+				dP2 = touch.deltaPosition;
+			}
+		}
+
+		float length = Vector2.Distance(p1, p2);
+
+
+        //一本指の場合何もしない
+        if (eTouches[1] == FINGER_NONE){
+            //return ;
+        }
+		
+		p1 = data.position;
+		dP1 = data.delta;
+
+		//if(isMove){
+		//壁を移動させる
+		Vector3 wP1 = cam.ScreenToWorldPoint(new Vector3(p1.x, p1.y, 
+			cam.gameObject.transform.InverseTransformPoint(mobilePaint.transform.position).z));
+		Vector3 wP1Old = cam.ScreenToWorldPoint(new Vector3(p1.x - dP1.x, p1.y - dP1.y, 
+			cam.gameObject.transform.InverseTransformPoint(mobilePaint.transform.position).z));
+		//Debug.Log("wp1 "+wP1.x+ " "+wP1.y+" "+wP1.z);
+		//Debug.Log("wP1Old "+wP1Old.x+ " "+wP1Old.y+" "+wP1Old.z);
+		cam.transform.Translate(wP1Old - wP1, Space.World);	
+		Bounds();	
+	}
 	public void Bounds(){
 		float canvasScaleFactor = CanvasResolutionManager.Instance.GetRatioOfPtToPx();
 		float depth = cam.transform.InverseTransformPoint(mobilePaint.transform.position).z;
@@ -182,35 +233,37 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 		float y = cam.transform.position.y;
 		float z = cam.transform.position.z;
 
-		float diff = x - botLeft.x;
+		//float diff = x - botLeft.x;
+		//Debug.Log("diffx:"+diff);
 		bool isInnerBounds = Mathf.Abs(botLeft.x - topRight.x) > wallSize.x;
 		if (isInnerBounds){
 			if (botLeft.x > mesh.vertices[0].x){
-				x = mesh.vertices[0].x + diff;
+				x = mesh.vertices[0].x + (x - botLeft.x);
 			}else if (topRight.x < mesh.vertices[2].x){
-				x = mesh.vertices[2].x - diff;
+				x = mesh.vertices[2].x - (topRight.x - x);
 			}
 		}else{
 			if (botLeft.x < mesh.vertices[0].x){
-				x = mesh.vertices[0].x + diff;
+				x = mesh.vertices[0].x + (x - botLeft.x);
 			}else if (topRight.x > mesh.vertices[2].x){
-				x = mesh.vertices[2].x - diff;
+				x = mesh.vertices[2].x - (topRight.x - x);
 			}
 		}
 
-		diff = y - botLeft.y;
+		//diff = y - botLeft.y;
+		//Debug.Log("diffy:"+ diff);
 		isInnerBounds = Mathf.Abs(botLeft.y - topRight.y) > wallSize.y;
 		if (isInnerBounds){
 			if (botLeft.y > mesh.vertices[0].y){
-				y = mesh.vertices[0].y + diff;
+				y = mesh.vertices[0].y + (y - botLeft.y);
 			}else if (topRight.y < mesh.vertices[2].y){
-				y = mesh.vertices[2].y - diff;
+				y = mesh.vertices[2].y - (topRight.y - y);
 			}
 		}else{
 			if (botLeft.y < mesh.vertices[0].y){
-				y = mesh.vertices[0].y + diff;
+				y = mesh.vertices[0].y + (y - botLeft.y);
 			}else if (topRight.y > mesh.vertices[2].y){
-				y = mesh.vertices[2].y - diff;
+				y = mesh.vertices[2].y - (topRight.y - y);
 			}
 		}	
 
