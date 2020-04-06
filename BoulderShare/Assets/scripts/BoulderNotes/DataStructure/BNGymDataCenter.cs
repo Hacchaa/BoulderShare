@@ -22,6 +22,7 @@ namespace BoulderNotes{
         //try
         public const string PREFIX_ID_RECORD = "T";
         public const string PREFIX_ID_WALLIMAGE = "WI";
+        public const string POSTFIX_ID_WALLIMAGEEDITED = "EDI";
         private const string ES3_ROOTPATH = "Gyms";
         private const string ES3_FILE_BNGYMIDS = "gymIDs";
         private const string ES3_KEY_BNGYMIDS = "BNGymIDs";
@@ -395,12 +396,25 @@ namespace BoulderNotes{
                 ES3.SaveImage(bnImage.texture, path+bnImage.fileName);
             }
         }
-/*
-        public Texture2D LoadWallImage(BNGym gym, string fileName){
+        public void SaveWallImage(BNGym gym, BNWallImage wallImage){
+            if (string.IsNullOrEmpty(wallImage.fileName) || wallImage.texture == null){
+                return ;
+            }
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
-            return ES3.LoadImage(path+fileName);
+            ES3.SaveImage(wallImage.texture, path+wallImage.fileName);
+    
         }
 
+        public Sprite LoadWallImageByES3(BNGym gym, string fileName){
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
+            Texture2D tex = ES3.LoadImage(path+fileName);
+            return Sprite.Create(
+                        tex, 
+                        new Rect(0.0f, 0.0f, tex.width, tex.height), 
+                        new Vector2(0.5f, 0.5f),
+                        tex.height/4);
+        }
+/*
         public Texture2D LoadWallImage(string path){
             return ES3.LoadImage(path);
         }*/

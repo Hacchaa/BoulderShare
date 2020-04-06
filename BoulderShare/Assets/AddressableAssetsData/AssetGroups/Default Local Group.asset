@@ -24,6 +24,13 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 03a99beaa4709814f91e156049799fa4
+    m_Address: cornerpanel_fill_4pt_retina1
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - iOSUI
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 0889cc1efa2be944694de3613773f81d
     m_Address: 24_condition_4
     m_ReadOnly: 0
@@ -60,6 +67,13 @@ MonoBehaviour:
     m_Address: medal_q9
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 1a5c6ed6bfb5a1040bfd362bcbdc1849
+    m_Address: cornerpanel_fill_4pt_retina2
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - iOSUI
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 20989d1bfe96c714cacb1761216a962c
@@ -131,6 +145,13 @@ MonoBehaviour:
     m_Address: 24_condiiton_3
     m_ReadOnly: 0
     m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 496efa594c1aa6246831d0955ee5ce07
+    m_Address: cornerpanel_fill_4pt_retina3
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - iOSUI
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 4e5c9701345d10041895e1ceec6f7267

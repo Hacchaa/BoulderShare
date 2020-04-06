@@ -10,8 +10,13 @@ public class GymRoutesView : BNScreen
 {
     [SerializeField] private GymRoutesScrollerController scroller;
     [SerializeField] private TextMeshProUGUI gymNameText;
+    [SerializeField] private ScrollGradeController scrollGrade;
+    [SerializeField] private GymRoutesFinishedToggleController finishedController;
+
     public override void InitForFirstTransition(){
         scroller.Init();
+        scrollGrade.Init();
+        finishedController.Init();
     }
 
     public override void UpdateScreen(){
@@ -24,10 +29,23 @@ public class GymRoutesView : BNScreen
             if (gym != null){
                 scroller.FetchData(gym.GetRoutes());
                 name = gym.GetGymName();
+                scroller.SetFinishedRoutes(finishedController.IsFinished());
+                scroller.LookUp(scrollGrade.GetCurrentGrade());
+                scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());
             }
             gymNameText.text = name;
         }
     }
+    public void LookUpRoutes(BNGradeMap.Grade grade){
+        scroller.LookUp(grade);
+    }
+
+    public void ChangeFinished(bool isFinished){
+        scroller.SetFinishedRoutes(isFinished);
+        scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());
+        LookUpRoutes(scrollGrade.GetCurrentGrade());
+    }
+
 
     public void SaveTargetRouteInStack(string routeID){
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){

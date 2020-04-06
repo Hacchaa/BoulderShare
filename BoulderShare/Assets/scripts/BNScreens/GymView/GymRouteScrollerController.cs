@@ -29,9 +29,10 @@ public class GymRouteScrollerController : MonoBehaviour, IEnhancedScrollerDelega
         foreach(BNRoute route in sorted){
             GymRouteScrollerData data = new GymRouteScrollerData();
             data.routeID = route.GetID();
-            data.wallImages = route.GetWallImageFileNames();
+            data.wallImages = route.GetAllWallImageFileNames();
             data.tags = route.GetTags();
             data.clearRate = route.GetTotalClearRate();
+            data.clearStatus = route.GetTotalClearStatus();
             data.period = route.GetPeriod();
             data.grade = route.GetGrade();
             data.isFavorite = route.IsFavorite();

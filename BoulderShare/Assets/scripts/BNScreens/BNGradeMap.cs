@@ -26,6 +26,10 @@ namespace BoulderNotes{
             return copy;
         }
 
+        public int GetSize(){
+            return gradeNames.Length;
+        }
+
         
         private static BNGradeMap _entity;
         public static BNGradeMap Entity{

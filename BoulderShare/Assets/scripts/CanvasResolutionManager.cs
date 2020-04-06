@@ -9,8 +9,15 @@ public class CanvasResolutionManager :SingletonMonoBehaviour<CanvasResolutionMan
     [SerializeField] private float PT_STATUSBAR = 20.0f;
     [SerializeField] private float statusBarHeight;
     [SerializeField] private float botSafeAreaInset;
+    [SerializeField] private List<CanvasScaler> canvases; 
+    public void Init(){
+        InitHeights();
 
-
+        float retina = GetRatioOfPtToPx();
+        foreach(CanvasScaler scaler in canvases){
+            scaler.scaleFactor = retina;
+        }
+    }
     public float GetStatusBarHeight(){
         return statusBarHeight;
     }

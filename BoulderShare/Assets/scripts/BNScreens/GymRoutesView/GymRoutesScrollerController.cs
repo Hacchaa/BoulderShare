@@ -9,14 +9,22 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
 {
     [SerializeField] private GymRoutesView view;
     private List<GymRoutesScrollerData> _data;
+    private List<GymRoutesScrollerData> _fullData;
     public EnhancedScroller myScroller;
     public GymRoutesCellView gymRoutesCellViewPrefab;
     [SerializeField] private int numberOfCellsPerRow = 2;
     private int numOfData;
+    private bool finishedRoutes;
     public void Init(){
         _data = new List<GymRoutesScrollerData>();
+        _fullData = new List<GymRoutesScrollerData>();
         myScroller.Delegate = this;        
         numOfData = 0;
+        finishedRoutes = false;
+    }
+
+    public void SetFinishedRoutes(bool b){
+        finishedRoutes = b;
     }
 
     private List<BNRoute> SortByRouteID(IReadOnlyList<BNRoute> routes){
@@ -24,27 +32,50 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
     }
 
     public void FetchData(IReadOnlyList<BNRoute> routes){
-        _data.Clear();
+        _fullData.Clear();
         List<BNRoute> sorted = SortByRouteID(routes);
 
         foreach(BNRoute route in sorted){
             GymRoutesScrollerData data = new GymRoutesScrollerData();
             data.routeID = route.GetID();
             if (route.GetWallImageFileNames() != null && route.GetWallImageFileNames().Any()){
-                data.wallImagePath = route.GetWallImageFileNames()[0];
+                data.wallImagePath = route.GetAllWallImageFileNames()[0];
             }
 
             data.period = route.GetPeriod();
-            data.gradeName = route.GetGradeName();
+            data.grade = route.GetGrade();
             data.isFavorite = route.IsFavorite();
+            data.isFinished = route.IsFinished();
             data.routeTape = route.GetTape();
             data.wallTypeName = route.GetWallTypeName();
-            _data.Add(data);
+            data.clearStatus = route.GetTotalClearStatus();
+            data.clearRate = route.GetTotalClearRate();
+            _fullData.Add(data);
+        }
+    }
+
+    public void LookUp(BNGradeMap.Grade grade){
+        _data.Clear();
+
+        foreach(GymRoutesScrollerData data in _fullData){
+            if (finishedRoutes == data.isFinished && (grade == BNGradeMap.Grade.None || data.grade == grade)){
+                _data.Add(data);
+            }
         }
         numOfData = _data.Count;
-        //Debug.Log("num:"+numOfData);
-        //Debug.Log("cells:"+Mathf.CeilToInt((float)(numOfData) / (float)numberOfCellsPerRow));
         myScroller.ReloadData();
+    }
+
+    public int[] GetNumSplitedByGrade(){
+        int[] routes = new int[BNGradeMap.Entity.GetSize()];
+        foreach(GymRoutesScrollerData data in _fullData){
+           // Debug.Log("grade:"+data.grade+" "+ (int)data.grade);
+           if (data.isFinished == finishedRoutes){
+               routes[(int)data.grade]++;
+           }
+        }
+
+        return routes;
     }
 
     public int GetNumberOfCells(EnhancedScroller scroller){

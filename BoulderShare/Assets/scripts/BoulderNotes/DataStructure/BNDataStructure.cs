@@ -76,21 +76,31 @@ namespace BoulderNotes{
         public string fileName;
         public Texture2D texture;
 
-        public BNWallImage(Texture2D tex){
-            fileName = BNGymDataCenter.PREFIX_ID_WALLIMAGE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID) + BNGymDataCenter.WALLIMAGE_EXTENSION;
+        public BNWallImage(Texture2D tex, string name){
+            if (!string.IsNullOrEmpty(name)){
+                fileName = name;
+            }else{
+                fileName = BNGymDataCenter.PREFIX_ID_WALLIMAGE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID) + BNGymDataCenter.WALLIMAGE_EXTENSION;
+            }
             texture = tex;
         }
+        public BNWallImage(Texture2D tex): this(tex, null){
+        }
+    }
 
+    [Serializable]
+    public class BNWallImageNames{
+        public string fileName;
+        public string editedFileName;
     }
     [Serializable]
     public class BNRoute{
         public enum ClearStatus {NoAchievement, RP, Flash, Onsight};
         [SerializeField] private string id;
-        [SerializeField] private List<string> wallImageFileNames;
+        [SerializeField] private List<BNWallImageNames> wallImageFileNames;
         [SerializeField] private WallTypeMap.Type wallType;
         [SerializeField] private RTape tape;
         [SerializeField] private List<BNMark> marks;
-        [SerializeField] private string routeImagePath;
         [SerializeField] private BNGradeMap.Grade grade;
         [SerializeField] private ClearStatus totalClearStatus;
         [SerializeField] private string start;
@@ -104,9 +114,25 @@ namespace BoulderNotes{
         [SerializeField] private int totalClearRate;
         [SerializeField] private List<string> tags;
 
+        public static string GetClearStatusName(ClearStatus status){
+            if (status == ClearStatus.NoAchievement){
+                return "未登";
+            }
+            if (status == ClearStatus.RP){
+                return "レッドポイント";
+            }
+            if (status == ClearStatus.Flash){
+                return "フラッシュ";
+            }
+            if (status == ClearStatus.Onsight){
+                return "オンサイト";
+            }
+            return null;
+        }
+
         public BNRoute(){
             id = BNGymDataCenter.PREFIX_ID_ROUTE + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
-            wallImageFileNames = new List<string>();
+            wallImageFileNames = new List<BNWallImageNames>();
             wallType = WallTypeMap.Type.Slab;
             marks = new List<BNMark>();
             records = new List<BNRecord>();
@@ -128,15 +154,30 @@ namespace BoulderNotes{
             return id;
         }
 
-        public List<string> GetWallImageFileNames(){
-            return new List<string>(wallImageFileNames);
+        public List<BNWallImageNames> GetWallImageFileNames(){
+            return new List<BNWallImageNames>(wallImageFileNames);
         }
 
-        public void AddWallImageFileName(string str){
-            wallImageFileNames.Add(str);
+        public List<string> GetAllWallImageFileNames(){
+            List<string> list = new List<string>();
+            foreach(BNWallImageNames names in wallImageFileNames){
+                if (!string.IsNullOrEmpty(names.fileName)){
+                    list.Add(names.fileName);
+                }
+
+                if (!string.IsNullOrEmpty(names.editedFileName)){
+                    list.Add(names.editedFileName);
+                }
+            }
+
+            return list;
         }
-        public void SetWallImageFileNames(List<string> list){
-            wallImageFileNames = new List<string>(list);
+
+        public void AddWallImageFileName(BNWallImageNames names){
+            wallImageFileNames.Add(names);
+        }
+        public void SetWallImageFileNames(List<BNWallImageNames> list){
+            wallImageFileNames = new List<BNWallImageNames>(list);
         }
 
         public RTape GetTape(){

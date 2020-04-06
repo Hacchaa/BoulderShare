@@ -8,8 +8,11 @@ public class GymRoutesScrollerData
     public string routeID;
     public string wallImagePath;
     public bool isFavorite;
+    public bool isFinished;
     public string period;
-    public string gradeName;
+    public BNGradeMap.Grade grade;
+    public int clearRate;
+    public BNRoute.ClearStatus clearStatus;
     public string wallTypeName;
     public RTape routeTape;
 }

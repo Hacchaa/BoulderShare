@@ -43,10 +43,6 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			eTouches[0] = data.pointerId;
 		}else if(eTouches[1] == FINGER_NONE && (touchMode == TouchMode.None || touchMode == TouchMode.Move)){
 			eTouches[1] = data.pointerId;
-
-			//扱っている指の情報を取得する
-
-            //mobilePaint.ClearFingerID();
 		}
 	}
     public void OnBeginDrag(PointerEventData data){
@@ -54,7 +50,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
 			return ;
 		}
         if (eTouches[0] == data.pointerId && eTouches[1] == FINGER_NONE){
-            //mobilePaint.OnBeginDrag(data);
+            mobilePaint.OnBeginDrag(data);
             touchMode = TouchMode.Draw;
         }else if (eTouches[0] != FINGER_NONE && eTouches[1] != FINGER_NONE && (eTouches[0] == data.pointerId || eTouches[1] == data.pointerId)){
             touchMode = TouchMode.Move;
@@ -78,7 +74,7 @@ public class MobilePaintController : MonoBehaviour, IDragHandler, IPointerUpHand
                 eTouches[0] = FINGER_NONE;
 
 				if (touchMode == TouchMode.Draw){
-					//mobilePaint.OnEndDrag(data);
+					mobilePaint.OnEndDrag(data);
 				}
                 touchMode = TouchMode.None;
             }

@@ -19,7 +19,7 @@ public class RegisterView: BNScreenInput
     [SerializeField] private GameObject wallImageSelectedObj;
 
     [SerializeField] private TMP_InputField gradeIF;
-    [SerializeField] private Toggle kanteToggle;
+    [SerializeField] private IOSUISwitch kanteToggle;
     [SerializeField] private GameObject tapeSelectedObj;
     [SerializeField] private GameObject tapeNoSelectedObj;
     [SerializeField] private RouteTape routeTape;
@@ -37,7 +37,7 @@ public class RegisterView: BNScreenInput
         wallType = WallTypeMap.Type.Slab;
         wallTypeIF.text = WallTypeMap.Entity.GetWallTypeName(wallType);
         gradeIF.text = "";
-        kanteToggle.isOn = false;
+        kanteToggle.Init(false);
         stack = null;
         routeTape.LoadDefault();        
     }
@@ -89,6 +89,8 @@ public class RegisterView: BNScreenInput
             wallImageNoSelectedObj.SetActive(true);
             wallImageSelectedObj.SetActive(false);            
         }       
+
+        kanteToggle.SetIsOn(false);
     }
 
     public override void UpdateScreen(){
@@ -118,15 +120,16 @@ public class RegisterView: BNScreenInput
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
                 route.SetWallType(wallType);
-                route.SetIsUsedKante(kanteToggle.isOn);
+                route.SetIsUsedKante(kanteToggle.IsOn());
                 route.SetTape(tape);
-                List<BNWallImage> list = new List<BNWallImage>();
+                BNWallImage wallImage = null;
                 if (inputedSprite != null){
-                    BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                    list.Add(wallImage);
-                    route.AddWallImageFileName(wallImage.fileName);
+                    wallImage = new BNWallImage(inputedSprite.texture);
+                    BNWallImageNames names = new BNWallImageNames();
+                    names.fileName = wallImage.fileName;
+                    route.AddWallImageFileName(names);
                 }
-                stack.WriteRoute(route, list);
+                stack.WriteRoute(route, wallImage);
                 stack.StoreTargetRoute(route.GetID());
             }
             ReverseTransition();
@@ -138,14 +141,16 @@ public class RegisterView: BNScreenInput
                 BNRoute route = new BNRoute();
                 route.SetGrade(grade);
                 route.SetWallType(wallType);
-                route.SetIsUsedKante(kanteToggle.isOn);
+                route.SetIsUsedKante(kanteToggle.IsOn());
                 route.SetTape(tape);
                 
                 List<BNWallImage> list = new List<BNWallImage>();
                 if (inputedSprite != null){
                     BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
                     list.Add(wallImage);
-                    route.AddWallImageFileName(wallImage.fileName);
+                    BNWallImageNames names = new BNWallImageNames();
+                    names.fileName = wallImage.fileName;
+                    route.AddWallImageFileName(names);
                 }
                 gym.AddRoute(route);
 

@@ -9,6 +9,7 @@ public class GymRouteScrollerData : GymRouteScrollerDataBase
     public List<string> wallImages;
     public List<string> tags;
     public int clearRate;
+    public BNRoute.ClearStatus clearStatus;
     public bool isFavorite;
     public string period;
     public BNGradeMap.Grade grade;

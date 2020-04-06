@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 
 namespace BoulderNotes{
 public class RouteView : BNScreen
@@ -34,28 +35,42 @@ public class RouteView : BNScreen
     [SerializeField] private float headBGThreshold = 200f;
 
     [SerializeField] private Image wallImage;
+    [SerializeField] private Sprite defaultSpr;
     [SerializeField] private float defaultWallImageHeight = 240f;
     private RectTransform wallImageRect;
     private RectTransform wallImageParent;
     [SerializeField] ScrollRect scrollRect;
     private RectTransform scrollRectRect;
     [SerializeField] private TextMeshProUGUI title;
+    private BNScreenStackWithTargetGym stack;
+    private BNWallImageNames selectedWallImageName;
+    private Texture2D selectedWallImage;
+
+    [SerializeField] private GameObject editWallImageButton;
+
     public override void InitForFirstTransition(){
         scroller.Init();
         classView.Init();
         GradHeadBG(0f);
 
-        wallImageRect = wallImage.GetComponent<RectTransform>();
-        wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
-        scrollRectRect = scrollRect.GetComponent<RectTransform>();
-        FitWallImageToParent();
+        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+            stack = belongingStack as BNScreenStackWithTargetGym;
+        }
+    }
+
+    public BNWallImageNames GetSelectedWallImageName(){
+        return selectedWallImageName;
+    }
+
+    public Texture2D GetSelectedWallImage(){
+        return selectedWallImage;
     }
 
     public void ClearFields(){
         gradeText.text ="";
         periodText.text = "";
         kanteText.text = "";
-        route = null;
+
         if (tagRoot != null){
             foreach(Transform t in tagRoot){
                 Destroy(t.gameObject);
@@ -65,11 +80,10 @@ public class RouteView : BNScreen
 
     public override void UpdateScreen(){
         ClearFields();
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+        if (stack != null){
             //recordIDを削除
-            (belongingStack as BNScreenStackWithTargetGym).ClearRecord();
-            route = (belongingStack as BNScreenStackWithTargetGym).GetTargetRoute();
-           
+            stack.ClearRecord();
+            route = stack.GetTargetRoute();
             if (route != null){
                 gradeText.text = route.GetGrade() + "級";
                 wallTypeText.text = route.GetWallTypeName();
@@ -100,6 +114,26 @@ public class RouteView : BNScreen
 
                 scroller.FetchData(route);
             }
+    
+
+            selectedWallImage = null;
+            selectedWallImageName = null;
+
+            List<BNWallImageNames> list = route.GetWallImageFileNames();
+            if (list.Any()){
+                wallImage.sprite = stack.LoadImageByES3(list[0].fileName);
+                selectedWallImage = wallImage.sprite.texture;
+                selectedWallImageName = list[0];
+                editWallImageButton.SetActive(true);
+            }else{
+                wallImage.sprite = defaultSpr;
+                editWallImageButton.SetActive(false);
+            }
+    
+            wallImageRect = wallImage.GetComponent<RectTransform>();
+            wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
+            scrollRectRect = scrollRect.GetComponent<RectTransform>();
+            FitWallImageToParent();
         }
     }
 

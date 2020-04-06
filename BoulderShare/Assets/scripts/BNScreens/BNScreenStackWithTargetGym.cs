@@ -104,12 +104,17 @@ public class BNScreenStackWithTargetGym : BNTStack
         }
         BNGymDataCenter.Instance.LoadImageAsync(gym,fileName, del);
     }
-
+    public Sprite LoadImageByES3(string fileName){
+        if (targetGym == null){
+            return null;
+        }
+        return BNGymDataCenter.Instance.LoadWallImageByES3(targetGym,fileName);
+    }
     public void WriteGym(BNGym gym){
         BNGymDataCenter.Instance.WriteGym(gym);
     }
     
-    public void WriteRoute(BNRoute route, List<BNWallImage> wallImageList = null){
+    public void WriteRoute(BNRoute route, BNWallImage wallImage = null){
         if (targetGym == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
@@ -121,10 +126,10 @@ public class BNScreenStackWithTargetGym : BNTStack
         targetGym.AddRoute(route);
         BNGymDataCenter.Instance.ModifyGym(targetGym);
 
-        if (wallImageList == null){
+        if (wallImage == null){
             return ;
         }
-        BNGymDataCenter.Instance.SaveWallImages(targetGym, wallImageList);
+        BNGymDataCenter.Instance.SaveWallImage(targetGym, wallImage);
     }
     public void WriteRecord(BNRecord record){
         if (targetGym == null || targetRoute == null || record == null || string.IsNullOrEmpty(record.GetID())){
@@ -159,20 +164,18 @@ public class BNScreenStackWithTargetGym : BNTStack
     }
     
     //routeは必ずcloneしたものにする
-    public void ModifyRoute(BNRoute route, List<BNWallImage> addWallImageList = null){
+    public void ModifyRoute(BNRoute route, BNWallImage addWallImage = null, List<string> removeList = null){
         if (targetGym == null || targetRoute == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
 
         if (targetRoute.GetID().Equals(route.GetID())){
-            List<string> newList = route.GetWallImageFileNames();
-            List<string> oldList = targetRoute.GetWallImageFileNames();
-            if (addWallImageList != null){
-                BNGymDataCenter.Instance.SaveWallImages(targetGym, addWallImageList);
+            if (removeList != null){
+                BNGymDataCenter.Instance.DeleteWallImages(targetGym, removeList);
             }
-
-            List<string> remList = new List<string>(oldList.Except(newList));
-            BNGymDataCenter.Instance.DeleteWallImages(targetGym, remList);
+            if (addWallImage != null){
+                BNGymDataCenter.Instance.SaveWallImage(targetGym, addWallImage);
+            }
 
             targetGym.DeleteRoute(targetRoute);
             targetGym.AddRoute(route);
@@ -207,7 +210,7 @@ public class BNScreenStackWithTargetGym : BNTStack
         }
 
         targetGym.DeleteRoute(targetRoute);
-        BNGymDataCenter.Instance.DeleteWallImages(targetGym, targetRoute.GetWallImageFileNames());
+        BNGymDataCenter.Instance.DeleteWallImages(targetGym, targetRoute.GetAllWallImageFileNames());
         BNGymDataCenter.Instance.ModifyGym(targetGym);
         ClearRoute();
     }

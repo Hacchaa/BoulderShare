@@ -10,7 +10,6 @@ public class EditWallImageView: BNScreen
 {
     [SerializeField] private GameObject mobliePaintRoot;
     [SerializeField] private unitycoder_MobilePaint.MobilePaint mobilePaint;
-    [SerializeField] private Texture2D texture;
     [SerializeField] private RectTransform drawArea;
     [SerializeField] private float offsetTop = 88f;
     [SerializeField] private float offsetWidth = 60f;
@@ -26,25 +25,42 @@ public class EditWallImageView: BNScreen
     private Renderer rend;
     private int texWidth;
     private int texHeight;
+    private BNScreenStackWithTargetGym stack;
+    private RouteView routeView;
+    private BNRoute route;
+    private BNWallImageNames wallImageNames;
+    private Texture2D wallImage;
     public override void InitForFirstTransition(){
+        stack = null;
+        route = null;
+        routeView = null;
+        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+            stack = belongingStack as BNScreenStackWithTargetGym;
+            route = stack.GetTargetRoute();
+            BNScreen s = stack.GetPreviousScreen(1);
+            if (s is RouteView){
+                routeView = s as RouteView;
+                wallImage = routeView.GetSelectedWallImage();
+                wallImageNames = routeView.GetSelectedWallImageName();
+            }
+        }
+        if (wallImage != null){
+            CalcDrawArea();
+            mobliePaintRoot.SetActive(true);
+            rend = mobilePaint.GetComponent<Renderer>();
+            rend.material.SetTexture("_MainTex", wallImage);
+            mobilePaint.overrideWidth = wallImage.width;
+            mobilePaint.overrideHeight = wallImage.height;
+            mobilePaint.userInterface = mobilePaintUI;
+            mobilePaint.InitializeEverything();
+            brushSlider.value = mobilePaint.brushSize;
+            brushPreview.gameObject.SetActive(false);
 
-        CalcDrawArea();
+            defaultFOV = mobilePaintCamera.fieldOfView;
 
-        mobliePaintRoot.SetActive(true);
-        rend = mobilePaint.GetComponent<Renderer>();
-        rend.material.SetTexture("_MainTex", texture);
-        mobilePaint.overrideWidth = texture.width;
-        mobilePaint.overrideHeight = texture.height;
-        mobilePaint.userInterface = mobilePaintUI;
-        mobilePaint.InitializeEverything();
-        brushSlider.value = mobilePaint.brushSize;
-        brushPreview.gameObject.SetActive(false);
-
-        defaultFOV = mobilePaintCamera.fieldOfView;
-
-        texWidth = texture.width;
-        texHeight = texture.height;
-
+            texWidth = wallImage.width;
+            texHeight = wallImage.height;
+        }
     }
 
     public override void UpdateScreen(){
@@ -59,8 +75,8 @@ public class EditWallImageView: BNScreen
 
         float parentW = drawArea.rect.width - offsetWidth;
         float parentH = drawArea.rect.height - offsetTop;
-        int texW = texture.width;
-        int texH = texture.height;
+        int texW = wallImage.width;
+        int texH = wallImage.height;
         float drawW;
         float drawH;
         float r;
@@ -75,9 +91,9 @@ public class EditWallImageView: BNScreen
         drawW = texW * r;
 
         ptPerTexsize = drawW / texW;
-        //Debug.Log("parentH:"+parentH + " parentW:"+ parentW);
-        //Debug.Log("texH:"+texH + " texW:"+ texW);
-        //Debug.Log("drawH:"+drawH + " drawW:"+ drawW);
+        Debug.Log("parentH:"+parentH + " parentW:"+ parentW);
+        Debug.Log("texH:"+texH + " texW:"+ texW);
+        Debug.Log("drawH:"+drawH + " drawW:"+ drawW);
         drawArea.anchorMin = Vector2.zero;
         drawArea.anchorMax = Vector2.one;
 
@@ -148,6 +164,17 @@ public class EditWallImageView: BNScreen
 
         image.LoadRawTextureData(bin);
         image.Apply(false);
+
+        if (stack != null){
+            string[] str = wallImageNames.fileName.Split('.');
+            string name = str[0] + BNGymDataCenter.POSTFIX_ID_WALLIMAGEEDITED + "." + str[1];
+            BNWallImage wallImage = new BNWallImage(image, name);
+            wallImageNames.editedFileName = name;
+            route.AddWallImageFileName(wallImageNames);
+
+            stack.ModifyRoute(route, wallImage);
+        }
+        /*
         testImage.sprite = Sprite.Create(
             image, 
             new Rect(0.0f, 0.0f, image.width, image.height), 
@@ -167,7 +194,7 @@ public class EditWallImageView: BNScreen
 
         File.WriteAllBytes(path, bin);
 
-        Debug.Log("Screenshot saved at: "+path);
+        Debug.Log("Screenshot saved at: "+path);*/
     }
 
 }

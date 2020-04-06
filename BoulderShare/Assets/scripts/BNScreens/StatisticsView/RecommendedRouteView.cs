@@ -30,7 +30,7 @@ public class RecommendedRouteView : MonoBehaviour
         }
 
         tape.LoadTape(pair.route.GetTape());
-        IReadOnlyList<string> list = pair.route.GetWallImageFileNames();
+        IReadOnlyList<string> list = pair.route.GetAllWallImageFileNames();
         if (list.Any()){
             string path = BNGymDataCenter.Instance.GetWallImagePath(pair.gym);
             LoadImage(path+list[0]);

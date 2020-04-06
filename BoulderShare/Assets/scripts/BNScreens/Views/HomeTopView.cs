@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 namespace BoulderNotes{
 public class HomeTopView : BNScreen
 {
     [SerializeField] private GymScrollerController scroller;
-
     public override void InitForFirstTransition(){
         scroller.Init();
     }

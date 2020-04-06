@@ -21,8 +21,8 @@ public class ModifyView: BNScreenInput
     [SerializeField] private GameObject wallImageSelectedObj;
 
     [SerializeField] private TMP_InputField gradeText;
-    [SerializeField] private Toggle finishedRouteToggle;
-    [SerializeField] private Toggle KanteToggle;
+    [SerializeField] private IOSUISwitch finishedRouteToggle;
+    [SerializeField] private IOSUISwitch KanteToggle;
     [SerializeField] private RouteTape routeTape;
     [SerializeField] private GameObject tapeSelectedObj;
     [SerializeField] private GameObject tapeNoSelectedObj;
@@ -75,8 +75,8 @@ public class ModifyView: BNScreenInput
             grade = route.GetGrade();
             wallType = route.GetWallType();
             gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
-            finishedRouteToggle.isOn = route.IsFinished();
-            KanteToggle.isOn = route.IsUsedKante();
+            finishedRouteToggle.SetIsOn(route.IsFinished());
+            KanteToggle.SetIsOn(route.IsUsedKante());
             if (route.GetTape() != null){
                 SetTape(route.GetTape());
 
@@ -161,25 +161,26 @@ public class ModifyView: BNScreenInput
         }else if(type == ViewType.Route){
             route.SetGrade(grade);
             route.SetWallType(wallType);
-            route.SetIsFinished(finishedRouteToggle.isOn);
-            if (finishedRouteToggle.isOn){
+            route.SetIsFinished(finishedRouteToggle.IsOn());
+            if (finishedRouteToggle.IsOn()){
                 route.SetEnd(DateTime.Now);
             }else{
                 route.ClearEnd();
             }
-            route.SetIsUsedKante(KanteToggle.isOn);
+            route.SetIsUsedKante(KanteToggle.IsOn());
             route.SetTape(tape);
 
-            List<BNWallImage> list = new List<BNWallImage>();
-            List<string> files = new List<string>();
+            BNWallImage wallImage = null;
+            List<BNWallImageNames> files = new List<BNWallImageNames>();
             if (inputedSprite != null){
                 route.SetWallImageFileNames(files);
-                BNWallImage wallImage = new BNWallImage(inputedSprite.texture);
-                list.Add(wallImage);
-                route.AddWallImageFileName(wallImage.fileName);
+                wallImage = new BNWallImage(inputedSprite.texture);
+                BNWallImageNames names = new BNWallImageNames();
+                names.fileName = wallImage.fileName;
+                route.AddWallImageFileName(names);
             }
 
-            stack.ModifyRoute(route, list);
+            stack.ModifyRoute(route, wallImage);
 
             stack.ClearRecord();
             stack.StoreTargetRoute(route.GetID());

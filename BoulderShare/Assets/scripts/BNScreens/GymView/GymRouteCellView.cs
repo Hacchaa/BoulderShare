@@ -21,7 +21,8 @@ public class GymRouteCellView : EnhancedScrollerCellView
 
     [SerializeField] private Sprite defaultSprite;
     public OnButtonClickedDelegateWithString onClicked;
-
+    private bool completedInit = false;
+    [SerializeField] private Image maskImage;
     public void SetData(GymRouteScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString routeDel){
         onClicked = routeDel;
         period.text = data.period;
@@ -41,6 +42,15 @@ public class GymRouteCellView : EnhancedScrollerCellView
         }else{
             FitImage(defaultSprite);
         }
+
+        if (!completedInit){
+            completedInit = true;
+            BNManager.Instance.GetCornerPanel(OnLoadMask);
+        }
+    }
+
+    private void OnLoadMask(Sprite sprite){
+        maskImage.sprite = sprite;
     }
     
     private void FitImage(Sprite spr){
