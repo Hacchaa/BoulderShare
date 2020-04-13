@@ -12,7 +12,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private bool isUpdate = false;
 	private const float WEIGHT = 0.2f;
 	private Rect boundsRect;
-	private const float BOUNDSDELTARATE = 0.725f;
+	private const float BOUNDSDELTARATE = 0.5f;
     [SerializeField] private RectTransform moveRect;
 	[SerializeField] private RectTransform boundsImage;
  	void Start () {
@@ -89,8 +89,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         
         // Find the difference in the distances between each frame.
         float rate = touchDeltaMag / prevTouchDeltaMag;
+		diff = moveRect.sizeDelta * (rate - 1f);
+		//画面中心にある点の、moverectから見た座標
+		Vector2 center = -moveRect.anchoredPosition;
+		moveRect.sizeDelta += diff;
 
-		moveRect.sizeDelta = moveRect.sizeDelta * rate;
+		moveRect.anchoredPosition -= center * (rate - 1f);
 
 		isUpdate = true;
 	}
