@@ -6,11 +6,13 @@ using UnityEngine.UI;
 namespace BoulderNotes{
 public class ScrollGradeController : MonoBehaviour
 {
-    [SerializeField] private ScrollGradeItem[] items;
+    private ScrollGradeItem[] items;
     [SerializeField] private ScrollGradeItem itemPrefab;
     [SerializeField] private GymRoutesView view;
     [SerializeField] private ScrollRect scrollRect;
     private ScrollGradeItem currentItem;
+    [SerializeField] private RectTransform movedContent;
+    [SerializeField] private Transform contentRoot;
 
     public BNGradeMap.Grade GetCurrentGrade(){
         if (currentItem == null){
@@ -20,13 +22,13 @@ public class ScrollGradeController : MonoBehaviour
         return currentItem.GetGrade();
     }
     public void Init(){
-        foreach(Transform t in transform){
+        foreach(Transform t in contentRoot){
             Destroy(t.gameObject);
         }
         int n = BNGradeMap.Entity.GetSize();
         items = new ScrollGradeItem[n];
         for(int i = 0 ; i < n ; i++){
-            ScrollGradeItem item = Instantiate<ScrollGradeItem>(itemPrefab, transform);
+            ScrollGradeItem item = Instantiate<ScrollGradeItem>(itemPrefab, contentRoot);
             item.Init(this);
             item.FocusOff();
             item.SetGrade((BNGradeMap.Grade)i);
@@ -36,6 +38,15 @@ public class ScrollGradeController : MonoBehaviour
         currentItem = items[0];
         currentItem.FocusOn();
         scrollRect.horizontalNormalizedPosition = 0.0f;
+        RectTransform rect = GetComponent<RectTransform>();
+        movedContent.anchorMin = Vector2.one * 0.5f;
+        movedContent.anchorMax = Vector2.one * 0.5f;
+        movedContent.sizeDelta = new Vector2(rect.rect.width, rect.rect.height);
+        movedContent.anchoredPosition = Vector2.zero;
+    }
+
+    public void MoveContentByGymRoutesScroller(Vector2 p){
+        movedContent.anchoredPosition = p;
     }
 
     public void SetRouteNum(int[] arr){

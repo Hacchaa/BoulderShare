@@ -37,10 +37,10 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 
     public float GetCellViewSize(EnhancedScroller scroller, int dataIndex){
         if (_data[dataIndex] is GymScrollerData){
-            return 100f;
+            return 80f;
         }
 
-        return 50f;
+        return 60f;
     }
 
     public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex){

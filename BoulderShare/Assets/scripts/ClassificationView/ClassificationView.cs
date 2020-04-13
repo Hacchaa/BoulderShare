@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 namespace BoulderNotes{
     public class ClassificationView : MonoBehaviour
@@ -15,6 +16,7 @@ namespace BoulderNotes{
         private int target;
         private float width;
         private int contentNum;
+        private Action OnActivateContentAction;
 
         public void Init(){
             current = 0;
@@ -22,6 +24,20 @@ namespace BoulderNotes{
             width = GetComponent<RectTransform>().rect.width;
             contentNum = contents.GetSize();
             contents.Init(width);            
+        }
+
+        public void SetonActivateContentAction(Action action){
+            OnActivateContentAction = action;
+        }
+
+        public void UpdateContents(){
+            contents.UpdateContents();
+        }
+        public int GetCurrentIndex(){
+            return current;
+        }
+        public CVContent GetContent(int index){
+            return contents.GetContent(index);
         }
         public bool NeededOverShooting(){
             if (current == 0 && target == -1){
@@ -53,10 +69,13 @@ namespace BoulderNotes{
                 BNScreens.Instance.Interactive(false);
                 tab.StartSelection(current, target);   
                 contents.StartSelection(current, target);
+                current = target;
+                if(OnActivateContentAction != null){
+                    OnActivateContentAction();
+                }
             })
             .OnComplete(() =>{
                 contents.CompleteSelection(true);
-                current = target;
                 BNScreens.Instance.Interactive(true);
             });
         }

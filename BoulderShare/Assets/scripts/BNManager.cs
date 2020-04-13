@@ -7,39 +7,55 @@ using System;
 namespace BoulderNotes{
 public class BNManager : SingletonMonoBehaviour<BNManager>
 {
-    [SerializeField] private AssetReference[] cornerPanels;
-    private Sprite[] cornerPanelSprites;
+    [SerializeField] private AssetReference[] cornerPanelFill;
+    [SerializeField] private AssetReference[] cornerPanelStroke;
+    private Sprite[] cornerPanelFillSprites;
+    private Sprite[] cornerPanelStrokeSprites;
     protected override void Awake(){
         base.Awake();
-        cornerPanelSprites = new Sprite[cornerPanels.Length];
+        cornerPanelFillSprites = new Sprite[cornerPanelFill.Length];
+        cornerPanelStrokeSprites = new Sprite[cornerPanelStroke.Length];
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60; 
         CanvasResolutionManager.Instance.Init();
         BNGymDataCenter.Instance.Init();
         BNScreens.Instance.Init();
 
-        //Addressables.LoadAssetsAsync<Sprite>(cornerPanels[0],OnLoadCornerPanel);
+        //Addressables.LoadAssetsAsync<Sprite>(cornerPanelFill[0],OnLoadCornerPanel);
     }
 /*
     private void OnLoadCornerPanel(Sprite spr){
-        cornerPanelSprites[index] = spr;
+        cornerPanelFillSprites[index] = spr;
         index++;
-        if(index < cornerPanels.Length){
-            Addressables.LoadAssetsAsync<Sprite>(cornerPanels[index],OnLoadCornerPanel);
+        if(index < cornerPanelFill.Length){
+            Addressables.LoadAssetsAsync<Sprite>(cornerPanelFill[index],OnLoadCornerPanel);
         }
     }*/
 
-    public void GetCornerPanel(Action<Sprite> loadAction){
+    public void GetCornerPanelFill(Action<Sprite> loadAction){
         int retina = (int)CanvasResolutionManager.Instance.GetRatioOfPtToPx() - 1;
-        if (retina < 0 || retina > cornerPanels.Length - 1){
+        if (retina < 0 || retina > cornerPanelFill.Length - 1){
             if(loadAction != null){
                 loadAction(null);
             }
         }
-        if (cornerPanelSprites[retina] == null){
-            Addressables.LoadAssetsAsync<Sprite>(cornerPanels[retina], loadAction);
+        if (cornerPanelFillSprites[retina] == null){
+            Addressables.LoadAssetsAsync<Sprite>(cornerPanelFill[retina], loadAction);
         }else{
-            loadAction(cornerPanelSprites[retina]);
+            loadAction(cornerPanelFillSprites[retina]);
+        }
+    }
+    public void GetCornerPanelStroke(Action<Sprite> loadAction){
+        int retina = (int)CanvasResolutionManager.Instance.GetRatioOfPtToPx() - 1;
+        if (retina < 0 || retina > cornerPanelStroke.Length - 1){
+            if(loadAction != null){
+                loadAction(null);
+            }
+        }
+        if (cornerPanelStrokeSprites[retina] == null){
+            Addressables.LoadAssetsAsync<Sprite>(cornerPanelStroke[retina], loadAction);
+        }else{
+            loadAction(cornerPanelStrokeSprites[retina]);
         }
     }
 }

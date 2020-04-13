@@ -51,7 +51,7 @@ public class BNTStack : MonoBehaviour
         Transform parent = null;
         if (t == BNScreens.TransitionType.Push){
             parent = levels.Peek();
-        }else if(t == BNScreens.TransitionType.Modal){
+        }else if(t == BNScreens.TransitionType.Modal || t == BNScreens.TransitionType.Fade){
             ToNextLevel();
             parent = levels.Peek();
         }
@@ -134,7 +134,7 @@ public class BNTStack : MonoBehaviour
         BNScreen screen = screenList[screenList.Count-1];
         screenList.RemoveAt(screenList.Count-1);
         BNScreens.Instance.AddUsedScreen(screen);
-        if (cont.GetTransitionType() == BNScreens.TransitionType.Modal){
+        if (cont.GetTransitionType() == BNScreens.TransitionType.Modal || cont.GetTransitionType() == BNScreens.TransitionType.Fade){
             ToPrevLevel();
         }
         if (restRTCount > 0){

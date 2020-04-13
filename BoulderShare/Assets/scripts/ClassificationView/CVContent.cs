@@ -15,6 +15,9 @@ public class CVContent : MonoBehaviour
             rectTransform = GetComponent<RectTransform>();
             rectTransform.anchoredPosition = new Vector2(0.0f, rectTransform.anchoredPosition.y);
         }
+        public virtual void UpdateContent(){
+            
+        }
 
         public void Active(){
             gameObject.SetActive(true);

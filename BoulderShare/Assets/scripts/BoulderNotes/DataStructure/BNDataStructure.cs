@@ -157,6 +157,12 @@ namespace BoulderNotes{
         public List<BNWallImageNames> GetWallImageFileNames(){
             return new List<BNWallImageNames>(wallImageFileNames);
         }
+        public BNWallImageNames GetFirstWallImageFileNames(){
+            if (wallImageFileNames.Any()){
+                return wallImageFileNames[0];
+            }
+            return null;
+        }
 
         public List<string> GetAllWallImageFileNames(){
             List<string> list = new List<string>();

@@ -23,7 +23,7 @@ public class GymCellView : EnhancedScrollerCellView
 
         if (!completedInit){
             completedInit = true;
-            BNManager.Instance.GetCornerPanel(OnLoad);
+            BNManager.Instance.GetCornerPanelFill(OnLoad);
         }
     }
 

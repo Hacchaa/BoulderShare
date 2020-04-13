@@ -168,7 +168,7 @@ public class BNTransitionController
                 }
             }
 */
-        }else if(type == BNScreens.TransitionType.Modal){
+        }else if(type == BNScreens.TransitionType.Modal || type == BNScreens.TransitionType.Fade){
             //toのcontentがfromのどの要素より前に来るようにする
             so = from.GetBiggestSO();
             to.SetSortingOrderWithContent(so+1);

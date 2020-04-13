@@ -76,6 +76,7 @@ SubShader {
 		float MakeEdge(float from, float to, fixed t) {
 			fixed r = max(_Radius, 2);
 			t = saturate(t * (r - t));
+			//t = t * t;
 			return lerp(from, to, t);
 		}
 
@@ -91,12 +92,14 @@ SubShader {
 			float2 v = GetRadiusToPointVector(pixel, halfRes, radius);
 			float alpha = 1.0 - length(v) / radius;
 			alpha = MakeEdge(0, 1, alpha);
+			//alpha = lerp(0.0, 1.0, alpha);
 			return alpha;
 		}
 
 		float HardRounded(float2 pixel, float2 halfRes, float radius) {
 			float2 v = GetRadiusToPointVector(pixel, halfRes, radius);
 			float alpha = 1.0 - floor(length(v) / radius);
+			alpha = lerp(0.0, 1.0, alpha);
 			return alpha;
 		}
 
@@ -113,10 +116,11 @@ SubShader {
 			float2 uvInPixel = (i.uv - 0.5) * float2(_TexWidth , _TexHeight);
 			float2 halfRes = float2(_Width, _Height) * 0.5;
 
-			float alpha = HardRounded( uvInPixel, halfRes, _Radius );
-			float alpha2 = MaskInRect(uvInPixel, halfRes);
+			float alpha = SoftRounded( uvInPixel, halfRes, _Radius );
+			//float alpha2 = MaskInRect(uvInPixel, halfRes);
 			fixed4 col = tex2D(_MainTex, i.uv) * i.color;
-			col.a = alpha * alpha2;
+			//col.a = alpha * alpha2;
+			col.a *= alpha;
 			return col;
 		}
 		ENDCG

@@ -12,11 +12,25 @@ public class GymRoutesView : BNScreen
     [SerializeField] private TextMeshProUGUI gymNameText;
     [SerializeField] private ScrollGradeController scrollGrade;
     [SerializeField] private GymRoutesFinishedToggleController finishedController;
-
+    [SerializeField] private bool showedWithTab ;
+    private CVContent_CanTryRoutes[] cvScrollers;
+    [SerializeField] private ClassificationView classificationView;
     public override void InitForFirstTransition(){
-        scroller.Init();
-        scrollGrade.Init();
-        finishedController.Init();
+        if (!showedWithTab){
+            scroller.Init();
+            scrollGrade.Init();
+            finishedController.Init();            
+        }else{
+            classificationView.Init();
+            classificationView.SetonActivateContentAction(UpdateScreen);
+
+            cvScrollers = new CVContent_CanTryRoutes[2];
+            for(int i = 0 ; i < cvScrollers.Length ; i++){
+                cvScrollers[i] = classificationView.GetContent(i) as CVContent_CanTryRoutes;  
+                cvScrollers[i].GetGradeScrollerController().Init();
+                cvScrollers[i].GetRoutesScrollerController().Init();      
+            }
+        }
     }
 
     public override void UpdateScreen(){
@@ -27,17 +41,32 @@ public class GymRoutesView : BNScreen
             (belongingStack as BNScreenStackWithTargetGym).ClearRoute();
             string name = "";
             if (gym != null){
-                scroller.FetchData(gym.GetRoutes());
-                name = gym.GetGymName();
-                scroller.SetFinishedRoutes(finishedController.IsFinished());
-                scroller.LookUp(scrollGrade.GetCurrentGrade());
-                scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());
+                if (!showedWithTab){
+                    scroller.FetchData(gym.GetRoutes());
+                    name = gym.GetGymName();
+                    scroller.SetFinishedRoutes(finishedController.IsFinished());
+                    scroller.LookUp(scrollGrade.GetCurrentGrade());
+                    scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());                    
+                }else{
+                    int ind = classificationView.GetCurrentIndex();
+                    ScrollGradeController gymScr = cvScrollers[ind].GetGradeScrollerController();
+                    GymRoutesScrollerController routeScr = cvScrollers[ind].GetRoutesScrollerController();
+                    routeScr.FetchData(gym.GetRoutes());
+                    name = gym.GetGymName();
+                    routeScr.SetFinishedRoutes(ind == 1);
+                    routeScr.LookUp(gymScr.GetCurrentGrade());
+                    gymScr.SetRouteNum(routeScr.GetNumSplitedByGrade());
+                }
             }
             gymNameText.text = name;
         }
     }
     public void LookUpRoutes(BNGradeMap.Grade grade){
-        scroller.LookUp(grade);
+        if (!showedWithTab){
+            scroller.LookUp(grade);
+        }else{
+            cvScrollers[classificationView.GetCurrentIndex()].GetRoutesScrollerController().LookUp(grade);
+        }
     }
 
     public void ChangeFinished(bool isFinished){
@@ -60,6 +89,9 @@ public class GymRoutesView : BNScreen
     }
     public void ToModifyView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.ModifyView, BNScreens.TransitionType.Push);
+    }
+    public void ToDisplayImageView(){
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.DisplayImageView, BNScreens.TransitionType.Fade);
     }
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();

@@ -5,12 +5,12 @@ using UnityEngine;
 namespace BoulderNotes{
 public class BNScreens : SingletonMonoBehaviour<BNScreens>{
 
-    public enum TransitionType {Push, Modal};
+    public enum TransitionType {Push, Modal, Fade};
     public enum BNScreenType {
         FirstView, SecondView, ThirdView, FourthView, FifthView, SixthView, HomeTopView, GymView, 
         RegisterView, RouteView, ModifyView, RegisterRecordView, RecordView,
         InputItemsView, EditRouteTapeView, SelecteWallImageView, StatisticsView, SelectRouteTagView,
-        GymRoutesView, EditWallImageView};
+        GymRoutesView, EditWallImageView, DisplayImageView};
     public enum BNTabName{Home=0, Favorite, Add, Statistics, Other};
     [SerializeField] private CanvasGroup blockTouchCG;  
     [SerializeField] private List<BNTStack> stacks;

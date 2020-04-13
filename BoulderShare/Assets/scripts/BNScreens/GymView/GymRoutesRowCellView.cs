@@ -4,6 +4,7 @@ using UnityEngine;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 namespace BoulderNotes{
 public class GymRoutesRowCellView : EnhancedScrollerCellView
@@ -14,14 +15,18 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
     [SerializeField] private TextMeshProUGUI infoText;
     [SerializeField] private TextMeshProUGUI dateText;
     [SerializeField] private Sprite defaultSprite;
+    [SerializeField] private GameObject favoriteIcon;
+    [SerializeField] private GameObject zoomIcon;
 
     private string routeID;
     private OnButtonClickedDelegateWithString del;
+    private Action onZoom;
     private bool completedInit = false;
     [SerializeField] private Image maskImage;
 
-    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked){
+    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, Action onZoomButtonClicked){
         del = onButtonClicked;
+        onZoom = onZoomButtonClicked;
         if(data.routeTape != null){
             tape.LoadTape(data.routeTape);
         }else{
@@ -36,13 +41,17 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
         routeID = data.routeID;
         if (!string.IsNullOrEmpty(data.wallImagePath)){
             stack.LoadImageAsync(data.wallImagePath, FitImage);
+            zoomIcon.SetActive(true);
         }else{
             FitImage(defaultSprite);
+            zoomIcon.SetActive(false);
         }
         if (!completedInit){
             completedInit = true;
-            BNManager.Instance.GetCornerPanel(OnLoadMask);
+            BNManager.Instance.GetCornerPanelFill(OnLoadMask);
         }
+
+        favoriteIcon.SetActive(data.isFavorite);
     }
 
     private void OnLoadMask(Sprite sprite){
@@ -117,6 +126,11 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
     public void OnClick(){
         if (del != null){
             del(routeID);
+        }
+    }
+    public void OnZoomClicked(){
+        if (onZoom != null){
+            onZoom();
         }
     }
 }

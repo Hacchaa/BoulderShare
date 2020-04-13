@@ -17,6 +17,18 @@ namespace BoulderNotes{
             }  
 
             contents[0].Active();
+            current = contents[0];
+        }
+
+        
+
+        public void UpdateContents(){
+            foreach(CVContent con in contents){
+                con.UpdateContent();
+            }
+        }
+        public CVContent GetContent(int index){
+            return contents[index];
         }
 
         private void Clear(){

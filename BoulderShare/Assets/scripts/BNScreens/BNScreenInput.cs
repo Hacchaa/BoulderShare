@@ -45,7 +45,7 @@ public class BNScreenInput : BNScreen
             return;
         }
         tape = t.Clone();
-        Debug.Log("z in screeninput :"+ tape.imageRot.eulerAngles.z);
+        //Debug.Log("z in screeninput :"+ tape.imageRot.eulerAngles.z);
     }
 
     public RTape GetTape(){

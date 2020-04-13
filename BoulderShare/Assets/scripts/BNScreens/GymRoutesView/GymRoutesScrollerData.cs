@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace BoulderNotes{
-public class GymRoutesScrollerData
+public class GymRoutesScrollerData:GymRoutesScrollerDataBase
 {
     public string routeID;
     public string wallImagePath;
@@ -15,5 +15,14 @@ public class GymRoutesScrollerData
     public BNRoute.ClearStatus clearStatus;
     public string wallTypeName;
     public RTape routeTape;
+}
+public class GradesGymRoutesScrollerData : GymRoutesScrollerDataBase{
+    
+}
+public class SortGymRoutesScrollerData:GymRoutesScrollerDataBase{
+
+}
+public class GymRoutesScrollerDataBase{
+
 }
 }

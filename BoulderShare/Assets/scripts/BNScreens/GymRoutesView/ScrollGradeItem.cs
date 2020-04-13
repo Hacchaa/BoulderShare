@@ -9,7 +9,8 @@ public class ScrollGradeItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI numText;
     [SerializeField] private TextMeshProUGUI gradeText;
-    [SerializeField] private Image image;
+    [SerializeField] private Image fillImage;
+    [SerializeField] private Image flameImage;
     [SerializeField] private Color onBackColor;
     [SerializeField] private Color offBackColor;
     [SerializeField] private Color onTextColor;
@@ -17,9 +18,21 @@ public class ScrollGradeItem : MonoBehaviour
 
     private ScrollGradeController controller;
     private BNGradeMap.Grade grade;
-    
+    private bool completedInit = false;
     public void Init(ScrollGradeController cont){
         controller = cont;
+
+        if (!completedInit){
+            completedInit = true;
+            BNManager.Instance.GetCornerPanelFill(OnLoadFill);
+            BNManager.Instance.GetCornerPanelStroke(OnLoadFlame);
+        }
+    }
+    private void OnLoadFlame(Sprite sprite){
+        flameImage.sprite = sprite;
+    }
+    private void OnLoadFill(Sprite sprite){
+        fillImage.sprite = sprite;
     }
     public void SetNum(int n){
         numText.text = n +"件";
@@ -39,12 +52,12 @@ public class ScrollGradeItem : MonoBehaviour
 
     public void FocusOn(){
         gradeText.color = onTextColor;
-        image.color = onBackColor;
+        fillImage.color = onBackColor;
     }
 
     public void FocusOff(){
         gradeText.color = offTextColor;
-        image.color = offBackColor;
+        fillImage.color = offBackColor;
     }
 
     public void SendClickInfo(){

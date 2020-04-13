@@ -888,7 +888,10 @@ namespace unitycoder_MobilePaint
         public void OnBeginDrag(PointerEventData data){
             if (targetFingerID == fingerNone){
                 targetFingerID = data.pointerId;
-
+                int index = data.pointerId;
+                if (index == -1){
+                    index = 0;
+                }
                 if (hideUIWhilePainting && isUIVisible) HideUI();
 
                 // when starting to draw, grab undo buffer first, FIXME: do this after painting, so it wont slowdown
@@ -901,19 +904,19 @@ namespace unitycoder_MobilePaint
                 {
                     if (!Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask)) { wentOutside = true; return; }
 
-                    pixelUVs[data.pointerId] = hit.textureCoord;
-                    pixelUVs[data.pointerId].x *= texWidth;
-                    pixelUVs[data.pointerId].y *= texHeight;
-                    if (wentOutside) { pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId]; wentOutside = false; }
-                    CreateAreaLockMask((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                    pixelUVs[index] = hit.textureCoord;
+                    pixelUVs[index].x *= texWidth;
+                    pixelUVs[index].y *= texHeight;
+                    if (wentOutside) { pixelUVOlds[index] = pixelUVs[index]; wentOutside = false; }
+                    CreateAreaLockMask((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                 }
 
                 if (Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask))
                 {
                     // get hit texture coordinate
-                    pixelUVs[data.pointerId] = hit.textureCoord;
-                    pixelUVs[data.pointerId].x *= texWidth;
-                    pixelUVs[data.pointerId].y *= texHeight; 
+                    pixelUVs[index] = hit.textureCoord;
+                    pixelUVs[index].x *= texWidth;
+                    pixelUVs[index].y *= texHeight; 
                 }       
             }
         }
@@ -922,53 +925,57 @@ namespace unitycoder_MobilePaint
             if (data.pointerId != targetFingerID){
                 return ;
             }
+            int index = data.pointerId;
+            if (index == -1){
+                index = 0;
+            }
             // do raycast on touch position
             if (Physics.Raycast(cam.ScreenPointToRay(data.position), out hit, Mathf.Infinity, paintLayerMask))
             {
 
                 // take previous value, so can compare them
-                pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId];
+                pixelUVOlds[index] = pixelUVs[index];
                 // get hit texture coordinate
-                pixelUVs[data.pointerId] = hit.textureCoord;
-                pixelUVs[data.pointerId].x *= texWidth;
-                pixelUVs[data.pointerId].y *= texHeight;
+                pixelUVs[index] = hit.textureCoord;
+                pixelUVs[index].x *= texWidth;
+                pixelUVs[index].y *= texHeight;
 
                 // paint where we hit
                 switch (drawMode)
                 {
                     case DrawMode.Default:
-                        DrawCircle((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        DrawCircle((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         break;
 
                     case DrawMode.CustomBrush:
-                        DrawCustomBrush((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        DrawCustomBrush((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         break;
 
                     case DrawMode.Pattern:
-                        DrawPatternCircle((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        DrawPatternCircle((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         break;
 
                     case DrawMode.FloodFill:
-                        CallFloodFill((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                        CallFloodFill((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         break;
 
                     case DrawMode.ShapeLines:
                         if (snapLinesToGrid)
                         {
-                            DrawShapeLinePreview(SnapToGrid((int)pixelUVs[data.pointerId].x), SnapToGrid((int)pixelUVs[data.pointerId].y));
+                            DrawShapeLinePreview(SnapToGrid((int)pixelUVs[index].x), SnapToGrid((int)pixelUVs[index].y));
                         }
                         else {
-                            DrawShapeLinePreview((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                            DrawShapeLinePreview((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         }
                         break;
 
                     case DrawMode.Eraser:
                         if (eraserMode == EraserMode.Default)
                         {
-                            EraseWithImage((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                            EraseWithImage((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         }
                         else {
-                            EraseWithBackgroundColor((int)pixelUVs[data.pointerId].x, (int)pixelUVs[data.pointerId].y);
+                            EraseWithBackgroundColor((int)pixelUVs[index].x, (int)pixelUVs[index].y);
                         }
                         break;
 
@@ -983,30 +990,30 @@ namespace unitycoder_MobilePaint
 
                     if (goneOut){
                         goneOut = false;
-                        pixelUVOlds[data.pointerId] = pixelUVs[data.pointerId];
+                        pixelUVOlds[index] = pixelUVs[index];
                     }
 
                     switch (drawMode)
                     {
                         case DrawMode.Default:
-                            DrawLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            DrawLine(pixelUVOlds[index], pixelUVs[index]);
                             break;
 
                         case DrawMode.CustomBrush:
-                            DrawLineWithBrush(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            DrawLineWithBrush(pixelUVOlds[index], pixelUVs[index]);
                             break;
 
                         case DrawMode.Pattern:
-                            DrawLineWithPattern(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                            DrawLineWithPattern(pixelUVOlds[index], pixelUVs[index]);
                             break;
 
                         case DrawMode.Eraser:
                             if (eraserMode == EraserMode.Default)
                             {
-                                EraseWithImageLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                                EraseWithImageLine(pixelUVOlds[index], pixelUVs[index]);
                             }
                             else {
-                                EraseWithBackgroundColorLine(pixelUVOlds[data.pointerId], pixelUVs[data.pointerId]);
+                                EraseWithBackgroundColorLine(pixelUVOlds[index], pixelUVs[index]);
                             }
                             break;
 

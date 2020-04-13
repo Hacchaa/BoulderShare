@@ -64,7 +64,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _Height: 120
+    - _Height: 100
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -78,10 +78,10 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _TexHeight: 120
-    - _TexWidth: 227.18102
+    - _TexHeight: 100
+    - _TexWidth: 100
     - _UVSec: 0
-    - _Width: 165
+    - _Width: 100
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

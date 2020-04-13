@@ -22,7 +22,7 @@ public class ModifyView: BNScreenInput
 
     [SerializeField] private TMP_InputField gradeText;
     [SerializeField] private IOSUISwitch finishedRouteToggle;
-    [SerializeField] private IOSUISwitch KanteToggle;
+    [SerializeField] private IOSUISwitch kanteToggle;
     [SerializeField] private RouteTape routeTape;
     [SerializeField] private GameObject tapeSelectedObj;
     [SerializeField] private GameObject tapeNoSelectedObj;
@@ -45,7 +45,8 @@ public class ModifyView: BNScreenInput
         gymNameTextIF.Text = "";
         wallTypeText.text = "";
         gradeText.text = "";     
-
+        kanteToggle.Init(false);
+        finishedRouteToggle.Init(false);
         //routeTape.Init();   
     }
 
@@ -76,7 +77,7 @@ public class ModifyView: BNScreenInput
             wallType = route.GetWallType();
             gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
             finishedRouteToggle.SetIsOn(route.IsFinished());
-            KanteToggle.SetIsOn(route.IsUsedKante());
+            kanteToggle.SetIsOn(route.IsUsedKante());
             if (route.GetTape() != null){
                 SetTape(route.GetTape());
 
@@ -167,7 +168,7 @@ public class ModifyView: BNScreenInput
             }else{
                 route.ClearEnd();
             }
-            route.SetIsUsedKante(KanteToggle.IsOn());
+            route.SetIsUsedKante(kanteToggle.IsOn());
             route.SetTape(tape);
 
             BNWallImage wallImage = null;

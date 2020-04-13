@@ -45,7 +45,7 @@ public class GymRouteCellView : EnhancedScrollerCellView
 
         if (!completedInit){
             completedInit = true;
-            BNManager.Instance.GetCornerPanel(OnLoadMask);
+            BNManager.Instance.GetCornerPanelFill(OnLoadMask);
         }
     }
 

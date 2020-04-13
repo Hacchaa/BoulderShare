@@ -8,15 +8,18 @@ namespace BoulderNotes{
 public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 {
     [SerializeField] private GymRoutesView view;
-    private List<GymRoutesScrollerData> _data;
-    private List<GymRoutesScrollerData> _fullData;
+    private List<GymRoutesScrollerDataBase> _data;
+    [SerializeField] private List<GymRoutesScrollerData> _fullData;
     public EnhancedScroller myScroller;
     public GymRoutesCellView gymRoutesCellViewPrefab;
+    public SortGymRoutesCellView sortGymRoutesCellViewPrefab;
+    public GradesGymRoutesCellView gradesGymRoutesCellViewPrefab;
     [SerializeField] private int numberOfCellsPerRow = 2;
+    private int singleCellNumber = 2;
     private int numOfData;
     private bool finishedRoutes;
     public void Init(){
-        _data = new List<GymRoutesScrollerData>();
+        _data = new List<GymRoutesScrollerDataBase>();
         _fullData = new List<GymRoutesScrollerData>();
         myScroller.Delegate = this;        
         numOfData = 0;
@@ -39,7 +42,12 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
             GymRoutesScrollerData data = new GymRoutesScrollerData();
             data.routeID = route.GetID();
             if (route.GetWallImageFileNames() != null && route.GetWallImageFileNames().Any()){
-                data.wallImagePath = route.GetAllWallImageFileNames()[0];
+                BNWallImageNames names = route.GetFirstWallImageFileNames();
+                if (!string.IsNullOrEmpty(names.editedFileName)){
+                    data.wallImagePath = names.editedFileName;
+                }else{
+                    data.wallImagePath = names.fileName;
+                }
             }
 
             data.period = route.GetPeriod();
@@ -56,13 +64,14 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
 
     public void LookUp(BNGradeMap.Grade grade){
         _data.Clear();
-
+        _data.Add(new GradesGymRoutesScrollerData());
+        _data.Add(new SortGymRoutesScrollerData());
         foreach(GymRoutesScrollerData data in _fullData){
             if (finishedRoutes == data.isFinished && (grade == BNGradeMap.Grade.None || data.grade == grade)){
                 _data.Add(data);
             }
         }
-        numOfData = _data.Count;
+        numOfData = _data.Count-singleCellNumber;
         myScroller.ReloadData();
     }
 
@@ -79,25 +88,46 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
     }
 
     public int GetNumberOfCells(EnhancedScroller scroller){
-        return Mathf.CeilToInt((float)(numOfData) / (float)numberOfCellsPerRow) ;
+        return Mathf.CeilToInt((float)(numOfData) / (float)numberOfCellsPerRow) + singleCellNumber ;
     }
 
     public float GetCellViewSize(EnhancedScroller scroller, int dataIndex){
-        if (_data[dataIndex] is GymRoutesScrollerData){
-            return 175f;
+        int index = GetIndex(dataIndex);
+        if (_data[index] is GymRoutesScrollerData){
+            return 190f;
+        }
+        if (_data[index] is SortGymRoutesScrollerData){
+            return 45f;
+        }
+        if (_data[index] is GradesGymRoutesScrollerData){
+            return 80f;
         }
 
         return 175f;
     }
 
     public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex){
-        int index = dataIndex*numberOfCellsPerRow;
-        if (_data[dataIndex] is GymRoutesScrollerData){
+        int index = GetIndex(dataIndex);
+        if (_data[index] is GymRoutesScrollerData){
             GymRoutesCellView cellView = scroller.GetCellView(gymRoutesCellViewPrefab) as GymRoutesCellView;
-            cellView.SetData(ref _data, index, numOfData, view.GetBelongingStack() as BNScreenStackWithTargetGym, ToRouteView);
+            cellView.SetData(ref _data, index, numOfData+singleCellNumber, view.GetBelongingStack() as BNScreenStackWithTargetGym, ToRouteView, ToDisplayImageView);
             return cellView;
         }
+
+        if (_data[index] is SortGymRoutesScrollerData){
+            return scroller.GetCellView(sortGymRoutesCellViewPrefab) as SortGymRoutesCellView;
+        }
+        if (_data[index] is GradesGymRoutesScrollerData){
+            return scroller.GetCellView(gradesGymRoutesCellViewPrefab) as GradesGymRoutesCellView;
+        }
         return null;
+    }
+
+    public int GetIndex(int dataIndex){
+        if (dataIndex < singleCellNumber){
+            return dataIndex;
+        }
+        return dataIndex * 2 - singleCellNumber;
     }
 
     public void ToRouteView(string routeID){
@@ -107,6 +137,13 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
 
     public void ToRegisterView(){
         view.ToRegisterView();
+    }
+    public void ToDisplayImageView(){
+        view.ToDisplayImageView();
+    }
+
+    public Vector2 GetCurentScrollPosition(){
+        return myScroller.ScrollRect.content.anchoredPosition;
     }
 
 }
