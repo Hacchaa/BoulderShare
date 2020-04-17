@@ -424,12 +424,12 @@ namespace BoulderNotes{
         }
 
         public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){
-            //StartCoroutine(LoadImage("file:///"+GetWallImagePath(gym)+fileName, del));
-            StartCoroutine(LoadImage(GetWallImagePath(gym)+fileName, del));
+            StartCoroutine(LoadImage("file:///"+GetWallImagePath(gym)+fileName, del));
+            //StartCoroutine(LoadImage(GetWallImagePath(gym)+fileName, del));
         }
         public void LoadImageAsync(string path, LoadImageDelegate del){
-            //StartCoroutine(LoadImage("file:///"+path, del));
-            StartCoroutine(LoadImage(path, del));
+            StartCoroutine(LoadImage("file:///"+path, del));
+            //StartCoroutine(LoadImage(path, del));
         }
 
         private IEnumerator LoadImage(string path, LoadImageDelegate del)
