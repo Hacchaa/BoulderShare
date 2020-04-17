@@ -138,7 +138,8 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
     public void ToRegisterView(){
         view.ToRegisterView();
     }
-    public void ToDisplayImageView(){
+    public void ToDisplayImageView(Sprite sprite){
+        view.SetSprite(sprite);
         view.ToDisplayImageView();
     }
 

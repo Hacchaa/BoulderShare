@@ -22,6 +22,9 @@ public class BNScreenInput : BNScreen
     public void SetSprite(Sprite spr){
         inputedSprite = spr;
     }
+    public Sprite GetSprite(){
+        return inputedSprite;
+    }
     
     public void SetWallType(WallTypeMap.Type t){
         wallType = t;

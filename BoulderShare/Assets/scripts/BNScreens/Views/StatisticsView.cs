@@ -21,9 +21,20 @@ public class StatisticsView : BNScreen
     [SerializeField] private BN_CircleGraph clearGraph;
     [SerializeField] private RecommendedRouteController recommended;
     [SerializeField] private FavoriteGymController gymView;
+
+    [SerializeField] private List<UICard> cardList;
+    /* カード追加方法
+        1.カードのルートにUICardコンポーネントを追加
+        2.UICardのプロパティ設定
+        3.cardListにUICardの参照を追加
+    */
     public override void InitForFirstTransition(){
         cView.Init();
         clearGraph.Init();
+
+        foreach(UICard card in cardList){
+            card.TryInit();
+        }
     }
 
     public override void UpdateScreen(){

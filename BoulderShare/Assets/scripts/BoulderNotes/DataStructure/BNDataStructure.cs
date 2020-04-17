@@ -7,6 +7,7 @@ using System.Linq;
 namespace BoulderNotes{
     public delegate void OnButtonClickedDelegate();
     public delegate void OnButtonClickedDelegateWithString(string str);
+    public delegate void OnButtonClickedDelegateWithSprite(Sprite spr);
     public delegate void OnButtonClickedDelegateWithBNGym(BNGym gym);
     public delegate void OnButtonClickedDelegateWithBNRoute(BNRoute route);
     public delegate void OnButtonClickedDelegateWithBNRecord(BNRecord record);

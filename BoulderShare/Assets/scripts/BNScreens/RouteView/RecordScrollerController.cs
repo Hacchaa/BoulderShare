@@ -70,6 +70,8 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         d.grade = route.GetGradeName();
         d.date = route.GetPeriod();
         d.usedKante = route.IsUsedKante();
+        d.completeStatusName = BNRoute.GetClearStatusName(route.GetTotalClearStatus());
+        d.wallTypeName = route.GetWallTypeName();
         _data.Add(d);
 
         //_dataを作る
@@ -80,7 +82,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
 
         int n = dateList.Count;
         for(int i = 0 ; i < n ; i++){
-            _data.Add(new RecordDateTitleScrollerData(){date = dateList[i]});
+            _data.Add(new RecordDateTitleScrollerData(){date = "挑戦"+(n-i)+"日目　"+dateList[i]});
             List<RecordScrollerData> l = dataList[i];
             int m = dataList[i].Count;
             for(int j = 0 ; j < m ; j++){
@@ -119,7 +121,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             return 240f;
         }
         if (_data[dataIndex] is RecordMainInfoScrollerData){
-            return 160f;
+            return 158f;
         }
 
         //case in RecordLineScrollerData
@@ -155,6 +157,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         if (_data[dataIndex] is RecordMainInfoScrollerData){
             RecordMainInfoCellView recordMainCellView = scroller.GetCellView(recordMainInfoCellViewPrefab) as RecordMainInfoCellView;
+            recordMainCellView.Init();
             recordMainCellView.SetData((_data[dataIndex] as RecordMainInfoScrollerData));
             return recordMainCellView;
         }

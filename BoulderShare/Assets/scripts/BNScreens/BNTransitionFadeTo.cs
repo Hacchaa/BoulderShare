@@ -25,7 +25,9 @@ public class BNTransitionFadeTo : BNTransitionBase
     override public void Complete(bool isReverse){
         base.Complete(isReverse);
         if (isReverse){
-            SetAllBlocksRaycasts(true);
+            if (screen != null){
+                screen.gameObject.SetActive(false);
+            }
         }
     }
 }

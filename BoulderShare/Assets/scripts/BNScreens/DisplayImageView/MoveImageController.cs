@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.UI;
 
 namespace BoulderNotes{
 public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IBeginDragHandler{
@@ -14,9 +15,14 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private Rect boundsRect;
 	private const float BOUNDSDELTARATE = 0.5f;
     [SerializeField] private RectTransform moveRect;
+	[SerializeField] private Image displayImage;
 	[SerializeField] private RectTransform boundsImage;
- 	void Start () {
+	[SerializeField] private RectTransform displayArea;
+ 	public void Init (Sprite sprite) {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
+
+		FitImage(sprite);
+
 		boundsRect = moveRect.rect;
 		boundsImage.sizeDelta = moveRect.sizeDelta;
 		boundsImage.anchoredPosition = moveRect.anchoredPosition;
@@ -178,5 +184,34 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 
 		moveRect.anchoredPosition += new Vector2(x, y);
 	}
+
+	private void FitImage(Sprite spr){
+        float fitHeight = displayArea.rect.height;
+        float fitWidth = displayArea.rect.width;
+
+        float texWidth = spr.texture.width;
+        float texHeight = spr.texture.height;
+
+        float difW = Mathf.Abs(fitWidth - texWidth);
+        float difH = Mathf.Abs(fitHeight - texHeight);
+        
+        float w, h, r;
+
+        if (fitHeight / fitWidth < texHeight / texWidth){
+            r = fitHeight / texHeight; 
+            h = fitHeight;
+            w = texWidth * r; 
+        }else{
+            r = fitWidth / texWidth; 
+            w = fitWidth;
+            h = texHeight * r;   
+        }  
+
+        moveRect.anchorMin = new Vector2(0.5f, 0.5f);
+        moveRect.anchorMax = new Vector2(0.5f, 0.5f);
+        moveRect.sizeDelta = new Vector2(w, h);
+
+        displayImage.sprite = spr;
+    }
 }
 }

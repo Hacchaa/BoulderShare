@@ -21,6 +21,8 @@ public class RecordOverviewScrollerData : RecordScrollerDataBase {
 public class RecordMainInfoScrollerData : RecordScrollerDataBase{
     public RTape tape;
     public string gymName;
+    public string wallTypeName;
+    public string completeStatusName;
     public string grade;
     public string date;
     public bool usedKante;

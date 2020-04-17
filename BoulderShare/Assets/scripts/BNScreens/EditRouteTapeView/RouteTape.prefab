@@ -54,9 +54,9 @@ MonoBehaviour:
   img: {fileID: 2789690923531084081}
   text: {fileID: 8726824983023926305}
   firstSprite:
-    m_AssetGUID: c4b199de27d2db247be9255ad6acbe31
+    m_AssetGUID: 32c419a8895f09d4b823998b639bf7c1
     m_SubObjectName: 
-  firstColor: {r: 0.9568628, g: 0.2627451, b: 0.21176472, a: 1}
+  firstColor: {r: 0.61960787, g: 0.61960787, b: 0.61960787, a: 1}
 --- !u!222 &3876420603639019992
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -203,8 +203,7 @@ MonoBehaviour:
   m_text: 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d31f65fcc10a75b45924be3b30f4dcc6, type: 2}
-  m_sharedMaterial: {fileID: 21839362409579690, guid: e341a575ab3b2f64289a18aa3dcc3087,
-    type: 2}
+  m_sharedMaterial: {fileID: 0}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

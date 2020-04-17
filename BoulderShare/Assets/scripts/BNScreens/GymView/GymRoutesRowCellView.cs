@@ -20,11 +20,11 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
 
     private string routeID;
     private OnButtonClickedDelegateWithString del;
-    private Action onZoom;
+    private OnButtonClickedDelegateWithSprite onZoom;
     private bool completedInit = false;
     [SerializeField] private Image maskImage;
 
-    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, Action onZoomButtonClicked){
+    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithSprite onZoomButtonClicked){
         del = onButtonClicked;
         onZoom = onZoomButtonClicked;
         if(data.routeTape != null){
@@ -130,7 +130,7 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
     }
     public void OnZoomClicked(){
         if (onZoom != null){
-            onZoom();
+            onZoom(wallImage.sprite);
         }
     }
 }

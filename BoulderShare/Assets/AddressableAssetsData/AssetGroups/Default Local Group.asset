@@ -96,12 +96,6 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  - m_GUID: 2bf149ef97880c2479ef48b4a15236dd
-    m_Address: medal_q7
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   - m_GUID: 2c77ccaf3092ae2469e5b8483ecfa488
     m_Address: corner
     m_ReadOnly: 0
@@ -122,6 +116,13 @@ MonoBehaviour:
     - HoldMarkTexture
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  - m_GUID: 32c419a8895f09d4b823998b639bf7c1
+    m_Address: noMark
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   - m_GUID: 33fb1f283be5ae44d87c5c0f806261d7
     m_Address: Butterfly
     m_ReadOnly: 0
@@ -131,6 +132,12 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 399d0eb5ef21f1440965d1c7cf7626f1
     m_Address: 24_condition_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: 3b292a91e8e9653428f5af3cab3265c8
+    m_Address: medal_none
     m_ReadOnly: 0
     m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
@@ -272,6 +279,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - HoldMarkTexture
+    m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  - m_GUID: aed30f5e2b90ee14a8f468866c7a58e2
+    m_Address: medal_q7
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: b771fef4b768f234eb42b0c9b60d1c75

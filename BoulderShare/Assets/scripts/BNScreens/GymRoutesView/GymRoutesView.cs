@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using System;
 
 namespace BoulderNotes{
-public class GymRoutesView : BNScreen
+public class GymRoutesView : BNScreenInput
 {
     [SerializeField] private GymRoutesScrollerController scroller;
     [SerializeField] private TextMeshProUGUI gymNameText;
@@ -34,7 +34,7 @@ public class GymRoutesView : BNScreen
     }
 
     public override void UpdateScreen(){
-        
+        ClearFields();
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             BNGym gym = (belongingStack as BNScreenStackWithTargetGym).GetTargetGym();
             //gymIDだけ記憶させる
@@ -81,6 +81,7 @@ public class GymRoutesView : BNScreen
             (belongingStack as BNScreenStackWithTargetGym).StoreTargetRoute(routeID);
         }
     }
+
     public void ToRouteView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.RouteView, BNScreens.TransitionType.Push);
     }
@@ -91,6 +92,7 @@ public class GymRoutesView : BNScreen
         BNScreens.Instance.Transition(BNScreens.BNScreenType.ModifyView, BNScreens.TransitionType.Push);
     }
     public void ToDisplayImageView(){
+
         BNScreens.Instance.Transition(BNScreens.BNScreenType.DisplayImageView, BNScreens.TransitionType.Fade);
     }
     public void ReverseTransition(){

@@ -11,7 +11,7 @@ public class GymRoutesCellView : EnhancedScrollerCellView
 {
     [SerializeField] private GymRoutesRowCellView[] rows;
  
-    public void SetData(ref List<GymRoutesScrollerDataBase> _data, int index, int numOfData, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, Action onZoomButtonClicked){
+    public void SetData(ref List<GymRoutesScrollerDataBase> _data, int index, int numOfData, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithSprite onZoomButtonClicked){
         for(int i = 0 ; i < rows.Length ; i++){
             if (index + i < numOfData){
                 rows[i].gameObject.SetActive(true);
