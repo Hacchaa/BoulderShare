@@ -12,20 +12,18 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private float prevLength;
 	private bool isUpdate = false;
 	private const float WEIGHT = 0.2f;
-	private Rect boundsRect;
+	[SerializeField] private RectTransform boundsRect;
 	private const float BOUNDSDELTARATE = 0.5f;
     [SerializeField] private RectTransform moveRect;
 	[SerializeField] private Image displayImage;
-	[SerializeField] private RectTransform boundsImage;
 	[SerializeField] private RectTransform displayArea;
  	public void Init (Sprite sprite) {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
 
 		FitImage(sprite);
-
-		boundsRect = moveRect.rect;
-		boundsImage.sizeDelta = moveRect.sizeDelta;
-		boundsImage.anchoredPosition = moveRect.anchoredPosition;
+		///Debug.Log("moveRect:"+moveRect.sizeDelta.x + " "+moveRect.sizeDelta.y);
+		boundsRect.sizeDelta = moveRect.sizeDelta;
+		boundsRect.anchoredPosition = moveRect.anchoredPosition;
 	}	
 
 	void LateUpdate(){
@@ -78,13 +76,6 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         }
 
 
-        Vector2 old = new Vector2((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f);
-        Vector2 cur = new Vector2((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
-
-        Vector2 diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
-        moveRect.anchoredPosition += CalcBoundsDelta(diff);
-
-
         // Find the position in the previous frame of each touch.
         Vector2 touchZeroPrevPos = p1 - dP1;
         Vector2 touchOnePrevPos = p2 - dP2;
@@ -95,12 +86,19 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         
         // Find the difference in the distances between each frame.
         float rate = touchDeltaMag / prevTouchDeltaMag;
-		diff = moveRect.sizeDelta * (rate - 1f);
+		Vector2 diff = moveRect.sizeDelta * (rate - 1f);
 		//画面中心にある点の、moverectから見た座標
 		Vector2 center = -moveRect.anchoredPosition;
 		moveRect.sizeDelta += diff;
+		boundsRect.sizeDelta = moveRect.sizeDelta;
 
 		moveRect.anchoredPosition -= center * (rate - 1f);
+
+		Vector2 old = new Vector2((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f);
+        Vector2 cur = new Vector2((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
+
+        diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
+        moveRect.anchoredPosition += CalcBoundsDelta(diff);
 
 		isUpdate = true;
 	}
@@ -141,25 +139,25 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 
 	public bool IsOutBoundX(){
 		//左側
-		//Debug.Log("boundsRect.x < (moveRect.anchoredPosition.x - moveRect.rect.width/2f) " + boundsRect.x + " < "+(moveRect.anchoredPosition.x - moveRect.rect.width/2f));
-		if (boundsRect.x < moveRect.anchoredPosition.x - moveRect.rect.width/2f){
+		//Debug.Log("boundsRect.rect.x < (moveRect.anchoredPosition.x - moveRect.rect.width/2f) " + boundsRect.rect.x + " < "+(moveRect.anchoredPosition.x - moveRect.rect.width/2f));
+		if (boundsRect.rect.x < moveRect.anchoredPosition.x - moveRect.rect.width/2f){
 			return true;
 		}
 		//右側
-		if (-boundsRect.x > moveRect.anchoredPosition.x + moveRect.rect.width/2f){
+		if (-boundsRect.rect.x > moveRect.anchoredPosition.x + moveRect.rect.width/2f){
 			return true;
 		}
 
 		return false;
 	}
 	public bool IsOutBoundY(){
-		//Debug.Log("-boundsRect.y > (moveRect.anchoredPosition.y + moveRect.rect.height/2f) " + -boundsRect.y + " > "+(moveRect.anchoredPosition.y + moveRect.rect.height/2f));
+		//Debug.Log("-boundsRect.rect.y > (moveRect.anchoredPosition.y + moveRect.rect.height/2f) " + -boundsRect.rect.y + " > "+(moveRect.anchoredPosition.y + moveRect.rect.height/2f));
 		//上側
-		if (-boundsRect.y > moveRect.anchoredPosition.y + moveRect.rect.height/2f){
+		if (-boundsRect.rect.y > moveRect.anchoredPosition.y + moveRect.rect.height/2f){
 			return true;
 		}
 		//下側
-		if (boundsRect.y < moveRect.anchoredPosition.y - moveRect.rect.height/2f){
+		if (boundsRect.rect.y < moveRect.anchoredPosition.y - moveRect.rect.height/2f){
 			return true;
 		}
 
@@ -170,16 +168,16 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		float x = 0;
 		float y = 0;
 
-		if (boundsRect.x < moveRect.anchoredPosition.x - moveRect.rect.width/2f){
-			x = boundsRect.x - (moveRect.anchoredPosition.x - moveRect.rect.width/2f);
-		}else if (-boundsRect.x > moveRect.anchoredPosition.x + moveRect.rect.width/2f){
-			x = -boundsRect.x - (moveRect.anchoredPosition.x + moveRect.rect.width/2f);
+		if (boundsRect.rect.x < moveRect.anchoredPosition.x - moveRect.rect.width/2f){
+			x = boundsRect.rect.x - (moveRect.anchoredPosition.x - moveRect.rect.width/2f);
+		}else if (-boundsRect.rect.x > moveRect.anchoredPosition.x + moveRect.rect.width/2f){
+			x = -boundsRect.rect.x - (moveRect.anchoredPosition.x + moveRect.rect.width/2f);
 		}		
 
-		if (-boundsRect.y > moveRect.anchoredPosition.y + moveRect.rect.height/2f){
-			y = -boundsRect.y - (moveRect.anchoredPosition.y + moveRect.rect.height/2f);
-		}else if (boundsRect.y < moveRect.anchoredPosition.y - moveRect.rect.height/2f){
-			y = boundsRect.y - (moveRect.anchoredPosition.y - moveRect.rect.height/2f);
+		if (-boundsRect.rect.y > moveRect.anchoredPosition.y + moveRect.rect.height/2f){
+			y = -boundsRect.rect.y - (moveRect.anchoredPosition.y + moveRect.rect.height/2f);
+		}else if (boundsRect.rect.y < moveRect.anchoredPosition.y - moveRect.rect.height/2f){
+			y = boundsRect.rect.y - (moveRect.anchoredPosition.y - moveRect.rect.height/2f);
 		}
 
 		moveRect.anchoredPosition += new Vector2(x, y);

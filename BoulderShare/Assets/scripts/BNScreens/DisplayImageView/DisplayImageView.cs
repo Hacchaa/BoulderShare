@@ -9,7 +9,7 @@ namespace BoulderNotes{
 public class DisplayImageView: BNScreen
 {
     private BNScreenInput screenInput;
-    [SerializeField] private MoveImageController2 controller;
+    [SerializeField] private MoveImageController controller;
 
     public override void InitForFirstTransition(){
         screenInput = null;
