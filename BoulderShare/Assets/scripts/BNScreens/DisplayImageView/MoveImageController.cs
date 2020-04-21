@@ -90,7 +90,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		//画面中心にある点の、moverectから見た座標
 		Vector2 center = -moveRect.anchoredPosition;
 		moveRect.sizeDelta += diff;
-		boundsRect.sizeDelta = moveRect.sizeDelta;
+		CalculateBoundsArea(moveRect.sizeDelta);
 
 		moveRect.anchoredPosition -= center * (rate - 1f);
 
@@ -117,6 +117,13 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		}
     }
 
+	public void CalculateBoundsArea(Vector2 size){
+		float x, y;
+		x = Mathf.Min(size.x, displayArea.rect.width);
+		y = Mathf.Min(size.y, displayArea.rect.height);
+		boundsRect.sizeDelta = new Vector2(x, y);
+	}
+
 	public Vector2 CalcBoundsDelta(Vector2 delta){
 		float x, y;
 		if (IsOutBoundX()){
@@ -135,6 +142,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		//Debug.Log("delta"+delta.x +" "+delta.y);
 		//Debug.Log("newDelta"+x+" "+y);
 		return new Vector2(x, y);
+		
 	}
 
 	public bool IsOutBoundX(){
