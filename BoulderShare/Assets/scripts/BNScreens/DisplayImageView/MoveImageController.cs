@@ -87,15 +87,15 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         // Find the difference in the distances between each frame.
         float rate = touchDeltaMag / prevTouchDeltaMag;
 		Vector2 diff = moveRect.sizeDelta * (rate - 1f);
-		//画面中心にある点の、moverectから見た座標
-		Vector2 center = -moveRect.anchoredPosition;
+		Vector2 old = new Vector2((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f);
+        Vector2 cur = new Vector2((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
+		//スクリーン座標からmoveRectのローカル座標に変換
+		Vector2 center;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(moveRect, cur, data.pressEventCamera, out center);
 		moveRect.sizeDelta += diff;
 		CalculateBoundsArea(moveRect.sizeDelta);
 
 		moveRect.anchoredPosition -= center * (rate - 1f);
-
-		Vector2 old = new Vector2((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f);
-        Vector2 cur = new Vector2((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
 
         diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
         moveRect.anchoredPosition += CalcBoundsDelta(diff);
