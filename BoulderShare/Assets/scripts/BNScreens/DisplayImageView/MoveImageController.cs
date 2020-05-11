@@ -13,7 +13,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private bool isUpdate = false;
 	private const float WEIGHT = 0.2f;
 	[SerializeField] private RectTransform boundsRect;
-	private const float BOUNDSDELTARATE = 0.5f;
+	private const float BOUNDSDELTARATE = 0.3f;
     [SerializeField] private RectTransform moveRect;
 	[SerializeField] private Image displayImage;
 	[SerializeField] private RectTransform displayArea;
