@@ -17,6 +17,16 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
     [SerializeField] private RectTransform moveRect;
 	[SerializeField] private Image displayImage;
 	[SerializeField] private RectTransform displayArea;
+	[SerializeField] private Bounds m_ViewBounds;
+	[SerializeField] private Bounds m_ContentBounds;
+	[SerializeField] private bool m_Dragging;
+	[SerializeField] private Vector2 m_PrevPosition;
+	[SerializeField] private Vector2 m_Velocity;
+
+	[SerializeField] private float elasticity = 0.1f;
+	[SerializeField] private float decelerationRate = 0.1f;
+	[SerializeField] private Camera eventCamera;
+	[SerializeField] private RectTransform cursor;
  	public void Init (Sprite sprite) {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
 
@@ -24,12 +34,136 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		///Debug.Log("moveRect:"+moveRect.sizeDelta.x + " "+moveRect.sizeDelta.y);
 		boundsRect.sizeDelta = moveRect.sizeDelta;
 		boundsRect.anchoredPosition = moveRect.anchoredPosition;
+
+		m_Velocity = Vector2.zero;
 	}	
 
-	void LateUpdate(){
+	protected void LateUpdate(){
+		UpdateBounds();
+		float deltaTime = Time.unscaledDeltaTime;
+		Vector2 offset = CalculateOffset(Vector2.zero);
+		//Debug.Log("offset:"+offset.x + "," + offset.y);
+		if (!m_Dragging && (offset != Vector2.zero || m_Velocity != Vector2.zero))
+		{
+			Vector2 position = moveRect.anchoredPosition;
+			for (int axis = 0; axis < 2; axis++)
+			{
+				// Apply spring physics if movement is elastic and content has an offset from the view.
+				if (offset[axis] != 0)
+				{
+					float speed = m_Velocity[axis];
+					float smoothTime = elasticity;
+
+					position[axis] = Mathf.SmoothDamp(moveRect.anchoredPosition[axis], moveRect.anchoredPosition[axis] + offset[axis], ref speed, smoothTime, Mathf.Infinity, deltaTime);
+					if (Mathf.Abs(speed) < 1)
+						speed = 0;
+					m_Velocity[axis] = speed;
+				}
+				// Else move content according to velocity with deceleration applied.
+				else
+				{
+					m_Velocity[axis] *= Mathf.Pow(decelerationRate, deltaTime);
+					if (Mathf.Abs(m_Velocity[axis]) < 1)
+						m_Velocity[axis] = 0;
+					position[axis] += m_Velocity[axis] * deltaTime;
+				}
+			}
+			SetContentAnchoredPosition(position);
+		}
+
+		if (m_Dragging)
+		{
+			Vector3 newVelocity = (moveRect.anchoredPosition - m_PrevPosition) / deltaTime;
+			m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
+		}
+
+		if (moveRect.anchoredPosition != m_PrevPosition)
+		{
+			UpdatePrevData();
+		}
+
 		isUpdate = false;
 	}
+	private void SetContentAnchoredPosition(Vector2 position)
+	{
+		if (position != moveRect.anchoredPosition)
+		{
+			moveRect.anchoredPosition = position;
+			UpdateBounds();
+		}
+	}
+	private void UpdateBounds(){
+		m_ViewBounds = new Bounds(boundsRect.rect.center, boundsRect.rect.size);
+		m_ContentBounds = GetBounds();
+	}
+	private void UpdatePrevData()
+	{
+		if (moveRect == null)
+			m_PrevPosition = Vector2.zero;
+		else
+			m_PrevPosition = moveRect.anchoredPosition;
 
+	}
+	private Vector2 CalculateOffset(Vector2 delta)
+	{
+		Vector2 offset = Vector2.zero;
+
+		Vector2 min = m_ContentBounds.min;
+		Vector2 max = m_ContentBounds.max;
+
+		// min/max offset extracted to check if approximately 0 and avoid recalculating layout every frame (case 1010178)
+		min.x += delta.x;
+		max.x += delta.x;
+
+		float maxOffset = m_ViewBounds.max.x - max.x;
+		float minOffset = m_ViewBounds.min.x - min.x;
+
+		if (minOffset < -0.001f)
+			offset.x = minOffset;
+		else if (maxOffset > 0.001f)
+			offset.x = maxOffset;
+
+
+		min.y += delta.y;
+		max.y += delta.y;
+
+		maxOffset = m_ViewBounds.max.y - max.y;
+		minOffset = m_ViewBounds.min.y - min.y;
+
+		if (maxOffset > 0.001f)
+			offset.y = maxOffset;
+		else if (minOffset < -0.001f)
+			offset.y = minOffset;
+
+		return offset;
+	}	
+
+	private readonly Vector3[] m_Corners = new Vector3[4];
+	private Bounds GetBounds()
+	{
+		if (moveRect == null)
+			return new Bounds();
+		moveRect.GetWorldCorners(m_Corners);
+		var viewWorldToLocalMatrix = boundsRect.worldToLocalMatrix;
+		return InternalGetBounds(m_Corners, ref viewWorldToLocalMatrix);
+	}
+
+	internal static Bounds InternalGetBounds(Vector3[] corners, ref Matrix4x4 viewWorldToLocalMatrix)
+	{
+		var vMin = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+		var vMax = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector3 v = viewWorldToLocalMatrix.MultiplyPoint3x4(corners[j]);
+			vMin = Vector3.Min(v, vMin);
+			vMax = Vector3.Max(v, vMax);
+		}
+
+		var bounds = new Bounds(vMin, Vector3.zero);
+		bounds.Encapsulate(vMax);
+		return bounds;
+	}
 	public void OnPointerDown(PointerEventData data){
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
@@ -38,7 +172,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		}
 	}
     public void OnBeginDrag(PointerEventData data){
-		
+		m_Dragging = true;
     }
 
 	public void OnDrag(PointerEventData data){
@@ -70,37 +204,61 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 			Vector2 del = dP1 / CanvasResolutionManager.Instance.GetRatioOfPtToPx();
 
 			moveRect.anchoredPosition += CalcBoundsDelta(del);
-            
+            Vector2 v;
+        	RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, data.position, data.pressEventCamera, out v);
+			//Debug.Log("localPos"+v.x + ","+v.y);
             isUpdate = true;
+			cursor.anchoredPosition = v;
             return ;
         }
 
-
+		//拡大縮小
         // Find the position in the previous frame of each touch.
         Vector2 touchZeroPrevPos = p1 - dP1;
         Vector2 touchOnePrevPos = p2 - dP2;
-        
         // Find the magnitude of the vector (the distance) between the touches in each frame.
         float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
         float touchDeltaMag = (p1 - p2).magnitude;
-        
         // Find the difference in the distances between each frame.
         float rate = touchDeltaMag / prevTouchDeltaMag;
-		Vector2 diff = moveRect.sizeDelta * (rate - 1f);
 		Vector2 old = new Vector2((p1.x - dP1.x + p2.x - dP2.x) / 2.0f, (p1.y - dP1.y + p2.y - dP2.y) / 2.0f);
         Vector2 cur = new Vector2((p1.x + p2.x) / 2.0f, (p1.y + p2.y) / 2.0f);
-		//スクリーン座標からmoveRectのローカル座標に変換
-		Vector2 center;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(moveRect, cur, data.pressEventCamera, out center);
-		moveRect.sizeDelta += diff;
-		CalculateBoundsArea(moveRect.sizeDelta);
+		ZoomAt(rate, cur, data);
 
-		moveRect.anchoredPosition -= center * (rate - 1f);
-
-        diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
+		//移動
+        Vector2 diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
         moveRect.anchoredPosition += CalcBoundsDelta(diff);
 
 		isUpdate = true;
+	}
+	public void ZoomAt(float rate, Vector2 screenPosition, PointerEventData data){
+		//スクリーン座標からmoveRectのローカル座標に変換
+		Vector2 center;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, screenPosition, data.pressEventCamera, out center);
+		cursor.anchoredPosition = center;
+		moveRect.sizeDelta *= rate;
+		CalculateBoundsArea(moveRect.sizeDelta);
+		moveRect.anchoredPosition -= ((center-moveRect.anchoredPosition) * (rate - 1f));
+	}
+
+	public void ZoomButton(){
+		float rate = 1.05f;
+		//Debug.Log("diff "+(moveRect.sizeDelta*(rate-1f)));
+		//Debug.Log("sizeDelta before:"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
+		//Debug.Log("anchoredPosition before:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
+		moveRect.sizeDelta *= rate;
+		CalculateBoundsArea(moveRect.sizeDelta);
+		moveRect.anchoredPosition -= ((cursor.anchoredPosition-moveRect.anchoredPosition) * (rate - 1f));	
+		//Debug.Log("sizeDelta after :"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
+		//Debug.Log("anchoredPosition after :"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);	
+	}
+
+	public void ShrinkButton(){
+		float rate = 0.95f;
+		//Debug.Log("diff "+(moveRect.sizeDelta*(rate-1f)));
+		moveRect.sizeDelta *= rate;
+		CalculateBoundsArea(moveRect.sizeDelta);
+		moveRect.anchoredPosition -= ((cursor.anchoredPosition-moveRect.anchoredPosition) * (rate - 1f));	
 	}
 	public void OnPointerUp(PointerEventData data){
 		if (eTouches[0] == data.pointerId){
@@ -110,10 +268,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
             }else{
                 eTouches[0] = FINGER_NONE;
             }
-			Bounds();
+			m_Dragging = false;
+			//Bounds();
 		}else if(eTouches[1] == data.pointerId){
 			eTouches[1] = FINGER_NONE;
-			Bounds();
+			//Bounds();
+			//m_Dragging = false;
 		}
     }
 
@@ -216,6 +376,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         moveRect.anchorMin = new Vector2(0.5f, 0.5f);
         moveRect.anchorMax = new Vector2(0.5f, 0.5f);
         moveRect.sizeDelta = new Vector2(w, h);
+		moveRect.anchoredPosition = Vector2.zero;
 
         displayImage.sprite = spr;
     }
