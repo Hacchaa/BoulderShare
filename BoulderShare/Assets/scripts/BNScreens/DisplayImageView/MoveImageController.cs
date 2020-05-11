@@ -22,7 +22,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	[SerializeField] private bool m_Dragging;
 	[SerializeField] private Vector2 m_PrevPosition;
 	[SerializeField] private Vector2 m_Velocity;
-
+	private bool needVec;
 	[SerializeField] private float elasticity = 0.1f;
 	[SerializeField] private float decelerationRate = 0.1f;
 	[SerializeField] private Camera eventCamera;
@@ -73,8 +73,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 
 		if (m_Dragging)
 		{
-			Vector3 newVelocity = (moveRect.anchoredPosition - m_PrevPosition) / deltaTime;
-			m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
+			if (needVec){
+				Vector3 newVelocity = (moveRect.anchoredPosition - m_PrevPosition) / deltaTime;
+				m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
+			}else{
+				m_Velocity = Vector2.zero;
+			}
 		}
 
 		if (moveRect.anchoredPosition != m_PrevPosition)
@@ -208,6 +212,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         	RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, data.position, data.pressEventCamera, out v);
 			//Debug.Log("localPos"+v.x + ","+v.y);
             isUpdate = true;
+			needVec = true;
 			cursor.anchoredPosition = v;
             return ;
         }
@@ -230,6 +235,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
         moveRect.anchoredPosition += CalcBoundsDelta(diff);
 
 		isUpdate = true;
+		needVec = false;
 	}
 	public void ZoomAt(float rate, Vector2 screenPosition, PointerEventData data){
 		//スクリーン座標からmoveRectのローカル座標に変換
