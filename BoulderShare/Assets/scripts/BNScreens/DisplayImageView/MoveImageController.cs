@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace BoulderNotes{
 public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IBeginDragHandler{
@@ -14,6 +15,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private const float WEIGHT = 0.2f;
 	[SerializeField] private RectTransform boundsRect;
 	private const float BOUNDSDELTARATE = 0.3f;
+	private const float BOUNDEDZOOM = 0.3f;
     [SerializeField] private RectTransform moveRect;
 	[SerializeField] private Image displayImage;
 	[SerializeField] private RectTransform displayArea;
@@ -27,6 +29,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	[SerializeField] private float decelerationRate = 0.1f;
 	[SerializeField] private Camera eventCamera;
 	[SerializeField] private RectTransform cursor;
+	private float zoomRateLimit = 3.0f;
+	private Vector2 firstSize; 
+	private Vector2 prevCenterPositionWithDoubleFinger;
+	private Vector2 prevSizeDelta;
+	private bool doneZoomAnim = false;
+	[SerializeField] private float animationDuration = 0.3f;
  	public void Init (Sprite sprite) {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
 
@@ -34,6 +42,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		///Debug.Log("moveRect:"+moveRect.sizeDelta.x + " "+moveRect.sizeDelta.y);
 		boundsRect.sizeDelta = moveRect.sizeDelta;
 		boundsRect.anchoredPosition = moveRect.anchoredPosition;
+		firstSize = moveRect.sizeDelta;
 
 		m_Velocity = Vector2.zero;
 	}	
@@ -80,6 +89,9 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 				m_Velocity = Vector2.zero;
 			}
 		}
+		if (doneZoomAnim){
+			m_Velocity = Vector2.zero;
+		}
 
 		if (moveRect.anchoredPosition != m_PrevPosition)
 		{
@@ -122,7 +134,9 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		float maxOffset = m_ViewBounds.max.x - max.x;
 		float minOffset = m_ViewBounds.min.x - min.x;
 
-		if (minOffset < -0.001f)
+		if (m_ViewBounds.extents.x > m_ContentBounds.extents.x)
+			offset.x = -moveRect.anchoredPosition.x;
+		else if (minOffset < -0.001f)
 			offset.x = minOffset;
 		else if (maxOffset > 0.001f)
 			offset.x = maxOffset;
@@ -134,7 +148,9 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		maxOffset = m_ViewBounds.max.y - max.y;
 		minOffset = m_ViewBounds.min.y - min.y;
 
-		if (maxOffset > 0.001f)
+		if (m_ViewBounds.extents.y > m_ContentBounds.extents.y)
+			offset.y = -moveRect.anchoredPosition.y;
+		else if (maxOffset > 0.001f)
 			offset.y = maxOffset;
 		else if (minOffset < -0.001f)
 			offset.y = minOffset;
@@ -171,8 +187,9 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	public void OnPointerDown(PointerEventData data){
 		if (eTouches[0] == FINGER_NONE){
 			eTouches[0] = data.pointerId;
-		}else if(eTouches[1] == FINGER_NONE){
+		}else if(!doneZoomAnim && eTouches[1] == FINGER_NONE){
 			eTouches[1] = data.pointerId;
+			prevCenterPositionWithDoubleFinger = Vector2.zero;
 		}
 	}
     public void OnBeginDrag(PointerEventData data){
@@ -214,6 +231,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
             isUpdate = true;
 			needVec = true;
 			cursor.anchoredPosition = v;
+			prevCenterPositionWithDoubleFinger = v;
             return ;
         }
 
@@ -241,7 +259,11 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		//スクリーン座標からmoveRectのローカル座標に変換
 		Vector2 center;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, screenPosition, data.pressEventCamera, out center);
+		prevCenterPositionWithDoubleFinger = center;
 		cursor.anchoredPosition = center;
+		if (moveRect.sizeDelta.x >= firstSize.x && moveRect.sizeDelta.x <= firstSize.x * zoomRateLimit){
+			rate = (rate - 1f)*BOUNDEDZOOM + 1f;
+		}
 		moveRect.sizeDelta *= rate;
 		CalculateBoundsArea(moveRect.sizeDelta);
 		moveRect.anchoredPosition -= ((center-moveRect.anchoredPosition) * (rate - 1f));
@@ -275,10 +297,10 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
                 eTouches[0] = FINGER_NONE;
             }
 			m_Dragging = false;
-			//Bounds();
+			//BoundSizeWithAnim();
 		}else if(eTouches[1] == data.pointerId){
 			eTouches[1] = FINGER_NONE;
-			//Bounds();
+			BoundSizeWithAnim();
 			//m_Dragging = false;
 		}
     }
@@ -386,5 +408,43 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 
         displayImage.sprite = spr;
     }
+
+	private void BoundSizeWithAnim(){
+		if (moveRect.sizeDelta.x >= firstSize.x && moveRect.sizeDelta.x <= firstSize.x*zoomRateLimit){
+			return ;
+		}
+		if (moveRect.sizeDelta.y >= firstSize.y && moveRect.sizeDelta.y <= firstSize.y*zoomRateLimit){
+			return ;
+		}
+		Sequence seq = DOTween.Sequence();
+		Vector2 targetSize;
+		targetSize = Vector2.Max(firstSize, moveRect.sizeDelta);
+		targetSize = Vector2.Min(firstSize*zoomRateLimit, targetSize);
+		moveRect.DOSizeDelta(targetSize, animationDuration)
+		.OnStart(()=>{
+			Debug.Log("anim start");
+			//二本指操作の禁止
+			doneZoomAnim = true;
+			CalculateBoundsArea(targetSize);
+			prevSizeDelta = moveRect.sizeDelta;
+		})
+		.OnUpdate(()=>{
+			Debug.Log("sizeDelta:"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
+			Debug.Log("anchoredPosition before:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
+			Vector2 p = (prevCenterPositionWithDoubleFinger-moveRect.anchoredPosition);
+			Debug.Log("center - anchore:"+p.x + ","+p.y);
+			float rate = moveRect.sizeDelta.x / prevSizeDelta.x;
+			Debug.Log("rate:"+rate);
+			moveRect.anchoredPosition -= ((prevCenterPositionWithDoubleFinger-moveRect.anchoredPosition) * (rate - 1f));
+			prevSizeDelta = moveRect.sizeDelta;
+			Debug.Log("anchoredPosition after:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
+			Debug.Log("");
+		})
+		.OnComplete(()=>{
+			//二本指操作の禁止解除
+			Debug.Log("anim end");
+			doneZoomAnim = false;
+		});
+	}
 }
 }
