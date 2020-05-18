@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Runtime.InteropServices;
 
 namespace BoulderNotes{
 public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler, IBeginDragHandler{
@@ -29,12 +30,18 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	[SerializeField] private float decelerationRate = 0.1f;
 	[SerializeField] private Camera eventCamera;
 	[SerializeField] private RectTransform cursor;
-	private float zoomRateLimit = 3.0f;
+	private float zoomRateLimit = 4.5f;
 	private Vector2 firstSize; 
 	private Vector2 prevCenterPositionWithDoubleFinger;
 	private Vector2 prevSizeDelta;
 	private bool doneZoomAnim = false;
 	[SerializeField] private float animationDuration = 0.3f;
+	[SerializeField] private RectTransform dummyRect;
+
+	#if UNITY_IPHONE
+	[DllImport("__Internal")]
+	private static extern void BoulderNotes_Audio(int n);
+	#endif
  	public void Init (Sprite sprite) {
 		eTouches = new int[] {FINGER_NONE, FINGER_NONE};
 
@@ -120,22 +127,29 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 			m_PrevPosition = moveRect.anchoredPosition;
 
 	}
-	private Vector2 CalculateOffset(Vector2 delta)
+	private Vector2 CalculateOffset(Vector2 delta){
+		return InnerCalculateOffset(ref m_ContentBounds, ref m_ViewBounds, moveRect, delta);
+	}
+	private Vector2 InnerCalculateOffset(ref Bounds contentBounds, ref Bounds viewBounds, RectTransform contentRect, Vector2 delta, bool debug = false)
 	{
 		Vector2 offset = Vector2.zero;
 
-		Vector2 min = m_ContentBounds.min;
-		Vector2 max = m_ContentBounds.max;
+		Vector2 min = contentBounds.min;
+		Vector2 max = contentBounds.max;
 
 		// min/max offset extracted to check if approximately 0 and avoid recalculating layout every frame (case 1010178)
 		min.x += delta.x;
 		max.x += delta.x;
 
-		float maxOffset = m_ViewBounds.max.x - max.x;
-		float minOffset = m_ViewBounds.min.x - min.x;
+		float maxOffset = viewBounds.max.x - max.x;
+		float minOffset = viewBounds.min.x - min.x;
+		if (debug){
+			Debug.Log("contentBounds.extents :"+contentBounds.extents.x +","+contentBounds.extents.y);
+			Debug.Log("viewBounds.extents :"+viewBounds.extents.x +","+viewBounds.extents.y);			
+		}
 
-		if (m_ViewBounds.extents.x > m_ContentBounds.extents.x)
-			offset.x = -moveRect.anchoredPosition.x;
+		if (viewBounds.extents.x > contentBounds.extents.x)
+			offset.x = -contentRect.anchoredPosition.x;
 		else if (minOffset < -0.001f)
 			offset.x = minOffset;
 		else if (maxOffset > 0.001f)
@@ -145,11 +159,11 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		min.y += delta.y;
 		max.y += delta.y;
 
-		maxOffset = m_ViewBounds.max.y - max.y;
-		minOffset = m_ViewBounds.min.y - min.y;
+		maxOffset = viewBounds.max.y - max.y;
+		minOffset = viewBounds.min.y - min.y;
 
-		if (m_ViewBounds.extents.y > m_ContentBounds.extents.y)
-			offset.y = -moveRect.anchoredPosition.y;
+		if (m_ViewBounds.extents.y > contentBounds.extents.y)
+			offset.y = -contentRect.anchoredPosition.y;
 		else if (maxOffset > 0.001f)
 			offset.y = maxOffset;
 		else if (minOffset < -0.001f)
@@ -161,10 +175,13 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 	private readonly Vector3[] m_Corners = new Vector3[4];
 	private Bounds GetBounds()
 	{
-		if (moveRect == null)
+		return GetBounds(moveRect, boundsRect);
+	}
+	private Bounds GetBounds(RectTransform contentRect, RectTransform viewRect){
+		if (contentRect == null)
 			return new Bounds();
-		moveRect.GetWorldCorners(m_Corners);
-		var viewWorldToLocalMatrix = boundsRect.worldToLocalMatrix;
+		contentRect.GetWorldCorners(m_Corners);
+		var viewWorldToLocalMatrix = viewRect.worldToLocalMatrix;
 		return InternalGetBounds(m_Corners, ref viewWorldToLocalMatrix);
 	}
 
@@ -289,7 +306,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		moveRect.anchoredPosition -= ((cursor.anchoredPosition-moveRect.anchoredPosition) * (rate - 1f));	
 	}
 	public void OnPointerUp(PointerEventData data){
-		Debug.Log("onpointerup "+data.pointerId);
+		//Debug.Log("onpointerup "+data.pointerId);
 		if (eTouches[0] == data.pointerId){
             if (eTouches[1] != FINGER_NONE){
                 eTouches[0] = eTouches[1];
@@ -306,11 +323,24 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		}
     }
 
-	public void CalculateBoundsArea(Vector2 size){
+	public void CalculateBoundsArea(Vector2 size, bool consideredMimBouonds = false, bool debug = false){
 		float x, y;
+
 		x = Mathf.Min(size.x, displayArea.rect.width);
 		y = Mathf.Min(size.y, displayArea.rect.height);
+
+		if (consideredMimBouonds){
+			x = Mathf.Max(x, firstSize.x);
+			y = Mathf.Max(y, firstSize.y);
+		}
+		if (debug){
+			Debug.Log("size:"+size.x + ","+size.y);
+			Debug.Log("displayArea:"+displayArea.rect.width + "," +displayArea.rect.height);
+			Debug.Log("firstSize:"+firstSize.x + ","+firstSize.y);
+			Debug.Log("dist:"+x+","+y);
+		}		
 		boundsRect.sizeDelta = new Vector2(x, y);
+
 	}
 
 	public Vector2 CalcBoundsDelta(Vector2 delta){
@@ -333,6 +363,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 		return new Vector2(x, y);
 		
 	}
+
 
 	public bool IsOutBoundX(){
 		//左側
@@ -411,7 +442,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
     }
 
 	private void BoundSizeWithAnim(){
-		Debug.Log("boundssizewithanim");
+		//Debug.Log("boundssizewithanim");
 		if (doneZoomAnim){
 			return ;
 		}
@@ -422,17 +453,38 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 			return ;
 		}
 		doneZoomAnim = true;
-		Sequence seq = DOTween.Sequence();
 		Vector2 targetSize;
 		targetSize = Vector2.Max(firstSize, moveRect.sizeDelta);
 		targetSize = Vector2.Min(firstSize*zoomRateLimit, targetSize);
-		moveRect.DOSizeDelta(targetSize, animationDuration)
-		.OnStart(()=>{
-			Debug.Log("anim start");
+		CalculateBoundsArea(targetSize, true, false);
+		UpdateBounds();
+		//移動量を求める
+		float r = targetSize.x / moveRect.sizeDelta.x;
+		dummyRect.anchoredPosition = moveRect.anchoredPosition;
+		dummyRect.sizeDelta = moveRect.sizeDelta*r;
+		dummyRect.anchoredPosition -= ((prevCenterPositionWithDoubleFinger-moveRect.anchoredPosition) * (r - 1f));
+		//Debug.Log("dummy anchore:"+dummyRect.anchoredPosition.x + ","+ dummyRect.anchoredPosition.y);
+		//Debug.Log("dummy sizedelta:"+dummyRect.sizeDelta.x + ","+ dummyRect.sizeDelta.y);
+		Bounds b = GetBounds(dummyRect, boundsRect);
+		Vector2 offset = InnerCalculateOffset(ref b, ref m_ViewBounds, dummyRect, Vector2.zero, true);
+		//Debug.Log("offset "+offset.x+","+offset.y);
+		dummyRect.anchoredPosition += offset;
+
+		Sequence seq = DOTween.Sequence();
+		seq.OnStart(()=>{
+			//Debug.Log("anim start");
 			//二本指操作の禁止
-			CalculateBoundsArea(targetSize);
+			doneZoomAnim = true;
 			prevSizeDelta = moveRect.sizeDelta;
+
+			#if UNITY_IPHONE
+			BoulderNotes_Audio(1519);
+			#endif
+
 		})
+		.Append(moveRect.DOSizeDelta(targetSize, animationDuration))
+		.Join(moveRect.DOAnchorPos(dummyRect.anchoredPosition, animationDuration))
+		/*
 		.OnUpdate(()=>{
 			//Debug.Log("sizeDelta:"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
 			//Debug.Log("anchoredPosition before:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
@@ -444,12 +496,14 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IPointerUpHandle
 			prevSizeDelta = moveRect.sizeDelta;
 			//Debug.Log("anchoredPosition after:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
 			//Debug.Log("");
-		})
+		})*/
 		.OnComplete(()=>{
 			//二本指操作の禁止解除
 			//Debug.Log("anim end");
 			doneZoomAnim = false;
 		});
+
+		seq.Play();
 	}
 }
 }
