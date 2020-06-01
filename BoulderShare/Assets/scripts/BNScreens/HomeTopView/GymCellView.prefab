@@ -52,7 +52,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 840153442690263442}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -314,6 +314,8 @@ MonoBehaviour:
   cellIdentifier: GymCellView
   text: {fileID: 2399628748613574347}
   maskImage: {fileID: 7444794732113918261}
+  boardImage: {fileID: 1386701892922566348}
+  firstBoardSprite: {fileID: 21300000, guid: ddd5d808c1fe6eb479d8ad4e636fba7f, type: 3}
 --- !u!114 &7444794732113918261
 MonoBehaviour:
   m_ObjectHideFlags: 0

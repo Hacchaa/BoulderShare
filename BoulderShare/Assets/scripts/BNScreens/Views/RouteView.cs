@@ -37,12 +37,13 @@ public class RouteView : BNScreen
     [SerializeField] private Image wallImage;
     [SerializeField] private Sprite defaultSpr;
     [SerializeField] private float defaultWallImageHeight = 240f;
-    private RectTransform wallImageRect;
-    private RectTransform wallImageParent;
+    
+    [SerializeField] private RectTransform wallImageRect;
+    [SerializeField] private RectTransform wallImageParent;
     [SerializeField] ScrollRect scrollRect;
     private RectTransform scrollRectRect;
     [SerializeField] private TextMeshProUGUI title;
-    private BNScreenStackWithTargetGym stack;
+    [SerializeField] private BNScreenStackWithTargetGym stack;
     private BNWallImageNames selectedWallImageName;
     private Texture2D selectedWallImage;
 

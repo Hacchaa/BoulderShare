@@ -40,12 +40,20 @@ namespace BoulderNotes{
             return gymName;
         }
 
+        public string GetBoardImagePath(){
+            return gymBoardImagePath;
+        }
+
         public void SetID(string str){
             id = str;
         }
 
         public void SetGymName(string name){
             gymName = name;
+        }
+
+        public void SetBoardImagePath(string path){
+            gymBoardImagePath = path;
         }
 
         public void SetRoutes(List<BNRoute> list){
@@ -86,6 +94,15 @@ namespace BoulderNotes{
             texture = tex;
         }
         public BNWallImage(Texture2D tex): this(tex, null){
+        }
+    }
+    public class BNImage{
+        public string fileName;
+        public Texture2D texture;
+
+        public BNImage(Texture2D tex){
+            fileName = BNGymDataCenter.BNGYM_BOARDIMAGE;
+            texture = tex;
         }
     }
 
@@ -434,6 +451,12 @@ namespace BoulderNotes{
         public string GetDate(){
             return date;
         }
+        //yyyy/MM/ddをyyyy年M月d日に変換して返す
+        public string GetDate2(){
+            DateTime t = DateTime.ParseExact(date, BNGymDataCenter.FORMAT_DATE2, null);
+
+            return t.ToString(BNGymDataCenter.FORMAT_DATE);            
+        }
 
         public Condition GetCondition(){
             return condition;
@@ -455,7 +478,7 @@ namespace BoulderNotes{
             id = str;
         }
         public void SetDate(DateTime t){
-            date = t.ToString(BNGymDataCenter.FORMAT_DATE);
+            date = t.ToString(BNGymDataCenter.FORMAT_DATE2);
         }
 
         public void SetCondition(Condition cond){

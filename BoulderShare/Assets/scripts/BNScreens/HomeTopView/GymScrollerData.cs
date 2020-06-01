@@ -7,6 +7,7 @@ public class GymScrollerData : GymScrollerDataBase
 {
     public string gymName;
     public string gymID;
+    public string boardImagePath;
     
 }
 }

@@ -52,7 +52,7 @@ public class RegisterRecordView : BNScreenInput
             }else{
                 //Debug.Log("edit");
                 //編集
-                dayText.text = record.GetDate();
+                dayText.text = record.GetDate2();
                 tryNumberText.text = record.GetTryNumber()+"";
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();

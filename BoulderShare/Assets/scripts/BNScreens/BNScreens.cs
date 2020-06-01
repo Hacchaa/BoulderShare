@@ -10,7 +10,7 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
         FirstView, SecondView, ThirdView, FourthView, FifthView, SixthView, HomeTopView, GymView, 
         RegisterView, RouteView, ModifyView, RegisterRecordView, RecordView,
         InputItemsView, EditRouteTapeView, SelecteWallImageView, StatisticsView, SelectRouteTagView,
-        GymRoutesView, EditWallImageView, DisplayImageView};
+        GymRoutesView, EditWallImageView, DisplayImageView, GymSortView};
     public enum BNTabName{Home=0, Favorite, Add, Statistics, Other};
     [SerializeField] private CanvasGroup blockTouchCG;  
     [SerializeField] private List<BNTStack> stacks;

@@ -110,8 +110,8 @@ public class BNScreenStackWithTargetGym : BNTStack
         }
         return BNGymDataCenter.Instance.LoadWallImageByES3(targetGym,fileName);
     }
-    public void WriteGym(BNGym gym){
-        BNGymDataCenter.Instance.WriteGym(gym);
+    public void WriteGym(BNGym gym, BNImage bnImage = null){
+        BNGymDataCenter.Instance.WriteGym(gym, bnImage);
     }
     
     public void WriteRoute(BNRoute route, BNWallImage wallImage = null){
@@ -149,14 +149,14 @@ public class BNScreenStackWithTargetGym : BNTStack
         ModifyGym(targetGym);
     }
 
-    public void ModifyGym(BNGym gym){
+    public void ModifyGym(BNGym gym, BNImage bnImage = null){
         if (targetGym == null || gym == null){
             return ;
         }
         if (!targetGym.GetID().Equals(gym.GetID())){
             return ;
         }
-        bool success = BNGymDataCenter.Instance.ModifyGym(gym);
+        bool success = BNGymDataCenter.Instance.ModifyGym(gym, bnImage);
         if (success){
             ClearRoute();
             targetGym = gym;                

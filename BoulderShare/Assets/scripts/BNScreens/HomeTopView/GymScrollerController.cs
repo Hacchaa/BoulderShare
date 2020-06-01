@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using EnhancedUI.EnhancedScroller;
+using System.Linq;
 
 namespace BoulderNotes{
 public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
@@ -18,13 +19,22 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         myScroller.Delegate = this;        
     }
 
-    public void FetchData(IReadOnlyList<BNGym> list){
+    public void FetchData(IReadOnlyList<BNGym> list, SortToggle.SortType sortType){
         _data.Clear();
+        IEnumerable<BNGym> sorted = list;
+        if (sortType == SortToggle.SortType.Latest){
+            //sorted = list;
+        }else if (sortType == SortToggle.SortType.Name){
+            sorted = list.OrderBy(x => x.GetGymName());
+        }else if(sortType == SortToggle.SortType.More){
+            //sorted = list;
+        }
 
-        foreach(BNGym gym in list){
+        foreach(BNGym gym in sorted){
             GymScrollerData data = new GymScrollerData();
             data.gymName = gym.GetGymName();
             data.gymID = gym.GetID();
+            data.boardImagePath = gym.GetBoardImagePath();
             _data.Add(data);
         }
         _data.Add(new GymScrollerDataBase());

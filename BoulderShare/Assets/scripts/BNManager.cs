@@ -17,11 +17,17 @@ public class BNManager : SingletonMonoBehaviour<BNManager>
         cornerPanelStrokeSprites = new Sprite[cornerPanelStroke.Length];
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60; 
-        CanvasResolutionManager.Instance.Init();
-        BNGymDataCenter.Instance.Init();
-        BNScreens.Instance.Init();
+
+        StartCoroutine(Setup());
 
         //Addressables.LoadAssetsAsync<Sprite>(cornerPanelFill[0],OnLoadCornerPanel);
+    }
+
+    IEnumerator Setup(){
+        CanvasResolutionManager.Instance.Init();
+        BNGymDataCenter.Instance.Init();
+        yield return null;
+        BNScreens.Instance.Init();  
     }
 /*
     private void OnLoadCornerPanel(Sprite spr){

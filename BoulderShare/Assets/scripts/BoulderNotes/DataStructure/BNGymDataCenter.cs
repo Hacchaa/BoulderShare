@@ -17,6 +17,7 @@ namespace BoulderNotes{
         public const string FORMAT_ID = "yyyyMMddHHmmssffff";
         public const string FORMAT_TIME = "yyyyMMddHHmmssffff";
         public const string FORMAT_DATE = "yyyy年M月d日";
+        public const string FORMAT_DATE2 = "yyyy/MM/dd";
         public const string PREFIX_ID_GYM = "G";
         public const string PREFIX_ID_ROUTE = "R";
         //try
@@ -30,9 +31,11 @@ namespace BoulderNotes{
         private const string ES3_KEY_ROUTE = "BNRoute";
         private const string ES3_EXTENSION = ".es3";
         public const string WALLIMAGE_EXTENSION = ".png";
+        public const string BNGYM_BOARDIMAGE = "board.png";
         private const string ES3_FILE_GYM = "gym";
         private const string ES3_FILE_ROUTE = "route";
         private const string ES3_DIC_IMAGES = "images";
+
 
         private List<BNGym> gyms;
         private List<string> routeTags;
@@ -167,7 +170,7 @@ namespace BoulderNotes{
             return true;           
         }
 
-        public bool WriteGym(BNGym gym){
+        public bool WriteGym(BNGym gym, BNImage bnImage = null){
             if (gym == null){
                 return false;
             }
@@ -181,13 +184,18 @@ namespace BoulderNotes{
                 return false;
             }
 
-            gyms.Add(gym);
+            gyms.Insert(0,gym);
             //ES3に書き込み
             //gymID
             WriteGymIDs(ReadGymIDsFromCache());
             //gym
             string path = ES3_ROOTPATH + "/" + id + "/" + ES3_FILE_GYM + ES3_EXTENSION;
             ES3.Save<BNGym>(ES3_KEY_GYM, gym, path);
+
+            //画像の保存
+            if (bnImage != null){
+                SaveImage(gym, bnImage);
+            }
             return true;
         }
 /*
@@ -246,7 +254,7 @@ namespace BoulderNotes{
             return WriteRoute(route, ReadWall(wallID, gymID), ReadGym(gymID));            
         }*/
 
-        public bool ModifyGym(BNGym gym){
+        public bool ModifyGym(BNGym gym, BNImage bnImage = null){
             string id = gym.GetID();
             if (String.IsNullOrEmpty(id)){
                 return false;
@@ -268,12 +276,17 @@ namespace BoulderNotes{
             }
 
             gyms.Remove(target);
-            gyms.Add(gym);
+            gyms.Insert(0, gym);
   
             //ES3に上書き
             //gym
             string path = ES3_ROOTPATH + "/" + id + "/" + ES3_FILE_GYM + ES3_EXTENSION;
             ES3.Save<BNGym>(ES3_KEY_GYM, gym, path);
+
+            //画像の保存
+            if (bnImage != null){
+                SaveImage(gym, bnImage);
+            }
             return true;
         }
 
@@ -404,7 +417,14 @@ namespace BoulderNotes{
             ES3.SaveImage(wallImage.texture, path+wallImage.fileName);
     
         }
-
+        public void SaveImage(BNGym gym, BNImage bnImage){
+            if (string.IsNullOrEmpty(bnImage.fileName) || bnImage.texture == null){
+                return ;
+            }
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
+            ES3.SaveImage(bnImage.texture, path+bnImage.fileName);
+    
+        }
         public Sprite LoadWallImageByES3(BNGym gym, string fileName){
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
             Texture2D tex = ES3.LoadImage(path+fileName);
@@ -420,7 +440,10 @@ namespace BoulderNotes{
         }*/
 
         public string GetWallImagePath(BNGym gym){
-            return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
+            return GetWallImagePath(gym.GetID());
+        }
+        public string GetWallImagePath(String gymID){
+            return Application.persistentDataPath + "/" + ES3_ROOTPATH + "/" + gymID + "/" + ES3_DIC_IMAGES + "/";
         }
 
         public void LoadImageAsync(BNGym gym, string fileName, LoadImageDelegate del){

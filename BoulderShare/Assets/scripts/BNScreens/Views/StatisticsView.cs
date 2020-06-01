@@ -88,7 +88,7 @@ public class StatisticsView : BNScreen
             string lastTryID = "";
             foreach(BNRoute route in gym.GetRoutes()){
                 foreach(BNRecord record in route.GetRecords()){
-                    days.Add(record.GetDate());
+                    days.Add(record.GetDate2());
                     if (string.IsNullOrEmpty(lastTryID) || lastTryID.CompareTo(record.GetID()) < 0){
                         lastTryID = record.GetID();
                     }

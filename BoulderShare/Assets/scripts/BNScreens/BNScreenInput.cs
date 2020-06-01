@@ -7,6 +7,7 @@ public class BNScreenInput : BNScreen
 {
     [SerializeField] protected InputItemsView.TargetItem currentTargetItem;
     [SerializeField] protected WallTypeMap.Type wallType;
+    protected SortToggle.SortType sortType;
     protected BNGradeMap.Grade grade;
     [SerializeField] protected RTape tape;
     protected string inputedText;
@@ -17,6 +18,7 @@ public class BNScreenInput : BNScreen
         inputedText = "";
         wallType = WallTypeMap.Type.Slab;
         grade = BNGradeMap.Grade.None;
+        sortType = SortToggle.SortType.Latest;
     }
 
     public void SetSprite(Sprite spr){
@@ -32,6 +34,14 @@ public class BNScreenInput : BNScreen
 
     public WallTypeMap.Type GetWallType(){
         return wallType;
+    }
+
+    public void SetSortType(SortToggle.SortType t){
+        sortType = t;
+    }
+
+    public SortToggle.SortType GetSortType(){
+        return sortType;
     }
 
     public void SetGrade(BNGradeMap.Grade g){
@@ -82,6 +92,10 @@ public class BNScreenInput : BNScreen
 
     public void InputTexts(){
         currentTargetItem = InputItemsView.TargetItem.Texts;
+        ToInputItemsView();
+    }
+    public void InputSort(){
+        currentTargetItem = InputItemsView.TargetItem.Sort;
         ToInputItemsView();
     }
 

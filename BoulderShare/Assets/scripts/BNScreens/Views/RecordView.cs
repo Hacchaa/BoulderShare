@@ -42,7 +42,7 @@ public class RecordView : BNScreen
             if (record == null){
                 return ;
             }
-            dayText.text = record.GetDate();
+            dayText.text = record.GetDate2();
             tryNumberText.text = "" + record.GetTryNumber();
             completeRateText.text = record.GetCompleteRate() + "%";
             Addressables.LoadAssetsAsync<Sprite>(conditionRef[(int)record.GetCondition()], OnLoadSprite);

@@ -7,16 +7,18 @@ using AdvancedInputFieldPlugin;
 namespace BoulderNotes{
 public class InputItemsView: BNScreen
 {
-    public enum TargetItem{None, WallType, Grade, Texts, Tape, Image};
+    public enum TargetItem{None, WallType, Grade, Texts, Tape, Image, Sort};
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TargetItem currentTargetItem;
     private BNScreenInput screen;
 
     [SerializeField] private WallTypeToggleGroup wallTypeGroup;
     [SerializeField] private GradeToggleGroup gradeGroup;
+    [SerializeField] private SortToggleGroup sortToggleGroup;
     [SerializeField] private GameObject textObj;
     [SerializeField] private GameObject walltypeObj;
     [SerializeField] private GameObject gradeObj;
+    [SerializeField] private GameObject sortObj;
     [SerializeField] private AdvancedInputField advancedIF;
 
     public override void InitForFirstTransition(){
@@ -39,6 +41,10 @@ public class InputItemsView: BNScreen
                 }else if (currentTargetItem == TargetItem.Texts){
                     titleText.text = "テキスト";
                     advancedIF.Text = screen.GetText();
+                }else if (currentTargetItem == TargetItem.Sort){
+                    titleText.text = "";
+                    sortToggleGroup.Init(screen.GetSortType());
+
                 }
             }
         }
@@ -47,12 +53,15 @@ public class InputItemsView: BNScreen
         walltypeObj.SetActive(false);
         gradeObj.SetActive(false);
         textObj.SetActive(false);
+        sortObj.SetActive(false);
         if (currentTargetItem == TargetItem.WallType){
             walltypeObj.SetActive(true);
         }else if(currentTargetItem == TargetItem.Grade){
             gradeObj.SetActive(true);
         }else if (currentTargetItem == TargetItem.Texts){
             textObj.SetActive(true);
+        }else if (currentTargetItem == TargetItem.Sort){
+            sortObj.SetActive(true);
         }
     }
 
@@ -72,6 +81,8 @@ public class InputItemsView: BNScreen
                 screen.SetGrade(gradeGroup.GetGrade());
             }else if(currentTargetItem == TargetItem.Texts){
                 screen.SetText(advancedIF.Text);
+            }else if(currentTargetItem == TargetItem.Sort){
+                screen.SetSortType(sortToggleGroup.GetSortType());
             }
         }
 
