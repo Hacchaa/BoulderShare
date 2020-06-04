@@ -43,14 +43,10 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
             data.routeID = route.GetID();
             if (route.GetWallImageFileNames() != null && route.GetWallImageFileNames().Any()){
                 BNWallImageNames names = route.GetFirstWallImageFileNames();
-                if (!string.IsNullOrEmpty(names.editedFileName)){
-                    data.wallImagePath = names.editedFileName;
-                }else{
-                    data.wallImagePath = names.fileName;
-                }
+                data.wallImageNames = names;
             }
 
-            data.period = route.GetPeriod();
+            data.period = route.GetShortPeriod();
             data.grade = route.GetGrade();
             data.isFavorite = route.IsFavorite();
             data.isFinished = route.IsFinished();
@@ -138,8 +134,8 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
     public void ToRegisterView(){
         view.ToRegisterView();
     }
-    public void ToDisplayImageView(Sprite sprite){
-        view.SetSprite(sprite);
+    public void ToDisplayImageView(BNWallImageNames names){
+        (view.GetBelongingStack() as BNScreenStackWithTargetGym).SetTargetImageNames(names);
         view.ToDisplayImageView();
     }
 

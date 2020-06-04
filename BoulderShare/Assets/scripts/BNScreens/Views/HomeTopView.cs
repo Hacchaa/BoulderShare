@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace BoulderNotes{
 public class HomeTopView : BNScreenInput
 {
     [SerializeField] private GymScrollerController scroller;
+    [SerializeField] private TextMeshProUGUI sortText;
     public override void InitForFirstTransition(){
         scroller.Init();
         ClearFields();
@@ -17,6 +19,7 @@ public class HomeTopView : BNScreenInput
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             (belongingStack as BNScreenStackWithTargetGym).ClearGym();
         }
+        sortText.text = SortToggle.GetSortTypeName(sortType);
     }
     public void ToGymView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.GymRoutesView, BNScreens.TransitionType.Push);

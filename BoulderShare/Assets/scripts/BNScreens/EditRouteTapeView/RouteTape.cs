@@ -12,25 +12,33 @@ public class RouteTape : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private AssetReference firstSprite;
     [SerializeField] private Color firstColor;
+    private bool isDefault;
 
+    public bool IsDefault(){
+        return isDefault;
+    }
     public void LoadDefault(){
         //Debug.Log("first:"+firstSprite.ToString());
         Addressables.LoadAssetsAsync<Sprite>(firstSprite, OnLoad);
         text.text = "";
         img.color = firstColor;
         img.transform.localRotation = Quaternion.identity;
+        isDefault = true;
     }
     public void ChangeShape(Sprite sprite){
         img.sprite = sprite;
         img.transform.localRotation = Quaternion.identity;
+        isDefault = false;
     }
 
     public void ChangeColor(Color c){
         img.color = c;
+        isDefault = false;
     }
 
     public void ChangeText(string txt){
         text.text = txt;
+        isDefault = false;
     }
 
     public void AddRot(float angle){
@@ -48,6 +56,7 @@ public class RouteTape : MonoBehaviour
         text.text = t.tapeText;
         img.color = t.color;
         img.transform.localRotation = t.imageRot;
+        isDefault = false;
     }
 
     public RTape GetTape(){

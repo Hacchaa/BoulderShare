@@ -20,11 +20,11 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
 
     private string routeID;
     private OnButtonClickedDelegateWithString del;
-    private OnButtonClickedDelegateWithSprite onZoom;
+    private OnButtonClickedDelegateWithImageNames onZoom;
     private bool completedInit = false;
     [SerializeField] private Image maskImage;
-
-    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithSprite onZoomButtonClicked){
+    private BNWallImageNames imageNames;
+    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithImageNames onZoomButtonClicked){
         del = onButtonClicked;
         onZoom = onZoomButtonClicked;
         if(data.routeTape != null){
@@ -39,9 +39,15 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
 
         dateText.text = data.period;
         routeID = data.routeID;
-        if (!string.IsNullOrEmpty(data.wallImagePath)){
-            stack.LoadImageAsync(data.wallImagePath, FitImage);
-            zoomIcon.SetActive(true);
+        imageNames = data.wallImageNames;
+        if (imageNames != null){
+            if(!string.IsNullOrEmpty(imageNames.editedFileName)){
+                stack.LoadImageAsync(imageNames.editedFileName, FitImage);
+                zoomIcon.SetActive(true);
+            }else if(!string.IsNullOrEmpty(imageNames.fileName)){
+                stack.LoadImageAsync(imageNames.fileName, FitImage);
+                zoomIcon.SetActive(true); 
+            }       
         }else{
             FitImage(defaultSprite);
             zoomIcon.SetActive(false);
@@ -130,7 +136,8 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
     }
     public void OnZoomClicked(){
         if (onZoom != null){
-            onZoom(wallImage.sprite);
+            //TemporaryRepository_BNScreens.Instance.bNWallImageNames = imageNames;
+            onZoom(imageNames);
         }
     }
 }

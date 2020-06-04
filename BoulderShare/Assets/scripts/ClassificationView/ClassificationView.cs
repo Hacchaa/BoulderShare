@@ -24,6 +24,7 @@ namespace BoulderNotes{
             width = GetComponent<RectTransform>().rect.width;
             contentNum = contents.GetSize();
             contents.Init(width);            
+            OnActivateContentAction = null;
         }
 
         public void SetonActivateContentAction(Action action){

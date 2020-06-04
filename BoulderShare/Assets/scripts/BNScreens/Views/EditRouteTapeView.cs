@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
-
+using AdvancedInputFieldPlugin;
 namespace BoulderNotes{
 public class EditRouteTapeView: BNScreen
 {
@@ -16,9 +16,14 @@ public class EditRouteTapeView: BNScreen
     private BNScreenInput screen;
     [SerializeField] private InputItemsView.TargetItem currentTargetItem;
     private RouteTapeShape[] shapes;
-
+    [SerializeField] private RouteTapeShapeDefault shapeDefaultPrefab;
+    [SerializeField] private Color firstColor;
+    [SerializeField] private Sprite defaultSprite;
+    [SerializeField] private AdvancedInputField tapeTextIF;
+    private bool selectedDefault;
     public override void InitForFirstTransition(){
         classView.Init();
+        selectedDefault = true;
         if (shapes == null){
             foreach(Transform child in routeTapeRoot){
                 Destroy(child.gameObject);
@@ -27,8 +32,10 @@ public class EditRouteTapeView: BNScreen
 
             for(int i = 0 ; i < shapes.Length ; i++){
                 shapes[i] = Instantiate(shapePrefab, routeTapeRoot);
+            }         
 
-            }            
+            RouteTapeShapeDefault def = Instantiate<RouteTapeShapeDefault>(shapeDefaultPrefab, routeTapeRoot);
+            def.Init(this);
         }
 
 
@@ -68,27 +75,53 @@ public class EditRouteTapeView: BNScreen
         shapes[priority].Init(sprite, this);
     }
 
+    public void ChangeAsDefault(){
+        routeTape.LoadDefault();
+        tapeTextIF.Text = "";
+        selectedDefault = true;
+    }
+
     public void ChangeShape(Sprite sprite){
         routeTape.ChangeShape(sprite);
+        if (selectedDefault){
+            selectedDefault = false;
+            ChangeColor(firstColor);
+        }
+        selectedDefault = false;
     }
     public void ChangeColor(Color c){
-        routeTape.ChangeColor(c);
+        if (!selectedDefault){
+            routeTape.ChangeColor(c);
+        }
     }
     public void AddRot(){
-        routeTape.AddRot(45f);
+        if (!selectedDefault){
+            routeTape.AddRot(45f);
+        }
     }
 
     public void SubRot(){
-        routeTape.AddRot(-45f);
+        if (!selectedDefault){
+            routeTape.AddRot(-45f);
+        }
     }
     
     public void ChangeTapeText(string txt){
-        routeTape.ChangeText(txt);
+        if (!selectedDefault){
+            routeTape.ChangeText(txt);
+        }else{
+            tapeTextIF.Text = "";
+        }
     }
+
 
     public void Register(){
         if (screen != null && currentTargetItem == InputItemsView.TargetItem.Tape){
-            screen.SetTape(routeTape.GetTape());
+            if(routeTape.IsDefault()){
+                screen.SetTape(null);
+            }else{
+                screen.SetTape(routeTape.GetTape());
+            }
             ReverseTransition();
         }
     }

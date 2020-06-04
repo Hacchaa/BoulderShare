@@ -10,12 +10,13 @@ public class BNScreenStackWithTargetGym : BNTStack
     [SerializeField] private BNGym targetGym;
     [SerializeField] private BNRoute targetRoute;
     [SerializeField] private BNRecord targetRecord;
-
+    private BNWallImageNames targetImageNames;
     public override void Init(){
         base.Init();
         targetGym = null;
         targetRecord = null;
         targetRecord = null;
+        targetImageNames = null;
     }
     public BNGym GetTargetGym(){
         if (targetGym == null){
@@ -36,6 +37,10 @@ public class BNScreenStackWithTargetGym : BNTStack
             return null;
         }
         return targetRecord.Clone();
+    }
+
+    public BNWallImageNames GetTargetImageNames(){
+        return targetImageNames;
     }
 
     //gym,wall,routeは階層構造を維持する
@@ -69,6 +74,10 @@ public class BNScreenStackWithTargetGym : BNTStack
                 break;
             }
         }
+    }
+
+    public void SetTargetImageNames(BNWallImageNames names){
+        targetImageNames = names;
     }
 /*
     public Sprite LoadWallImage(string fileName){
@@ -145,8 +154,8 @@ public class BNScreenStackWithTargetGym : BNTStack
     }
 
     //targetgymを保存
-    public void ModifyGym(){
-        ModifyGym(targetGym);
+    public void ModifyGym(BNImage bnImage = null){
+        ModifyGym(targetGym, bnImage);
     }
 
     public void ModifyGym(BNGym gym, BNImage bnImage = null){

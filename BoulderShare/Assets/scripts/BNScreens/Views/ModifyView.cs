@@ -78,7 +78,8 @@ public class ModifyView: BNScreenInput
             gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
             finishedRouteToggle.SetIsOn(route.IsFinished());
             kanteToggle.SetIsOn(route.IsUsedKante());
-            if (route.GetTape() != null){
+            tape = route.GetTape();
+            if (tape != null){
                 SetTape(route.GetTape());
 
                 //updatescreenで行う
@@ -137,6 +138,8 @@ public class ModifyView: BNScreenInput
         gradeText.text = BNGradeMap.Entity.GetGradeName(grade);
         if (tape != null){
             routeTape.LoadTape(tape);
+        }else{
+            routeTape.LoadDefault();
         }
         if (inputedSprite != null){
             wallImage.sprite = inputedSprite;
@@ -180,9 +183,17 @@ public class ModifyView: BNScreenInput
                 names.fileName = wallImage.fileName;
                 route.AddWallImageFileName(names);
             }
-
             stack.ModifyRoute(route, wallImage);
 
+            if (inputedSprite != null){
+                //gymboardの設定
+                BNGym g = stack.GetTargetGym();
+                if (string.IsNullOrEmpty(g.GetBoardImagePath())){
+                    BNImage bni = new BNImage(inputedSprite.texture);
+                    g.SetBoardImagePath(bni.fileName);
+                    stack.ModifyGym(g, bni);  
+                }
+            }
             stack.ClearRecord();
             stack.StoreTargetRoute(route.GetID());
         }

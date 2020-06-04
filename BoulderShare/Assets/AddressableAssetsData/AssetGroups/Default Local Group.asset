@@ -119,8 +119,7 @@ MonoBehaviour:
   - m_GUID: 32c419a8895f09d4b823998b639bf7c1
     m_Address: noMark
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - HoldMarkTexture
+    m_SerializedLabels: []
     m_mainAssetType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   - m_GUID: 33fb1f283be5ae44d87c5c0f806261d7

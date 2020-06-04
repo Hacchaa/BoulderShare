@@ -11,6 +11,7 @@ namespace BoulderNotes{
     public delegate void OnButtonClickedDelegateWithBNGym(BNGym gym);
     public delegate void OnButtonClickedDelegateWithBNRoute(BNRoute route);
     public delegate void OnButtonClickedDelegateWithBNRecord(BNRecord record);
+    public delegate void OnButtonClickedDelegateWithImageNames(BNWallImageNames names);
     
     public class BNDataStructure : MonoBehaviour
     {
@@ -105,6 +106,8 @@ namespace BoulderNotes{
             texture = tex;
         }
     }
+
+
 
     [Serializable]
     public class BNWallImageNames{
@@ -275,6 +278,20 @@ namespace BoulderNotes{
 
         public string GetPeriod(){
             return start + "～" + end;
+        }
+
+        public string GetShortPeriod(){
+            string sta, en = "";
+            if (string.IsNullOrEmpty(start)){
+                return "";
+            }
+
+            sta = DateTime.ParseExact(start, BNGymDataCenter.FORMAT_DATE, null).ToString(BNGymDataCenter.FORMAT_DATE2);
+
+            if (!string.IsNullOrEmpty(end)){
+                en = DateTime.ParseExact(end, BNGymDataCenter.FORMAT_DATE, null).ToString(BNGymDataCenter.FORMAT_DATE2);
+            }
+            return sta + "～" + en;
         }
 
         public void SetStart(DateTime t){

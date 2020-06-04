@@ -8,20 +8,59 @@ using System.IO;
 namespace BoulderNotes{
 public class DisplayImageView: BNScreen
 {
-    private BNScreenInput screenInput;
     [SerializeField] private MoveImageController controller;
-
+    private BNWallImageNames imageNames;
+    private bool showedEditedImage;
+    private BNScreenStackWithTargetGym stack;
+    [SerializeField] private Sprite[] wallChangeSprites;
+    [SerializeField] private Image wallChangeIcon;
     public override void InitForFirstTransition(){
-        screenInput = null;
-        if (belongingStack == null || !(belongingStack is BNScreenStackWithTargetGym)){
+        stack = belongingStack as BNScreenStackWithTargetGym;
+        if (stack == null){
             return ;
         }
-        BNScreen screen = (belongingStack as BNScreenStackWithTargetGym).GetPreviousScreen(1);
-        if (screen is BNScreenInput){
-            screenInput = screen as BNScreenInput;
-            controller.Init(screenInput.GetSprite());
+        
+        imageNames = stack.GetTargetImageNames();
+        if (imageNames != null){
+            if (!string.IsNullOrEmpty(imageNames.editedFileName)){
+                stack.LoadImageAsync(imageNames.editedFileName, OnLoad);
+                showedEditedImage = true;
+                wallChangeIcon.sprite = wallChangeSprites[1];
+            }else if (!string.IsNullOrEmpty(imageNames.fileName)){
+                stack.LoadImageAsync(imageNames.fileName, OnLoad);
+                showedEditedImage = false;
+                wallChangeIcon.sprite = wallChangeSprites[0];
+            }
         }
+/*
+        if (TemporaryRepository_BNScreens.Instance.bNWallImageNames != null){
+            imageNames = TemporaryRepository_BNScreens.Instance.bNWallImageNames;
 
+            if (!string.IsNullOrEmpty(imageNames.editedFileName)){
+                showedEditedImage = true;
+
+            }
+            controller.Init();
+        }*/
+    }
+
+    public void ChangeWallImage(){
+        if (stack == null || imageNames == null){
+            return ;
+        }
+        if (!showedEditedImage && !string.IsNullOrEmpty(imageNames.editedFileName)){
+            stack.LoadImageAsync(imageNames.editedFileName, OnLoad);
+            showedEditedImage = true;
+            wallChangeIcon.sprite = wallChangeSprites[1];
+        }else if(showedEditedImage && !string.IsNullOrEmpty(imageNames.fileName)){
+            stack.LoadImageAsync(imageNames.fileName, OnLoad);
+            showedEditedImage = false;
+            wallChangeIcon.sprite = wallChangeSprites[0];
+        }
+    }
+
+    private void OnLoad(Sprite sprite){
+        controller.Init(sprite);
     }
 
     public override void UpdateScreen(){

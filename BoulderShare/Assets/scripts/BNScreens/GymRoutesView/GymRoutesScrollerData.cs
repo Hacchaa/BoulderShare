@@ -6,7 +6,8 @@ namespace BoulderNotes{
 public class GymRoutesScrollerData:GymRoutesScrollerDataBase
 {
     public string routeID;
-    public string wallImagePath;
+    //public string wallImagePath;
+    public BNWallImageNames wallImageNames;
     public bool isFavorite;
     public bool isFinished;
     public string period;

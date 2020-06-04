@@ -99,6 +99,8 @@ public class RegisterView: BNScreenInput
         Show();
         if (tape != null){
             routeTape.LoadTape(tape);
+        }else{
+            routeTape.LoadDefault();
         }
         if (inputedSprite != null){
             wallImage.sprite = inputedSprite;
