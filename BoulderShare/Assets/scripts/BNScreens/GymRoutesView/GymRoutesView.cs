@@ -1,9 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
-using System;
+using System.IO;
+using SA.iOS.UIKit;
+using SA.iOS.AVFoundation;
+using SA.iOS.Photos;
 
 namespace BoulderNotes{
 public class GymRoutesView : BNScreenInput
@@ -15,6 +20,8 @@ public class GymRoutesView : BNScreenInput
     [SerializeField] private bool showedWithTab ;
     private CVContent_CanTryRoutes[] cvScrollers;
     [SerializeField] private ClassificationView classificationView;
+    [SerializeField] private Sprite[] gradeSprites;
+    [SerializeField] private Image gradeIcon;
     public override void InitForFirstTransition(){
         if (!showedWithTab){
             scroller.Init();
@@ -46,7 +53,8 @@ public class GymRoutesView : BNScreenInput
                     name = gym.GetGymName();
                     scroller.SetFinishedRoutes(finishedController.IsFinished());
                     scroller.LookUp(scrollGrade.GetCurrentGrade());
-                    scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());                    
+                    scrollGrade.SetRouteNum(scroller.GetNumSplitedByGrade());   
+
                 }else{
                     int ind = classificationView.GetCurrentIndex();
                     ScrollGradeController gymScr = cvScrollers[ind].GetGradeScrollerController();
@@ -59,8 +67,29 @@ public class GymRoutesView : BNScreenInput
                 }
             }
             gymNameText.text = name;
+
+            //gradeIconの設定
+            if (gym != null && !string.IsNullOrEmpty(gym.GetGradeTableImagePath())){
+                gradeIcon.sprite = gradeSprites[0];
+            }else{
+                gradeIcon.sprite = gradeSprites[1];
+            }
         }
     }
+    public void PushGradeIconButton(){
+        BNScreenStackWithTargetGym stack = (belongingStack as BNScreenStackWithTargetGym);
+        BNGym gym = stack.GetTargetGym();
+
+        if (gym != null && !string.IsNullOrEmpty(gym.GetGradeTableImagePath())){
+            BNWallImageNames names = new BNWallImageNames();
+            names.fileName = gym.GetGradeTableImagePath();
+            stack.SetTargetImageNames(names);
+            ToDisplayImageView();
+        }else{
+            OpenMediaActiveSheet();
+        }
+    }
+
     public void LookUpRoutes(BNGradeMap.Grade grade){
         if (!showedWithTab){
             scroller.LookUp(grade);
@@ -97,6 +126,202 @@ public class GymRoutesView : BNScreenInput
     }
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();
+    }
+
+
+    public void OpenMediaActiveSheet(){
+		#if UNITY_IPHONE
+        //BNScreens.Instance.Interactive(false);
+		if (Application.platform != RuntimePlatform.IPhonePlayer){
+            #if UNITY_EDITOR
+			LoadImageForEditor();
+            #endif
+			return ;
+		}
+			ISN_UIAlertController alert = new ISN_UIAlertController("グレード表を選択", null, ISN_UIAlertControllerStyle.ActionSheet);
+			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, PickImageFromCamera);
+			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, PickImageFromLibrary);
+			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});
+
+			alert.AddAction(cameraAction);
+			alert.AddAction(libAction);
+			alert.AddAction(cancelAction);
+			alert.Present();
+		#endif
+	}
+
+	public void PickImageFromLibrary(){
+		#if UNITY_IPHONE
+            ISN_PHAuthorizationStatus s = ISN_PHPhotoLibrary.AuthorizationStatus;
+			if (s == ISN_PHAuthorizationStatus.Authorized){
+				OpenPhotoLibrary();
+				return ;
+			}
+			ISN_PHPhotoLibrary.RequestAuthorization((status) => {
+				if (status == ISN_PHAuthorizationStatus.Authorized){
+					OpenPhotoLibrary();
+				}else if (status == ISN_PHAuthorizationStatus.StatusDenied){
+					string title = "写真へのアクセスが拒否されています";
+					string message = "写真アクセスの権限を許可してください。";
+
+                    ISN_UIAlertController alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.ActionSheet);
+					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
+			        ISN_UIAlertAction setAction = new ISN_UIAlertAction("設定する", ISN_UIAlertActionStyle.Default, () => {});
+
+                    setAction.MakePreferred();
+                    alert.AddAction(setAction);
+                    alert.AddAction(okAction);
+                    alert.Present();
+                    //BNScreens.Instance.Interactive(true);
+				}else if (status == ISN_PHAuthorizationStatus.Restricted){
+					string title = "写真へのアクセスが制限されています";
+					string message = "";
+
+                    ISN_UIAlertController alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.ActionSheet);
+					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
+
+                    alert.AddAction(okAction);
+                    alert.Present();
+                    //BNScreens.Instance.Interactive(true);
+				}
+			});
+			return ;
+		#endif
+	}
+
+	public void PickImageFromCamera(){
+		#if UNITY_IPHONE
+            ISN_AVAuthorizationStatus s = ISN_AVCaptureDevice.GetAuthorizationStatus(ISN_AVMediaType.Video);
+			if (s == ISN_AVAuthorizationStatus.Authorized){
+				OpenCamera();
+				return ;
+			}
+			ISN_AVCaptureDevice.RequestAccess(ISN_AVMediaType.Video, (status) => {
+				if (status == ISN_AVAuthorizationStatus.Authorized){
+					OpenCamera();
+				}else if (status == ISN_AVAuthorizationStatus.Denied){
+					string title = "カメラへのアクセスが拒否されています";
+					string message = "カメラアクセスの権限を許可してください。";
+
+                    ISN_UIAlertController alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.ActionSheet);
+					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
+			        ISN_UIAlertAction setAction = new ISN_UIAlertAction("設定する", ISN_UIAlertActionStyle.Default, () => {});
+
+                    setAction.MakePreferred();
+                    alert.AddAction(setAction);
+                    alert.AddAction(okAction);
+                    alert.Present();
+                    //BNScreens.Instance.Interactive(true);
+				}else if (status == ISN_AVAuthorizationStatus.Restricted){
+					string title = "カメラへのアクセスが制限されています";
+					string message = "";
+
+                    ISN_UIAlertController alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.ActionSheet);
+					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
+
+                    alert.AddAction(okAction);
+                    alert.Present();
+                    //BNScreens.Instance.Interactive(true);
+				}
+			});
+			return ;
+		#endif
+	}
+
+	private void OpenPhotoLibrary(){
+        ISN_UIImagePickerController picker = new ISN_UIImagePickerController();
+        picker.SourceType = ISN_UIImagePickerControllerSourceType.Album;
+        picker.MediaTypes = new List<string>() { ISN_UIMediaType.Image};
+        picker.MaxImageSize = 1024;
+        picker.ImageCompressionFormat = ISN_UIImageCompressionFormat.JPEG;
+        picker.ImageCompressionRate = 0.8f;
+
+        picker.Present((result) => {
+            if (result.IsSucceeded) {
+                Debug.Log("IMAGE local path: " + result.ImageURL);
+                string fName = SaveGradeImage(result.Image);
+                BNWallImageNames names = new BNWallImageNames();
+                names.fileName = fName;
+                (belongingStack as BNScreenStackWithTargetGym).SetTargetImageNames(names);
+                ToDisplayImageView();
+            } else {
+                Debug.Log("Madia picker failed with reason: " + result.Error.Message);
+            }
+        });
+	}
+
+	private void OpenCamera(){
+        ISN_UIImagePickerController picker = new ISN_UIImagePickerController();
+        picker.SourceType = ISN_UIImagePickerControllerSourceType.Camera;
+        picker.CameraDevice = ISN_UIImagePickerControllerCameraDevice.Rear;
+        picker.MediaTypes = new List<string>() { ISN_UIMediaType.Image};
+        picker.MaxImageSize = 1024;
+        picker.ImageCompressionFormat = ISN_UIImageCompressionFormat.JPEG;
+        picker.ImageCompressionRate = 0.8f;
+
+        picker.Present((result) => {
+            if (result.IsSucceeded) {
+                Debug.Log("IMAGE local path: " + result.ImageURL);
+                string fName = SaveGradeImage(result.Image);
+                BNWallImageNames names = new BNWallImageNames();
+                names.fileName = fName;
+                (belongingStack as BNScreenStackWithTargetGym).SetTargetImageNames(names);
+                ToDisplayImageView();
+            } else {
+                Debug.Log("Madia picker failed with reason: " + result.Error.Message);
+            }
+        });
+	}
+    private void LoadImageForEditor(){
+        #if UNITY_EDITOR
+        var path = EditorUtility.OpenFilePanel("load image", "","png");
+        if (path.Length != 0) {
+            string destination = Application.persistentDataPath + "/" + "pickImage.png";
+            if (File.Exists(destination))
+                File.Delete(destination);
+            File.Copy(path, destination);
+            Debug.Log ("PickerOSX:" + destination);
+     
+            StartCoroutine(LoadImage(destination));
+        }      
+        #endif
+    }
+
+
+    private IEnumerator LoadImage(string path)
+    {
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.isNetworkError || uwr.isHttpError)
+            {
+                Debug.Log(uwr.error);
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+                //Debug.Log("texture:"+texture.width);
+                string fName = SaveGradeImage(texture);
+                BNWallImageNames names = new BNWallImageNames();
+                names.fileName = fName;
+                (belongingStack as BNScreenStackWithTargetGym).SetTargetImageNames(names);
+                ToDisplayImageView();
+                //ReverseTransition();
+            }
+        }
+    }
+
+    private string SaveGradeImage(Texture2D texture){
+        BNScreenStackWithTargetGym stack = belongingStack as BNScreenStackWithTargetGym;
+        BNGym gym = stack.GetTargetGym();
+        BNImage bni = new BNImage(texture, BNGymDataCenter.BNGYM_GRADETABLE);
+        gym.SetGradeTableImagePath(bni.fileName);
+        stack.ModifyGym(gym, bni);
+        stack.StoreTargetGym(gym.GetID());    
+
+        return bni.fileName;    
     }
 }
 }

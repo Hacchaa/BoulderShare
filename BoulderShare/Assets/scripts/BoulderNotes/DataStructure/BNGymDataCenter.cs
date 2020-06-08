@@ -33,6 +33,7 @@ namespace BoulderNotes{
         private const string ES3_EXTENSION = ".es3";
         public const string WALLIMAGE_EXTENSION = ".png";
         public const string BNGYM_BOARDIMAGE = "board.png";
+        public const string BNGYM_GRADETABLE = "gradeTable.png";
         private const string ES3_FILE_GYM = "gym";
         private const string ES3_FILE_ROUTE = "route";
         private const string ES3_DIC_IMAGES = "images";

@@ -45,6 +45,10 @@ namespace BoulderNotes{
             return gymBoardImagePath;
         }
 
+        public string GetGradeTableImagePath(){
+            return gradeTableImagePath;
+        }
+
         public void SetID(string str){
             id = str;
         }
@@ -55,6 +59,10 @@ namespace BoulderNotes{
 
         public void SetBoardImagePath(string path){
             gymBoardImagePath = path;
+        }
+
+        public void SetGradeTableImagePath(string path){
+            gradeTableImagePath = path;
         }
 
         public void SetRoutes(List<BNRoute> list){
@@ -101,8 +109,8 @@ namespace BoulderNotes{
         public string fileName;
         public Texture2D texture;
 
-        public BNImage(Texture2D tex){
-            fileName = BNGymDataCenter.BNGYM_BOARDIMAGE;
+        public BNImage(Texture2D tex, string name){
+            fileName = name;
             texture = tex;
         }
     }
