@@ -5,13 +5,12 @@ namespace SA.iOS.CoreLocation
     /// </summary>
     public static class ISN_CLLocationManager
     {
-
         /// <summary>
         /// A constant indicating that all movement should be reported.
         /// Use this constant to specify that any change in location should trigger a new location update.
         /// </summary>
-        public static double k_CLDistanceFilterNone = 0;
-        
+        public static readonly double k_CLDistanceFilterNone = 0;
+
         /// <summary>
         /// Returns a Boolean value indicating whether location services are enabled on the device.
         /// The user can enable or disable location services from the Settings app by toggling the Location Services switch in General.
@@ -23,11 +22,8 @@ namespace SA.iOS.CoreLocation
         /// If the user denies the use of location services and you attempt to start location updates anyway,
         /// the location manager reports an error to its delegate.
         /// </summary>
-        public static bool LocationServicesEnabled
-        {
-            get { return ISN_CLNativeAPI.LocationServicesEnabled(); }
-        }
-        
+        public static bool LocationServicesEnabled => ISN_CLNativeAPI.LocationServicesEnabled();
+
         /// <summary>
         /// Requests permission to use location services while the app is in the foreground.
         /// </summary>
@@ -108,7 +104,7 @@ namespace SA.iOS.CoreLocation
         {
             ISN_CLNativeAPI.StopUpdatingLocation();
         }
-        
+
         /// <summary>
         /// The accuracy of the location data.
         ///
@@ -155,19 +151,19 @@ namespace SA.iOS.CoreLocation
         /// </summary>
         public static bool PausesLocationUpdatesAutomatically
         {
-            get { return ISN_CLNativeAPI.PausesLocationUpdatesAutomatically; }
-            set { ISN_CLNativeAPI.PausesLocationUpdatesAutomatically = value; }
+            get => ISN_CLNativeAPI.PausesLocationUpdatesAutomatically;
+            set => ISN_CLNativeAPI.PausesLocationUpdatesAutomatically = value;
         }
-        
+
         /// <summary>
         /// Set location service delegate.
         /// </summary>
         /// <param name="delegate">The delegate object to receive update events.</param>
-        public static void SetDelegate(ISN_iCLLocationManagerDelegate @delegate) 
+        public static void SetDelegate(ISN_ICLLocationManagerDelegate @delegate)
         {
             ISN_CLNativeAPI.SetDelegate(@delegate);
         }
-        
+
         /// <summary>
         /// A Boolean value indicating whether the app should receive location updates when suspended.
         ///
@@ -177,19 +173,19 @@ namespace SA.iOS.CoreLocation
         /// you use this property to enable and disable background updates programmatically.
         /// For example, you might set this property to <c>true</c> only after the user enables features in your app
         /// where background updates are needed.
-        /// 
+        ///
         /// When the value of this property is <c>false</c>, apps receive location updates normally while running in either the foreground
         /// or background based on its current authorization.
         /// Updates stop only when the app is suspended, thereby preventing the app from being woken up to handle those events.
-        /// 
+        ///
         /// The default value of this property is <c>false</c>.
         /// Setting the value to <c>true</c> but omitting the UIBackgroundModes key and location value in your app’s Info.plist file
         /// is a programmer error.
         /// </summary>
         public static bool AllowsBackgroundLocationUpdates
         {
-            get { return ISN_CLNativeAPI.AllowsBackgroundLocationUpdates; }
-            set { ISN_CLNativeAPI.AllowsBackgroundLocationUpdates = value; }
+            get => ISN_CLNativeAPI.AllowsBackgroundLocationUpdates;
+            set => ISN_CLNativeAPI.AllowsBackgroundLocationUpdates = value;
         }
 
         /// <summary>
@@ -199,16 +195,16 @@ namespace SA.iOS.CoreLocation
         /// This distance is measured relative to the previously delivered location.
         /// Use the value <see cref="k_CLDistanceFilterNone"/> to be notified of all movements.
         /// The default value of this property is <see cref="k_CLDistanceFilterNone"/>.
-        /// 
+        ///
         /// This property is used only in conjunction with the standard location services
         /// and is not used when monitoring significant location changes.
         /// </summary>
         public static double DistanceFilter
         {
-            get { return ISN_CLNativeAPI.DistanceFilter; }
-            set { ISN_CLNativeAPI.DistanceFilter = value; }
+            get => ISN_CLNativeAPI.DistanceFilter;
+            set => ISN_CLNativeAPI.DistanceFilter = value;
         }
-        
+
         /// <summary>
         /// Returns the app’s authorization status for using location services.
         ///
@@ -217,9 +213,6 @@ namespace SA.iOS.CoreLocation
         /// be enabled for the system. A request for user authorization is displayed automatically
         /// when your app first attempts to use location services.
         /// </summary>
-        public static ISN_CLAuthorizationStatus AuthorizationStatus
-        {
-            get { return ISN_CLNativeAPI.AuthorizationStatus; }
-        }
+        public static ISN_CLAuthorizationStatus AuthorizationStatus => ISN_CLNativeAPI.AuthorizationStatus;
     }
 }

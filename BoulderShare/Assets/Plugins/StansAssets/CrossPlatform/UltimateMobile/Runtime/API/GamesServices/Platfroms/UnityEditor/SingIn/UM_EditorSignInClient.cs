@@ -3,11 +3,11 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.GameServices
 {
-    internal class UM_EditorSignInClient : UM_AbstractSignInClient, UM_iSignInClient
+    class UM_EditorSignInClient : UM_AbstractSignInClient, UM_iSignInClient
     {
         protected override void StartSingInFlow(Action<SA_Result> callback)
         {
-            UM_EditorAPIEmulator.WaitForNetwork(() => 
+            UM_EditorAPIEmulator.WaitForNetwork(() =>
             {
                 var playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedIn, UM_Settings.Instance.GSEditorPlayer);
                 UpdateSignedPlayer(playerInfo);
@@ -15,9 +15,9 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-        public void SingOut(Action<SA_Result> callback) 
+        public void SignOut(Action<SA_Result> callback)
         {
-            UM_EditorAPIEmulator.WaitForNetwork(() => 
+            UM_EditorAPIEmulator.WaitForNetwork(() =>
             {
                 var playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedOut, null);
                 UpdateSignedPlayer(playerInfo);

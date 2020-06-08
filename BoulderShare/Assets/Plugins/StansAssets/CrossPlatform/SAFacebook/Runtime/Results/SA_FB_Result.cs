@@ -5,49 +5,32 @@ using SA.Foundation.Templates;
 
 namespace SA.Facebook
 {
-
     public class SA_FB_Result : SA_Result
     {
-        private string m_rawResult = string.Empty;
+        readonly string m_rawResult = string.Empty;
 
-
-        public SA_FB_Result(IResult graphResult) {
+        public SA_FB_Result(IResult graphResult)
+        {
             m_error = GetResultError(graphResult);
-            if (m_error == null) {
-                m_rawResult = graphResult.RawResult;
-            }
+            if (m_error == null) m_rawResult = graphResult.RawResult;
         }
-
 
         /// <summary>
         /// Gets the raw result string.
         /// </summary>
-        public string RawResult {
-            get {
-                return m_rawResult;
-            }
-        }
-        
-        protected SA_Error GetResultError(IResult graphResult) {
-            if (graphResult == null) {
-                return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.NullResult); 
-            }
+        public string RawResult => m_rawResult;
 
-            if (graphResult.Cancelled) {
-                return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.UserCanceled);
-            }
+        protected SA_Error GetResultError(IResult graphResult)
+        {
+            if (graphResult == null) return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.NullResult);
 
-            if (!string.IsNullOrEmpty(graphResult.Error)) {
-                return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.APIError, graphResult.Error);  
-            }
+            if (graphResult.Cancelled) return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.UserCanceled);
 
-            if (string.IsNullOrEmpty(graphResult.RawResult)) {
-                return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.EmptyRawResult);
-            }
+            if (!string.IsNullOrEmpty(graphResult.Error)) return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.APIError, graphResult.Error);
+
+            if (string.IsNullOrEmpty(graphResult.RawResult)) return SA_FB_ErrorFactory.GenerateErrorWithCode(SA_FB_ErrorCode.EmptyRawResult);
 
             return null;
         }
-
-
     }
 }

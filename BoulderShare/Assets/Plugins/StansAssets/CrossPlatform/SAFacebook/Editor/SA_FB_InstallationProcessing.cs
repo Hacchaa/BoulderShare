@@ -1,6 +1,4 @@
 using UnityEditor;
-
-using SA.Android;
 using SA.Foundation.Editor;
 using SA.Foundation.Utility;
 using SA.Foundation.UtilitiesEditor;
@@ -10,10 +8,10 @@ namespace SA.Facebook
     [InitializeOnLoad]
     public class SA_FB_InstallationProcessing : SA_PluginInstallationProcessor<SA_FB_Settings>
     {
-        private const string FACEBOOK_LIB_NAME = "Facebook.Unity.dll";
-        private const string SA_FB_INSTALLED_DEFINE = "SA_FB_INSTALLED";
+        const string k_FacebookLibName = "Facebook.Unity.dll";
+        const string k_FbInstalledDefine = "SA_FB_INSTALLED";
 
-        static SA_FB_InstallationProcessing() 
+        static SA_FB_InstallationProcessing()
         {
             var installation = new SA_FB_InstallationProcessing();
             installation.Init();
@@ -23,7 +21,7 @@ namespace SA.Facebook
         //  SA_PluginInstallationProcessor
         //--------------------------------------
 
-        protected override void OnInstall() 
+        protected override void OnInstall()
         {
             // Let's check if we have FB SKD in the project.
             ProcessAssets();
@@ -33,68 +31,43 @@ namespace SA.Facebook
         //  Public Methods
         //--------------------------------------
 
-        public static void ProcessAssets() 
+        public static void ProcessAssets()
         {
             var projectLibs = SA_AssetDatabase.FindAssetsWithExtentions("Assets", ".dll");
-            foreach (var lib in projectLibs) 
-            {
-                ProcessAssetImport(lib);
-            }
+            foreach (var lib in projectLibs) ProcessAssetImport(lib);
         }
 
-        public static void ProcessAssetImport(string assetPath) 
+        public static void ProcessAssetImport(string assetPath)
         {
-            var isFBLibDetected = IsPathEqualsFacebookSDKName(assetPath);
-            if (isFBLibDetected) 
-            {
-                UpdateLibState(true);
-            }
+            var isFbLibDetected = IsPathEqualsFacebookSdkName(assetPath);
+            if (isFbLibDetected) UpdateLibState(true);
         }
 
-        public static void ProcessAssetDelete(string assetPath) 
+        public static void ProcessAssetDelete(string assetPath)
         {
-            var isFBLibDetected = IsPathEqualsFacebookSDKName(assetPath);
-            if (isFBLibDetected) 
-            {
-                UpdateLibState(false);
-            }
+            var isFbLibDetected = IsPathEqualsFacebookSdkName(assetPath);
+            if (isFbLibDetected) UpdateLibState(false);
         }
 
         //--------------------------------------
         //  Private Methods
         //--------------------------------------
 
-
-        private static bool IsPathEqualsFacebookSDKName(string assetPath) 
+        static bool IsPathEqualsFacebookSdkName(string assetPath)
         {
-            string fileName = SA_PathUtil.GetFileName(assetPath);
-            if (fileName.Equals(FACEBOOK_LIB_NAME)) 
-            {
-                return true;
-            } 
-            else 
-            {
-                return false;
-            }
-                
+            var fileName = SA_PathUtil.GetFileName(assetPath);
+            return fileName.Equals(k_FacebookLibName);
         }
 
-        private static void UpdateLibState(bool fbLibFound) 
+        static void UpdateLibState(bool fbLibFound)
         {
-            if (fbLibFound) 
+            if (fbLibFound)
             {
-                if (!SA_EditorDefines.HasCompileDefine(SA_FB_INSTALLED_DEFINE)) 
-                {
-                    SA_EditorDefines.AddCompileDefine(SA_FB_INSTALLED_DEFINE);
-                }
-
-            } 
-            else 
+                if (!SA_EditorDefines.HasCompileDefine(k_FbInstalledDefine)) SA_EditorDefines.AddCompileDefine(k_FbInstalledDefine);
+            }
+            else
             {
-                if (SA_EditorDefines.HasCompileDefine(SA_FB_INSTALLED_DEFINE)) 
-                {
-                    SA_EditorDefines.RemoveCompileDefine(SA_FB_INSTALLED_DEFINE);
-                }
+                if (SA_EditorDefines.HasCompileDefine(k_FbInstalledDefine)) SA_EditorDefines.RemoveCompileDefine(k_FbInstalledDefine);
             }
         }
     }

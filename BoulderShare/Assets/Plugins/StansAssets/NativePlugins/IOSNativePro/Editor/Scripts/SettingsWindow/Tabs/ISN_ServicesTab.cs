@@ -1,17 +1,15 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
 using SA.Foundation.Editor;
 
 namespace SA.iOS
 {
-    public class ISN_ServicesTab : SA_ServicesTab
+    class ISN_ServicesTab : SA_ServicesTab
     {
-        protected override void OnCreateServices() {
-            
+        protected override void OnCreateServices()
+        {
             RegisterService(CreateInstance<ISN_FoundationUI>());
             RegisterService(CreateInstance<ISN_UIKitUI>());
             RegisterService(CreateInstance<ISN_StoreKitUI>());

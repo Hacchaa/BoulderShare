@@ -6,24 +6,27 @@ using SA.Foundation.Templates;
 using SA.iOS.StoreKit;
 using UnityEngine;
 
- public class UM_TransactionObserverExample : UM_iTransactionObserver
- {
-    public event Action OnProductUnlock = delegate {  };
-    
-    private const string k_CoinsProductId = "coins.product.id";
-    private const string k_GoldStatusProductId = "gold.status.product.id";
-     
-    public void OnRestoreTransactionsComplete(SA_Result result) {
+public class UM_TransactionObserverExample : UM_iTransactionObserver
+{
+    public event Action OnProductUnlock = delegate { };
+
+    const string k_CoinsProductId = "coins.product.id";
+    const string k_GoldStatusProductId = "gold.status.product.id";
+
+    public void OnRestoreTransactionsComplete(SA_Result result)
+    {
         //Restore transaction flow was completed.
         //If you've set any flags before starting the Restoration flow, this is the perfect spot to drop it.
     }
 
-    public void OnTransactionUpdated(UM_iTransaction transaction) {
+    public void OnTransactionUpdated(UM_iTransaction transaction)
+    {
         //Transactions have been updated.
         //Let's act accordingly
         PrintTransactionInfo(transaction);
 
-        switch (transaction.State) {
+        switch (transaction.State)
+        {
             case UM_TransactionState.Restored:
             case UM_TransactionState.Purchased:
                 ProcessCompletedTransaction(transaction);
@@ -37,7 +40,7 @@ using UnityEngine;
                 //reflecting the parent’s decision or after the transaction times out. 
                 //Avoid blocking your UI or game play while waiting 
                 //for the transaction to be updated.
-                
+
                 //Android  - Transaction is pending and the player will be informed when it's done.
                 break;
             case UM_TransactionState.Failed:
@@ -49,7 +52,7 @@ using UnityEngine;
         }
     }
 
-    private void ProcessCompletedTransaction(UM_iTransaction transaction)
+    void ProcessCompletedTransaction(UM_iTransaction transaction)
     {
         //Our product has been successfully purchased or restored
         //So we need to provide content to our user depends on productIdentifier
@@ -58,28 +61,26 @@ using UnityEngine;
         //to make sure that purchase is valid, using server-side validation
 
         //let's see check the current platform
-        
-        switch(Application.platform) {
+
+        switch (Application.platform)
+        {
             case RuntimePlatform.Android:
                 //On android all the info we need is inside the ordinal android transaction
                 //So let's get one.
-                var an_purchase = (AN_Purchase) transaction.NativeTemplate;
+                var an_purchase = (AN_Purchase)transaction.NativeTemplate;
 
                 //Now you have asses to the all data from the original goal transaction object
                 //That you can send to your server side and validate the purchase.
                 Debug.Log(an_purchase.OriginalJson);
-         
+
                 break;
             case RuntimePlatform.IPhonePlayer:
                 //In case this transaction was restored, we might want to validate an original transaction.
-                var iosTransaction = (ISN_iSKPaymentTransaction) transaction.NativeTemplate;
-                if (transaction.State == UM_TransactionState.Restored)
-                {
-                    iosTransaction = iosTransaction.OriginalTransaction;
-                }
-                
+                var iosTransaction = (ISN_iSKPaymentTransaction)transaction.NativeTemplate;
+                if (transaction.State == UM_TransactionState.Restored) iosTransaction = iosTransaction.OriginalTransaction;
+
                 Debug.Log("iOS Transaction Id:" + iosTransaction.TransactionIdentifier);
-                
+
                 //For iOS we need to validate the AppStoreReceipt. 
                 //So we need to get it using iOS Native
                 var receipt = ISN_SKPaymentQueue.AppStoreReceipt;
@@ -92,12 +93,12 @@ using UnityEngine;
         }
 
         UnlockProduct(transaction);
+
         //Once product is successfully unlocked we can finish the transaction
         UM_InAppService.Client.FinishTransaction(transaction);
     }
 
-
-    private void PrintTransactionInfo(UM_iTransaction transaction) 
+    void PrintTransactionInfo(UM_iTransaction transaction)
     {
         Debug.Log("transaction.Id: " + transaction.Id);
         Debug.Log("transaction.State: " + transaction.State);
@@ -105,18 +106,18 @@ using UnityEngine;
         Debug.Log("transaction.Timestamp: " + transaction.Timestamp);
 
         var title = "Transaction Updated.";
-        var message = string.Format("ProductId: {0}. TransactionId: {1}. State: {2}", 
+        var message = string.Format("ProductId: {0}. TransactionId: {1}. State: {2}",
             transaction.ProductId,
             transaction.Id,
             transaction.State);
-        
+
         UM_DialogsUtility.ShowMessage(title, message);
     }
 
-    private void UnlockProduct(UM_iTransaction transaction) 
+    void UnlockProduct(UM_iTransaction transaction)
     {
         //Reward your used based on transaction.Id
-        switch (transaction.ProductId) 
+        switch (transaction.ProductId)
         {
             case k_CoinsProductId:
                 UM_RewardManager.AddCoins();
@@ -128,7 +129,7 @@ using UnityEngine;
                 Debug.LogError("Unknown product Id: " + transaction.ProductId);
                 break;
         }
-        
+
         OnProductUnlock.Invoke();
     }
 }

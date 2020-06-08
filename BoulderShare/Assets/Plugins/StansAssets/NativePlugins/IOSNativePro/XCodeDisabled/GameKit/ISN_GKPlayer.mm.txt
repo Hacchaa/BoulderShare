@@ -14,9 +14,9 @@ static NSMutableDictionary * s_playersCache = [[NSMutableDictionary alloc] init]
 -(id) initWithGKPlayer:(GKPlayer *) player {
     self = [super init];
     if(self) {
-        self.m_playerID      = player.playerID    == NULL ? @"" : player.playerID;
-        self.m_alias         = player.alias       == NULL ? @"" : player.alias;
-        self.m_displayName   = player.displayName == NULL ? @"" : player.displayName;
+        self.m_PlayerId      = player.playerID    == NULL ? @"" : player.playerID;
+        self.m_Alias         = player.alias       == NULL ? @"" : player.alias;
+        self.m_DisplayName   = player.displayName == NULL ? @"" : player.displayName;
     }
     return self;
 }
@@ -64,7 +64,7 @@ extern "C" {
             
             ISN_GKLocalPlayerImageLoadResult* result;
             if(error == nil) {
-                result.m_base64Image = ISN_ConvertImageToBase64(photo);
+                result.m_ImageBase64 = ISN_ConvertImageToBase64(photo);
             } else {
                 result = [[ISN_GKLocalPlayerImageLoadResult alloc] initWithNSError:error];
             }

@@ -5,31 +5,26 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class UM_PurchaseButton : MonoBehaviour
 {
-    [SerializeField] 
-    private string m_ProductId = string.Empty;
-    private Button m_Button;
+    [SerializeField]
+    string m_ProductId = string.Empty;
+    Button m_Button;
 
-    private void Awake()
+    void Awake()
     {
         UpdateButtonView();
     }
 
     public Button Button
     {
-        get {
-            if (m_Button == null)
-            {
-                m_Button = GetComponent<Button>();
-            }
+        get
+        {
+            if (m_Button == null) m_Button = GetComponent<Button>();
 
             return m_Button;
         }
     }
-    
-    public string ProductId
-    {
-        get { return m_ProductId; }
-    }
+
+    public string ProductId => m_ProductId;
 
     public void UpdateButtonView()
     {
@@ -39,7 +34,7 @@ public class UM_PurchaseButton : MonoBehaviour
         if (product != null)
         {
             m_Button.interactable = true;
-            buttonLabel.text = product.Title + " - " + product.Price + "(" +  product.PriceCurrencyCode + ")";
+            buttonLabel.text = product.Title + " - " + product.Price + "(" + product.PriceCurrencyCode + ")";
         }
         else
         {

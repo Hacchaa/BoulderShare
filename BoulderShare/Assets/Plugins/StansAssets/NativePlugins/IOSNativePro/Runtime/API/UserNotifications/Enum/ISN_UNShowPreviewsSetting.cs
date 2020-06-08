@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.UserNotifications
 {
     /// <summary>
     /// Constants indicating the types of alerts that can be displayed to the user.
     /// </summary>
-    public enum ISN_UNShowPreviewsSetting 
+    public enum ISN_UNShowPreviewsSetting
     {
-        // Notification previews are always shown.
+        /// <summary>
+        /// Notification previews are always shown.
+        /// </summary>
         Always,
 
-        // Notifications previews are only shown when authenticated.
-       WhenAuthenticated,
+        /// <summary>
+        /// Notifications previews are only shown when authenticated.
+        /// </summary>
+        WhenAuthenticated,
 
-        // Notifications previews are never shown.
-        Never
+        /// <summary>
+        /// Notifications previews are never shown.
+        /// </summary>
+        Never,
     }
 }

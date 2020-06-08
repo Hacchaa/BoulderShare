@@ -6,10 +6,10 @@
 
 -(AVPlayer*) toAVPlayer {
     AVPlayer* player;
-    NSURL* ulr = [self.m_url toNSURL];
+    NSURL* ulr = [self.m_Url toNSURL];
     player = [AVPlayer playerWithURL:ulr];
     
-    player.volume = self.m_volume;
+    player.volume = self.m_Volume;
     
     return  player;
 }

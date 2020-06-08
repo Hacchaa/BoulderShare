@@ -6,77 +6,78 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.GameServices
 {
-    internal class UM_IOSLeaderboardsClient : UM_AbstractLeaderboardsClient, UM_iLeaderboardsClient
+    class UM_IOSLeaderboardsClient : UM_AbstractLeaderboardsClient, UM_iLeaderboardsClient
     {
-        public void ShowUI(Action<SA_Result> callback) 
+        public void ShowUI(Action<SA_Result> callback)
         {
             var viewController = new ISN_GKGameCenterViewController();
             viewController.ViewState = ISN_GKGameCenterViewControllerState.Leaderboards;
-            viewController.Show(() => 
+            viewController.Show(() =>
             {
                 callback.Invoke(new SA_Result());
             });
         }
 
-        public void ShowUI(string leaderboardId, Action<SA_Result> callback) 
+        public void ShowUI(string leaderboardId, Action<SA_Result> callback)
         {
             ShowUI(leaderboardId, UM_LeaderboardTimeSpan.AllTime, callback);
         }
 
-        public void ShowUI(string leaderboardId, UM_LeaderboardTimeSpan timeSpan, Action<SA_Result> callback) 
+        public void ShowUI(string leaderboardId, UM_LeaderboardTimeSpan timeSpan, Action<SA_Result> callback)
         {
             var viewController = new ISN_GKGameCenterViewController();
             viewController.ViewState = ISN_GKGameCenterViewControllerState.Leaderboards;
             viewController.LeaderboardIdentifier = leaderboardId;
-            
             var scope = ToIOSSpan(timeSpan);
             viewController.LeaderboardTimeScope = scope;
-            viewController.Show(() => 
+            viewController.Show(() =>
             {
                 callback.Invoke(new SA_Result());
             });
         }
-        
-        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback) 
+
+        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback)
         {
             var scoreReporter = new ISN_GKScore(leaderboardId);
             scoreReporter.Value = score;
             scoreReporter.Context = context;
-
-            scoreReporter.Report(result => 
+            scoreReporter.Report(result =>
             {
                 ReportScoreSubmited(leaderboardId, score, result);
                 callback.Invoke(result);
             });
         }
-        
-        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback) 
+
+        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback)
         {
-            ISN_GKLeaderboard.LoadLeaderboards(result => 
+            ISN_GKLeaderboard.LoadLeaderboards(result =>
             {
                 UM_LoadLeaderboardsMetaResult um_result;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var um_leaderboards = new List<UM_iLeaderboard>();
-                    foreach (var leaderboards in result.Leaderboards) 
+                    foreach (var leaderboards in result.Leaderboards)
                     {
                         var um_leaderboardMeta = new UM_LeaderboardMeta(leaderboards.Identifier, leaderboards.Title);
                         um_leaderboards.Add(um_leaderboardMeta);
                     }
+
                     um_result = new UM_LoadLeaderboardsMetaResult(um_leaderboards);
-                } 
-                else 
+                }
+                else
                 {
                     um_result = new UM_LoadLeaderboardsMetaResult(result.Error);
                 }
+
                 callback.Invoke(um_result);
             });
         }
 
-        private ISN_GKLeaderboardPlayerScope ToIOSCollection(UM_LeaderboardCollection collection)
+        ISN_GKLeaderboardPlayerScope ToIOSCollection(UM_LeaderboardCollection collection)
         {
             var isn_collection = ISN_GKLeaderboardPlayerScope.Global;
-            switch (collection) {
+            switch (collection)
+            {
                 case UM_LeaderboardCollection.Public:
                     isn_collection = ISN_GKLeaderboardPlayerScope.Global;
                     break;
@@ -87,11 +88,12 @@ namespace SA.CrossPlatform.GameServices
 
             return isn_collection;
         }
-        
-        private ISN_GKLeaderboardTimeScope ToIOSSpan(UM_LeaderboardTimeSpan span)
+
+        ISN_GKLeaderboardTimeScope ToIOSSpan(UM_LeaderboardTimeSpan span)
         {
             var isn_timeSpan = ISN_GKLeaderboardTimeScope.AllTime;
-            switch (span) {
+            switch (span)
+            {
                 case UM_LeaderboardTimeSpan.AllTime:
                     isn_timeSpan = ISN_GKLeaderboardTimeScope.AllTime;
                     break;
@@ -110,24 +112,25 @@ namespace SA.CrossPlatform.GameServices
         {
             var leaderboardRequest = new ISN_GKLeaderboard();
             leaderboardRequest.Identifier = leaderboardId;
-
             var isn_timeSpan = ToIOSSpan(span);
             var isn_collection = ToIOSCollection(collection);
-            
             leaderboardRequest.PlayerScope = isn_collection;
             leaderboardRequest.TimeScope = isn_timeSpan;
             leaderboardRequest.Range = new ISN_NSRange(1, 1);
-            leaderboardRequest.LoadScores(result => {
-
+            leaderboardRequest.LoadScores(result =>
+            {
                 UM_ScoreLoadResult um_result;
-                if (result.IsSucceeded) {
+                if (result.IsSucceeded)
+                {
                     var score = new UM_Score(leaderboardRequest.LocalPlayerScore.Value,
                         leaderboardRequest.LocalPlayerScore.Rank,
                         (int)leaderboardRequest.LocalPlayerScore.Context,
-                        leaderboardRequest.LocalPlayerScore.DateUnix);
-
+                        leaderboardRequest.LocalPlayerScore.DateUnix
+                    );
                     um_result = new UM_ScoreLoadResult(score);
-                } else {
+                }
+                else
+                {
                     um_result = new UM_ScoreLoadResult(result.Error);
                 }
 

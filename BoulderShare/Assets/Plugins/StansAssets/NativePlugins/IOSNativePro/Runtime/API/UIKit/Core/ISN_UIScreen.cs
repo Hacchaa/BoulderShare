@@ -1,4 +1,3 @@
-using SA.iOS.UIKit.Internal;
 using SA.iOS.Utilities;
 
 namespace SA.iOS.UIKit
@@ -8,11 +7,10 @@ namespace SA.iOS.UIKit
     /// </summary>
     public class ISN_UIScreen : ISN_NativeObject, ISN_UITraitEnvironment
     {
-        private static ISN_UIScreen s_MainScreen;
+        static ISN_UIScreen s_MainScreen;
 
-        internal ISN_UIScreen(ulong hash) : base(hash)
-        {
-        }
+        internal ISN_UIScreen(ulong hash)
+            : base(hash) { }
 
         /// <summary>
         /// Returns the screen object representing the device’s screen.
@@ -23,7 +21,7 @@ namespace SA.iOS.UIKit
             {
                 if (s_MainScreen == null)
                 {
-                    var hash = ISN_UILib.API.UIScreen_MainScreen();
+                    var hash = ISN_UILib.Api.UIScreen_MainScreen();
                     s_MainScreen = new ISN_UIScreen(hash);
                 }
 
@@ -38,7 +36,7 @@ namespace SA.iOS.UIKit
         {
             get
             {
-                var hash = ISN_UILib.API.UIScreen_TraitCollection(NativeHashCode);
+                var hash = ISN_UILib.Api.UIScreen_TraitCollection(NativeHashCode);
                 return new ISN_UITraitCollection(hash);
             }
         }

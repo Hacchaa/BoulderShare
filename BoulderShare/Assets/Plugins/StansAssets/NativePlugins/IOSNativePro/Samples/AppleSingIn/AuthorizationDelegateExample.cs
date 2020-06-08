@@ -12,10 +12,10 @@ namespace SA.iOS.Examples
             Debug.Log("credential.User: " + credential.User);
             Debug.Log("credential.Email: " + credential.Email);
             Debug.Log("credential.State: " + credential.State);
-            
+
             Debug.Log("credential.AuthorizationCode: " + credential.AuthorizationCode);
             Debug.Log("credential.IdentityToken: " + credential.IdentityToken);
-            
+
             Debug.Log("credential.FullName.Nickname: " + credential.FullName.Nickname);
             Debug.Log("credential.FullName.FamilyName: " + credential.FullName.FamilyName);
             Debug.Log("credential.FullName.GivenName: " + credential.FullName.GivenName);

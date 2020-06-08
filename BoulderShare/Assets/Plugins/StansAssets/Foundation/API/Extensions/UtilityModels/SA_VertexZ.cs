@@ -1,7 +1,6 @@
-
-public enum SA_VertexZ  {
-	Front,
-	Back,
-	Center
+public enum SA_VertexZ
+{
+    Front,
+    Back,
+    Center
 }
-

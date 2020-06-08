@@ -31,11 +31,11 @@
 
 @implementation ISN_SKProductSubscriptionPeriod
 -(id) init { return self = [super init]; }
--(id) initWithSKProductSubscriptionPeriod:(SKProductSubscriptionPeriod *) productSubscriptionPeriod {
+-(id) initWithSKProductSubscriptionPeriod:(SKProductSubscriptionPeriod *) productSubscriptionPeriod  API_AVAILABLE(ios(11.2)){
     self = [super init];
     if(self) {
-        self.m_numberOfUnits = productSubscriptionPeriod.numberOfUnits;
-        self.m_unit = productSubscriptionPeriod.unit;
+        self.m_NumberOfUnits = productSubscriptionPeriod.numberOfUnits;
+        self.m_Unit = productSubscriptionPeriod.unit;
     }
     return self;
 }
@@ -44,20 +44,20 @@
 
 @implementation ISN_SKProductDiscount
 -(id) init { return self = [super init]; }
--(id) initWithSKProductDiscount:(SKProductDiscount *) productDiscount {
+-(id) initWithSKProductDiscount:(SKProductDiscount *) productDiscount  API_AVAILABLE(ios(11.2)){
     self = [super init];
     if(self) {
-        self.m_price         = productDiscount.price   == NULL ? 0   : productDiscount.price;
+        self.m_Price         = productDiscount.price   == NULL ? 0   : productDiscount.price;
         
-        self.m_priceLocale  = [[ISN_NSLocale alloc] initWithNSLocale:productDiscount.priceLocale];
-        self.m_paymentMode   = productDiscount.paymentMode;
-        self.m_numberOfUnits = productDiscount.numberOfPeriods;
-        self.m_localizedPrice = productDiscount.localizedPrice;
+        self.m_PriceLocale  = [[ISN_NSLocale alloc] initWithNSLocale:productDiscount.priceLocale];
+        self.m_PaymentMode   = productDiscount.paymentMode;
+        self.m_NumberOfUnits = productDiscount.numberOfPeriods;
+        self.m_LocalizedPrice = productDiscount.localizedPrice;
         
         
         //introductoryPrice' is only available on iOS 11.2 or newer
         if(productDiscount.subscriptionPeriod != NULL) {
-            self.m_subscriptionPeriod = [[ISN_SKProductSubscriptionPeriod alloc] initWithSKProductSubscriptionPeriod:productDiscount.subscriptionPeriod];
+            self.m_SubscriptionPeriod = [[ISN_SKProductSubscriptionPeriod alloc] initWithSKProductSubscriptionPeriod:productDiscount.subscriptionPeriod];
         }
     }
     return self;
@@ -70,18 +70,18 @@
 -(id) initWithSKProduct:(SKProduct *) product {
     self = [super init];
     if(self) {
-        self.m_productIdentifier    = product.productIdentifier;
-        self.m_localizedDescription = product.localizedDescription == NULL ? @"" : product.localizedDescription;
-        self.m_localizedTitle       = product.localizedTitle       == NULL ? @"" : product.localizedTitle;
-        self.m_price                = product.price                == NULL ? 0   : product.price;
+        self.m_ProductIdentifier    = product.productIdentifier;
+        self.m_LocalizedDescription = product.localizedDescription == NULL ? @"" : product.localizedDescription;
+        self.m_LocalizedTitle       = product.localizedTitle       == NULL ? @"" : product.localizedTitle;
+        self.m_Price                = product.price                == NULL ? 0   : product.price;
         
-        self.m_priceLocale = [[ISN_NSLocale alloc] initWithNSLocale:product.priceLocale];
-        self.m_localizedPrice       = product.localizedPrice;
+        self.m_PriceLocale = [[ISN_NSLocale alloc] initWithNSLocale:product.priceLocale];
+        self.m_LocalizedPrice       = product.localizedPrice;
         
         //introductoryPrice' is only available on iOS 11.2 or newer
         if (@available(iOS 11.2, *)) {
             if(product.introductoryPrice != NULL) {
-                self.m_introductoryPrice = [[ISN_SKProductDiscount alloc] initWithSKProductDiscount:product.introductoryPrice];
+                self.m_IntroductoryPrice = [[ISN_SKProductDiscount alloc] initWithSKProductDiscount:product.introductoryPrice];
             }
         } else {
             // Do nothing  on earlier versions
@@ -90,7 +90,7 @@
         //subscriptionPeriod' is only available on iOS 11.2 or newer
         if (@available(iOS 11.2, *)) {
             if(product.subscriptionPeriod != NULL) {
-                self.m_subscriptionPeriod = [[ISN_SKProductSubscriptionPeriod alloc] initWithSKProductSubscriptionPeriod:product.subscriptionPeriod];
+                self.m_SubscriptionPeriod = [[ISN_SKProductSubscriptionPeriod alloc] initWithSKProductSubscriptionPeriod:product.subscriptionPeriod];
             }
         } else {
             // Do nothing  on earlier versions
@@ -116,25 +116,25 @@
             self.m_originalTransaction = [[ISN_SKPaymentTransaction alloc] initWithSKPaymentTransaction:transaction.originalTransaction];
         }
         
-        self.m_state = transaction.transactionState;
-        self.m_transactionIdentifier = transaction.transactionIdentifier == NULL ? @"" : transaction.transactionIdentifier;
-        self.m_productIdentifier = transaction.payment == NULL || transaction.payment.productIdentifier == NULL ? @"" : transaction.payment.productIdentifier;
+        self.m_State = transaction.transactionState;
+        self.m_TransactionIdentifier = transaction.transactionIdentifier == NULL ? @"" : transaction.transactionIdentifier;
+        self.m_ProductIdentifier = transaction.payment == NULL || transaction.payment.productIdentifier == NULL ? @"" : transaction.payment.productIdentifier;
         
         if(transaction.transactionDate != NULL) {
             NSDate * myDate = [[NSDate alloc] init];
             NSTimeZone *zone = [NSTimeZone systemTimeZone];
             NSInteger interval = [zone secondsFromGMTForDate:transaction.transactionDate];
             myDate = [myDate dateByAddingTimeInterval:interval];
-            self.m_unixDate = [myDate timeIntervalSince1970];
+            self.m_UnixDate = [myDate timeIntervalSince1970];
         } else {
-            self.m_unixDate = 0;
+            self.m_UnixDate = 0;
         }
     }
     return self;
 }
 @end
 
-@implementation SA_PluginSettingsWindowStylesitResult
+@implementation ISN_SKInitResult
 -(id) init { return self = [super init]; }
 -(id) initWithSKProductsRespons:(SKProductsResponse*) response {
     self = [super init];
@@ -145,15 +145,15 @@
             [productsArray addObject:responseProduct];
         }
         
-        self.m_products = productsArray;
-        self.m_invalidProductIdentifiers = response.invalidProductIdentifiers;
+        self.m_Products = productsArray;
+        self.m_InvalidProductIdentifiers = response.invalidProductIdentifiers;
     }
     return  self;
 }
 @end
 
 
-@implementation SA_PluginSettingsWindowStylesitRequest
+@implementation ISN_LoadStoreRequest
 -(id) init {  return self = [super init]; }
 @end
 

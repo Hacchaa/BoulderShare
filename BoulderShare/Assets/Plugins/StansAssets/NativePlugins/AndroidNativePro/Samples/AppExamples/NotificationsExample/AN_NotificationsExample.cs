@@ -1,38 +1,40 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-
 using SA.Android.App;
 using SA.Foundation.Utility;
 
-public class AN_NotificationsExample : MonoBehaviour {
+public class AN_NotificationsExample : MonoBehaviour
+{
+    [SerializeField]
+    Button m_simple = null;
+    [SerializeField]
+    Button m_withLargeIcon = null;
+    [SerializeField]
+    Button m_closeApp = null;
 
-    [SerializeField] Button m_simple = null;
-    [SerializeField] Button m_withLargeIcon = null;
-    [SerializeField] Button m_closeApp = null;
-
-
-    private void Awake() {
-
-        if(AN_NotificationManager.LastOpenedNotificationRequest != null) {
-            Debug.Log("Looks like the app was launched from notifications request: " 
+    void Awake()
+    {
+        if (AN_NotificationManager.LastOpenedNotificationRequest != null)
+            Debug.Log("Looks like the app was launched from notifications request: "
                 + JsonUtility.ToJson(AN_NotificationManager.LastOpenedNotificationRequest));
-        }
 
-        AN_NotificationManager.OnNotificationClick.AddSafeListener(this, (request) => {
+        AN_NotificationManager.OnNotificationClick.AddSafeListener(this, (request) =>
+        {
             Debug.Log("request.Identifier: " + request.Identifier);
             Debug.Log("User has opened the local notification request with info: " + JsonUtility.ToJson(request));
         });
 
-        AN_NotificationManager.OnNotificationReceived.AddSafeListener(this, (request) => {
+        AN_NotificationManager.OnNotificationReceived.AddSafeListener(this, (request) =>
+        {
             Debug.Log("request.Identifier: " + request.Identifier);
             Debug.Log("notification request received with info: " + JsonUtility.ToJson(request));
         });
 
-
-        m_withLargeIcon.onClick.AddListener(() => {
-
-            SA_ScreenUtil.TakeScreenshot(256, (screenshot) => {
+        m_withLargeIcon.onClick.AddListener(() =>
+        {
+            SA_ScreenUtil.TakeScreenshot(256, (screenshot) =>
+            {
                 var builder = new AN_NotificationCompat.Builder();
                 builder.SetContentText("Text");
                 builder.SetContentTitle("Title");
@@ -50,8 +52,8 @@ public class AN_NotificationsExample : MonoBehaviour {
             });
         });
 
-
-        m_simple.onClick.AddListener(() => {
+        m_simple.onClick.AddListener(() =>
+        {
             var builder = new AN_NotificationCompat.Builder();
             builder.SetContentText("Text 2");
             builder.SetContentTitle("Title 2");
@@ -67,10 +69,9 @@ public class AN_NotificationsExample : MonoBehaviour {
             AN_NotificationManager.Schedule(request);
         });
 
-
-        m_closeApp.onClick.AddListener(() => {
+        m_closeApp.onClick.AddListener(() =>
+        {
             Application.Quit();
         });
-
     }
 }

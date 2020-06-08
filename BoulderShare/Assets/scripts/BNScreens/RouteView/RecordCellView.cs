@@ -18,7 +18,7 @@ public class RecordCellView : EnhancedScrollerCellView
     public TextMeshProUGUI commentText;
     public Image condition;
     public BNRecord record;
-    public string date;
+    public TextMeshProUGUI timeText;
     public OnButtonClickedDelegateWithBNRecord clickDel;
 
     public void SetData(RecordScrollerData data){
@@ -38,7 +38,7 @@ public class RecordCellView : EnhancedScrollerCellView
         commentText.text = data.comment;
         Addressables.LoadAssetsAsync<Sprite>(data.conditionImageRef, OnLoadSprite);
         record = data.record;
-        date = data.date;
+        timeText.text = data.date;
     }
 
     private void OnLoadSprite(Sprite spr){

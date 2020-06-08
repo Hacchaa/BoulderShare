@@ -45,7 +45,7 @@ static UnityAction UIApplicationDelegateCallback;
 + (void) sendMessage: (const char* ) event withParams:(NSString*) params {
     ISN_UIApplicationEvents *m_event = [ISN_UIApplicationEvents new];
     [m_event init:[NSString stringWithUTF8String:event] data:params];
-    ISN_SendCallbackToUnity(UIApplicationDelegateCallback, [m_event toJSONString]);   
+    ISN_SendCallbackToUnity(UIApplicationDelegateCallback, [m_event toJSONString]);
 }
 
 //--------------------------------------
@@ -61,13 +61,13 @@ static UnityAction UIApplicationDelegateCallback;
 //--------------------------------------
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
+
     #if !TARGET_OS_TV
         #ifdef USER_NOTIFICATIONS_API_ENABLED
         [[ISN_UNUserNotificationCenter sharedInstance] addDelegate];
         #endif
     #endif
-    
+
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
@@ -79,10 +79,10 @@ static NSString* appOpenshortcutItem  = @"";
 
 #if !TARGET_OS_TV
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem  completionHandler:(void (^)(BOOL succeeded))completionHandler {
-    
+
     appOpenshortcutItem = [shortcutItem type];
     [ISN_UIApplicationDelegate sendMessage:"performActionForShortcutItem" withParams:appOpenshortcutItem];
-    
+
 }
 #endif
 
@@ -126,17 +126,17 @@ static NSString* appOpenshortcutItem  = @"";
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     ISN_UIRegisterRemoteNotificationsResult *result = [[ISN_UIRegisterRemoteNotificationsResult alloc] init];
-    
+
     if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13")) {
         NSLog(@"device token with iOS 13");
-        result.m_deviceTokenUTF8 = [self stringFromDeviceToken:deviceToken];
+        result.m_DeviceTokenUtf8 = [self stringFromDeviceToken:deviceToken];
     } else {
-        result.m_deviceTokenUTF8 = [[[[deviceToken description]
+        result.m_DeviceTokenUtf8 = [[[[deviceToken description]
           stringByReplacingOccurrencesOfString: @"<" withString: @""]
          stringByReplacingOccurrencesOfString: @">" withString: @""]
         stringByReplacingOccurrencesOfString: @" " withString: @""];
     }
-    
+
     [ISN_UIApplicationDelegate sendMessage:"RemoteNotificationsRegisterationResult" withParams:[result toJSONString]];
     try {
         [super application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
@@ -151,7 +151,6 @@ static NSString* appOpenshortcutItem  = @"";
         return nil;
     }
 
-    NSUInteger size = [deviceToken length] / sizeof(unsigned char);
     unsigned char* buffer = (unsigned char*) [deviceToken bytes];
     NSMutableString *hexString  = [NSMutableString stringWithCapacity:(length * 2)];
     for (int i = 0; i < length; ++i) {
@@ -168,7 +167,7 @@ static NSString* appOpenshortcutItem  = @"";
         [super application:application didFailToRegisterForRemoteNotificationsWithError:error];
     } catch (NSException *exception) {
         NSLog(@"UnityAppController:didFailToRegisterForRemoteNotificationsWithError crashed: %@", exception.reason);
-    }    
+    }
 }
 
 //--------------------------------------
@@ -182,7 +181,7 @@ static NSString* webpageURL  = @"";
         webpageURL = userActivity.webpageURL.absoluteString;
         [ISN_UIApplicationDelegate sendMessage:"continueUserActivity" withParams:webpageURL];
     }
-    
+
     return true;
 }
 
@@ -203,7 +202,7 @@ static NSString* appOpenUrl  = @"";
 - (BOOL)application:(UIApplication*)application openURL:(nonnull NSURL *)url options:(nonnull NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
       appOpenUrl = [url absoluteString];
      [ISN_UIApplicationDelegate sendMessage:"openURL" withParams:appOpenUrl];
-    
+
     @try {
         return [super application:application openURL:url options:options];
     }
@@ -225,40 +224,40 @@ IMPL_APP_CONTROLLER_SUBCLASS( ISN_UIApplicationDelegate )
 
 
 extern "C" {
-    
+
     void _ISN_AppDelegate_Subscribe(UnityAction callback) {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AppDelegate_Subscribe" data:""];
         UIApplicationDelegateCallback = callback;
     }
-    
-    
+
+
     char* _ISN_AppDelegate_GetAppOpenShortcutItem() {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AppDelegate_GetAppOpenShortcutItem" data:""];
 
         NSString *Data = [ISN_UIApplicationDelegate getAppOpenshortcutItem];
-        
+
         const char* string = [Data UTF8String];
         char* res = (char*)malloc(strlen(string) + 1);
         strcpy(res, string);
         return res;
     }
-    
+
     char* _ISN_AppDelegate_GetLaunchUniversalLink() {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AppDelegate_GetLaunchUniversalLink" data:""];
-        
+
         NSString *Data = [ISN_UIApplicationDelegate getLaunchUniversalLink];
-        
+
         const char* string = [Data UTF8String];
         char* res = (char*)malloc(strlen(string) + 1);
         strcpy(res, string);
         return res;
     }
-    
+
     char* _ISN_AppDelegate_GetLaunchURL() {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AppDelegate_GetLaunchURL" data:""];
-    
+
         NSString *Data = [ISN_UIApplicationDelegate getAppOpenUrl];
-        
+
         const char* string = [Data UTF8String];
         char* res = (char*)malloc(strlen(string) + 1);
         strcpy(res, string);

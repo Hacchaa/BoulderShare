@@ -4,62 +4,62 @@ using SA.Foundation.Templates;
 using UnityEngine;
 #if UNITY_IPHONE
 using System.Runtime.InteropServices;
+
 #endif
 
-namespace SA.iOS.EventKit.Internal 
-{ 
-    /// <summary> 
-    /// This is native api for getting data from EventKit native iOS 
-    /// </summary> 
-    internal class ISN_EventKitNativeAPI: ISN_Singleton<ISN_EventKitNativeAPI>, ISN_EventKitAPI 
+namespace SA.iOS.EventKit
+{
+    /// <summary>
+    /// This is native api for getting data from EventKit native iOS
+    /// </summary>
+    class ISN_EventKitNativeAPI : ISN_Singleton<ISN_EventKitNativeAPI>, ISN_EventKitAPI
     {
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
+        [DllImport("__Internal")]
+        static extern void _ISN_EventKitRequestAccess(IntPtr callback, string type);
 
-        #if UNITY_IPHONE && EVENT_KIT_ENABLED
-        [DllImport("__Internal")] private static extern void _ISN_EventKitRequestAccess(System.IntPtr callback, string type);
-        [DllImport("__Internal")] private static extern void _ISN_SaveEvent(System.IntPtr callback, string eventData, string alarmData, string recurrenceRuleData);
-        [DllImport("__Internal")] private static extern void _ISN_RemoveEvent(System.IntPtr callback, string identifier);
-        [DllImport("__Internal")] private static extern void _ISN_SaveReminder(System.IntPtr callback, string reminderData, string alarmData, string recurrenceRuleData);
-        [DllImport("__Internal")] private static extern void _ISN_RemoveReminder(System.IntPtr callback, string identifier);
-        #endif
+        [DllImport("__Internal")]
+        static extern void _ISN_SaveEvent(IntPtr callback, string eventData, string alarmData, string recurrenceRuleData);
 
+        [DllImport("__Internal")]
+        static extern void _ISN_RemoveEvent(IntPtr callback, string identifier);
+
+        [DllImport("__Internal")]
+        static extern void _ISN_SaveReminder(IntPtr callback, string reminderData, string alarmData, string recurrenceRuleData);
+
+        [DllImport("__Internal")]
+        static extern void _ISN_RemoveReminder(IntPtr callback, string identifier);
+#endif
 
         /// <summary>
         /// Request access to Event or Reminder data of EventKit by using EventStore
         /// </summary>
-        public void EventKitRequestAccess(Action<SA_Result> callback, ISN_EntityType entityType)
+        public void EventKitRequestAccess(Action<SA_Result> callback, ISN_EKEntityType ekEntityType)
         {
-            #if UNITY_IPHONE && EVENT_KIT_ENABLED
-            _ISN_EventKitRequestAccess(ISN_MonoPCallback.ActionToIntPtr<SA_Result> (callback), entityType.ToString());
-            #endif
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
+            _ISN_EventKitRequestAccess(ISN_MonoPCallback.ActionToIntPtr<SA_Result>(callback), ekEntityType.ToString());
+#endif
         }
 
         /// <summary>
         /// Create new Event though EventKit.
         /// <summary>
-        public void SaveEvent(Action<ISN_EventKitSaveResult> callback, ISN_EventKitDataRequest eventData, ISN_AlarmDataRequest alarmData, ISN_RecurrenceRuleRequest recurrenceRule)
+        public void SaveEvent(Action<ISN_EKSaveResult> callback, ISN_EKDataRequest eventData, ISN_EKAlarmDataRequest alarmData, ISN_EKRecurrenceRuleRequest recurrenceRule)
         {
-            #if UNITY_IPHONE && EVENT_KIT_ENABLED
-            string data = JsonUtility.ToJson(eventData);
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
+            var data = JsonUtility.ToJson(eventData);
             string alarm = null;
             string recurrenceRuleData = null;
-            if(alarmData != null)
-            {
+            if (alarmData != null)
                 alarm = JsonUtility.ToJson(alarmData);
-            }
             else
-            {
-                alarm = JsonUtility.ToJson(new ISN_AlarmDataRequest());
-            }
-            if(recurrenceRule != null)
-            {
+                alarm = JsonUtility.ToJson(new ISN_EKAlarmDataRequest());
+            if (recurrenceRule != null)
                 recurrenceRuleData = JsonUtility.ToJson(recurrenceRule);
-            }
             else
-            {
-                recurrenceRuleData = JsonUtility.ToJson(new ISN_RecurrenceRuleRequest());
-            }
-            _ISN_SaveEvent(ISN_MonoPCallback.ActionToIntPtr<ISN_EventKitSaveResult>(callback), data, alarm, recurrenceRuleData);
-            #endif
+                recurrenceRuleData = JsonUtility.ToJson(new ISN_EKRecurrenceRuleRequest());
+            _ISN_SaveEvent(ISN_MonoPCallback.ActionToIntPtr<ISN_EKSaveResult>(callback), data, alarm, recurrenceRuleData);
+#endif
         }
 
         /// <summary>
@@ -67,44 +67,36 @@ namespace SA.iOS.EventKit.Internal
         /// <summary>
         public void RemoveEvent(Action<SA_Result> callback, string identifier)
         {
-            if(string.IsNullOrEmpty(identifier))
+            if (string.IsNullOrEmpty(identifier))
             {
-                SA_Error error = new SA_Error(1, "Identifier parameter is empty or null.");
-                SA_Result result = new SA_Result(error);
+                var error = new SA_Error(1, "Identifier parameter is empty or null.");
+                var result = new SA_Result(error);
                 callback.Invoke(result);
             }
-            #if UNITY_IPHONE && EVENT_KIT_ENABLED
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
             _ISN_RemoveEvent(ISN_MonoPCallback.ActionToIntPtr<SA_Result>(callback), identifier);
-            #endif
+#endif
         }
 
         /// <summary>
         /// Create new Reminder though EventKit.
         /// <summary>
-        public void SaveReminder(Action<ISN_EventKitSaveResult> callback, ISN_EventKitDataRequest reminderData, ISN_AlarmDataRequest alarmData, ISN_RecurrenceRuleRequest recurrenceRule)
+        public void SaveReminder(Action<ISN_EKSaveResult> callback, ISN_EKDataRequest reminderData, ISN_EKAlarmDataRequest alarmData, ISN_EKRecurrenceRuleRequest recurrenceRule)
         {
-            #if UNITY_IPHONE && EVENT_KIT_ENABLED
-            string data = JsonUtility.ToJson(reminderData);
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
+            var data = JsonUtility.ToJson(reminderData);
             string alarm = null;
             string recurrenceRuleData = null;
-            if(alarmData != null)
-            {
+            if (alarmData != null)
                 alarm = JsonUtility.ToJson(alarmData);
-            }
             else
-            {
-                alarm = JsonUtility.ToJson(new ISN_AlarmDataRequest());
-            }
-            if(recurrenceRule != null)
-            {
+                alarm = JsonUtility.ToJson(new ISN_EKAlarmDataRequest());
+            if (recurrenceRule != null)
                 recurrenceRuleData = JsonUtility.ToJson(recurrenceRule);
-            }
             else
-            {
-                recurrenceRuleData = JsonUtility.ToJson(new ISN_RecurrenceRuleRequest());
-            }
-            _ISN_SaveReminder(ISN_MonoPCallback.ActionToIntPtr<ISN_EventKitSaveResult>(callback), data, alarm, recurrenceRuleData);
-            #endif
+                recurrenceRuleData = JsonUtility.ToJson(new ISN_EKRecurrenceRuleRequest());
+            _ISN_SaveReminder(ISN_MonoPCallback.ActionToIntPtr<ISN_EKSaveResult>(callback), data, alarm, recurrenceRuleData);
+#endif
         }
 
         /// <summary>
@@ -112,15 +104,15 @@ namespace SA.iOS.EventKit.Internal
         /// <summary>
         public void RemoveReminder(Action<SA_Result> callback, string identifier)
         {
-            if(string.IsNullOrEmpty(identifier))
+            if (string.IsNullOrEmpty(identifier))
             {
-                SA_Error error = new SA_Error(1, "Identifier parameter is empty or null.");
-                SA_Result result = new SA_Result(error);
+                var error = new SA_Error(1, "Identifier parameter is empty or null.");
+                var result = new SA_Result(error);
                 callback.Invoke(result);
             }
-            #if UNITY_IPHONE && EVENT_KIT_ENABLED
+#if UNITY_IPHONE && EVENT_KIT_ENABLED
             _ISN_RemoveReminder(ISN_MonoPCallback.ActionToIntPtr<SA_Result>(callback), identifier);
-            #endif
+#endif
         }
     }
 }

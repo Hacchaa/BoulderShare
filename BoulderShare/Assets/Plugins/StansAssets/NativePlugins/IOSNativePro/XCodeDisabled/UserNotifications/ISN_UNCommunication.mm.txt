@@ -9,15 +9,15 @@
     -(id) initWithSettings:(UNNotificationSettings *) settings {
         self = [super init];
         if(self) {
-            self.m_authorizationStatus = settings.authorizationStatus;
-            self.m_notificationCenterSetting = settings.notificationCenterSetting;
-            self.m_lockScreenSetting = settings.lockScreenSetting;
-            self.m_carPlaySetting = settings.carPlaySetting;
-            self.m_alertSetting = settings.alertSetting;
-            self.m_alertStyle = settings.alertStyle;
-            self.m_badgeSetting = settings.badgeSetting;
-            self.m_soundSetting = settings.soundSetting;
-            self.m_showPreviewsSetting = settings.showPreviewsSetting;
+            self.m_AuthorizationStatus = settings.authorizationStatus;
+            self.m_NotificationCenterSetting = settings.notificationCenterSetting;
+            self.m_LockScreenSetting = settings.lockScreenSetting;
+            self.m_CarPlaySetting = settings.carPlaySetting;
+            self.m_AlertSetting = settings.alertSetting;
+            self.m_AlertStyle = settings.alertStyle;
+            self.m_BadgeSetting = settings.badgeSetting;
+            self.m_SoundSetting = settings.soundSetting;
+            self.m_ShowPreviewsSetting = settings.showPreviewsSetting;
         }
         return self;
     }
@@ -34,33 +34,33 @@ NSString* USER_INFO_DATA_KEY = @"data";
     //Creating a content:
     UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
     
-    if(self.m_body.length != 0) {
-        content.body = self.m_body;
+    if(self.m_Body.length != 0) {
+        content.body = self.m_Body;
     }
     
-    if(self.m_subtitle.length != 0) {
-        content.subtitle = self.m_subtitle;
+    if(self.m_Subtitle.length != 0) {
+        content.subtitle = self.m_Subtitle;
     }
     
-    if(self.m_title.length != 0) {
-        content.title = self.m_title;
+    if(self.m_Title.length != 0) {
+        content.title = self.m_Title;
     }
     
-    if(self.m_badge != 0) {
-        content.badge = [[NSNumber alloc] initWithLong:self.m_badge];
+    if(self.m_Badge != 0) {
+        content.badge = [[NSNumber alloc] initWithLong:self.m_Badge];
     }
     
-    if(self.m_sound.length != 0) {
-        if([self.m_sound isEqualToString:DEFAULT_SOUND]) {
+    if(self.m_Sound.length != 0) {
+        if([self.m_Sound isEqualToString:DEFAULT_SOUND]) {
             content.sound = [UNNotificationSound defaultSound];
         } else {
-            content.sound = [UNNotificationSound soundNamed:self.m_sound];
+            content.sound = [UNNotificationSound soundNamed:self.m_Sound];
         }
     }
     
-    if(self.m_userInfo.length != 0) {
+    if(self.m_UserInfo.length != 0) {
         NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-        [userInfo setObject:self.m_userInfo forKey:USER_INFO_DATA_KEY];
+        [userInfo setObject:self.m_UserInfo forKey:USER_INFO_DATA_KEY];
         content.userInfo = userInfo;
     }
     
@@ -70,14 +70,14 @@ NSString* USER_INFO_DATA_KEY = @"data";
 -(id) initWithContent:(UNNotificationContent *) content {
     self = [super init];
     if(self) {
-        self.m_body = content.body == NULL ? @"" : content.body;
-        self.m_subtitle = content.subtitle == NULL ? @"" : content.subtitle;
-        self.m_title = content.title == NULL ? @"" : content.title;
-        self.m_badge = (long) content.badge;
-        self.m_sound = @"";
+        self.m_Body = content.body == NULL ? @"" : content.body;
+        self.m_Subtitle = content.subtitle == NULL ? @"" : content.subtitle;
+        self.m_Title = content.title == NULL ? @"" : content.title;
+        self.m_Badge = (long) content.badge;
+        self.m_Sound = @"";
         
         NSString *userInfo = [content.userInfo objectForKey:USER_INFO_DATA_KEY];
-        self.m_userInfo = userInfo == NULL ? @"" : userInfo;
+        self.m_UserInfo = userInfo == NULL ? @"" : userInfo;
     }
     
     return self;
@@ -93,57 +93,57 @@ NSString* USER_INFO_DATA_KEY = @"data";
         if(trigger != NULL) {
             if([trigger isKindOfClass:[UNTimeIntervalNotificationTrigger class]]) {
                 UNTimeIntervalNotificationTrigger *intervalTrigger = (UNTimeIntervalNotificationTrigger *)trigger;
-                self.m_type = ISN_UNNotificationTriggerTypeTimeInterval;
-                self.m_timeInterval = intervalTrigger.timeInterval;
+                self.m_Type = ISN_UNNotificationTriggerTypeTimeInterval;
+                self.m_TimeInterval = intervalTrigger.timeInterval;
                 
                 if(intervalTrigger.nextTriggerDate != NULL) {
                     NSDate * mydate = [[NSDate alloc] init];
                     NSTimeZone *zone = [NSTimeZone systemTimeZone];
                     NSInteger interval = [zone secondsFromGMTForDate:intervalTrigger.nextTriggerDate];
                     mydate = [mydate dateByAddingTimeInterval:interval];
-                    self.m_nextTriggerDate = [mydate timeIntervalSince1970];
+                    self.m_NextTriggerDate = [mydate timeIntervalSince1970];
                 } else {
-                    self.m_nextTriggerDate = 0;
+                    self.m_NextTriggerDate = 0;
                 }
             }
             
             if([trigger isKindOfClass:[UNCalendarNotificationTrigger class]]) {
                 UNCalendarNotificationTrigger *calendarTrigger = (UNCalendarNotificationTrigger *)trigger;
-                self.m_type = ISN_UNNotificationTriggerTypeCalendar;
-                self.m_dateComponents = [[ISN_NSDateComponents alloc] initWithNSDateComponents:calendarTrigger.dateComponents];
+                self.m_Type = ISN_UNNotificationTriggerTypeCalendar;
+                self.m_DateComponents = [[ISN_NSDateComponents alloc] initWithNSDateComponents:calendarTrigger.dateComponents];
                 
                 if(calendarTrigger.nextTriggerDate != NULL) {
                     NSDate * mydate = [[NSDate alloc] init];
                     NSTimeZone *zone = [NSTimeZone systemTimeZone];
                     NSInteger interval = [zone secondsFromGMTForDate:calendarTrigger.nextTriggerDate];
                     mydate = [mydate dateByAddingTimeInterval:interval];
-                    self.m_nextTriggerDate = [mydate timeIntervalSince1970];
+                    self.m_NextTriggerDate = [mydate timeIntervalSince1970];
                 } else {
-                    self.m_nextTriggerDate = 0;
+                    self.m_NextTriggerDate = 0;
                 }
             }
             
             #ifdef CORE_LOCATION_API_ENABLED
             if([trigger isKindOfClass:[UNLocationNotificationTrigger class]]) {
                 UNLocationNotificationTrigger *locationTrigger = (UNLocationNotificationTrigger *)trigger;
-                self.m_type = ISN_UNNotificationTriggerTypeLocation;
+                self.m_Type = ISN_UNNotificationTriggerTypeLocation;
                 
                 
                 if([locationTrigger.region isKindOfClass:[CLCircularRegion class]]) {
                     CLCircularRegion *region = (CLCircularRegion *)locationTrigger.region;
-                    self.m_region = [[ISN_CLCircularRegion alloc] initWithCLLocationCoordinate2D:region];
+                    self.m_Region = [[ISN_CLCircularRegion alloc] initWithCLLocationCoordinate2D:region];
                 }
                 
             }
             #endif
             
             if([trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
-                self.m_type = ISN_UNNotificationTriggerTypePushNotification;
+                self.m_Type = ISN_UNNotificationTriggerTypePushNotification;
             }
             
             
             
-            self.m_repeats = trigger.repeats;
+            self.m_Repeats = trigger.repeats;
         }
     }
     return self;
@@ -151,27 +151,27 @@ NSString* USER_INFO_DATA_KEY = @"data";
 
 -(UNNotificationTrigger* ) getTrigger {
     UNNotificationTrigger* trigger = nil;
-    switch (self.m_type) {
+    switch (self.m_Type) {
         case ISN_UNNotificationTriggerTypeTimeInterval:
             
-            if(self.m_timeInterval != 0) {
+            if(self.m_TimeInterval != 0) {
                 trigger = [UNTimeIntervalNotificationTrigger
-                           triggerWithTimeInterval:self.m_timeInterval
-                           repeats:self.m_repeats];
+                           triggerWithTimeInterval:self.m_TimeInterval
+                           repeats:self.m_Repeats];
             }
             break;
             
         case ISN_UNNotificationTriggerTypeCalendar:
             trigger = [UNCalendarNotificationTrigger
-                       triggerWithDateMatchingComponents:[self.m_dateComponents getNSDateComponents]
-                       repeats:self.m_repeats];
+                       triggerWithDateMatchingComponents:[self.m_DateComponents getNSDateComponents]
+                       repeats:self.m_Repeats];
             break;
             
 #ifdef CORE_LOCATION_API_ENABLED
         case ISN_UNNotificationTriggerTypeLocation:
             trigger = [UNLocationNotificationTrigger
-                       triggerWithRegion:[self.m_region getCLCircularRegion]
-                       repeats:self.m_repeats];
+                       triggerWithRegion:[self.m_Region getCLCircularRegion]
+                       repeats:self.m_Repeats];
             break;
 #endif
         case ISN_UNNotificationTriggerTypePushNotification:
@@ -191,19 +191,19 @@ NSString* USER_INFO_DATA_KEY = @"data";
 -(id) initWithRequest:(UNNotificationRequest *) request {
     self = [super init];
     if(self) {
-        self.m_identifier = request.identifier;
-        self.m_content = [[ISN_UNMutableNotificationContent alloc] initWithContent:request.content];
-        self.m_trigger = [[ISN_ISN_UNNotificationTrigger alloc] initWithTrigger:request.trigger];
+        self.m_Identifier = request.identifier;
+        self.m_Content = [[ISN_UNMutableNotificationContent alloc] initWithContent:request.content];
+        self.m_Trigger = [[ISN_ISN_UNNotificationTrigger alloc] initWithTrigger:request.trigger];
     }
     return self;
 }
 
 -(UNNotificationRequest*) getRequest {
     
-    UNNotificationContent* content = [self.m_content getNotificationContent];
-    UNNotificationTrigger* trigger = [self.m_trigger getTrigger];
+    UNNotificationContent* content = [self.m_Content getNotificationContent];
+    UNNotificationTrigger* trigger = [self.m_Trigger getTrigger];
     UNNotificationRequest* request = [UNNotificationRequest
-                                      requestWithIdentifier:self.m_identifier
+                                      requestWithIdentifier:self.m_Identifier
                                       content:content
                                       trigger:trigger];
     
@@ -222,12 +222,12 @@ NSString* USER_INFO_DATA_KEY = @"data";
             NSTimeZone *zone = [NSTimeZone systemTimeZone];
             NSInteger interval = [zone secondsFromGMTForDate:notification.date];
             mydate = [mydate dateByAddingTimeInterval:interval];
-            self.m_date = [mydate timeIntervalSince1970];
+            self.m_Date = [mydate timeIntervalSince1970];
         } else {
-            self.m_date = 0;
+            self.m_Date = 0;
         }
         
-        self.m_request =[[ISN_UNNotificationRequest alloc] initWithRequest:notification.request];
+        self.m_Request =[[ISN_UNNotificationRequest alloc] initWithRequest:notification.request];
     }
     return self;
     
@@ -240,8 +240,8 @@ NSString* USER_INFO_DATA_KEY = @"data";
 -(id) initWithUNNotificationResponse:(UNNotificationResponse *) response {
     self = [super init];
     if(self) {
-        self.m_actionIdentifier = response.actionIdentifier;
-        self.m_notification = [[ISN_UNNotification alloc] initWithUNNotification:response.notification];
+        self.m_ActionIdentifier = response.actionIdentifier;
+        self.m_Notification = [[ISN_UNNotification alloc] initWithUNNotification:response.notification];
     }
     return self;
 }
@@ -253,14 +253,13 @@ NSString* USER_INFO_DATA_KEY = @"data";
 -(id) init { return self = [super init]; }
 @end
 
-@implementation ISN_UNNotifcationRequests
+@implementation ISN_UNNotificationRequests
 -(id) init { return self = [super init]; }
 @end
 
 @implementation ISN_UNNotifcations
 -(id) init { return self = [super init]; }
 @end
-
 
 
 #endif

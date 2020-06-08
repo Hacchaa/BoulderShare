@@ -1,11 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native 2018 - New Generation
-// @author Stan's Assets team 
+// @author Stan's Assets team
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
-//////////////////////////////////////////////////////////////////////////////// 
+////////////////////////////////////////////////////////////////////////////////
+
 using System;
 using UnityEngine;
 using SA.Foundation.Events;
@@ -13,9 +14,8 @@ using SA.Foundation.Templates;
 
 namespace SA.iOS.AVFoundation.Internal
 {
-    internal interface ISN_iAVAPI
+    interface ISN_iAVAPI
     {
-
         //--------------------------------------
         // ISN_AVCaptureDevice
         //--------------------------------------
@@ -35,11 +35,10 @@ namespace SA.iOS.AVFoundation.Internal
 
         SA_iEvent<ISN_AVAudioSessionRouteChangeReason> OnAudioSessionRouteChange { get; }
         ISN_AVAudioSessionCategory AudioSessionCategory { get; }
+        ISN_AVAudioSessionCategoryOptions AudioSessionCategoryOptions { get; }
         SA_Result AudioSessionSetCategory(ISN_AVAudioSessionCategory category);
+        SA_Result AudioSessionSetCategoryWithOptions(ISN_AVAudioSessionCategory category, ISN_AVAudioSessionCategoryOptions options);
         SA_Result AudioSessionSetActive(bool isActive);
-
-
-
 
         int AudioSessionGetRecordPermission();
         void AudioSessionRequestRecordPermission(Action<bool> callback);

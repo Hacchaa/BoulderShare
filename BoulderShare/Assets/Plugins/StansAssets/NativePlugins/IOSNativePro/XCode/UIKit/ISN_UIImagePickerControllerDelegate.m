@@ -28,7 +28,7 @@
     UIImage *photo = [info objectForKey:UIImagePickerControllerOriginalImage];
     if(photo != NULL) {
         NSString *encodedImage = [self EncodeImage:photo];
-        [result setM_encodedImage:encodedImage];
+        [result setM_EncodedImage:encodedImage];
     }
     
     NSURL *mediaUrl = (NSURL*)[info objectForKey:UIImagePickerControllerMediaURL];
@@ -37,21 +37,21 @@
         if (@available(iOS 13.0, *)) {
             path = [self iOS13MediaUrlFix:[mediaUrl path]];
         }
-        [result setM_mediaURL:path];
+        [result setM_MediaUrl:path];
     }
     
     if (@available(iOS 11.0, *)) {
         NSURL *imageUrl = (NSURL*)[info objectForKey:UIImagePickerControllerImageURL];
         if(imageUrl != NULL) {
             NSString *path = [imageUrl absoluteString];
-            [result setM_imageURL:path];
+            [result setM_ImageUrl:path];
         }
     } else {
         [ISN_Logger Log:@"imageUrl param does not supported on this iOS version"];
     }
 
     NSString* mediaType = [info objectForKey:UIImagePickerControllerMediaType];
-    [result setM_mediaType:mediaType];
+    [result setM_MediaType:mediaType];
     
     ISN_SendMessage(UNITY_UI_LISTENER, "didFinishPickingMedia", [result toJSONString]);
 }

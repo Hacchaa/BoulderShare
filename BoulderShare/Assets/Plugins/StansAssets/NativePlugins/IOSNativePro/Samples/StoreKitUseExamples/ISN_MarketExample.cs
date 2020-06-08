@@ -6,69 +6,50 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 using System;
 using UnityEngine;
 using SA.iOS.StoreKit;
 
-
 namespace SA.iOS.Examples
 {
-
     public class ISN_MarketExample : ISN_BaseIOSFeaturePreview
     {
-        
-        private static ISN_PaymentManagerExample s_paymentManager = new ISN_PaymentManagerExample();
+        static readonly ISN_PaymentManagerExample s_paymentManager = new ISN_PaymentManagerExample();
 
-        void OnGUI()  {
+        void OnGUI()
+        {
             UpdateToStartPos();
 
             GUI.Label(new Rect(StartX, StartY, Screen.width, 40), "In-App Purchases", style);
 
-
-
             StartY += YLableStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Load Store")) {
-                s_paymentManager.init();
-            }
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Load Store")) s_paymentManager.init();
 
-
-            if (ISN_SKPaymentQueue.IsReady){
+            if (ISN_SKPaymentQueue.IsReady)
                 GUI.enabled = true;
-            } else {
+            else
                 GUI.enabled = false;
-            }
-
 
             StartX = XStartPos;
             StartY += YButtonStep;
 
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Perform Buy #1")) {
-
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Perform Buy #1"))
+            {
                 var CurrencySymbol = ISN_SKPaymentQueue.GetProductById(ISN_PaymentManagerExample.SMALL_PACK).PriceLocale.CurrencySymbol;
 
                 Debug.Log(CurrencySymbol);
+
                 //ISN_SKPaymentQueue.AddPayment(ISN_PaymentManagerExample.SMALL_PACK);
-
             }
 
             StartX += XButtonStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Perform Buy #2")) {
-                ISN_SKPaymentQueue.AddPayment(ISN_PaymentManagerExample.NC_PACK);
-            }
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Perform Buy #2")) ISN_SKPaymentQueue.AddPayment(ISN_PaymentManagerExample.NC_PACK);
 
             StartX += XButtonStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Restore Purchases")) {
-                ISN_SKPaymentQueue.RestoreCompletedTransactions();
-
-            }
-
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Restore Purchases")) ISN_SKPaymentQueue.RestoreCompletedTransactions();
 
             StartX += XButtonStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Is Payments Enabled On device")){
-                Debug.Log("Is Payments Enabled: " + ISN_SKPaymentQueue.CanMakePayments);
-            }
-
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Is Payments Enabled On device")) Debug.Log("Is Payments Enabled: " + ISN_SKPaymentQueue.CanMakePayments);
 
             StartX = XStartPos;
             StartY += YButtonStep;
@@ -78,19 +59,17 @@ namespace SA.iOS.Examples
             GUI.Label(new Rect(StartX, StartY, Screen.width, 40), "Local Receipt Validation", style);
 
             StartY += YLableStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth + 10, buttonHeight), "Print Load Receipt")) {
-
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth + 10, buttonHeight), "Print Load Receipt"))
+            {
                 var receipt = ISN_SKPaymentQueue.AppStoreReceipt;
 
                 Debug.Log("Receipt loaded, byte array length: " + receipt.Data.Length + " Would you like to veriday it with Apple Sandbox server?");
                 Debug.Log("Receipt As Base64 String" + receipt.AsBase64String);
-
             }
 
             StartX += XButtonStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Refresh Receipt")) {
-
-
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth, buttonHeight), "Refresh Receipt"))
+            {
                 //Thiss is optional values for test evironment, 
                 //for production evironment use properties = null
 
@@ -99,14 +78,12 @@ namespace SA.iOS.Examples
                 properties.Add(ISN_SKReceiptProperty.IsRevoked, 1);
 
                 var request = new ISN_SKReceiptRefreshRequest(properties);
-                request.Start((result) => {
+                request.Start((result) =>
+                {
                     Debug.Log("Receipt Refresh Result: " + result.IsSucceeded);
-                    if(result.HasError) {
-                        Debug.Log(result.Error.Code + " / " + result.Error.Message);
-                    }
+                    if (result.HasError) Debug.Log(result.Error.Code + " / " + result.Error.Message);
                 });
             }
-
 
             StartX = XStartPos;
             StartY += YButtonStep;
@@ -116,13 +93,7 @@ namespace SA.iOS.Examples
             GUI.Label(new Rect(StartX, StartY, Screen.width, 40), "Store Review Controller", style);
 
             StartY += YLableStep;
-            if (GUI.Button(new Rect(StartX, StartY, buttonWidth + 10, buttonHeight), "Request Review")) {
-                ISN_SKStoreReviewController.RequestReview();
-
-            }
+            if (GUI.Button(new Rect(StartX, StartY, buttonWidth + 10, buttonHeight), "Request Review")) ISN_SKStoreReviewController.RequestReview();
         }
-
-
-
     }
 }

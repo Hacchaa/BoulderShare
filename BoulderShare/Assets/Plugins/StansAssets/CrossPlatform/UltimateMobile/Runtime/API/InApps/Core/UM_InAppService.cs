@@ -3,25 +3,27 @@ using UnityEngine;
 namespace SA.CrossPlatform.InApp
 {
     /// <summary>
-    /// Main entry point for the In-App Purchases API. 
+    /// Main entry point for the In-App Purchases API.
     /// This class provides API and interfaces to access the in-game billing functionality.
     /// </summary>
     public static class UM_InAppService
     {
         public const string TEST_ITEM_PURCHASED = "android.test.purchased";
         public const string TEST_ITEM_UNAVAILABLE = "android.test.item_unavailable";
-        
-        private static UM_iInAppClient s_Client;
-        private static UM_AndroidInAppUtilities s_AndroidInAppUtilities;
+
+        static UM_iInAppClient s_Client;
+        static UM_AndroidInAppUtilities s_AndroidInAppUtilities;
 
         /// <summary>
         /// Returns a new instance of <see cref="UM_iInAppClient"/>
         /// </summary>
-        public static UM_iInAppClient Client {
-            get {
-
-                if(s_Client == null) {
-                    switch(Application.platform) {
+        public static UM_iInAppClient Client
+        {
+            get
+            {
+                if (s_Client == null)
+                    switch (Application.platform)
+                    {
                         case RuntimePlatform.Android:
                             s_Client = new UM_AndroidInAppClient();
                             break;
@@ -32,14 +34,13 @@ namespace SA.CrossPlatform.InApp
                             s_Client = new UM_EditorInAppClient();
                             break;
                     }
-                }
 
                 return s_Client;
             }
         }
 
         /// <summary>
-        /// Utilities collection for the Android platform
+        /// Utilities collection for the Android platform.
         /// </summary>
         public static UM_AndroidInAppUtilities AndroidUtilities
         {

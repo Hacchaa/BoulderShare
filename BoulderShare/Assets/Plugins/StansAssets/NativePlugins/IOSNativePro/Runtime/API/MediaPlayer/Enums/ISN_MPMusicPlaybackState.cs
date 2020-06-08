@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.MediaPlayer
 {
-    public enum ISN_MPMusicPlaybackState 
+    /// <summary>
+    /// The music player playback state modes.
+    /// </summary>
+    public enum ISN_MPMusicPlaybackState
     {
         /// <summary>
         /// The music player is stopped.
@@ -35,6 +33,6 @@ namespace SA.iOS.MediaPlayer
         /// <summary>
         /// The music player is seeking backward.
         /// </summary>
-        SeekingBackward = 5
+        SeekingBackward = 5,
     }
 }

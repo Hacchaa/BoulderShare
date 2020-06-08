@@ -1,16 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 using SA.Foundation.Editor;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public class UM_ServicesTab : SA_ServicesTab
+    class UM_ServicesTab : SA_ServicesTab
     {
-        protected override void OnCreateServices() {
-
-           
+        protected override void OnCreateServices()
+        {
             RegisterService(CreateInstance<UM_FoundationUI>());
             RegisterService(CreateInstance<UM_InAppsUI>());
             RegisterService(CreateInstance<UM_GameServicesUI>());
@@ -20,14 +15,8 @@ namespace SA.CrossPlatform
 
             RegisterService(CreateInstance<UM_ContactsUI>());
             RegisterService(CreateInstance<UM_MediaUI>());
-            
-
             RegisterService(CreateInstance<UM_LocalNotificationsUI>());
             RegisterService(CreateInstance<UM_RemoteNotificationsUI>());
-
         }
-
     }
-
 }
-

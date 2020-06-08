@@ -50,13 +50,13 @@ static ISN_GKGameCenterViewController * s_sharedInstance;
     }
    
     #if !TARGET_OS_TV
-    switch (request.m_viewState) {
+    switch (request.m_ViewState) {
         case -1:
              gameCenterViewController.viewState = GKGameCenterViewControllerStateDefault;
              break;
         case 0:
-            gameCenterViewController.leaderboardIdentifier  = request.m_leaderboardIdentifier;
-            gameCenterViewController.leaderboardTimeScope   = request.m_leaderboardTimeScope;
+            gameCenterViewController.leaderboardIdentifier  = request.m_LeaderboardIdentifier;
+            gameCenterViewController.leaderboardTimeScope   = request.m_LeaderboardTimeScope;
             gameCenterViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
             break;
         case 1:

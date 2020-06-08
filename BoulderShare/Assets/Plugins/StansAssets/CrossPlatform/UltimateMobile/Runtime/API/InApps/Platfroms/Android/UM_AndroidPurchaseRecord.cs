@@ -5,16 +5,16 @@ using UnityEngine;
 
 namespace SA.CrossPlatform.InApp
 {
-    internal class UM_AndroidPurchaseRecord
+    class UM_AndroidPurchaseRecord
     {
-        private string m_Sku;
-        private string m_OrderId;
-        private string m_PurchaseToken;
-        private bool m_IsLocal = false;
-        
-        private AN_SkuDetails m_SkuDetails;
-        private AN_Purchase m_Purchase;
-        
+        readonly string m_Sku;
+        readonly string m_OrderId;
+        readonly string m_PurchaseToken;
+        readonly bool m_IsLocal = false;
+
+        AN_SkuDetails m_SkuDetails;
+        readonly AN_Purchase m_Purchase;
+
         public UM_AndroidPurchaseRecord(AN_Purchase purchase)
         {
             m_Sku = purchase.Sku;
@@ -40,43 +40,28 @@ namespace SA.CrossPlatform.InApp
             }
         }
 
-        public AN_Purchase Purchase
-        {
-            get { return m_Purchase; }
-        }
+        public AN_Purchase Purchase => m_Purchase;
 
-        public bool IsValid
-        {
-            get { return SkuDetails != null; }
-        }
+        public bool IsValid => SkuDetails != null;
 
-        public bool IsLocal
-        {
-            get { return m_IsLocal; }
-        }
+        public bool IsLocal => m_IsLocal;
 
-        public bool WasProcessedLocally
-        {
-            get { return IsTransactionCompleted(m_PurchaseToken) || IsTransactionCompleted(m_OrderId); }
-        }
+        public bool WasProcessedLocally => IsTransactionCompleted(m_PurchaseToken) || IsTransactionCompleted(m_OrderId);
 
-        public AN_SkuDetails SkuDetails
-        {
-            get { return m_SkuDetails; }
-        }
+        public AN_SkuDetails SkuDetails => m_SkuDetails;
 
-        private void Init()
+        void Init()
         {
-            UM_AndroidInAppClient client = UM_InAppService.Client as UM_AndroidInAppClient;
-            if(client == null)
+            var client = UM_InAppService.Client as UM_AndroidInAppClient;
+            if (client == null)
                 throw new InvalidOperationException("UM_AndroidPurchaseRecord can only be used when UM_AndroidInAppClient os active");
 
             m_SkuDetails = client.GetProduct(m_Sku);
-            if(m_SkuDetails == null) 
+            if (m_SkuDetails == null)
                 AN_Logger.LogWarning("Purchase record exists, but SkuDetails is not available for: " + m_Sku);
         }
-        
-        private bool IsTransactionCompleted(string transactionId)
+
+        bool IsTransactionCompleted(string transactionId)
         {
             return UM_AndroidInAppTransactions.IsTransactionCompleted(transactionId);
         }

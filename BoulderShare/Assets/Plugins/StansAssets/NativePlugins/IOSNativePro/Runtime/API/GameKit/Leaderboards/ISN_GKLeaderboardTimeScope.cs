@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.GameKit
 {
     /// <summary>
@@ -23,6 +18,6 @@ namespace SA.iOS.GameKit
         /// <summary>
         /// Each player’s best score is returned.
         /// </summary>
-        AllTime
+        AllTime,
     }
 }

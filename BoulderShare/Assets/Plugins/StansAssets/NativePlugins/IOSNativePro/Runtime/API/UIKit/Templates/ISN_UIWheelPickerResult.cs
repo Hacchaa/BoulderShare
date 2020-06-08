@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using SA.Foundation.Templates;
 
@@ -6,18 +7,18 @@ namespace SA.iOS.UIKit
     /// <summary>
     /// This type for saving data from ISN_UIWheelPicker callback.
     /// </summary>
+    [Serializable]
     public class ISN_UIWheelPickerResult : SA_Result
     {
-        [SerializeField] protected string m_Value;
-        [SerializeField] protected string m_State;
+        [SerializeField]
+        protected string m_Value;
+        [SerializeField]
+        protected string m_State;
 
         /// <summary>
         /// Get chosen value from ISN_UIWheelPicker callback.
         /// </summary>
-        public string Value
-        {
-            get { return m_Value; }
-        }
+        public string Value => m_Value;
 
         /// <summary>
         /// Get current state of ISN_UIWheelPicker callback.
@@ -26,16 +27,11 @@ namespace SA.iOS.UIKit
         {
             get
             {
-                if(!string.IsNullOrEmpty(m_State) && m_State.Equals(ISN_UIWheelPickerStates.DONE.ToString()))
-                {
-                    return ISN_UIWheelPickerStates.DONE;
-                }
-                if(!string.IsNullOrEmpty(m_State) && m_State.Equals(ISN_UIWheelPickerStates.IN_PROGRESS.ToString()))
-                {
-                    return ISN_UIWheelPickerStates.IN_PROGRESS;
-                }
+                if (!string.IsNullOrEmpty(m_State) && m_State.Equals(ISN_UIWheelPickerStates.Done.ToString())) return ISN_UIWheelPickerStates.Done;
 
-                return ISN_UIWheelPickerStates.CANCELED;
+                if (!string.IsNullOrEmpty(m_State) && m_State.Equals(ISN_UIWheelPickerStates.InProgress.ToString())) return ISN_UIWheelPickerStates.InProgress;
+
+                return ISN_UIWheelPickerStates.Canceled;
             }
         }
     }

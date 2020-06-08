@@ -1,109 +1,96 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Time;
 using SA.iOS.Foundation;
 using SA.iOS.CoreLocation;
 
 namespace SA.iOS.UserNotifications
 {
-
     /// <summary>
     /// The common behavior for subclasses that trigger the delivery of a notification.
     /// </summary>
     [Serializable]
-    public class ISN_UNNotificationTrigger 
+    public class ISN_UNNotificationTrigger
     {
-
-        [SerializeField] protected bool m_repeats = false;
-        [SerializeField] protected long m_nextTriggerDate;
-        [SerializeField] protected ISN_UNNotificationTriggerType m_type;
-
+        [SerializeField]
+        protected bool m_Repeats = false;
+        [SerializeField]
+        protected long m_NextTriggerDate;
+        [SerializeField]
+        protected ISN_UNNotificationTriggerType m_Type;
 
         //--------------------------------------
         // TimeInterval
         //--------------------------------------
 
-        [SerializeField] protected long m_timeInterval = 0;
+        [SerializeField]
+        protected long m_TimeInterval = 0;
 
         //--------------------------------------
         // Calendar
         //--------------------------------------
 
-        [SerializeField] protected ISN_NSDateComponents m_dateComponents;
+        [SerializeField]
+        protected ISN_NSDateComponents m_DateComponents;
 
         //--------------------------------------
         // Location
         //--------------------------------------
 
-        [SerializeField] protected ISN_CLCircularRegion m_region;
+        [SerializeField]
+        protected ISN_CLCircularRegion m_Region;
 
         //--------------------------------------
         // Default
         //--------------------------------------
 
-
         /// <summary>
         /// A Boolean value indicating whether the event repeats.
-        /// 
-        /// When this property is <c>False</c>, the notification is delivered once and then 
-        /// the notification request is automatically unscheduled. 
-        /// When this property is <c>True</c>, the notification request is not unscheduled automatically, 
+        ///
+        /// When this property is <c>False</c>, the notification is delivered once and then
+        /// the notification request is automatically unscheduled.
+        /// When this property is <c>True</c>, the notification request is not unscheduled automatically,
         /// resulting in the notification being delivered each time the trigger condition is met.
         /// </summary>
-        public bool Repeats {
-            get {
-                return m_repeats;
-            }
-
-            set {
-                m_repeats = value;
-            }
+        public bool Repeats
+        {
+            get => m_Repeats;
+            set => m_Repeats = value;
         }
 
         /// <summary>
         /// The next date at which the trigger conditions will be met.
         /// Use this property to find out when a notification associated with this trigger will next be delivered.
         /// </summary>
-        private DateTime NextTriggerDate {
-            get {
-                return SA_Unix_Time.ToDateTime(m_nextTriggerDate);
-            }
-        }
-
+        public DateTime NextTriggerDate => SA_Unix_Time.ToDateTime(m_NextTriggerDate);
 
         /// <summary>
         /// Trigger type
-        /// Trigger type is defined automatically and depends of constructor that was used 
-        /// to create a <see cref="ISN_UNNotificationTrigger"/> object in a frist place
+        /// Trigger type is defined automatically and depends of constructor that was used
+        /// to create a <see cref="ISN_UNNotificationTrigger"/> object in a first place.
         /// </summary>
-        public ISN_UNNotificationTriggerType Type {
-            get {
-                return m_type;
-            }
-        }
+        public ISN_UNNotificationTriggerType Type => m_Type;
 
         /// <summary>
         /// Converts ISN_UNNotificationTrigger to one of ISN_UNNotificationTrigger child classes
         /// based on <see cref="Type"/>
         /// </summary>
         /// <returns>The convert.</returns>
-        public ISN_UNNotificationTrigger Convert() {
-            switch (Type) {
+        public ISN_UNNotificationTrigger Convert()
+        {
+            switch (Type)
+            {
                 case ISN_UNNotificationTriggerType.Calendar:
-                    return new ISN_UNCalendarNotificationTrigger(m_dateComponents, m_repeats);
+                    return new ISN_UNCalendarNotificationTrigger(m_DateComponents, m_Repeats);
                 case ISN_UNNotificationTriggerType.Location:
-                    return new ISN_UNLocationNotificationTrigger(m_region, m_repeats);
+                    return new ISN_UNLocationNotificationTrigger(m_Region, m_Repeats);
                 case ISN_UNNotificationTriggerType.PushNotification:
                     return new ISN_UNPushNotificationTrigger();
                 case ISN_UNNotificationTriggerType.TimeInterval:
-                    return  new ISN_UNTimeIntervalNotificationTrigger(m_timeInterval, m_repeats);
+                    return new ISN_UNTimeIntervalNotificationTrigger(m_TimeInterval, m_Repeats);
                 default:
                     return null;
             }
         }
-
     }
 }

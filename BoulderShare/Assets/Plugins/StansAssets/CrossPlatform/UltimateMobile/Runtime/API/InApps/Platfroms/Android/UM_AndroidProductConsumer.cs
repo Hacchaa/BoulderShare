@@ -6,22 +6,22 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.InApp
 {
-    internal class UM_AndroidProductConsumer : AN_iConsumeResponseListener
+    class UM_AndroidProductConsumer : AN_iConsumeResponseListener
     {
-        private readonly AN_BillingClient m_BillingClient;
-        private readonly Dictionary<string, Action<SA_iResult>> m_PendingCallbacks;
-        
+        readonly AN_BillingClient m_BillingClient;
+        readonly Dictionary<string, Action<SA_iResult>> m_PendingCallbacks;
+
         public UM_AndroidProductConsumer(AN_BillingClient billingClient)
         {
             m_BillingClient = billingClient;
             m_PendingCallbacks = new Dictionary<string, Action<SA_iResult>>();
         }
-        
+
         public void Consume(AN_Purchase purchase, Action<SA_iResult> callback)
         {
             Consume(purchase.PurchaseToken, callback);
         }
-        
+
         public void Consume(string purchaseToken, Action<SA_iResult> callback)
         {
             m_PendingCallbacks.Add(purchaseToken, callback);

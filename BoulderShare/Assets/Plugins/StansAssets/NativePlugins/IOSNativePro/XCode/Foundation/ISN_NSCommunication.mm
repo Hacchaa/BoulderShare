@@ -12,7 +12,7 @@
     -(id) initWithNSKeyValueObject:(ISN_NSKeyValueObject *) keyValueObject {
         self = [super init];
         if(self) {
-            self.m_keyValueObject = keyValueObject;
+            self.m_KeyValueObject = keyValueObject;
         }
         return self;
     }
@@ -23,8 +23,8 @@
     -(id) initWithData:(NSString *) key value:(NSString *) value {
         self = [super init];
         if(self) {
-            self.m_key = key;
-            self.m_value = value;
+            self.m_Key = key;
+            self.m_Value = value;
         }
         return self;
     }
@@ -34,7 +34,7 @@
 -(id) init {
     self = [super init];
     if(self) {
-        self.m_reason = -1;
+        self.m_Reason = -1;
     }
     
     return self;
@@ -89,27 +89,27 @@
 -(id) initWithNSRange:(NSRange) range {
     self = [super init];
     if(self) {
-        self.m_length = range.length;
-        self.m_location = range.location;
+        self.m_Length = range.length;
+        self.m_Location = range.location;
     }
     return self;
 }
 
 
 -(NSRange) getNSRange {
-    return NSMakeRange(self.m_location, self.m_length);
+    return NSMakeRange(self.m_Location, self.m_Length);
 }
 
 @end
 
 @implementation ISN_NSURL : JSONModel
 -(NSURL* ) toNSURL {
-    switch (self.m_type) {
+    switch (self.m_Type) {
         case 1: //File
-            return [NSURL fileURLWithPath:self.m_url];
+            return [NSURL fileURLWithPath:self.m_Url];
             break;
         default:
-            return [NSURL URLWithString:self.m_url];
+            return [NSURL URLWithString:self.m_Url];
             break;
     }
 }
@@ -124,11 +124,11 @@
     self = [super init];
     if(self) {
         if(locale != NULL) {
-            self.m_identifier       = [locale objectForKey:NSLocaleIdentifier];
-            self.m_countryCode      = [locale objectForKey:NSLocaleCountryCode];
-            self.m_languageCode     = [locale objectForKey:NSLocaleLanguageCode];
-            self.m_currencySymbol   = [locale objectForKey:NSLocaleCurrencySymbol];
-            self.m_currencyCode     = [locale objectForKey:NSLocaleCurrencyCode];
+            self.m_Identifier       = [locale objectForKey:NSLocaleIdentifier];
+            self.m_CountryCode      = [locale objectForKey:NSLocaleCountryCode];
+            self.m_LanguageCode     = [locale objectForKey:NSLocaleLanguageCode];
+            self.m_CurrencySymbol   = [locale objectForKey:NSLocaleCurrencySymbol];
+            self.m_CurrencyCode     = [locale objectForKey:NSLocaleCurrencyCode];
             
         }
     }

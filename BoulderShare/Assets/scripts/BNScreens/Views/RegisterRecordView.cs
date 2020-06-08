@@ -58,6 +58,12 @@ public class RegisterRecordView : BNScreenInput
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
                 inputedText = record.GetComment();
 
+                if (record.GetTryNumber() == 1 && record.GetCompleteRate() == 100){
+                    clearStatusObj.SetActive(true);
+                }else{
+                    clearStatusObj.SetActive(false);
+                }
+
                 deleteButton.SetActive(true);
             }
         }

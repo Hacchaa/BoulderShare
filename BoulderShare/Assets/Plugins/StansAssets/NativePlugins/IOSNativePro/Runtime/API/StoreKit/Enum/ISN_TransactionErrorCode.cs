@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Osipov Stanislav (Stan's Assets) 
+// @author Osipov Stanislav (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -9,17 +9,54 @@
 
 namespace SA.iOS.StoreKit
 {
+    /// <summary>
+    /// Possible Transaction error codes.
+    /// </summary>
+    public enum ISN_SKTransactionErrorCode
+    {
+        /// <summary>
+        /// Unknown error.
+        /// </summary>
+        SKErrorUnknown = 0,
 
-	public enum TransactionErrorCode  {
+        /// <summary>
+        /// Client is not allowed to issue the request, etc.
+        /// </summary>
+        SKErrorClientInvalid = 1,
 
-		SKErrorUnknown = 0,
-		SKErrorClientInvalid = 1,               // client is not allowed to issue the request, etc.
-		SKErrorPaymentCanceled = 2,            // user canceled the request, etc.
-		SKErrorPaymentInvalid = 3,              // purchase identifier was invalid, etc.
-		SKErrorPaymentNotAllowed = 4,           // this device is not allowed to make the payment
-		SKErrorStoreProductNotAvailable = 5,    // Product is not available in the current storefront
-		SKErrorPaymentNoPurchasesToRestore = 6,  // No purchases to restore"
-		SKErrorPaymentServiceNotInitialized = 7,  //StoreKit initialization required
-		SKErrorNone = 8 //No error occurred
-	}
+        /// <summary>
+        /// User canceled the request, etc.
+        /// </summary>
+        SKErrorPaymentCanceled = 2,
+
+        /// <summary>
+        /// Purchase identifier was invalid, etc.
+        /// </summary>
+        SKErrorPaymentInvalid = 3,
+
+        /// <summary>
+        /// This device is not allowed to make the payment
+        /// </summary>
+        SKErrorPaymentNotAllowed = 4,
+
+        /// <summary>
+        /// Product is not available in the current storefront
+        /// </summary>
+        SKErrorStoreProductNotAvailable = 5,
+
+        /// <summary>
+        /// No purchases to restore
+        /// </summary>
+        SKErrorPaymentNoPurchasesToRestore = 6,
+
+        /// <summary>
+        /// StoreKit initialization required
+        /// </summary>
+        SKErrorPaymentServiceNotInitialized = 7,
+
+        /// <summary>
+        /// No error occurred
+        /// </summary>
+        SKErrorNone = 8,
+    }
 }

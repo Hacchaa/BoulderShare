@@ -10,10 +10,10 @@ namespace SA.iOS.UIKit
         /// Specifies the camera on the rear of the device.
         /// </summary>
         Rear,
-        
+
         /// <summary>
         /// Specifies the camera on the front of the device.
         /// </summary>
-        Front
+        Front,
     }
 }

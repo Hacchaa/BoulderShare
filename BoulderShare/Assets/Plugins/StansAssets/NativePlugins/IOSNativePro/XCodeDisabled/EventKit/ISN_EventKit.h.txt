@@ -22,7 +22,7 @@
 @protocol ISN_AlarmData;
 @interface ISN_AlarmData : JSONModel
 @property (nonatomic) BOOL m_HasAlarm;
-@property (nonatomic) BOOL m_isAbsoluteDate;
+@property (nonatomic) BOOL m_IsAbsoluteDate;
 @property (nonatomic) long m_DueDate;
 @property (nonatomic) long m_TimeStamp;
 @end

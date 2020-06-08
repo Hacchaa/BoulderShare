@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,12 +8,10 @@ using FB_Plugin = Facebook.Unity;
 
 namespace SA.Facebook
 {
-
     public interface ILoginResult : IResult
     {
         SA_AccessToken AccessToken { get; }
     }
-
 
     public interface IResult
     {
@@ -29,6 +26,4 @@ namespace SA.Facebook
         IList<object> ResultList { get; }
         Texture2D Texture { get; }
     }
-
 }
-

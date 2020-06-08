@@ -3,9 +3,10 @@ using System;
 namespace SA.CrossPlatform.App
 {
     /// <summary>
-    /// Service object for using contacts API.
+    /// Contacts related API service.
+    /// Shared service instance is available via <see cref="UM_Application.ContactsService"/>
     /// </summary>
-    public interface UM_iContactsService 
+    public interface UM_iContactsService
     {
         /// <summary>
         /// Retrieve's all contacts from a device contacts book.

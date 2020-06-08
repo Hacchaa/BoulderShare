@@ -1,15 +1,15 @@
 using System.Collections.Generic;
-using SA.Android.Utilities;
+using SA.Android.Editor;
 using SA.iOS.Utilities;
 using SA.CrossPlatform.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public static class UM_SamplesManager
-    { 
-        private static readonly List<string> s_ExampleScenes= new List<string>
+    static class UM_SamplesManager
+    {
+        static readonly List<string> s_ExampleScenes = new List<string>
         {
             UM_Settings.k_WelcomeSamplesScenePath,
             UM_Settings.k_InAppSamplesScenePath,
@@ -31,13 +31,12 @@ namespace SA.CrossPlatform
 
         public static void BuildWelcomeScene()
         {
-            #if SA_DEVELOPMENT_PROJECT
+#if SA_DEVELOPMENT_PROJECT
             AN_TestManager.ApplyExampleConfig();
             ISN_TestManager.ApplyExampleConfig();
 
             UM_Settings.Instance.AndroidSavedGamesEnabled = true;
-            
-            #endif
+#endif
 
             PlayerSettings.productName = "Ultimate Mobile";
             var playerOptions = new BuildPlayerOptions();
@@ -57,48 +56,39 @@ namespace SA.CrossPlatform
                     UM_DialogsUtility.ShowMessage("Wrong Platform", "Make sure current editor platform set to iOS or Android");
                     break;
             }
-          
+
             playerOptions.options = BuildOptions.Development | BuildOptions.AutoRunPlayer;
             BuildPipeline.BuildPlayer(playerOptions);
         }
-
 
         public static void IncludeToBuildSettings()
         {
             var missingScenes = new List<string>(s_ExampleScenes);
 
-            foreach (var buildSettingsScene in  EditorBuildSettings.scenes)
-            {
+            foreach (var buildSettingsScene in EditorBuildSettings.scenes)
                 if (s_ExampleScenes.Contains(buildSettingsScene.path))
-                {
                     missingScenes.Remove(buildSettingsScene.path);
-                }
-            }
-            
+
             var includes = new List<EditorBuildSettingsScene>();
             foreach (var missingScene in missingScenes)
             {
                 var buildSettingsScene = new EditorBuildSettingsScene(missingScene, true);
                 includes.Add(buildSettingsScene);
             }
+
             includes.AddRange(EditorBuildSettings.scenes);
             EditorBuildSettings.scenes = includes.ToArray();
         }
-        
+
         public static void ExcludeFromSettings()
         {
             var includes = new List<EditorBuildSettingsScene>();
 
-            foreach (var buildSettingsScene in  EditorBuildSettings.scenes)
-            {
+            foreach (var buildSettingsScene in EditorBuildSettings.scenes)
                 if (!s_ExampleScenes.Contains(buildSettingsScene.path))
-                {
                     includes.Add(buildSettingsScene);
-                }
-            }
+
             EditorBuildSettings.scenes = includes.ToArray();
         }
-        
-       
     }
 }

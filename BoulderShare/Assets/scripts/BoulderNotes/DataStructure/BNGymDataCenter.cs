@@ -17,6 +17,7 @@ namespace BoulderNotes{
         public const string FORMAT_ID = "yyyyMMddHHmmssffff";
         public const string FORMAT_TIME = "yyyyMMddHHmmssffff";
         public const string FORMAT_DATE = "yyyy年M月d日";
+        public const string FORMAT_HM = "H:mm";
         public const string FORMAT_DATE2 = "yyyy/MM/dd";
         public const string PREFIX_ID_GYM = "G";
         public const string PREFIX_ID_ROUTE = "R";

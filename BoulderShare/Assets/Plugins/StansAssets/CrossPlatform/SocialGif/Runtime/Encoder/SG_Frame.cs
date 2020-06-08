@@ -25,10 +25,10 @@ using UnityEngine;
 
 namespace SA.GIF
 {
-	internal class Frame
-	{
-		public int Width;
-		public int Height;
-		public Color32[] Data;
-	}
+    class Frame
+    {
+        public int Width;
+        public int Height;
+        public Color32[] Data;
+    }
 }

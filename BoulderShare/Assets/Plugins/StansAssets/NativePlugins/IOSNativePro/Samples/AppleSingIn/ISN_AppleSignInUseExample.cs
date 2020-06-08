@@ -14,13 +14,13 @@ using UnityEngine;
 
 namespace SA.iOS.Examples
 {
-
     public class ISN_AppleSignInUseExample : ISN_BaseIOSFeaturePreview
     {
         //--------------------------------------
         //  PUBLIC METHODS
         //--------------------------------------
-        void OnGUI() {
+        void OnGUI()
+        {
             UpdateToStartPos();
             GUI.Label(new Rect(StartX, StartY, Screen.width, 40), "Apple Sing In", style);
             StartY += YLableStep;
@@ -34,7 +34,7 @@ namespace SA.iOS.Examples
 
                     var requests = new ISN_ASAuthorizationRequest[] { request };
                     var authorizationController = new ISN_ASAuthorizationController(requests);
-                    
+
                     var @delegate = new AuthorizationDelegateExample();
                     authorizationController.SetDelegate(@delegate);
                     authorizationController.PerformRequests();

@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.iOS.GameKit
 {
     /// <summary>
@@ -17,6 +13,6 @@ namespace SA.iOS.GameKit
         /// <summary>
         /// Only friends of the local player should be considered when generating the list of scores.
         /// </summary>
-        FriendsOnly
+        FriendsOnly,
     }
 }

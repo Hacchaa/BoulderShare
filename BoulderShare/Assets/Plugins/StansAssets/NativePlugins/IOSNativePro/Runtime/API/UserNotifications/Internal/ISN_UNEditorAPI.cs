@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -12,71 +12,37 @@ using System.Collections.Generic;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
-namespace SA.iOS.UserNotifications.Internal
+namespace SA.iOS.UserNotifications
 {
-    internal class ISN_UNEditorAPI : ISN_iUNAPI
+    class ISN_UNEditorAPI : ISN_iUNAPI
     {
+        readonly SA_Event<ISN_UNNotification> m_WillPresentNotification = new SA_Event<ISN_UNNotification>();
+        readonly SA_Event<ISN_UNNotificationResponse> m_DidReceiveNotificationResponse = new SA_Event<ISN_UNNotificationResponse>();
 
-        private SA_Event<ISN_UNNotification> m_willPresentNotification = new SA_Event<ISN_UNNotification>();
-        private SA_Event<ISN_UNNotificationResponse> m_didReceiveNotificationResponse = new SA_Event<ISN_UNNotificationResponse>();
+        public SA_iEvent<ISN_UNNotification> WillPresentNotification => m_WillPresentNotification;
 
+        public SA_iEvent<ISN_UNNotificationResponse> DidReceiveNotificationResponse => m_DidReceiveNotificationResponse;
 
-        public SA_iEvent<ISN_UNNotification> WillPresentNotification {
-            get {
-                return m_willPresentNotification;
-            }
-        }
+        public ISN_UNNotificationResponse LastReceivedResponse => null;
 
-        public SA_iEvent<ISN_UNNotificationResponse> DidReceiveNotificationResponse  {
-            get {
-                return m_didReceiveNotificationResponse;
-            }
-        }
+        public void AddNotificationRequest(ISN_UNNotificationRequest request, Action<SA_Result> callback) { }
 
-        public ISN_UNNotificationResponse LastReceivedResponse {
-            get {
-                return null;
-            }
-        }
+        public void ClearLastReceivedResponse() { }
 
-        public void AddNotificationRequest(ISN_UNNotificationRequest request, Action<SA_Result> callback) {
-            
-        }
+        public void GetDeliveredNotifications(Action<List<ISN_UNNotification>> callback) { }
 
-        public void ClearLastReceivedResponse() {
-           
-        }
+        public void GetNotificationSettings(Action<ISN_UNNotificationSettings> callback) { }
 
-        public void GetDeliveredNotifications(Action<List<ISN_UNNotification>> callback) {
-           
-        }
+        public void GetPendingNotificationRequests(Action<List<ISN_UNNotificationRequest>> callback) { }
 
-        public void GetNotificationSettings(Action<ISN_UNNotificationSettings> callback) {
-            
-        }
+        public void RemoveAllDeliveredNotifications() { }
 
-        public void GetPendingNotificationRequests(Action<List<ISN_UNNotificationRequest>> callback) {
-           
-        }
+        public void RemoveAllPendingNotificationRequests() { }
 
-        public void RemoveAllDeliveredNotifications() {
-           
-        }
+        public void RemoveDeliveredNotifications(List<string> notificationsIds) { }
 
-        public void RemoveAllPendingNotificationRequests() {
-            
-        }
+        public void RemovePendingNotificationRequests(List<string> notificationRequestsIds) { }
 
-        public void RemoveDeliveredNotifications(List<string> notificationsIds) {
-           
-        }
-
-        public void RemovePendingNotificationRequests(List<string> notificationRequestsIds) {
-            
-        }
-
-        public void RequestAuthorization(int options, Action<SA_Result> callback) {
-            
-        }
+        public void RequestAuthorization(int options, Action<SA_Result> callback) { }
     }
 }

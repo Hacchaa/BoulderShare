@@ -1,80 +1,67 @@
-using System.Collections.Generic;
 using UnityEditor;
 using SA.Foundation.Editor;
 using SA.Foundation.Utility;
 using SA.Foundation.UtilitiesEditor;
+using UnityEngine;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
     [InitializeOnLoad]
-    internal class UM_DefinesResolver : SA_PluginInstallationProcessor<UM_Settings>
+    class UM_DefinesResolver : SA_PluginInstallationProcessor<UM_Settings>
     {
-        private const string ADMOB_LIB_FOLDER_NAME = "GoogleMobileAds";
-        private const string ADMOB_INSTALLED_DEFINE = "SA_ADMOB_INSTALLED";
+        const string k_AdmobLibFolderName = "GoogleMobileAds";
+        const string k_AdmobInstalledDefine = "SA_ADMOB_INSTALLED";
 
-        private const string UNITY_ADS_LIB_NAME = "UnityEngine.Advertisements.Editor.dll";
-        private const string UNITY_ADS_INSTALLED_DEFINE = "SA_UNITY_ADS_INSTALLED";
-        
-        static UM_DefinesResolver() 
+        public const string UnityAdsPackageName = "com.unity.ads";
+
+        static UM_DefinesResolver()
         {
             var installation = new UM_DefinesResolver();
             installation.Init();
         }
 
-
         //--------------------------------------
         //  SA_PluginInstallationProcessor
         //--------------------------------------
 
-        protected override void OnInstall() 
+        protected override void OnInstall()
         {
             // Let's check if we have FB SKD in the project.
             ProcessAssets();
         }
 
-
         //--------------------------------------
         //  Public Methods
         //--------------------------------------
 
-        public static void ProcessAssets() 
+        public static void ProcessAssets()
         {
             // We are looking for folder.
-            List<string> projectFolders = SA_AssetDatabase.FindAssetsWithExtentions("Assets", "");
-            foreach (var lib in projectFolders) 
-            {
-                ProcessAssetImport(lib);
-            }
+            var projectFolders = SA_AssetDatabase.FindAssetsWithExtentions("Assets", "");
+            foreach (var lib in projectFolders) ProcessAssetImport(lib);
 
             // We are looking for dll libs.
-            List<string> projectLibs = SA_AssetDatabase.FindAssetsWithExtentions("Assets", ".dll");
-            foreach (var lib in projectLibs) 
-            {
-                ProcessAssetImport(lib);
-            }
+            var projectLibs = SA_AssetDatabase.FindAssetsWithExtentions("Assets", ".dll");
+            foreach (var lib in projectLibs) ProcessAssetImport(lib);
         }
 
-        public static void ProcessAssetImport(string assetPath) 
+        public static void ProcessAssetImport(string assetPath)
         {
-            CheckForAdMobSDK(assetPath, true);
-            CheckForUnityAdsSDK(assetPath, true);
+            CheckForAdMobSdk(assetPath, true);
         }
 
-        public static void ProcessAssetDelete(string assetPath) 
+        public static void ProcessAssetDelete(string assetPath)
         {
-            CheckForAdMobSDK(assetPath, false);
-            CheckForUnityAdsSDK(assetPath, false);
+            CheckForAdMobSdk(assetPath, false);
         }
-
 
         //--------------------------------------
         //  Get / Set
         //--------------------------------------
 
-
-        public static bool IsAdMobInstalled 
+        public static bool IsAdMobInstalled
         {
-            get 
+            get
             {
 #if SA_ADMOB_INSTALLED
                 return true;
@@ -84,24 +71,12 @@ namespace SA.CrossPlatform
             }
         }
 
+        public static bool IsUnityAdsInstalled => IsPackageInstalled(UnityAdsPackageName);
 
-        public static bool IsUnityAdsInstalled 
+
+        public static bool IsPlayMakerInstalled
         {
-            get 
-            {
-#if SA_UNITY_ADS_INSTALLED
-                return true;
-#else
-                return false;
-#endif
-            }
-        }
-
-
-
-        public static bool IsPlayMakerInstalled 
-        {
-            get 
+            get
             {
 #if PLAYMAKER
                 return true;
@@ -112,46 +87,37 @@ namespace SA.CrossPlatform
         }
 
 
+        public static bool IsPackageInstalled(string packageName)
+        {
+            return AssetDatabase.LoadAssetAtPath<Object>(GetPackageRootPath(packageName)) != null;
+        }
+
+        /// <summary>
+        /// Returns package root path based on package name.
+        /// </summary>
+        /// <param name="packageName">Package name.</param>
+        /// <returns>Package root path.</returns>
+        public static string GetPackageRootPath(string packageName) => "Packages/" + packageName;
+
         //--------------------------------------
         //  Private Methods
         //--------------------------------------
 
-
-        private static void CheckForAdMobSDK(string assetPath, bool enable) 
+        static void CheckForAdMobSdk(string assetPath, bool enable)
         {
-            string fileName = SA_PathUtil.GetFileName(assetPath);
-            if (fileName.Equals(ADMOB_LIB_FOLDER_NAME)) 
-            {
-                UpdateSDKDefine(enable, ADMOB_INSTALLED_DEFINE);
-            } 
+            var fileName = SA_PathUtil.GetFileName(assetPath);
+            if (fileName.Equals(k_AdmobLibFolderName)) UpdateSdkDefine(enable, k_AdmobInstalledDefine);
         }
 
-        private static void CheckForUnityAdsSDK(string assetPath, bool enabled) 
+        static void UpdateSdkDefine(bool enabled, string define)
         {
-            string fileName = SA_PathUtil.GetFileName(assetPath);
-            if (fileName.Equals(UNITY_ADS_LIB_NAME)) 
+            if (enabled)
             {
-                UpdateSDKDefine(enabled, UNITY_ADS_INSTALLED_DEFINE);
+                if (!SA_EditorDefines.HasCompileDefine(define)) SA_EditorDefines.AddCompileDefine(define);
             }
-
-            SA_EditorDefines.RemoveCompileDefine(UNITY_ADS_INSTALLED_DEFINE, BuildTarget.tvOS);
-        }
-
-        private static void UpdateSDKDefine(bool enabled, string define) 
-        {
-            if (enabled) 
+            else
             {
-                if (!SA_EditorDefines.HasCompileDefine(define)) 
-                {
-                    SA_EditorDefines.AddCompileDefine(define);
-                }
-            } 
-            else 
-            {
-                if (SA_EditorDefines.HasCompileDefine(define)) 
-                {
-                    SA_EditorDefines.RemoveCompileDefine(define);
-                }
+                if (SA_EditorDefines.HasCompileDefine(define)) SA_EditorDefines.RemoveCompileDefine(define);
             }
         }
     }

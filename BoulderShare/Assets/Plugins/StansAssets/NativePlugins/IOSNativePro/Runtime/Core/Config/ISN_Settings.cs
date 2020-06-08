@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Osipov Stanislav (Stan's Assets) 
+// @author Osipov Stanislav (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -15,22 +15,21 @@ using SA.iOS.GameKit;
 using SA.iOS.StoreKit;
 using SA.iOS.Utilities;
 using SA.iOS.XCode;
+using UnityEngine;
 
 namespace SA.iOS
 {
-    public class ISN_Settings : SA_ScriptableSingleton<ISN_Settings>
+    class ISN_Settings : SA_ScriptableSingleton<ISN_Settings>
     {
-        public const string PLUGIN_NAME = "IOS Native";
-        public const string DOCUMENTATION_URL = "https://unionassets.com/ios-native-pro/manual";
-        public const string IOS_NATIVE_FOLDER = SA_Config.STANS_ASSETS_NATIVE_PLUGINS_PATH + "IOSNativePro/";
-       
-        public const string IOS_NATIVE_API = IOS_NATIVE_FOLDER + "API/";
-        public const string IOS_NATIVE_XCODE = IOS_NATIVE_FOLDER + "XCode/";
-        public const string IOS_NATIVE_XCODE_SOURCE = IOS_NATIVE_FOLDER + "XCodeDisabled/";
+        public const string PluginTittle = "IOS Native";
+        public const string DocumentationUrl = "https://unionassets.com/ios-native-pro/manual";
+        public const string IOSNativeFolder = SA_Config.StansAssetsNativePluginsPath + "IOSNativePro/";
 
-        public const string CONTACTS_API_LOCATION = IOS_NATIVE_API + "Contacts/Internal/";
-
-        public const string TEST_SCENE_PATH = IOS_NATIVE_FOLDER + "Tests/Scene/ISN_TestScene.unity";
+        public const string IOSNativeApi = IOSNativeFolder + "API/";
+        public const string IOSNativeXcode = IOSNativeFolder + "XCode/";
+        public const string IOSNativeXcodeSource = IOSNativeFolder + "XCodeDisabled/";
+        public const string ContactsApiLocation = IOSNativeApi + "Contacts/Internal/";
+        public const string TestScenePath = IOSNativeFolder + "Tests/Scene/ISN_TestScene.unity";
 
         //--------------------------------------
         // API Settings
@@ -41,28 +40,29 @@ namespace SA.iOS
         public bool ReplayKit = false;
         public bool Social = false;
         public bool AdSupport = false;
-		public bool AVKit = false;
+        public bool AVKit = false;
         public bool CoreLocation = false;
         public bool AssetsLibrary = false;
         public bool AppDelegate = false;
         public bool UserNotifications = false;
         public bool MediaPlayer = false;
         public bool EventKit = false;
-        public readonly ISN_LogLevel LogLevel = new ISN_LogLevel();
-        
+
+        internal readonly ISN_LogLevel LogLevel = new ISN_LogLevel();
+
         //--------------------------------------
         // StoreKit Settings
         //--------------------------------------
 
         public List<ISN_SKProduct> InAppProducts = new List<ISN_SKProduct>();
-        
+
         //--------------------------------------
         // GameKit Settings
         //--------------------------------------
 
         public List<ISN_GKAchievement> Achievements = new List<ISN_GKAchievement>();
         public bool SavingAGame = false;
-        
+
         //--------------------------------------
         // App Delegate Settings
         //--------------------------------------
@@ -77,111 +77,80 @@ namespace SA.iOS
         public List<ISN_UIUrlType> ApplicationQueriesSchemes = new List<ISN_UIUrlType>();
 
         public bool CameraUsageDescriptionEnabled = true;
-        public string CameraUsageDescription 
-        {
-            get 
-            {
-               return GetPlistKeyValue("NSCameraUsageDescription", "Please change 'Camera Usage Description' with IOS Native UI Kit Editor Settings", CameraUsageDescriptionEnabled);
-            }
 
-            set 
-            {
-                SetPlistKeyValue("NSCameraUsageDescription", value, CameraUsageDescriptionEnabled);  
-            }
+        public string CameraUsageDescription
+        {
+            get => GetPlistKeyValue("NSCameraUsageDescription", "Please change 'Camera Usage Description' with IOS Native UI Kit Editor Settings", CameraUsageDescriptionEnabled);
+
+            set => SetPlistKeyValue("NSCameraUsageDescription", value, CameraUsageDescriptionEnabled);
         }
 
-
         public bool MediaLibraryUsageDescriptionEnabled = false;
-        public string MediaLibraryUsageDescription 
-        {
-            get 
-            {
-                return GetPlistKeyValue("NSAppleMusicUsageDescription", "Please change 'Media Library Usage Description' with IOS Native Media Player Editor Settings", PhotoLibraryUsageDescriptionEnabled);
-            }
 
-            set 
-            {
-                SetPlistKeyValue("NSAppleMusicUsageDescription", value, PhotoLibraryUsageDescriptionEnabled);
-            }
+        public string MediaLibraryUsageDescription
+        {
+            get => GetPlistKeyValue("NSAppleMusicUsageDescription", "Please change 'Media Library Usage Description' with IOS Native Media Player Editor Settings", PhotoLibraryUsageDescriptionEnabled);
+
+            set => SetPlistKeyValue("NSAppleMusicUsageDescription", value, PhotoLibraryUsageDescriptionEnabled);
         }
 
         public bool PhotoLibraryUsageDescriptionEnabled = true;
-        public string PhotoLibraryUsageDescription 
-        {
-            get 
-            {
-                return GetPlistKeyValue("NSPhotoLibraryUsageDescription", "Please change 'Photo Library Usage Description' with IOS Native UI Kit Editor Settings", PhotoLibraryUsageDescriptionEnabled);
-            }
 
-            set 
-            {
-                SetPlistKeyValue("NSPhotoLibraryUsageDescription", value, PhotoLibraryUsageDescriptionEnabled);
-            }
+        public string PhotoLibraryUsageDescription
+        {
+            get => GetPlistKeyValue("NSPhotoLibraryUsageDescription", "Please change 'Photo Library Usage Description' with IOS Native UI Kit Editor Settings", PhotoLibraryUsageDescriptionEnabled);
+
+            set => SetPlistKeyValue("NSPhotoLibraryUsageDescription", value, PhotoLibraryUsageDescriptionEnabled);
         }
 
         public bool PhotoLibraryAddUsageDescriptionEnabled = true;
-        public string PhotoLibraryAddUsageDescription 
-        {
-            get 
-            {
-                return GetPlistKeyValue("NSPhotoLibraryAddUsageDescription", "Please change 'Photo Library Add Usage Description' with IOS Native UI Kit Editor Settings", PhotoLibraryAddUsageDescriptionEnabled);
-            }
 
-            set 
-            {
-                SetPlistKeyValue("NSPhotoLibraryAddUsageDescription", value, PhotoLibraryAddUsageDescriptionEnabled);
-            }
+        public string PhotoLibraryAddUsageDescription
+        {
+            get => GetPlistKeyValue("NSPhotoLibraryAddUsageDescription", "Please change 'Photo Library Add Usage Description' with IOS Native UI Kit Editor Settings", PhotoLibraryAddUsageDescriptionEnabled);
+
+            set => SetPlistKeyValue("NSPhotoLibraryAddUsageDescription", value, PhotoLibraryAddUsageDescriptionEnabled);
         }
 
         public bool MicrophoneUsageDescriptionEnabled = true;
-        public string MicrophoneUsageDescription 
-        {
-            get 
-            {
-                return GetPlistKeyValue("NSMicrophoneUsageDescription", "Please change 'Microphone Usage Description' with IOS Native UI Kit Editor Settings", MicrophoneUsageDescriptionEnabled);
-            }
 
-            set 
-            {
-                SetPlistKeyValue("NSMicrophoneUsageDescription", value, MicrophoneUsageDescriptionEnabled);
-            }
-        }
-        
-        private string GetPlistKeyValue(string key, string defaultValue, bool enabled) 
+        public string MicrophoneUsageDescription
         {
-            if(!enabled) 
-            {
-                return defaultValue;
-            }
+            get => GetPlistKeyValue("NSMicrophoneUsageDescription", "Please change 'Microphone Usage Description' with IOS Native UI Kit Editor Settings", MicrophoneUsageDescriptionEnabled);
+
+            set => SetPlistKeyValue("NSMicrophoneUsageDescription", value, MicrophoneUsageDescriptionEnabled);
+        }
+
+        string GetPlistKeyValue(string key, string defaultValue, bool enabled)
+        {
+            if (!enabled) return defaultValue;
             var plistKey = ISD_API.GetInfoPlistKey(key);
-            if(plistKey == null) 
+            if (plistKey == null)
             {
                 plistKey = new ISD_PlistKey();
                 plistKey.Name = key;
                 plistKey.StringValue = defaultValue;
                 plistKey.Type = ISD_PlistKeyType.String;
                 ISD_API.SetInfoPlistKey(plistKey);
-            } 
+            }
 
             return plistKey.StringValue;
         }
 
-        private void SetPlistKeyValue(string key, string val, bool enabled) 
+        void SetPlistKeyValue(string key, string val, bool enabled)
         {
-            if(!enabled)
+            if (!enabled)
                 return;
-            
-            if(!val.Equals(GetPlistKeyValue(key, val, true))) 
-            {
+
+            if (!val.Equals(GetPlistKeyValue(key, val, true)))
+
                 // We are sure it's not null.
                 ISD_API.GetInfoPlistKey(key).StringValue = val;
-            }
         }
 
         //--------------------------------------
         // Contacts Settings
         //--------------------------------------
-
 
         public string ContactsUsageDescription = "Please change 'Contacts Usage Description' with IOS Native Contacts Editor Settings";
 
@@ -189,9 +158,8 @@ namespace SA.iOS
         // Core Location
         //--------------------------------------
 
-         public string LocationAlwaysAndWhenInUseUsageDescription = "Please change 'Location Always And When In Use Usage Description' with IOS Native Core Location Editor Settings";
-         public string LocationWhenInUseUsageDescription = "Please change 'Location When In Use Usage Description' with IOS Native Core Location Editor Settings";
-
+        public string LocationAlwaysAndWhenInUseUsageDescription = "Please change 'Location Always And When In Use Usage Description' with IOS Native Core Location Editor Settings";
+        public string LocationWhenInUseUsageDescription = "Please change 'Location When In Use Usage Description' with IOS Native Core Location Editor Settings";
 
         //--------------------------------------
         // Event Kit
@@ -199,31 +167,14 @@ namespace SA.iOS
 
         public string NSCalendarsUsageDescription = "This app is require access your Calendar";
         public string NSRemindersUsageDescription = "This app is require access to your Reminder";
+
         //--------------------------------------
         // SA_ScriptableSettings
         //--------------------------------------
 
-
-        protected override string BasePath 
-        {
-            get { return IOS_NATIVE_FOLDER; }
-        }
-
-
-        public override string PluginName 
-        {
-            get { return PLUGIN_NAME; }
-        }
-
-        public override string DocumentationURL 
-        {
-            get { return DOCUMENTATION_URL; }
-        }
-
-
-        public override string SettingsUIMenuItem 
-        {
-            get { return SA_Config.EDITOR_MENU_ROOT + "iOS/Services"; }
-        }
+        protected override string BasePath => IOSNativeFolder;
+        public override string PluginName => PluginTittle;
+        public override string DocumentationURL => DocumentationUrl;
+        public override string SettingsUIMenuItem => SA_Config.EditorMenuRoot + "iOS/Services";
     }
 }

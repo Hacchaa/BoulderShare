@@ -4,22 +4,22 @@ using SA.iOS.GameKit;
 
 namespace SA.CrossPlatform.GameServices
 {
-    internal class UM_IOSSignInClient : UM_AbstractSignInClient, UM_iSignInClient
+    class UM_IOSSignInClient : UM_AbstractSignInClient, UM_iSignInClient
     {
-        private bool m_Subscribed;
-        private Action<SA_Result> m_SingInCallback;
-        
-        protected override void StartSingInFlow(Action<SA_Result> callback) 
+        bool m_Subscribed;
+        Action<SA_Result> m_SingInCallback;
+
+        protected override void StartSingInFlow(Action<SA_Result> callback)
         {
-            if(m_Subscribed)
+            if (m_Subscribed)
                 return;
 
             m_Subscribed = true;
             m_SingInCallback = callback;
-            ISN_GKLocalPlayer.setAuthenticateHandler(HandleAuthentication);
+            ISN_GKLocalPlayer.SetAuthenticateHandler(HandleAuthentication);
         }
 
-        private void HandleAuthentication(SA_Result result)
+        void HandleAuthentication(SA_Result result)
         {
             if (m_SingInCallback != null)
             {
@@ -33,19 +33,19 @@ namespace SA.CrossPlatform.GameServices
                 UpdatePlayerInfo(null);
         }
 
-        public void SingOut(Action<SA_Result> callback) 
+        public void SignOut(Action<SA_Result> callback)
         {
             //We will jus do nothing for iOS
         }
 
-        private void UpdatePlayerInfo(ISN_GKLocalPlayer player)
+        void UpdatePlayerInfo(ISN_GKLocalPlayer player)
         {
             UM_PlayerInfo playerInfo;
             if (player != null)
                 playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedIn, new UM_IOSPlayer(player));
             else
-               playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedOut, null);
-            
+                playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedOut, null);
+
             UpdateSignedPlayer(playerInfo);
         }
     }

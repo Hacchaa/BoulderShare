@@ -443,8 +443,7 @@ namespace BoulderNotes{
     public class BNRecord{
         public enum Condition{Worst, Bad, Normal, Good, Best};
         [SerializeField] private string id;
-
-        [SerializeField] private string date;
+        [SerializeField] private string time;
         [SerializeField] private Condition condition;
         [SerializeField] private string comment;
         [SerializeField] private int completeRate;
@@ -452,7 +451,7 @@ namespace BoulderNotes{
 
         public BNRecord(){
             id = BNGymDataCenter.PREFIX_ID_RECORD + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
-            SetDate(DateTime.Now);
+            SetTime(DateTime.Now);
         }
 
         public bool IsSame(BNRecord rec){
@@ -465,14 +464,26 @@ namespace BoulderNotes{
             return id;
         }
 
-        public string GetDate(){
-            return date;
+        public string GetTime(){
+            return time;
         }
-        //yyyy/MM/ddをyyyy年M月d日に変換して返す
+
+        public string GetDate(){
+            DateTime t = DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
+
+            return t.ToString(BNGymDataCenter.FORMAT_DATE2);
+        }
+        //timeをyyyy年M月d日に変換して返す
         public string GetDate2(){
-            DateTime t = DateTime.ParseExact(date, BNGymDataCenter.FORMAT_DATE2, null);
+            DateTime t = DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
 
             return t.ToString(BNGymDataCenter.FORMAT_DATE);            
+        }
+        //H:mm
+        public string GetDate3(){
+            DateTime t = DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
+
+            return t.ToString(BNGymDataCenter.FORMAT_HM);            
         }
 
         public Condition GetCondition(){
@@ -494,8 +505,8 @@ namespace BoulderNotes{
         public void SetID(string str){
             id = str;
         }
-        public void SetDate(DateTime t){
-            date = t.ToString(BNGymDataCenter.FORMAT_DATE2);
+        public void SetTime(DateTime t){
+            time = t.ToString(BNGymDataCenter.FORMAT_TIME);
         }
 
         public void SetCondition(Condition cond){

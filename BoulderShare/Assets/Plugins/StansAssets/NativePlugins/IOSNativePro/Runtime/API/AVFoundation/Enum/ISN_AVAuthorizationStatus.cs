@@ -6,7 +6,7 @@ namespace SA.iOS.AVFoundation
     public enum ISN_AVAuthorizationStatus
     {
         /// <summary>
-        /// Explicit user permission is required for media capture, 
+        /// Explicit user permission is required for media capture,
         /// but the user has not yet granted or denied such permission.
         /// </summary>
         NotDetermined = 0,
@@ -22,9 +22,9 @@ namespace SA.iOS.AVFoundation
         Denied = 2,
 
         /// <summary>
-        /// The user has explicitly granted permission for media capture, 
+        /// The user has explicitly granted permission for media capture,
         /// or explicit user permission is not necessary for the media type in question.
         /// </summary>
-        Authorized = 3
+        Authorized = 3,
     }
 }

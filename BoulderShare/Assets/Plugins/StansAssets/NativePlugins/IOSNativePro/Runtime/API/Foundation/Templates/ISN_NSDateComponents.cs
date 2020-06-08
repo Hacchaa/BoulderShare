@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace SA.iOS.Foundation
 {
-
     /// <summary>
-    /// An object that specifies a date or time in terms of units (such as year, month, day, hour, and minute) 
+    /// An object that specifies a date or time in terms of units (such as year, month, day, hour, and minute)
     /// to be evaluated in a calendar system and time zone.
     /// </summary>
     [Serializable]
-    public class ISN_NSDateComponents 
+    public class ISN_NSDateComponents
     {
-
         //--------------------------------------
         // Accessing Hours and Seconds
         //--------------------------------------
@@ -29,23 +26,19 @@ namespace SA.iOS.Foundation
         /// </summary>
         public long Minute;
 
-
         /// <summary>
         /// The number of second units for the receiver.
         /// </summary>
         public long Second;
-
 
         /// <summary>
         /// The number of nanosecond units for the receiver.
         /// </summary>
         public long Nanosecond;
 
-
         //--------------------------------------
         // Accessing Years and Months
         //--------------------------------------
-
 
         /// <summary>
         /// The number of years.
@@ -61,7 +54,7 @@ namespace SA.iOS.Foundation
         /// The number of days.
         /// </summary>
         public long Day;
-        
+
         /// <summary>
         /// The number of the weekdays.
         ///

@@ -1,10 +1,5 @@
-using UnityEngine;
-using System.Collections;
-
-
 namespace SA.CrossPlatform.GameServices
 {
-
     /// <summary>
     /// The period of time to which a player’s best score is restricted.
     /// </summary>

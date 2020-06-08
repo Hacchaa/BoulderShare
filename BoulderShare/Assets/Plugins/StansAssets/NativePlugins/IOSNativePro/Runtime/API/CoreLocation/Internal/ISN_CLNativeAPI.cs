@@ -9,21 +9,18 @@ using SA.Foundation.Templates;
 using SA.iOS.Utilities;
 using UnityEngine;
 
-
 #endif
-
 
 namespace SA.iOS.CoreLocation
 {
     /// <summary>
     /// The object that you use to start and stop the delivery of location-related events to your app.
     /// </summary>
-    internal static class ISN_CLNativeAPI
+    static class ISN_CLNativeAPI
     {
-        
 #if API_ENABLED
         [DllImport("__Internal")] static extern bool _ISN_CL_LocationServicesEnabled();
-        
+
         [DllImport("__Internal")] static extern int  _ISN_CL_AuthorizationStatus();
         [DllImport("__Internal")] static extern void _ISN_CL_RequestAlwaysAuthorization();
         [DllImport("__Internal")] static extern void _ISN_CL_RequestWhenInUseAuthorization();
@@ -36,22 +33,22 @@ namespace SA.iOS.CoreLocation
             IntPtr finishDeferred,
             IntPtr pause,
             IntPtr resume);
-        
+
         [DllImport("__Internal")] static extern void _ISN_CL_RequestLocation();
         [DllImport("__Internal")] static extern void _ISN_CL_StartUpdatingLocation();
         [DllImport("__Internal")] static extern void _ISN_CL_StopUpdatingLocation();
-        
+
         [DllImport("__Internal")] static extern bool _ISN_CL_PausesLocationUpdatesAutomatically();
         [DllImport("__Internal")] static extern void _ISN_CL_SetPausesLocationUpdatesAutomatically(bool value);
-        
+
         [DllImport("__Internal")] static extern bool _ISN_CL_AllowsBackgroundLocationUpdates();
         [DllImport("__Internal")] static extern void _ISN_CL_SetAllowsBackgroundLocationUpdates(bool value);
-        
+
         [DllImport("__Internal")] static extern void _ISN_CL_SetDesiredAccuracy(int value);
-        
+
         [DllImport("__Internal")] static extern void _ISN_CL_SetDistanceFilter(double value);
         [DllImport("__Internal")] static extern double _ISN_CL_GetDistanceFilter();
-        
+
         [DllImport("__Internal")] static extern double _ISN_CL_Cllocation_DistanceFromLocation(string location1, string location2);
 #endif
 
@@ -60,10 +57,10 @@ namespace SA.iOS.CoreLocation
 #if API_ENABLED
             return _ISN_CL_LocationServicesEnabled();
 #else
-            return  false;
+            return false;
 #endif
         }
-        
+
         public static void RequestAlwaysAuthorization()
         {
 #if API_ENABLED
@@ -98,8 +95,7 @@ namespace SA.iOS.CoreLocation
             _ISN_CL_StopUpdatingLocation();
 #endif
         }
-        
-        
+
         public static void SetDesiredAccuracy(ISN_CLLocationAccuracy value)
         {
 #if API_ENABLED
@@ -107,7 +103,7 @@ namespace SA.iOS.CoreLocation
 #endif
         }
 
-        public static void SetDelegate(ISN_iCLLocationManagerDelegate @delegate)
+        public static void SetDelegate(ISN_ICLLocationManagerDelegate @delegate)
         {
 #if API_ENABLED
             _ISN_CL_SetDelegate(
@@ -139,7 +135,6 @@ namespace SA.iOS.CoreLocation
             );
 #endif
         }
-        
 
         public static bool PausesLocationUpdatesAutomatically
         {
@@ -148,7 +143,7 @@ namespace SA.iOS.CoreLocation
 #if API_ENABLED
                 return _ISN_CL_PausesLocationUpdatesAutomatically();
 #else
-            return  false;
+                return false;
 #endif
             }
 
@@ -159,8 +154,7 @@ namespace SA.iOS.CoreLocation
 #endif
             }
         }
-        
-        
+
         public static double DistanceFilter
         {
             get
@@ -168,7 +162,7 @@ namespace SA.iOS.CoreLocation
 #if API_ENABLED
                 return _ISN_CL_GetDistanceFilter();
 #else
-                return  0;
+                return 0;
 #endif
             }
 
@@ -179,7 +173,7 @@ namespace SA.iOS.CoreLocation
 #endif
             }
         }
-        
+
         public static bool AllowsBackgroundLocationUpdates
         {
             get
@@ -187,7 +181,7 @@ namespace SA.iOS.CoreLocation
 #if API_ENABLED
                 return _ISN_CL_AllowsBackgroundLocationUpdates();
 #else
-            return  false;
+                return false;
 #endif
             }
 
@@ -198,7 +192,7 @@ namespace SA.iOS.CoreLocation
 #endif
             }
         }
-        
+
         public static ISN_CLAuthorizationStatus AuthorizationStatus
         {
             get
@@ -206,11 +200,10 @@ namespace SA.iOS.CoreLocation
 #if API_ENABLED
                 return (ISN_CLAuthorizationStatus) _ISN_CL_AuthorizationStatus();
 #else
-            return  ISN_CLAuthorizationStatus.NotDetermined;
+                return ISN_CLAuthorizationStatus.NotDetermined;
 #endif
             }
         }
-
 
         public static double CllocationDistanceFromLocation(ISN_CLLocation location1, ISN_CLLocation location2)
         {
@@ -220,7 +213,5 @@ namespace SA.iOS.CoreLocation
             return 0;
 #endif
         }
-    
-        
     }
 }

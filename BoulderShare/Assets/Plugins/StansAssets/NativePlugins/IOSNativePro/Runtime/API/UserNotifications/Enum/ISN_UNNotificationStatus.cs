@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.UserNotifications
 {
     /// <summary>
     /// Constants indicating the current status of a notification setting.
     /// </summary>
-    public enum ISN_UNNotificationStatus 
+    public enum ISN_UNNotificationStatus
     {
-        // The application does not support this notification type
+        /// <summary>
+        /// The application does not support this notification type
+        /// </summary>
         NotSupported = 0,
 
-        // The notification setting is turned off.
+        /// <summary>
+        /// The notification setting is turned off.
+        /// </summary>
         Disabled,
 
-        // The notification setting is turned on.
+        /// <summary>
+        /// The notification setting is turned on.
+        /// </summary>
         Enabled,
     }
 }

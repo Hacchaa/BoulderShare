@@ -1,37 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Utility;
-namespace SA.iOS.ReplayKit.Internal
+
+namespace SA.iOS.ReplayKit
 {
     /// <summary>
     /// This class is for plugin internal use only
     /// </summary>
-    internal static class ISN_RPNativeLib 
+    static class ISN_RPNativeLib
     {
+        static ISN_iRRAPI s_Api;
 
+        public static ISN_iRRAPI Api
+        {
+            get
+            {
+                if (!ISN_Settings.Instance.ReplayKit) SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PluginTittle, "Replay Kit");
 
-        private static ISN_iRRAPI m_api = null;
-        public static ISN_iRRAPI API {
-            get {
-
-                if (!ISN_Settings.Instance.ReplayKit) {
-                    SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PLUGIN_NAME, "Replay Kit");
+                if (s_Api == null)
+                {
+                    if (Application.isEditor)
+                        s_Api = new ISN_RPEditorAPI();
+                    else
+                        s_Api = ISN_RPNativeAPI.Instance;
                 }
 
-
-                if (m_api == null) {
-                    if (Application.isEditor) {
-                        m_api = new ISN_RPEditorAPI();
-                    } else {
-                        m_api = ISN_RPNativeAPI.Instance;
-                    }
-                }
-
-                return m_api;
+                return s_Api;
             }
         }
-      
     }
 }

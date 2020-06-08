@@ -2,26 +2,29 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SA.GIF {
-	internal static class ProxyPool  {
+namespace SA.GIF
+{
+    static class ProxyPool
+    {
+        const string CLASS_NAME = "com.stansassets.gif.Bridge";
 
-		private const string CLASS_NAME = "com.stansassets.gif.Bridge";
+#if UNITY_ANDROID
+		private static Dictionary<string, AndroidJavaObject> pool = new Dictionary<string, AndroidJavaObject>();
+#endif
 
-		#if UNITY_ANDROID
-		private static Dictionary<string, AndroidJavaObject> pool =  new Dictionary<string, AndroidJavaObject>();
-		#endif
+        public static void ShareFacebook(string message, string path, string apiKey)
+        {
+            CallStatic(CLASS_NAME, "FacebookShare", message, path, apiKey);
+        }
 
-		public static void ShareFacebook(string message, string path, string apiKey) {
-			CallStatic (CLASS_NAME, "FacebookShare", message, path, apiKey);
-		}
+        public static void ShareTwitter(string message, string path)
+        {
+            CallStatic(CLASS_NAME, "TwitterShare", message, path);
+        }
 
-		public static void ShareTwitter(string message, string path) {
-			CallStatic (CLASS_NAME, "TwitterShare", message, path);
-		}
-
-		public static void CallStatic(string className, string methodName, params object[] args) {
-			#if UNITY_ANDROID
-
+        public static void CallStatic(string className, string methodName, params object[] args)
+        {
+#if UNITY_ANDROID
 			if(Application.platform != RuntimePlatform.Android) {
 				return;
 			}
@@ -46,10 +49,10 @@ namespace SA.GIF {
 			} catch(System.Exception ex) {
 				Debug.LogWarning(ex.Message);
 			}
-			#endif
-		}
+#endif
+        }
 
-		#if UNITY_ANDROID
+#if UNITY_ANDROID
 		public static ReturnType CallStatic<ReturnType>(string className, string methodName, params object[] args) {
 
 			Debug.Log("SA: Using proxy for class: " + className + " method:" + methodName);
@@ -74,7 +77,6 @@ namespace SA.GIF {
 			return default(ReturnType);
 
 		}
-		#endif
-
-	}
+#endif
+    }
 }

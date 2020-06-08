@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 
@@ -8,11 +7,9 @@ using FB_Plugin = Facebook.Unity;
 
 namespace SA.Facebook
 {
-
-    internal class SA_ILoginResult_Proxy : SA_IResult_Proxy, ILoginResult
+    class SA_ILoginResult_Proxy : SA_IResult_Proxy, ILoginResult
     {
 #if SA_FB_INSTALLED
-       // private FB_Plugin.ILoginResult m_result;
         private SA_AccessToken m_accessToken = null;
 
         public SA_ILoginResult_Proxy(FB_Plugin.ILoginResult result):base(result) {
@@ -25,8 +22,10 @@ namespace SA.Facebook
 
 #endif
 
-        public SA_AccessToken AccessToken {
-            get {
+        public SA_AccessToken AccessToken
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return m_accessToken;
 #else

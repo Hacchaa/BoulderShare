@@ -1,105 +1,81 @@
 using UnityEngine;
 using UnityEditor;
-
-
 using SA.iOS.XCode;
 using SA.Foundation.Editor;
 
-
 namespace SA.iOS
 {
-    public class ISN_FoundationUI : ISN_ServiceSettingsUI
+    class ISN_FoundationUI : ISN_ServiceSettingsUI
     {
-
-        public override void OnAwake() {
+        public override void OnAwake()
+        {
             base.OnAwake();
 
-            AddFeatureUrl("iCloud Key-Value", "https://unionassets.com/ios-native-pro/icloud-key-value-storage-615");
-            AddFeatureUrl("Build Info", "https://unionassets.com/ios-native-pro/buildinfo-616");
-            AddFeatureUrl("App Environment", "https://unionassets.com/ios-native-pro/buildinfo-616#app-environment");
-            AddFeatureUrl("Time Zone", "https://unionassets.com/ios-native-pro/time-zone-671");
-            AddFeatureUrl("Check If App Installed", "https://unionassets.com/ios-native-pro/url-queries-schemes-607#how-to-check-programmatically-if-an-app-is-installed");
+            AddFeatureUrl("iCloud Key-Value", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/iCloud-Key-Value-Storage");
+            AddFeatureUrl("Build Info", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/BuildInfo");
+            AddFeatureUrl("App Environment", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/BuildInfo#app-environment");
+            AddFeatureUrl("Time Zone", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Time-Zone");
+            AddFeatureUrl("Check If App Installed", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Using-URL-Schemes#how-to-check-programmatically-if-app-is-installed");
 
-            AddFeatureUrl("Notification Center", "https://unionassets.com/ios-native-pro/notification-center-820");
-            AddFeatureUrl("Locale", "https://unionassets.com/ios-native-pro/locale-823");
-            AddFeatureUrl("System Language", "https://unionassets.com/ios-native-pro/locale-823#system-language");
-            AddFeatureUrl("Preferred Language", "https://unionassets.com/ios-native-pro/locale-823#preferred-language");
-
+            AddFeatureUrl("Notification Center", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Notification-Center");
+            AddFeatureUrl("Locale", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Locale");
+            AddFeatureUrl("System Language", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Locale#system-language");
+            AddFeatureUrl("Preferred Language", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Locale#preferred-language");
 
             //Av foundation
-            AddFeatureUrl("Audio Session", "https://unionassets.com/ios-native-pro/audio-session-617");
-            AddFeatureUrl("Camera Permission", "https://unionassets.com/ios-native-pro/camera-permission-757");
-
-        }
-        public override string Title {
-            get {
-                return "Foundation";
-            }
+            AddFeatureUrl("Audio Session", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Audio-Session");
+            AddFeatureUrl("Camera Permission", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Camera-Permission");
         }
 
-        public override string Description {
-            get {
-                return "Access essential data types, collections, and operating-system services to define the base layer of functionality for your app.";
-            }
-        }
+        public override string Title => "Foundation";
 
-        protected override Texture2D Icon {
-            get {
-                return SA_EditorAssets.GetTextureAtPath(ISN_Skin.ICONS_PATH + "Foundation_icon.png");
-            }
-        }
+        public override string Description => "Access essential data types, collections, and operating-system services to define the base layer of functionality for your app.";
 
-        public override SA_iAPIResolver Resolver {
-            get {
-                return ISN_Preprocessor.GetResolver<ISN_FoundationResolver>();
-            }
-        }
+        protected override Texture2D Icon => SA_EditorAssets.GetTextureAtPath(ISN_Skin.IconsPath + "Foundation_icon.png");
 
-        protected override bool CanBeDisabled {
-            get {
-                return false;
-            }
-        }
+        public override SA_iAPIResolver Resolver => ISN_Preprocessor.GetResolver<ISN_FoundationResolver>();
 
+        protected override bool CanBeDisabled => false;
 
-
-        protected override void OnServiceUI() {
+        protected override void OnServiceUI()
+        {
             DrawICloudSettings();
         }
 
-        private void DrawICloudSettings() {
-
-            using (new SA_WindowBlockWithSpace(new GUIContent("iCloud Key-Value Storage"))) {
-
+        void DrawICloudSettings()
+        {
+            using (new SA_WindowBlockWithSpace(new GUIContent("iCloud Key-Value Storage")))
+            {
                 var description = new GUIContent("Key-value storage is similar to Unity PlayerPrefs; " +
-                                                  "but values that you place in key-value storage are available to every " +
-                                                  "instance of your app on all of a user’s various devices.");
+                    "but values that you place in key-value storage are available to every " +
+                    "instance of your app on all of a user’s various devices.");
 
-
-
-                using (new SA_GuiBeginHorizontal()) {
+                using (new SA_GuiBeginHorizontal())
+                {
                     GUILayout.Space(15);
                     EditorGUILayout.LabelField(description, SA_PluginSettingsWindowStyles.DescribtionLabelStyle);
                 }
 
                 EditorGUILayout.Space();
 
-                bool KeyValueStorageEnabled = ISD_API.Capability.iCloud.Enabled && ISD_API.Capability.iCloud.keyValueStorage;
+                var KeyValueStorageEnabled = ISD_API.Capability.iCloud.Enabled && ISD_API.Capability.iCloud.keyValueStorage;
                 EditorGUI.BeginChangeCheck();
                 KeyValueStorageEnabled = SA_EditorGUILayout.ToggleFiled("API Status", KeyValueStorageEnabled, SA_StyledToggle.ToggleType.EnabledDisabled);
 
-                if (EditorGUI.EndChangeCheck()) {
-                    if (KeyValueStorageEnabled) {
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (KeyValueStorageEnabled)
+                    {
                         ISD_API.Capability.iCloud.Enabled = true;
                         ISD_API.Capability.iCloud.keyValueStorage = true;
-                    } else {
+                    }
+                    else
+                    {
                         ISD_API.Capability.iCloud.Enabled = false;
                         ISD_API.Capability.iCloud.keyValueStorage = false;
                     }
                 }
- 
             }
         }
     }
-
 }

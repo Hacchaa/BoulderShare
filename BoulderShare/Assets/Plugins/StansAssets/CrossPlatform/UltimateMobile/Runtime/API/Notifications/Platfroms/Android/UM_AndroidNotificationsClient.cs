@@ -6,62 +6,72 @@ using SA.Foundation.UtilitiesEditor;
 
 namespace SA.CrossPlatform.Notifications
 {
-    public class UM_AndroidNotificationsClient : UM_AbstractNotificationsClient, UM_iNotificationsClient
+    class UM_AndroidNotificationsClient : UM_AbstractNotificationsClient, UM_iNotificationsClient
     {
-        public UM_AndroidNotificationsClient() {
-            AN_NotificationManager.OnNotificationClick.AddSafeListener(this, (android_request) => {
+        public UM_AndroidNotificationsClient()
+        {
+            AN_NotificationManager.OnNotificationClick.AddSafeListener(this, (android_request) =>
+            {
                 var request = ToUMRequest(android_request);
                 m_OnNotificationClick.Invoke(request);
             });
 
-            AN_NotificationManager.OnNotificationReceived.AddSafeListener(this, (android_request) => {
+            AN_NotificationManager.OnNotificationReceived.AddSafeListener(this, (android_request) =>
+            {
                 var request = ToUMRequest(android_request);
                 m_OnNotificationReceived.Invoke(request);
             });
         }
 
-
-        public override void RequestAuthorization(Action<SA_Result> callback) {
-       
-            AN_PermissionsUtility.TryToResolvePermission(AMM_ManifestPermission.WAKE_LOCK, (granted) => {
-                if (granted) {
+        public override void RequestAuthorization(Action<SA_Result> callback)
+        {
+            AN_PermissionsUtility.TryToResolvePermission(AMM_ManifestPermission.WAKE_LOCK, (granted) =>
+            {
+                if (granted)
+                {
                     callback.Invoke(new SA_Result());
-                } else {
+                }
+                else
+                {
                     var error = new SA_Error(100, "User declined");
                     callback.Invoke(new SA_Result(error));
-                }   
+                }
             });
         }
 
-
-        public UM_NotificationRequest LastOpenedNotification {
-            get {
-                if(AN_NotificationManager.LastOpenedNotificationRequest == null) {
-                    return null;
-                }
+        public UM_NotificationRequest LastOpenedNotification
+        {
+            get
+            {
+                if (AN_NotificationManager.LastOpenedNotificationRequest == null) return null;
 
                 return ToUMRequest(AN_NotificationManager.LastOpenedNotificationRequest);
             }
         }
 
-        public void RemoveAllPendingNotifications() {
+        public void RemoveAllPendingNotifications()
+        {
             AN_NotificationManager.UnscheduleAll();
         }
 
-        public void RemoveAllDeliveredNotifications() {
+        public void RemoveAllDeliveredNotifications()
+        {
             AN_NotificationManager.CancelAll();
         }
 
-        public void RemovePendingNotification(int identifier) {
+        public void RemovePendingNotification(int identifier)
+        {
             AN_NotificationManager.Unschedule(identifier);
         }
 
-        public void RemoveDeliveredNotification(int identifier) {
+        public void RemoveDeliveredNotification(int identifier)
+        {
             AN_NotificationManager.Cancel(identifier);
         }
 
-        protected override void AddNotificationRequestInternal(UM_NotificationRequest request, Action<SA_Result> callback) {
-            try 
+        protected override void AddNotificationRequestInternal(UM_NotificationRequest request, Action<SA_Result> callback)
+        {
+            try
             {
                 var builder = new AN_NotificationCompat.Builder();
                 builder.SetContentTitle(request.Content.Title);
@@ -69,25 +79,25 @@ namespace SA.CrossPlatform.Notifications
                 if (request.Content.BadgeNumber != -1)
                     builder.SetNumber(request.Content.BadgeNumber);
 
-                if (string.IsNullOrEmpty(request.Content.SoundName)) {
+                if (string.IsNullOrEmpty(request.Content.SoundName))
+                {
                     builder.SetDefaults(AN_Notification.DEFAULT_LIGHTS | AN_Notification.DEFAULT_SOUND);
-                } else {
-                    string soundName = SA_AssetDatabase.GetAssetNameWithoutExtension(request.Content.SoundName);
+                }
+                else
+                {
+                    var soundName = SA_AssetDatabase.GetAssetNameWithoutExtension(request.Content.SoundName);
                     builder.SetSound(soundName);
                 }
 
-
-                if (!string.IsNullOrEmpty(request.Content.IconName)) {
-                    string iconName = SA_AssetDatabase.GetAssetNameWithoutExtension(request.Content.IconName);
+                if (!string.IsNullOrEmpty(request.Content.IconName))
+                {
+                    var iconName = SA_AssetDatabase.GetAssetNameWithoutExtension(request.Content.IconName);
                     builder.SetSmallIcon(iconName);
                 }
 
-                if (request.Content.LargeIcon != null) {
-                    builder.SetLargeIcon(request.Content.LargeIcon);
-                }
+                if (request.Content.LargeIcon != null) builder.SetLargeIcon(request.Content.LargeIcon);
 
-
-                UM_TimeIntervalNotificationTrigger timeIntervalTrigger = (UM_TimeIntervalNotificationTrigger)request.Trigger;
+                var timeIntervalTrigger = (UM_TimeIntervalNotificationTrigger)request.Trigger;
 
                 var trigger = new AN_AlarmNotificationTrigger();
                 trigger.SetDate(TimeSpan.FromSeconds(timeIntervalTrigger.Interval));
@@ -98,14 +108,16 @@ namespace SA.CrossPlatform.Notifications
                 AN_NotificationManager.Schedule(android_request);
 
                 callback.Invoke(new SA_Result());
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 var error = new SA_Error(100, ex.Message);
                 callback.Invoke(new SA_Result(error));
             }
         }
 
-
-        private UM_NotificationRequest ToUMRequest(AN_NotificationRequest android_request) {
+        UM_NotificationRequest ToUMRequest(AN_NotificationRequest android_request)
+        {
             var content = new UM_Notification();
             content.SetTitle(android_request.Content.Title);
             content.SetBody(android_request.Content.Text);

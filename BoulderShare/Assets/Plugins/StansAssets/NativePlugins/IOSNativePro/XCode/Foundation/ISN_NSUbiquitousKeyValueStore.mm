@@ -47,7 +47,7 @@ static ISN_NSUbiquitousKeyValueStore * s_storageInstance;
         result = [[ISN_NSKeyValueResult alloc] initWithError:error];
         
         ISN_NSKeyValueObject *kv = [[ISN_NSKeyValueObject alloc] initWithData:key value:@""];
-        [result setM_keyValueObject:kv];
+        [result setM_KeyValueObject:kv];
         
     } else {
         ISN_NSKeyValueObject *object = [[ISN_NSKeyValueObject alloc] initWithData:key value:value];
@@ -73,7 +73,7 @@ static ISN_NSUbiquitousKeyValueStore * s_storageInstance;
     if (!reasonForChange)
         return;
     
-    updatedData.m_reason = [reasonForChange intValue];
+    updatedData.m_Reason = [reasonForChange intValue];
     NSUbiquitousKeyValueStore* store = [NSUbiquitousKeyValueStore defaultStore];
     NSArray* changedKeys = [userInfo objectForKey:NSUbiquitousKeyValueStoreChangedKeysKey];
     NSMutableArray<ISN_NSKeyValueObject> *updatedKeyValueArray = [[NSMutableArray<ISN_NSKeyValueObject> alloc] init];
@@ -86,7 +86,7 @@ static ISN_NSUbiquitousKeyValueStore * s_storageInstance;
         [updatedKeyValueArray addObject:object];
     }
     
-    [updatedData setM_updatedData:updatedKeyValueArray];
+    [updatedData setM_UpdatedData:updatedKeyValueArray];
     
     ISN_SendMessage(UNITY_CK_LISTENER, "OnStoreDidChange", [updatedData toJSONString]);
 }

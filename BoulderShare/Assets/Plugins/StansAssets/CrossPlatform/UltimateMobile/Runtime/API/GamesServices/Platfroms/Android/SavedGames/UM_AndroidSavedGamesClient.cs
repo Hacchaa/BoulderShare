@@ -7,36 +7,39 @@ namespace SA.CrossPlatform.GameServices
     /// <summary>
     /// A client to interact with saved games functionality.
     /// </summary>
-    internal class UM_AndroidSavedGamesClient : UM_AbstractSavedGamesClient, UM_iSavedGamesClient
+    class UM_AndroidSavedGamesClient : UM_AbstractSavedGamesClient, UM_iSavedGamesClient
     {
-        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback) {
+        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback)
+        {
             var client = AN_Games.GetSnapshotsClient();
-            client.Load(result => {
-
+            client.Load(result =>
+            {
                 UM_SavedGamesMetadataResult loadResult;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     loadResult = new UM_SavedGamesMetadataResult();
-                    foreach (var meta in result.Snapshots) 
+                    foreach (var meta in result.Snapshots)
                     {
                         var anMeta = new UM_AndroidSavedGameMetadata(meta);
                         loadResult.AddMetadata(anMeta);
                     }
-                } 
-                else 
+                }
+                else
                 {
                     loadResult = new UM_SavedGamesMetadataResult(result.Error);
                 }
-                
+
                 callback.Invoke(loadResult);
             });
         }
 
-        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback) {
-            UM_AndroidSavedGameMetadata an_meta = (UM_AndroidSavedGameMetadata)game;
+        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback)
+        {
+            var an_meta = (UM_AndroidSavedGameMetadata)game;
 
             var client = AN_Games.GetSnapshotsClient();
-            client.Delete(an_meta.NativeMeta, (result) => {
+            client.Delete(an_meta.NativeMeta, (result) =>
+            {
                 callback.Invoke(result);
             });
         }
@@ -52,35 +55,37 @@ namespace SA.CrossPlatform.GameServices
             androidMeta.SetProgressValue(meta.ProgressValue);
             androidMeta.SetPlayedTimeMillis(meta.PlayedTime);
             androidMeta.SetDescription(meta.Description);
-           
+
             //we know this is going to by synchronous
             meta.LoadCoverImage((texture) =>
             {
                 androidMeta.SetCoverImage(texture);
             });
-            
+
             SaveAndroidSnapShotGame(name, data, androidMeta.Build(), callback);
         }
 
-        private void SaveAndroidSnapShotGame(string name, byte[] data, AN_SnapshotMetadataChange meta,  Action<SA_Result> callback)
+        void SaveAndroidSnapShotGame(string name, byte[] data, AN_SnapshotMetadataChange meta, Action<SA_Result> callback)
         {
             var client = AN_Games.GetSnapshotsClient();
+
             //This resolution is picked since this is the only we can currently implement for iOS
             //so we pick same one for android, just to be consistent.
             var conflictPolicy = AN_SnapshotsClient.ResolutionPolicy.MOST_RECENTLY_MODIFIED;
 
-            client.Open(name, true, conflictPolicy, (result) => {
-                if (result.IsSucceeded) 
+            client.Open(name, true, conflictPolicy, (result) =>
+            {
+                if (result.IsSucceeded)
                 {
                     var snapshot = result.Data.GetSnapshot();
                     snapshot.WriteBytes(data);
-                    client.CommitAndClose(snapshot, meta, commitResult => 
+                    client.CommitAndClose(snapshot, meta, commitResult =>
                     {
                         ReportGameSave(name, result);
                         callback.Invoke(result);
                     });
-                } 
-                else 
+                }
+                else
                 {
                     callback.Invoke(result);
                 }
@@ -97,28 +102,24 @@ namespace SA.CrossPlatform.GameServices
             var client = AN_Games.GetSnapshotsClient();
             var conflictPolicy = AN_SnapshotsClient.ResolutionPolicy.LAST_KNOWN_GOOD;
 
-            client.Open(game.Name, true, conflictPolicy, result => 
+            client.Open(game.Name, true, conflictPolicy, result =>
             {
                 UM_SavedGameDataLoadResult loadResult;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var snapshot = result.Data.GetSnapshot();
                     var data = snapshot.ReadFully();
-                    client.CommitAndClose(snapshot, AN_SnapshotMetadataChange.EMPTY_CHANGE, commitResult => 
+                    client.CommitAndClose(snapshot, AN_SnapshotMetadataChange.EMPTY_CHANGE, commitResult =>
                     {
                         if (commitResult.IsSucceeded)
-                        {
-                            loadResult = new UM_SavedGameDataLoadResult(data, new AndroidSaveInfo(commitResult.Metadata));
-                        } 
-                        else 
-                        {
+                            loadResult = new UM_SavedGameDataLoadResult(data, new UM_AndroidSaveInfo(commitResult.Metadata));
+                        else
                             loadResult = new UM_SavedGameDataLoadResult(commitResult.Error);
-                        }
 
                         callback.Invoke(loadResult);
                     });
-                } 
-                else 
+                }
+                else
                 {
                     loadResult = new UM_SavedGameDataLoadResult(result.Error);
                     callback.Invoke(loadResult);

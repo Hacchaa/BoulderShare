@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Utility;
 
 namespace SA.iOS.AVKit.Internal
@@ -9,25 +6,26 @@ namespace SA.iOS.AVKit.Internal
     /// <summary>
     /// This class is for plugin internal use only
     /// </summary>
-    internal static class ISN_AVKitLib 
+    static class ISN_AVKitLib
     {
-        private static ISN_iAVKitAPI m_api = null;
-        public static ISN_iAVKitAPI API {
-            get {
+        static ISN_iAVKitAPI s_Api;
 
-                if (!ISN_Settings.Instance.AVKit) {
-                    SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PLUGIN_NAME, "AV Kit");
+        public static ISN_iAVKitAPI API
+        {
+            get
+            {
+                if (!ISN_Settings.Instance.AVKit)
+                    SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PluginTittle, "AV Kit");
+
+                if (s_Api == null)
+                {
+                    if (Application.isEditor)
+                        s_Api = new ISN_AVKitEditorAPI();
+                    else
+                        s_Api = ISN_AVKitNativeAPI.Instance;
                 }
 
-                if (m_api == null) {
-                    if (Application.isEditor) {
-                        m_api = new ISN_AVKitEditorAPI();
-                    } else {
-                        m_api = ISN_AVKitNativeAPI.Instance;
-                    }
-                }
-
-                return m_api;
+                return s_Api;
             }
         }
     }

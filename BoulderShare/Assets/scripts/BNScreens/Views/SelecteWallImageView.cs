@@ -78,11 +78,11 @@ public class SelecteWallImageView : BNScreen
 					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
 			        ISN_UIAlertAction setAction = new ISN_UIAlertAction("設定する", ISN_UIAlertActionStyle.Default, () => {});
 
-                    setAction.MakePreffered();
+                    setAction.MakePreferred();
                     alert.AddAction(setAction);
                     alert.AddAction(okAction);
                     alert.Present();
-                    BNScreens.Instance.Interactive(true);
+                    //BNScreens.Instance.Interactive(true);
 				}else if (status == ISN_PHAuthorizationStatus.Restricted){
 					string title = "写真へのアクセスが制限されています";
 					string message = "";
@@ -92,7 +92,7 @@ public class SelecteWallImageView : BNScreen
 
                     alert.AddAction(okAction);
                     alert.Present();
-                    BNScreens.Instance.Interactive(true);
+                    //BNScreens.Instance.Interactive(true);
 				}
 			});
 			return ;
@@ -117,11 +117,11 @@ public class SelecteWallImageView : BNScreen
 					ISN_UIAlertAction okAction = new ISN_UIAlertAction("OK", ISN_UIAlertActionStyle.Default, () => {});
 			        ISN_UIAlertAction setAction = new ISN_UIAlertAction("設定する", ISN_UIAlertActionStyle.Default, () => {});
 
-                    setAction.MakePreffered();
+                    setAction.MakePreferred();
                     alert.AddAction(setAction);
                     alert.AddAction(okAction);
                     alert.Present();
-                    BNScreens.Instance.Interactive(true);
+                    //BNScreens.Instance.Interactive(true);
 				}else if (status == ISN_AVAuthorizationStatus.Restricted){
 					string title = "カメラへのアクセスが制限されています";
 					string message = "";
@@ -131,7 +131,7 @@ public class SelecteWallImageView : BNScreen
 
                     alert.AddAction(okAction);
                     alert.Present();
-                    BNScreens.Instance.Interactive(true);
+                    //BNScreens.Instance.Interactive(true);
 				}
 			});
 			return ;
@@ -141,7 +141,7 @@ public class SelecteWallImageView : BNScreen
 	private void OpenPhotoLibrary(){
         ISN_UIImagePickerController picker = new ISN_UIImagePickerController();
         picker.SourceType = ISN_UIImagePickerControllerSourceType.Album;
-        picker.MediaTypes = new List<string>() { ISN_UIMediaType.IMAGE};
+        picker.MediaTypes = new List<string>() { ISN_UIMediaType.Image};
         picker.MaxImageSize = 1024;
         picker.ImageCompressionFormat = ISN_UIImageCompressionFormat.JPEG;
         picker.ImageCompressionRate = 0.8f;
@@ -162,7 +162,7 @@ public class SelecteWallImageView : BNScreen
         ISN_UIImagePickerController picker = new ISN_UIImagePickerController();
         picker.SourceType = ISN_UIImagePickerControllerSourceType.Camera;
         picker.CameraDevice = ISN_UIImagePickerControllerCameraDevice.Rear;
-        picker.MediaTypes = new List<string>() { ISN_UIMediaType.IMAGE};
+        picker.MediaTypes = new List<string>() { ISN_UIMediaType.Image};
         picker.MaxImageSize = 1024;
         picker.ImageCompressionFormat = ISN_UIImageCompressionFormat.JPEG;
         picker.ImageCompressionRate = 0.8f;

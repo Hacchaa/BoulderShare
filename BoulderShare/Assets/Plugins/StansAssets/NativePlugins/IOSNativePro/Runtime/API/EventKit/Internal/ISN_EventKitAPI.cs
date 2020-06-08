@@ -1,14 +1,14 @@
 using SA.Foundation.Templates;
 using UnityEngine;
 
-namespace SA.iOS.EventKit.Internal
+namespace SA.iOS.EventKit
 {
-    internal interface ISN_EventKitAPI
+    interface ISN_EventKitAPI
     {
-        void EventKitRequestAccess(System.Action<SA_Result> callback, ISN_EntityType entityType);
-        void SaveEvent(System.Action<ISN_EventKitSaveResult> callback, ISN_EventKitDataRequest eventData, ISN_AlarmDataRequest alarmData, ISN_RecurrenceRuleRequest recurrenceRule);
+        void EventKitRequestAccess(System.Action<SA_Result> callback, ISN_EKEntityType ekEntityType);
+        void SaveEvent(System.Action<ISN_EKSaveResult> callback, ISN_EKDataRequest eventData, ISN_EKAlarmDataRequest alarmData, ISN_EKRecurrenceRuleRequest recurrenceRule);
         void RemoveEvent(System.Action<SA_Result> callback, string identifier);
-        void SaveReminder(System.Action<ISN_EventKitSaveResult> callback, ISN_EventKitDataRequest reminderData, ISN_AlarmDataRequest alarmData, ISN_RecurrenceRuleRequest recurrenceRule);
+        void SaveReminder(System.Action<ISN_EKSaveResult> callback, ISN_EKDataRequest reminderData, ISN_EKAlarmDataRequest alarmData, ISN_EKRecurrenceRuleRequest recurrenceRule);
         void RemoveReminder(System.Action<SA_Result> callback, string identifier);
     }
 }

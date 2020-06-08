@@ -12,100 +12,102 @@ using SA.Android.Utilities;
 
 namespace SA.CrossPlatform.GameServices
 {
-    internal class UM_AndroidSignInClient : UM_AbstractSignInClient, UM_iSignInClient
+    class UM_AndroidSignInClient : UM_AbstractSignInClient, UM_iSignInClient
     {
-        private readonly List<int> m_ResolvedErrors = new List<int>();
+        readonly List<int> m_ResolvedErrors = new List<int>();
 
-        public UM_AndroidSignInClient() 
+        public UM_AndroidSignInClient()
         {
-            SA_MonoEvents.OnApplicationPause.AddSafeListener(this, paused => 
+            SA_MonoEvents.OnApplicationPause.AddSafeListener(this, paused =>
             {
                 if (paused) return;
-                
+
                 //We do not want to do Silent SignIn on resume in case player not yet signed.
-                if (PlayerInfo.State == UM_PlayerState.SignedOut) 
-                {
+                if (PlayerInfo.State == UM_PlayerState.SignedOut)
+
                     // In case it's not null, this means we are missing something, so we will do  Silent SignIn
                     // The case may happen because we sending fail event on proxy Activity Destroy event.
                     // But proxy Activity Destroy not always means that player is failed to log in.
                     // We have to send fail event on proxy Activity Destroy, since if we not, in cases where google and our proxy
                     // activity both are destroyed, we will not get any event.
-                    if (AN_GoogleSignIn.GetLastSignedInAccount() == null) 
+                    if (AN_GoogleSignIn.GetLastSignedInAccount() == null)
                         return;
-                }
 
                 //We need to perform Silent SignIn every time we back from pause
-                SignInClient.SilentSignIn(silentSignInResult => 
+                SignInClient.SilentSignIn(silentSignInResult =>
                 {
-                    if (silentSignInResult.IsSucceeded) 
+                    if (silentSignInResult.IsSucceeded)
                         RetrievePlayer(result => { });
-                    else 
+                    else
+
                         //looks Like player singed out
                         UpdatePlayerInfo(null);
                 });
             });
         }
 
-        protected override void StartSingInFlow(Action<SA_Result> callback) 
+        protected override void StartSingInFlow(Action<SA_Result> callback)
         {
             m_ResolvedErrors.Clear();
-            var response =  AN_GoogleApiAvailability.IsGooglePlayServicesAvailable();
-            if(response == AN_ConnectionResult.SUCCESS) 
-            {
+            var response = AN_GoogleApiAvailability.IsGooglePlayServicesAvailable();
+            if (response == AN_ConnectionResult.SUCCESS)
                 StartSingInFlowInternal(callback);
-            } 
-            else 
-            {
-                AN_GoogleApiAvailability.MakeGooglePlayServicesAvailable((result) => {
-                    if(result.IsSucceeded)
+            else
+                AN_GoogleApiAvailability.MakeGooglePlayServicesAvailable((result) =>
+                {
+                    if (result.IsSucceeded)
                         StartSingInFlowInternal(callback);
                     else
                         callback.Invoke(new SA_Result(new SA_Error(AN_ConnectionResult.SERVICE_MISSING, "SERVICE_MISSING")));
                 });
-            }
         }
 
-        private void StartSingInFlowInternal(Action<SA_Result> callback) 
+        void StartSingInFlowInternal(Action<SA_Result> callback)
         {
             AN_Logger.Log("UM_AndroidSignInClient, starting silent sing-in");
-            SignInClient.SilentSignIn(silentSignInResult => 
+            SignInClient.SilentSignIn(silentSignInResult =>
             {
-                if(silentSignInResult.IsSucceeded) 
+                if (silentSignInResult.IsSucceeded)
                 {
                     AN_Logger.Log("UM_AndroidSignInClient, silent sing-in Succeeded");
                     RetrievePlayer(callback);
-                } 
-                else 
+                }
+                else
                 {
                     AN_Logger.Log("UM_AndroidSignInClient, silent sing-in Failed");
                     AN_Logger.Log("UM_AndroidSignInClient, starting interactive sing-in");
-                    SignInClient.SignIn(interactiveSignInResult => 
+                    SignInClient.SignIn(interactiveSignInResult =>
                     {
                         AN_Logger.Log("UM_AndroidSignInClient, interactive sing-in completed");
-                        if (interactiveSignInResult.IsSucceeded) 
+                        if (interactiveSignInResult.IsSucceeded)
                         {
                             AN_Logger.Log("UM_AndroidSignInClient, interactive sing-in succeeded");
                             RetrievePlayer(callback);
-                        } 
-                        else 
+                        }
+                        else
                         {
                             AN_Logger.Log("UM_AndroidSignInClient, interactive sing-in failed");
                             var errorCode = interactiveSignInResult.Error.Code;
-                            switch (errorCode) 
+                            switch (errorCode)
                             {
                                 //Retry may solve the issue
                                 case (int)AN_CommonStatusCodes.NETWORK_ERROR:
                                 case (int)AN_GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS:
                                     m_ResolvedErrors.Add(errorCode);
+
                                     //Let's see if we tried to do it before
-                                    if(m_ResolvedErrors.Contains(errorCode)) {
+                                    if (m_ResolvedErrors.Contains(errorCode))
+                                    {
                                         AN_Logger.Log("UM_AndroidSignInClient, sending fail result");
                                         callback.Invoke(new SA_Result(interactiveSignInResult.Error));
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         //Nope, this is new one, let's try to resolve it
                                         AN_Logger.Log("Trying to resolved failed sign-in result with code: " + errorCode);
                                         StartSingInFlowInternal(callback);
-                                    } 
+                                    }
+
                                     break;
                                 default:
                                     AN_Logger.Log("UM_AndroidSignInClient, sending fail result");
@@ -118,31 +120,31 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-        public void SingOut(Action<SA_Result> callback) 
+        public void SignOut(Action<SA_Result> callback)
         {
-            SignInClient.RevokeAccess(() => 
+            SignInClient.RevokeAccess(() =>
             {
                 UpdatePlayerInfo(null);
                 callback.Invoke(new SA_Result());
             });
         }
-        
+
         //--------------------------------------
         //  Private Methods
         //--------------------------------------
 
-        private void UpdatePlayerInfo(AN_Player player) 
+        void UpdatePlayerInfo(AN_Player player)
         {
             UM_PlayerInfo playerInfo;
-            if(player != null) 
+            if (player != null)
                 playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedIn, new UM_AndroidPlayer(player));
-            else 
+            else
                 playerInfo = new UM_PlayerInfo(UM_PlayerState.SignedOut, null);
 
             UpdateSignedPlayer(playerInfo);
         }
-        
-        private void RetrievePlayer(Action<SA_Result> callback) 
+
+        void RetrievePlayer(Action<SA_Result> callback)
         {
             AN_Logger.Log("UM_AndroidSignInClient, client signed-in, getting the player info");
 
@@ -155,43 +157,42 @@ namespace SA.CrossPlatform.GameServices
 
             var client = AN_Games.GetPlayersClient();
             SA_Result apiResult;
-            client.GetCurrentPlayer(result => 
+            client.GetCurrentPlayer(result =>
             {
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     apiResult = new SA_Result();
                     AN_Logger.Log("UM_AndroidSignInClient, player info retrieved, OnPlayerChanged event will be sent");
                     UpdatePlayerInfo(result.Data);
-                } 
-                else 
+                }
+                else
                 {
                     apiResult = new SA_Result(result.Error);
                 }
-                
+
                 AN_Logger.Log("UM_AndroidSignInClient, sending sing in result");
                 callback.Invoke(apiResult);
             });
         }
 
-
-        private AN_GoogleSignInClient SignInClient 
+        AN_GoogleSignInClient SignInClient
         {
-            get 
+            get
             {
                 var builder = new AN_GoogleSignInOptions.Builder(AN_GoogleSignInOptions.DEFAULT_SIGN_IN);
                 builder.RequestId();
                 builder.RequestScope(new AN_Scope(AN_Scopes.GAMES_LITE));
 
-                if (UM_Settings.Instance.AndroidRequestEmail) 
+                if (UM_Settings.Instance.AndroidRequestEmail)
                     builder.RequestEmail();
 
-                if (UM_Settings.Instance.AndroidRequestProfile) 
+                if (UM_Settings.Instance.AndroidRequestProfile)
                     builder.RequestProfile();
 
-                if(UM_Settings.Instance.AndroidSavedGamesEnabled) 
+                if (UM_Settings.Instance.AndroidSavedGamesEnabled)
                     builder.RequestScope(AN_Drive.SCOPE_APPFOLDER);
 
-                if(UM_Settings.Instance.AndroidRequestServerAuthCode) 
+                if (UM_Settings.Instance.AndroidRequestServerAuthCode)
                     builder.RequestServerAuthCode(UM_Settings.Instance.AndroidGMSServerId, false);
 
                 var gso = builder.Build();

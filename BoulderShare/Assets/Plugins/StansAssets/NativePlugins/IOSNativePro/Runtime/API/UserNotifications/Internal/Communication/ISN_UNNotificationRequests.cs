@@ -2,19 +2,14 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SA.iOS.UserNotifications.Internal
+namespace SA.iOS.UserNotifications
 {
-
     [Serializable]
-    public class ISN_UNNotificationRequests 
+    class ISN_UNNotificationRequests
     {
+        [SerializeField]
+        List<ISN_UNNotificationRequest> m_Requests = new List<ISN_UNNotificationRequest>();
 
-        [SerializeField] List<ISN_UNNotificationRequest> m_requests  = new List<ISN_UNNotificationRequest>();
-
-        public List<ISN_UNNotificationRequest> Requests {
-            get {
-                return m_requests;
-            }
-        }
+        public List<ISN_UNNotificationRequest> Requests => m_Requests;
     }
 }

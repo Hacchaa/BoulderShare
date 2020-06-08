@@ -5,28 +5,16 @@ using System;
 namespace SA.iOS.Editor
 {
     [Serializable]
-    public class ISN_ExportedSettings
+    class ISN_ExportedSettings
     {
-        public string ISNSettings
-        {
-            get
-            {
-                return m_ISNSettings;
-            }
-        }
+        public string ISNSettings => m_ISNSettings;
 
-        public string ISDSettings
-        {
-            get
-            {
-                return m_ISDSettings;
-            }
-        }
+        public string ISDSettings => m_ISDSettings;
 
         [SerializeField]
-        private string m_ISNSettings;
+        string m_ISNSettings;
         [SerializeField]
-        private string m_ISDSettings;
+        string m_ISDSettings;
 
         public ISN_ExportedSettings()
         {

@@ -1,20 +1,18 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using SA.Foundation.Templates;
 using SA.Foundation.Utility;
-using SA.iOS.UIKit.Internal;
 using SA.iOS.AVFoundation;
 
 namespace SA.iOS.UIKit
 {
     /// <summary>
-    /// A view controller that manages the system interfaces for taking pictures, recording movies, 
+    /// A view controller that manages the system interfaces for taking pictures, recording movies,
     /// and choosing items from the user's media library.
     /// </summary>
-    public class ISN_UIImagePickerController 
+    public class ISN_UIImagePickerController
     {
-        private ISN_UIPickerControllerRequest m_Request = new ISN_UIPickerControllerRequest();
+        readonly ISN_UIPickerControllerRequest m_Request = new ISN_UIPickerControllerRequest();
 
         //--------------------------------------
         // Public Methods
@@ -22,77 +20,73 @@ namespace SA.iOS.UIKit
 
         /// <summary>
         /// Presents a view controller modally.
-        /// 
+        ///
         /// If you configured the view controller to use <see cref="ISN_UIImagePickerControllerSourceType.Camera"/>,
-        /// the <see cref="ISN_AVMediaType.Video"/> permission will be checked automatically, 
-        /// before presenting view controller. You can always do this yourself using the 
+        /// the <see cref="ISN_AVMediaType.Video"/> permission will be checked automatically,
+        /// before presenting view controller. You can always do this yourself using the
         /// <see cref="ISN_AVCaptureDevice.RequestAccess"/>
         /// </summary>
         /// <param name="callback">Callback.</param>
-        public void Present(Action<ISN_UIPickerControllerResult> callback) 
+        public void Present(Action<ISN_UIPickerControllerResult> callback)
         {
             //Need to make sure we have a permission for that
-            if(m_Request.m_SourceType == ISN_UIImagePickerControllerSourceType.Camera)
-            {
-                ISN_AVCaptureDevice.RequestAccess(ISN_AVMediaType.Video, (status) => 
+            if (m_Request.m_SourceType == ISN_UIImagePickerControllerSourceType.Camera)
+                ISN_AVCaptureDevice.RequestAccess(ISN_AVMediaType.Video, (status) =>
                 {
-                    if(status == ISN_AVAuthorizationStatus.Authorized) 
+                    if (status == ISN_AVAuthorizationStatus.Authorized)
                     {
                         StartPresenting(callback);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         var error = new SA_Error(1, "AVMediaType.Video Permission is missing");
                         var result = new ISN_UIPickerControllerResult(error);
                         callback.Invoke(result);
                     }
                 });
-            } 
-            else 
-            {
+            else
                 StartPresenting(callback);
-            }
         }
 
         //--------------------------------------
-        // Get / Set 
+        // Get / Set
         //--------------------------------------
 
         /// <summary>
         /// An array indicating the media types to be accessed by the media picker controller.
-        /// 
-        /// Depending on the media types you assign to this property, 
-        /// the picker displays a dedicated interface for still images or movies, 
-        /// or a selection control that lets the user choose the picker interface. 
-        /// Before setting this property, 
+        ///
+        /// Depending on the media types you assign to this property,
+        /// the picker displays a dedicated interface for still images or movies,
+        /// or a selection control that lets the user choose the picker interface.
+        /// Before setting this property,
         /// check which media types are available by calling the <see cref="GetAvailableMediaTypes"/> class method.
-        /// 
-        /// If you set this property to an empty array, 
-        /// or to an array in which none of the media types is available for the current source, 
+        ///
+        /// If you set this property to an empty array,
+        /// or to an array in which none of the media types is available for the current source,
         /// the system throws an exception.
-        /// 
+        ///
         /// You may use media type names from <see cref="ISN_UIMediaType"/>
         /// </summary>
-        public List<string> MediaTypes 
+        public List<string> MediaTypes
         {
-            get { return m_Request.m_MediaTypes; }
-            set { m_Request.m_MediaTypes = value; }
+            get => m_Request.m_MediaTypes;
+            set => m_Request.m_MediaTypes = value;
         }
 
         /// <summary>
         /// The type of picker interface to be displayed by the controller.
-        /// 
-        /// Prior to running the picker interface, set this value to the desired source type. 
-        /// The source type you set must be available and an exception is thrown if it is not. 
-        /// If you change this property while the picker is visible, 
+        ///
+        /// Prior to running the picker interface, set this value to the desired source type.
+        /// The source type you set must be available and an exception is thrown if it is not.
+        /// If you change this property while the picker is visible,
         /// the picker interface changes to match the new value in this property.
         /// The various source types are listed in the <see cref="ISN_UIImagePickerControllerSourceType"/> enumeration.
         /// The default value is <see cref="ISN_UIImagePickerControllerSourceType.PhotoLibrary"/>.
         /// </summary>
-        public ISN_UIImagePickerControllerSourceType SourceType 
+        public ISN_UIImagePickerControllerSourceType SourceType
         {
-            get { return m_Request.m_SourceType; }
-            set { m_Request.m_SourceType = value; }
+            get => m_Request.m_SourceType;
+            set => m_Request.m_SourceType = value;
         }
 
         /// <summary>
@@ -101,53 +95,53 @@ namespace SA.iOS.UIKit
         /// </summary>
         public ISN_UIImagePickerControllerCameraDevice CameraDevice
         {
-            get { return m_Request.m_CameraDevice; }
-            set { m_Request.m_CameraDevice = value; }
+            get => m_Request.m_CameraDevice;
+            set => m_Request.m_CameraDevice = value;
         }
 
         /// <summary>
         /// A Boolean value indicating whether the user is allowed to edit a selected still image or movie.
         /// This property is set to false by default.
         /// </summary>
-        public bool AllowsEditing 
+        public bool AllowsEditing
         {
-            get { return m_Request.m_AllowsEditing; }
-            set { m_Request.m_AllowsEditing = value; }
+            get => m_Request.m_AllowsEditing;
+            set => m_Request.m_AllowsEditing = value;
         }
 
         /// <summary>
         /// Is <see cref="ImageCompressionFormat"/> is set tp <see cref="ISN_UIImageCompressionFormat.JPEG"/>
         /// compression format value will be applied.
-        /// 
+        ///
         /// The default value is 0.8f
         /// </summary>
-        public float ImageCompressionRate 
+        public float ImageCompressionRate
         {
-            get { return m_Request.m_ImageCompressionRate; }
-            set { m_Request.m_ImageCompressionRate = value; }
+            get => m_Request.m_ImageCompressionRate;
+            set => m_Request.m_ImageCompressionRate = value;
         }
 
         /// <summary>
         /// Max allowed image size. If bigger image is picked by user, image will be resized before sending to Unity.
         /// Most of the images in user photo library are big, so it's better to use this property to save some RAM.
-        /// 
+        ///
         /// The default value is 512
         /// </summary>
         /// <value>The size of the max image.</value>
-        public int MaxImageSize 
+        public int MaxImageSize
         {
-            get { return m_Request.m_MaxImageSize; }
-            set { m_Request.m_MaxImageSize = value; }
+            get => m_Request.m_MaxImageSize;
+            set => m_Request.m_MaxImageSize = value;
         }
 
         /// <summary>
-        /// Image compression format. 
+        /// Image compression format.
         /// Default value is JPEG
         /// </summary>
-        public ISN_UIImageCompressionFormat ImageCompressionFormat 
+        public ISN_UIImageCompressionFormat ImageCompressionFormat
         {
-            get { return m_Request.m_EncodingType; }
-            set { m_Request.m_EncodingType = value; }
+            get => m_Request.m_EncodingType;
+            set => m_Request.m_EncodingType = value;
         }
 
         /// <summary>
@@ -156,60 +150,47 @@ namespace SA.iOS.UIKit
         /// The presentation style determines how a modally presented view controller is displayed onscreen.
         /// In a horizontally compact environment, modal view controllers are always presented full-screen.
         /// In a horizontally regular environment, there are several different presentation options.
-        /// 
+        ///
         /// The default value for this property is <see cref="ISN_UIModalPresentationStyle.Automatic"/>.
         /// For a list of possible presentation styles, and their compatibility with the available transition styles,
         /// see the <see cref="ISN_UIModalPresentationStyle"/> constant descriptions.
         /// </summary>
         public ISN_UIModalPresentationStyle ModalPresentationStyle
         {
-            get { return m_Request.m_ModalPresentationStyle; }
-            set { m_Request.m_ModalPresentationStyle = value; }
+            get => m_Request.m_ModalPresentationStyle;
+            set => m_Request.m_ModalPresentationStyle = value;
         }
-        
+
         //--------------------------------------
         // Static Methods
         //--------------------------------------
 
         /// <summary>
-        /// Adds the specified image to the user’s Camera Roll album.
-        /// 
-        /// When used on an iOS device without a camera, 
-        /// this method adds the image to the Saved Photos album rather than to the Camera Roll album.
-        /// </summary>
-        /// <param name="texture">Texture you want to save to the album.</param>
-        /// <param name="callback">Callback.</param>
-        public static void SaveTextureToCameraRoll(Texture2D texture, Action<SA_Result> callback)
-        {
-            ISN_UILib.API.SaveTextureToCameraRoll(texture, callback);
-        }
-        
-        /// <summary>
         /// Saves the screen screenshot to the saved photos album.
         /// </summary>
         /// <param name="callback">Callback.</param>
-        public static void SaveScreenshotToCameraRoll(Action<SA_Result> callback) 
+        public static void SaveScreenshotToCameraRoll(Action<SA_Result> callback)
         {
-            SA_ScreenUtil.TakeScreenshot(texture => 
+            SA_ScreenUtil.TakeScreenshot(texture =>
             {
-                SaveTextureToCameraRoll(texture, callback);
+                ISN_PhotoAlbum.UIImageWriteToSavedPhotosAlbum(texture, callback);
             });
         }
-        
+
         /// <summary>
         /// Returns an array of the available media types for the specified source type.
-        /// 
-        /// Some iOS devices support video recording. 
-        /// Use this method, along with the <see cref="IsSourceTypeAvailable"/> method, 
+        ///
+        /// Some iOS devices support video recording.
+        /// Use this method, along with the <see cref="IsSourceTypeAvailable"/> method,
         /// to determine if video recording is available on a device.
         /// </summary>
         /// <returns>The available media types.</returns>
         /// <param name="sourceType">The source to use to pick an image.</param>
         public static List<string> GetAvailableMediaTypes(ISN_UIImagePickerControllerSourceType sourceType)
         {
-            return ISN_UILib.API.GetAvailableMediaTypes(sourceType);
+            return ISN_UILib.Api.GetAvailableMediaTypes(sourceType);
         }
-        
+
         /// <summary>
         /// Returns a Boolean value indicating whether the device supports picking media using the specified source type.
         /// Because a media source may not be present or may be unavailable,
@@ -222,21 +203,21 @@ namespace SA.iOS.UIKit
         /// </summary>
         /// <param name="sourceType">Source Type.</param>
         /// <returns></returns>
-        public static bool IsSourceTypeAvailable(ISN_UIImagePickerControllerSourceType sourceType) 
+        public static bool IsSourceTypeAvailable(ISN_UIImagePickerControllerSourceType sourceType)
         {
-            return ISN_UILib.API.IsSourceTypeAvailable(sourceType);
+            return ISN_UILib.Api.IsSourceTypeAvailable(sourceType);
         }
 
         //--------------------------------------
         // Private Methods
         //--------------------------------------
 
-        private void StartPresenting(Action<ISN_UIPickerControllerResult> callback) 
+        void StartPresenting(Action<ISN_UIPickerControllerResult> callback)
         {
-            if (m_Request.m_MediaTypes.Count == 0) 
+            if (m_Request.m_MediaTypes.Count == 0)
                 m_Request.m_MediaTypes = GetAvailableMediaTypes(m_Request.m_SourceType);
-            
-            ISN_UILib.API.PresentPickerController(m_Request, callback);
+
+            ISN_UILib.Api.PresentPickerController(m_Request, callback);
         }
     }
 }

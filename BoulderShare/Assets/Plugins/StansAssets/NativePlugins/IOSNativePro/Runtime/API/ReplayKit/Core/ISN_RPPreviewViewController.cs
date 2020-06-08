@@ -1,5 +1,4 @@
 using System;
-using SA.iOS.ReplayKit.Internal;
 
 namespace SA.iOS.ReplayKit
 {
@@ -12,10 +11,9 @@ namespace SA.iOS.ReplayKit
         /// Presents a view controller modally.
         /// </summary>
         /// <param name="callback">Indicates that the preview view controller is dismissed.</param>
-        public void Present(Action<ISN_PRPreviewResult> callback) 
+        public void Present(Action<ISN_PRPreviewResult> callback)
         {
-            ISN_RPNativeLib.API.ShowVideoShareDialog(callback);
+            ISN_RPNativeLib.Api.ShowVideoShareDialog(callback);
         }
-
     }
 }

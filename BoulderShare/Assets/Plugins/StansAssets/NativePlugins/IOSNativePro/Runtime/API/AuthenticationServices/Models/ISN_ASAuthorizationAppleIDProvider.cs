@@ -1,5 +1,4 @@
 using SA.iOS.Utilities;
-using SA.iOS.AuthenticationServices.Internal;
 
 namespace SA.iOS.AuthenticationServices
 {
@@ -9,7 +8,7 @@ namespace SA.iOS.AuthenticationServices
     public class ISN_ASAuthorizationAppleIDProvider : ISN_NativeObject
     {
         public ISN_ASAuthorizationAppleIDProvider()
-            :base(ISN_AuthenticationServicesLib._ISN_ASAuthorizationAppleIDProvider_init()) { }
+            : base(ISN_AuthenticationServicesLib._ISN_ASAuthorizationAppleIDProvider_init()) { }
 
         /// <summary>
         /// Creates a new Apple ID authorization request.
@@ -20,6 +19,5 @@ namespace SA.iOS.AuthenticationServices
             var requestHash = ISN_AuthenticationServicesLib._ISN_ASAuthorizationAppleIDProvider_createRequest(NativeHashCode);
             return new ISN_ASAuthorizationSingleSignOnRequest(requestHash);
         }
-        
     }
 }

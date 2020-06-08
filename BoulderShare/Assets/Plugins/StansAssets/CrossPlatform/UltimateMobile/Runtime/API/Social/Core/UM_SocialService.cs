@@ -8,18 +8,17 @@ namespace SA.CrossPlatform.Social
     /// </summary>
     public static class UM_SocialService
     {
-        private static UM_iNativeSharingClient m_sharingClient;
-        
+        static UM_iNativeSharingClient m_sharingClient;
+
         /// <summary>
         /// Returns a new instance of <see cref="UM_iNativeSharingClient"/>
         /// </summary>
-        public static UM_iNativeSharingClient SharingClient 
+        public static UM_iNativeSharingClient SharingClient
         {
-            get 
+            get
             {
-                if (m_sharingClient == null) 
-                {
-                    switch (Application.platform) 
+                if (m_sharingClient == null)
+                    switch (Application.platform)
                     {
                         case RuntimePlatform.Android:
                             m_sharingClient = new UM_AndroidNativeSharingClient();
@@ -31,7 +30,7 @@ namespace SA.CrossPlatform.Social
                             m_sharingClient = new UM_EditorSharingClient();
                             break;
                     }
-                }
+
                 return m_sharingClient;
             }
         }

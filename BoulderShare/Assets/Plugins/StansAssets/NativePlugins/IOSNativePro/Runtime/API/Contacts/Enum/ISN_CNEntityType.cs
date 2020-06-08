@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.Contacts
 {
     /// <summary>
@@ -10,7 +5,9 @@ namespace SA.iOS.Contacts
     /// </summary>
     public enum ISN_CNEntityType
     {
-       /*! The user's contacts. */
-       Contacts
+        /// <summary>
+        /// The user's contacts.
+        /// </summary>
+        Contacts,
     }
 }

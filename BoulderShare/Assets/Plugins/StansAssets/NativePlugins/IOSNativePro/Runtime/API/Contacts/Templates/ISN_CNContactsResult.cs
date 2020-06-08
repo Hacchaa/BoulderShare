@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Osipov Stanislav (Stan's Assets) 
+// @author Osipov Stanislav (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -10,29 +10,27 @@
 using System;
 using System.Collections.Generic;
 using SA.Foundation.Templates;
-
 using UnityEngine;
 
-namespace SA.iOS.Contacts {
-
+namespace SA.iOS.Contacts
+{
+    /// <summary>
+    /// Contacts interaction result.
+    /// </summary>
     [Serializable]
-	public class ISN_CNContactsResult : SA_Result {
+    public class ISN_CNContactsResult : SA_Result
+    {
+        [SerializeField]
+        List<ISN_CNContact> m_Contacts = new List<ISN_CNContact>();
 
-        [SerializeField] List<ISN_CNContact> m_contacts = new List<ISN_CNContact>();
-
-
-        public ISN_CNContactsResult(List<ISN_CNContact> contacts) {
-            m_contacts = contacts;
+        public ISN_CNContactsResult(List<ISN_CNContact> contacts)
+        {
+            m_Contacts = contacts;
         }
 
         /// <summary>
-        /// Gets the array of loaded contacts. 
+        /// Gets the array of loaded contacts.
         /// </summary>
-		public List<ISN_CNContact> Contacts {
-			get {
-				return m_contacts;
-			}
-		}
-	}
-
+        public List<ISN_CNContact> Contacts => m_Contacts;
+    }
 }

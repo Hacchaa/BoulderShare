@@ -10,30 +10,28 @@ namespace SA.CrossPlatform.GameServices
     /// <summary>
     /// A client to interact with saved games functionality.
     /// </summary>
-    internal class UM_EditorSavedGamesClient : UM_iSavedGamesClient
+    class UM_EditorSavedGamesClient : UM_iSavedGamesClient
     {
-        private const string k_EditorSavesKey = "UM_SAVED_GAMES_DATA";
+        const string k_EditorSavesKey = "UM_SAVED_GAMES_DATA";
 
-        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback) 
+        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback)
         {
             var loadResult = new UM_SavedGamesMetadataResult();
             var editorGamesList = LoadSavesList();
-            foreach (EditorSavedGame game in editorGamesList.Saves) 
-            {
-                loadResult.AddMetadata(game);
-            }
+            foreach (var game in editorGamesList.Saves) loadResult.AddMetadata(game);
 
-            SA_Coroutine.WaitForSeconds(1.5f, () => 
+            SA_Coroutine.WaitForSeconds(1.5f, () =>
             {
                 callback.Invoke(loadResult);
             });
         }
-        
-        public void SaveGame(string name, byte[] data, Action<SA_Result> callback) 
+
+        public void SaveGame(string name, byte[] data, Action<SA_Result> callback)
         {
             var editorGamesList = LoadSavesList();
             var game = editorGamesList.GetByName(name);
-            if(game == null) {
+            if (game == null)
+            {
                 game = new EditorSavedGame();
                 game.Name = name;
                 editorGamesList.Saves.Add(game);
@@ -42,7 +40,7 @@ namespace SA.CrossPlatform.GameServices
             game.GameData = System.Text.Encoding.UTF8.GetString(data);
             EditorSaveGames(editorGamesList);
 
-            SA_Coroutine.WaitForSeconds(1.5f, () => 
+            SA_Coroutine.WaitForSeconds(1.5f, () =>
             {
                 callback.Invoke(new SA_Result());
             });
@@ -56,18 +54,20 @@ namespace SA.CrossPlatform.GameServices
 
             SaveGame(name, extendedData, callback);
         }
-        
-        private byte[] Combine(params byte[][] arrays)
+
+        byte[] Combine(params byte[][] arrays)
         {
             var rv = new byte[arrays.Sum(a => a.Length)];
             var offset = 0;
-            foreach (var array in arrays) {
+            foreach (var array in arrays)
+            {
                 Buffer.BlockCopy(array, 0, rv, offset, array.Length);
                 offset += array.Length;
             }
+
             return rv;
         }
-        
+
         public void LoadGameData(UM_iSavedGameMetadata game, Action<UM_SavedGameDataLoadResult> callback)
         {
             LoadFromPlayerPrefs(game, false, callback);
@@ -77,21 +77,20 @@ namespace SA.CrossPlatform.GameServices
         {
             LoadFromPlayerPrefs(game, true, callback);
         }
-        
-        public void LoadFromPlayerPrefs(UM_iSavedGameMetadata game, bool parseMeta, Action<UM_SavedGameDataLoadResult> callback) 
+
+        public void LoadFromPlayerPrefs(UM_iSavedGameMetadata game, bool parseMeta, Action<UM_SavedGameDataLoadResult> callback)
         {
-           
             var editorGamesList = LoadSavesList();
             var editorGame = editorGamesList.GetByName(game.Name);
 
             UM_SavedGameDataLoadResult loadResult;
-            if(editorGame != null)
+            if (editorGame != null)
             {
                 var BytesArrayData = editorGame.GameData.ToBytes();
                 if (parseMeta)
                 {
                     var meta = new UM_SaveInfo();
-                    meta.SetProgressValue(BitConverter.ToInt64(BytesArrayData, 0)); 
+                    meta.SetProgressValue(BitConverter.ToInt64(BytesArrayData, 0));
                     meta.SetPlayedTimeMillis(BitConverter.ToInt64(BytesArrayData, 8));
 
                     var userData = new byte[BytesArrayData.Length - 16];
@@ -102,8 +101,8 @@ namespace SA.CrossPlatform.GameServices
                 {
                     loadResult = new UM_SavedGameDataLoadResult(BytesArrayData, new UM_SaveInfo());
                 }
-            } 
-            else 
+            }
+            else
             {
                 var error = new SA_Error(100, "Saved game with name: " + game.Name + " wasn't found");
                 loadResult = new UM_SavedGameDataLoadResult(error);
@@ -111,88 +110,75 @@ namespace SA.CrossPlatform.GameServices
 
             EditorSaveGames(editorGamesList);
 
-            SA_Coroutine.WaitForSeconds(1.5f, () => 
+            SA_Coroutine.WaitForSeconds(1.5f, () =>
             {
                 callback.Invoke(loadResult);
             });
         }
 
-
-
-        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback) {
+        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback)
+        {
             var editorGamesList = LoadSavesList();
             var editorGame = editorGamesList.GetByName(game.Name);
 
-            if(editorGame != null) {
+            if (editorGame != null)
+            {
                 editorGamesList.Saves.Remove(editorGame);
                 EditorSaveGames(editorGamesList);
             }
 
-            SA_Coroutine.WaitForSeconds(1.5f, () => {
+            SA_Coroutine.WaitForSeconds(1.5f, () =>
+            {
                 callback.Invoke(new SA_Result());
             });
         }
 
-
-
-        private EditorSavedGamesList LoadSavesList()
+        EditorSavedGamesList LoadSavesList()
         {
-            if(PlayerPrefs.HasKey(k_EditorSavesKey)) 
+            if (PlayerPrefs.HasKey(k_EditorSavesKey))
             {
-                string json = PlayerPrefs.GetString(k_EditorSavesKey);
+                var json = PlayerPrefs.GetString(k_EditorSavesKey);
                 return JsonUtility.FromJson<EditorSavedGamesList>(json);
             }
 
             return new EditorSavedGamesList();
         }
 
-
-        private void EditorSaveGames(EditorSavedGamesList list) 
+        void EditorSaveGames(EditorSavedGamesList list)
         {
             var json = JsonUtility.ToJson(list);
             PlayerPrefs.SetString(k_EditorSavesKey, json);
         }
 
-
         [Serializable]
-        private class EditorSavedGame : UM_iSavedGameMetadata 
+        class EditorSavedGame : UM_iSavedGameMetadata
         {
+            [SerializeField]
+            string m_name = null;
+            [SerializeField]
+            public string GameData = null;
 
-            [SerializeField] string m_name = null;
-            [SerializeField] public string GameData = null;
+            public string DeviceName => "Editor";
 
-            public string DeviceName  
+            public string Name
             {
-                get { return "Editor"; }
-            }
-
-            public string Name 
-            {
-                get { return m_name; }
-                set { m_name = value; }
+                get => m_name;
+                set => m_name = value;
             }
         }
 
-
         [Serializable]
-        private class EditorSavedGamesList
+        class EditorSavedGamesList
         {
-            [SerializeField] List<EditorSavedGame> m_saves = new List<EditorSavedGame>();
-            public List<EditorSavedGame> Saves 
-            {
-                get { return m_saves; }
-            }
+            [SerializeField]
+            List<EditorSavedGame> m_saves = new List<EditorSavedGame>();
+            public List<EditorSavedGame> Saves => m_saves;
 
-
-            public EditorSavedGame GetByName(string name) 
+            public EditorSavedGame GetByName(string name)
             {
-                foreach(var game in m_saves) 
-                {
-                    if(game.Name.Equals(name)) 
-                    {
+                foreach (var game in m_saves)
+                    if (game.Name.Equals(name))
                         return game;
-                    }
-                }
 
                 return null;
             }

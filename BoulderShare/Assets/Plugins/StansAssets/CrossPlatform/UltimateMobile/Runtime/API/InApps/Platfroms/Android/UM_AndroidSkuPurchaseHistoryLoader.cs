@@ -5,21 +5,21 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.InApp
 {
-    internal class UM_AndroidSkuPurchaseHistoryLoader : AN_iPurchaseHistoryResponseListener
+    class UM_AndroidSkuPurchaseHistoryLoader : AN_iPurchaseHistoryResponseListener
     {
-        private readonly AN_BillingClient m_Client;
-        private readonly List<AN_PurchaseHistoryRecord> m_PurchaseHistoryRecords;
-        
-        private Action<List<AN_PurchaseHistoryRecord>> m_OnHistoryLoaded;
+        readonly AN_BillingClient m_Client;
+        readonly List<AN_PurchaseHistoryRecord> m_PurchaseHistoryRecords;
 
-        private bool m_InAppsResultReceived;
-        
+        Action<List<AN_PurchaseHistoryRecord>> m_OnHistoryLoaded;
+
+        bool m_InAppsResultReceived;
+
         public UM_AndroidSkuPurchaseHistoryLoader(AN_BillingClient client)
         {
             m_Client = client;
             m_PurchaseHistoryRecords = new List<AN_PurchaseHistoryRecord>();
         }
-        
+
         public void Load(Action<List<AN_PurchaseHistoryRecord>> onHistoryLoaded)
         {
             m_OnHistoryLoaded = onHistoryLoaded;
@@ -28,9 +28,9 @@ namespace SA.CrossPlatform.InApp
 
         public void OnConsumeResponse(SA_iResult billingResult, List<AN_PurchaseHistoryRecord> purchaseHistoryRecordList)
         {
-            if(purchaseHistoryRecordList != null)
+            if (purchaseHistoryRecordList != null)
                 m_PurchaseHistoryRecords.AddRange(purchaseHistoryRecordList);
-            
+
             if (!m_InAppsResultReceived)
             {
                 m_InAppsResultReceived = true;
@@ -40,7 +40,6 @@ namespace SA.CrossPlatform.InApp
             {
                 m_OnHistoryLoaded.Invoke(m_PurchaseHistoryRecords);
             }
-            
         }
     }
 }

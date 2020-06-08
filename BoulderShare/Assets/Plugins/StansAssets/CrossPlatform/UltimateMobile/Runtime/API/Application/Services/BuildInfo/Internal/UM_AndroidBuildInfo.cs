@@ -2,11 +2,11 @@ using SA.Android.App;
 
 namespace SA.CrossPlatform.App
 {
-    internal class UM_AndroidBuildInfo : UM_AbstractBuildInfo, UM_iBuildInfo
+    class UM_AndroidBuildInfo : UM_AbstractBuildInfo, UM_iBuildInfo
     {
-        public override string Version 
+        public override string Version
         {
-            get 
+            get
             {
                 var pm = AN_MainActivity.Instance.GetPackageManager();
                 var packageInfo = pm.GetPackageInfo(Identifier, 0);

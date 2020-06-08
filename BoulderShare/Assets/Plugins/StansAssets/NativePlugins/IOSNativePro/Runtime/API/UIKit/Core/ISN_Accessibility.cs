@@ -4,6 +4,7 @@ using SA.iOS.Utilities;
 using UnityEngine;
 #if UNITY_IPHONE
 using System.Runtime.InteropServices;
+
 #endif
 
 namespace SA.iOS.UIKit
@@ -13,10 +14,12 @@ namespace SA.iOS.UIKit
     /// </summary>
     public static class ISN_Accessibility
     {
-        
 #if UNITY_IPHONE
-        [DllImport("__Internal")] static extern bool _ISN_IsGuidedAccessEnabled();
-        [DllImport("__Internal")] static extern void _ISN_RequestGuidedAccessSession(bool enable, IntPtr callback);
+        [DllImport("__Internal")]
+        static extern bool _ISN_IsGuidedAccessEnabled();
+
+        [DllImport("__Internal")]
+        static extern void _ISN_RequestGuidedAccessSession(bool enable, IntPtr callback);
 #endif
 
         /// <summary>
@@ -26,11 +29,11 @@ namespace SA.iOS.UIKit
         {
             get
             {
-                #if UNITY_IPHONE
+#if UNITY_IPHONE
                 return _ISN_IsGuidedAccessEnabled();
-                #else
+#else
                 return false;
-                #endif
+#endif
             }
         }
 
@@ -50,12 +53,11 @@ namespace SA.iOS.UIKit
         /// <param name="enable">Specify <c>true</c> to put the device into Single App mode for this app
         /// or <c>false</c> to exit Single App mode.</param>
         /// <param name="callback">The block that notifies your app of the success or failure of the operation.</param>
-        public static void UIAccessibilityRequestGuidedAccessSession(bool enable, Action<SA_Result> callback )
+        public static void UIAccessibilityRequestGuidedAccessSession(bool enable, Action<SA_Result> callback)
         {
 #if UNITY_IPHONE
             _ISN_RequestGuidedAccessSession(enable, ISN_MonoPCallback.ActionToIntPtr(callback));
 #endif
         }
-
     }
 }

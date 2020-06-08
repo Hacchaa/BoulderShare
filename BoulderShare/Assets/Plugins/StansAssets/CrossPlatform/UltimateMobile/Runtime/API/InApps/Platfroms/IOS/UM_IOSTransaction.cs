@@ -5,7 +5,7 @@ using SA.Foundation.Time;
 namespace SA.CrossPlatform.InApp
 {
     [Serializable]
-    internal class UM_IOSTransaction : UM_AbstractTransaction<ISN_iSKPaymentTransaction>, UM_iTransaction
+    class UM_IOSTransaction : UM_AbstractTransaction<ISN_iSKPaymentTransaction>, UM_iTransaction
     {
         public UM_IOSTransaction(ISN_iSKPaymentTransaction transaction)
         {
@@ -13,7 +13,7 @@ namespace SA.CrossPlatform.InApp
             m_productId = transaction.ProductIdentifier;
             m_unixTimestamp = SA_Unix_Time.ToUnixTime(transaction.Date);
 
-            switch (transaction.State) 
+            switch (transaction.State)
             {
                 case ISN_SKPaymentTransactionState.Deferred:
                     m_state = UM_TransactionState.Pending;
@@ -41,9 +41,6 @@ namespace SA.CrossPlatform.InApp
             SetNativeTransaction(transaction);
         }
 
-        public ISN_iSKPaymentTransaction IosTransaction 
-        {
-            get { return (ISN_iSKPaymentTransaction) NativeTemplate; }
-        }
+        public ISN_iSKPaymentTransaction IosTransaction => (ISN_iSKPaymentTransaction)NativeTemplate;
     }
 }

@@ -8,18 +8,14 @@ namespace SA.iOS.Foundation
     /// https://developer.apple.com/documentation/foundation/nsnotification?language=objc
     /// </summary>
     [Serializable]
-    public class ISN_NSNotification 
+    public class ISN_NSNotification
     {
-        [SerializeField] string m_name = null;
-
+        [SerializeField]
+        string m_Name = string.Empty;
 
         /// <summary>
         /// The name of the notification.
         /// </summary>
-        public string Name {
-            get {
-                return m_name;
-            }
-        }
+        public string Name => m_Name;
     }
 }

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -13,28 +13,33 @@ using UnityEngine;
 
 namespace SA.iOS.Foundation
 {
-
+    /// <summary>
+    /// The <see cref="ISN_NSUbiquitousKeyValueStore.StoreDidChangeExternallyNotification"/> notification model.
+    /// </summary>
     [Serializable]
     public class ISN_NSStoreDidChangeExternallyNotification
     {
-
-        [SerializeField] private ISN_NSUbiquitousKeyValueStoreChangeReasons m_reason = ISN_NSUbiquitousKeyValueStoreChangeReasons.None;
-        [SerializeField] private List<ISN_NSKeyValueObject> m_updatedData = new List<ISN_NSKeyValueObject>();
+        [SerializeField]
+        ISN_NSUbiquitousKeyValueStoreChangeReasons m_Reason = ISN_NSUbiquitousKeyValueStoreChangeReasons.None;
+        [SerializeField]
+        List<ISN_NSKeyValueObject> m_UpdatedData = new List<ISN_NSKeyValueObject>();
 
         /// <summary>
-        /// Return possible values associated with the NSUbiquitousKeyValueStoreChangeReasonKey key.
+        /// Return possible values associated with the <see cref="ISN_NSUbiquitousKeyValueStoreChangeReasons"/> key.
         /// </summary>
-        public ISN_NSUbiquitousKeyValueStoreChangeReasons Reason {
-            get { return m_reason; }
-            set { m_reason = value; }
+        public ISN_NSUbiquitousKeyValueStoreChangeReasons Reason
+        {
+            get => m_Reason;
+            set => m_Reason = value;
         }
 
         /// <summary>
-        /// Returns an array of ISN_NSKeyValueObject objects, that changed in the key-value store.
+        /// Returns an array of <see cref="ISN_NSKeyValueObject"/> objects, that changed in the key-value store.
         /// </summary>
-        public List<ISN_NSKeyValueObject> UpdatedData {
-            get { return m_updatedData; }
-            set { m_updatedData = value; }
+        public List<ISN_NSKeyValueObject> UpdatedData
+        {
+            get => m_UpdatedData;
+            set => m_UpdatedData = value;
         }
     }
 }

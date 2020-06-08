@@ -1,6 +1,9 @@
 namespace SA.CrossPlatform.App
 {
-    public interface UM_iContact 
+    /// <summary>
+    /// Phone contact record model.
+    /// </summary>
+    public interface UM_iContact
     {
         /// <summary>
         /// Contact name.
@@ -18,4 +21,3 @@ namespace SA.CrossPlatform.App
         string Email { get; }
     }
 }
-

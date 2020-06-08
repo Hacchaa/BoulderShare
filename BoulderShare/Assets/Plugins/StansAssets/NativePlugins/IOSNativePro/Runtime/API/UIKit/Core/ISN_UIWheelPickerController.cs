@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using SA.iOS.UIKit.Internal;
 using System;
 using UnityEngine.Assertions;
 
@@ -15,7 +14,8 @@ namespace SA.iOS.UIKit
     [Serializable]
     public class ISN_UIWheelPickerController
     {
-        [SerializeField] private List<string> m_Values;
+        [SerializeField]
+        List<string> m_Values;
 
         /// <summary>
         /// Here we cate instance of UIWheelPicker controller.
@@ -25,19 +25,13 @@ namespace SA.iOS.UIKit
         /// </param>
         public ISN_UIWheelPickerController(List<string> values)
         {
-            this.m_Values = values;
+            m_Values = values;
         }
 
         /// <summary>
         /// Get values for ISN_UIWheelPicker.
         /// </summary>
-        public List<string> Values
-        {
-            get
-            {
-                return m_Values;
-            }
-        }
+        public List<string> Values => m_Values;
 
         /// <summary>
         /// Show UIWheelPicker.
@@ -50,7 +44,7 @@ namespace SA.iOS.UIKit
         public void Show(Action<ISN_UIWheelPickerResult> callback)
         {
             Assert.IsNotNull(callback);
-            ISN_UILib.API.ShowUIWheelPicker(this, callback);
+            ISN_UILib.Api.ShowUIWheelPicker(this, callback);
         }
     }
 }

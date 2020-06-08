@@ -115,14 +115,9 @@ public class RegisterView: BNScreenInput
         if (stack != null){
             if (type == ViewType.Gym){
                 BNGym gym = new BNGym();
-                BNImage bnImage = null;
-                if (inputedSprite != null){
-                    bnImage = new BNImage(inputedSprite.texture);
-                    gym.SetBoardImagePath(bnImage.fileName);
-                }
                 gym.SetGymName(gymNameTextIF.Text);
                 
-                stack.WriteGym(gym, bnImage);
+                stack.WriteGym(gym);
                 stack.StoreTargetGym(gym.GetID());
             }else if(type == ViewType.Route){
                 BNRoute route = new BNRoute();
@@ -140,12 +135,11 @@ public class RegisterView: BNScreenInput
                 stack.WriteRoute(route, wallImage);
                 stack.StoreTargetRoute(route.GetID());
                 //gym boardimage にするかどうか
-                if (inputedSprite != null){
+                if (wallImage != null){
                     BNGym target = stack.GetTargetGym();
                     if (string.IsNullOrEmpty(target.GetBoardImagePath())){
-                        BNImage bnImage = new BNImage(inputedSprite.texture);
-                        target.SetBoardImagePath(bnImage.fileName);
-                        stack.ModifyGym(target, bnImage);
+                        target.SetBoardImagePath(wallImage.fileName);
+                        stack.ModifyGym(target);
                     }
                 }
             }

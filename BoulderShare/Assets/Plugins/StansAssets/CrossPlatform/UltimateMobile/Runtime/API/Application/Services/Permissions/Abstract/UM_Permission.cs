@@ -6,13 +6,13 @@ using UnityEngine;
 
 namespace SA.CrossPlatform.App
 {
-    internal abstract class UM_Permission : UM_IPermission
+    abstract class UM_Permission : UM_IPermission
     {
-        protected abstract AuthorizationStatus IOSAuthorization { get; }
-        protected abstract void IOSRequestAccess(Action<AuthorizationStatus> callback);
+        protected abstract UM_AuthorizationStatus IOSAuthorization { get; }
+        protected abstract void IOSRequestAccess(Action<UM_AuthorizationStatus> callback);
         protected abstract AMM_ManifestPermission[] AndroidPermissions { get; }
 
-        public AuthorizationStatus Authorization
+        public UM_AuthorizationStatus Authorization
         {
             get
             {
@@ -22,7 +22,7 @@ namespace SA.CrossPlatform.App
                         var granted = true;
                         foreach (var permission in AndroidPermissions)
                         {
-                            var state =  AN_PermissionsManager.CheckSelfPermission(permission);
+                            var state = AN_PermissionsManager.CheckSelfPermission(permission);
                             if (state == AN_PackageManager.PermissionState.Denied)
                             {
                                 granted = false;
@@ -30,49 +30,45 @@ namespace SA.CrossPlatform.App
                             }
                         }
 
-                        return granted ? AuthorizationStatus.Granted : AuthorizationStatus.Denied;
-                        
+                        return granted ? UM_AuthorizationStatus.Granted : UM_AuthorizationStatus.Denied;
+
                     case RuntimePlatform.IPhonePlayer:
                         return IOSAuthorization;
                     default:
-                        return AuthorizationStatus.Granted;
+                        return UM_AuthorizationStatus.Granted;
                 }
             }
         }
 
-        public void RequestAccess(Action<AuthorizationStatus> callback)
+        public void RequestAccess(Action<UM_AuthorizationStatus> callback)
         {
-            if (Authorization == AuthorizationStatus.Granted)
+            if (Authorization == UM_AuthorizationStatus.Granted)
             {
-                callback.Invoke(AuthorizationStatus.Granted);
+                callback.Invoke(UM_AuthorizationStatus.Granted);
                 return;
             }
+
             StartRequestAccessFlow(callback);
         }
-        
-        
-        private void StartRequestAccessFlow(Action<AuthorizationStatus> callback)
+
+        void StartRequestAccessFlow(Action<UM_AuthorizationStatus> callback)
         {
             switch (Application.platform)
             {
-                case RuntimePlatform.Android:
+                case RuntimePlatform.IPhonePlayer:
                     IOSRequestAccess(callback);
                     break;
-                case RuntimePlatform.IPhonePlayer:
+                case RuntimePlatform.Android:
                     AN_PermissionsUtility.TryToResolvePermission(AndroidPermissions, (granted) =>
                     {
                         if (granted)
-                        {
-                            callback.Invoke(AuthorizationStatus.Granted);
-                        }
+                            callback.Invoke(UM_AuthorizationStatus.Granted);
                         else
-                        {
-                            callback.Invoke(AuthorizationStatus.Denied);
-                        }
+                            callback.Invoke(UM_AuthorizationStatus.Denied);
                     });
                     break;
                 default:
-                    UM_EditorAPIEmulator.WaitForNetwork(() => { callback.Invoke(AuthorizationStatus.Granted); });
+                    UM_EditorAPIEmulator.WaitForNetwork(() => { callback.Invoke(UM_AuthorizationStatus.Granted); });
                     break;
             }
         }

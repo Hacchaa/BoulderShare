@@ -9,11 +9,13 @@ namespace SA.Android.App
     /// A simple dialog containing an NumberPicker.
     /// </summary>
     [Serializable]
-    public class AN_WheelPickerDialog 
+    public class AN_WheelPickerDialog
     {
 #pragma warning disable 414
+
         //Serialized values used within native part.
-        [SerializeField] private List<string> m_Values;
+        [SerializeField]
+        List<string> m_Values;
 #pragma warning restore 414
 
         const string k_WheelPickerDialogClass = "com.stansassets.android.app.dialogs.AN_WheelPickerDialog";
@@ -37,6 +39,5 @@ namespace SA.Android.App
                 k_WheelPickerDialogClass,
                 "Show", callback, json);
         }
-
     }
 }

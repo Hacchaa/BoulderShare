@@ -17,7 +17,6 @@ extern const char* UNITY_SK_LISTENER;
 extern const char* UNITY_RP_LISTENER;
 extern const char* UNITY_CN_LISTENER;
 extern const char* UNITY_AV_LISTENER;
-extern const char* UNITY_PH_LISTENER;
 extern const char* UNITY_UI_LISTENER;
 extern const char* UNITY_CK_LISTENER;
 extern const char* UNITY_UN_LISTENER;
@@ -41,11 +40,13 @@ extern const char* UNITY_APP_DELEGATE;
 @interface SA_Result : JSONModel
 @property (nonatomic, strong) SA_Error *m_error;
 @property (nonatomic, strong) NSString *m_requestId;
+@property (nonatomic, strong) NSString *m_Data;
 
 -(id) initWithError:(SA_Error*)error;
 -(id) initWithNSError:(NSError *) error;
 
 -(void) setRequestId:(NSString *) requestId;
+-(void) setData:(NSString *) data;
 @end
 
 //--------------------------------------

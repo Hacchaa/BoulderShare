@@ -6,7 +6,7 @@
 -(id) initWithArray:(NSArray <NSString *> *) array {
     self = [super init];
     if(self) {
-        self.m_types = array;
+        self.m_Types = array;
     }
     
     return self;

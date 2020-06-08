@@ -1,37 +1,38 @@
 using System;
 using UnityEngine;
-
 using SA.Foundation.Templates;
 
 namespace SA.iOS.GameKit
 {
-
     /// <summary>
     /// Object reflects an image load result.
     /// </summary>
     [Serializable]
     public class ISN_GKImageLoadResult : SA_Result
     {
+        Texture2D m_Image;
+        [SerializeField]
+        string m_ImageBase64 = null;
 
-        private Texture2D m_image = null;
-        [SerializeField] string m_imageBase64 = null;
+        internal ISN_GKImageLoadResult(SA_Error error)
+            : base(error) { }
 
-        public ISN_GKImageLoadResult(SA_Error error) : base(error) { }
+        /// <summary>
+        /// Loaded image.
+        /// </summary>
+        public Texture2D Image
+        {
+            get
+            {
+                if (m_Image == null)
+                {
+                    if (string.IsNullOrEmpty(m_ImageBase64)) return null;
 
-
-        public Texture2D Image {
-            get {
-
-                if (m_image == null) {
-                    if (string.IsNullOrEmpty(m_imageBase64)) {
-                        return null;
-                    }
-
-                    m_image = new Texture2D(1, 1);
-                    m_image.LoadImageFromBase64(m_imageBase64);
+                    m_Image = new Texture2D(1, 1);
+                    m_Image.LoadImageFromBase64(m_ImageBase64);
                 }
 
-                return m_image;
+                return m_Image;
             }
         }
     }

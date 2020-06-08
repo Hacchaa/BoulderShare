@@ -5,6 +5,7 @@ namespace SA.iOS.AuthenticationServices
     /// </summary>
     public abstract class ISN_IASAuthorizationAppleIDRequest : ISN_ASAuthorizationOpenIDRequest
     {
-        internal ISN_IASAuthorizationAppleIDRequest(ulong hash) : base(hash) { }
+        internal ISN_IASAuthorizationAppleIDRequest(ulong hash)
+            : base(hash) { }
     }
 }

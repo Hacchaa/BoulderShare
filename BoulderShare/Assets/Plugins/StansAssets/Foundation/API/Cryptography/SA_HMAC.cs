@@ -7,7 +7,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 using System.Text;
 using System.Security.Cryptography;
 
@@ -17,14 +16,11 @@ using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
 #endif
 
-namespace SA.Foundation.Cryptography {
-
-	public static class SA_HMAC {
-
-
-
+namespace SA.Foundation.Cryptography
+{
+    public static class SA_HMAC
+    {
 #if NETFX_CORE
-
         /// <summary>
         /// Generate HMAC SHA256 hex key 
         /// </summary>
@@ -39,21 +35,21 @@ namespace SA.Foundation.Cryptography {
         /// <summary>
         /// Generate HMAC SHA256 hex key 
         /// </summary>
-        public static string Hash(string key, string data) {
-            var keyByte = ASCIIEncoding.UTF8.GetBytes(key);
-            using (var hmacsha256 = new HMACSHA256(keyByte)) {
-                hmacsha256.ComputeHash(ASCIIEncoding.UTF8.GetBytes(data));
+        public static string Hash(string key, string data)
+        {
+            var keyByte = Encoding.UTF8.GetBytes(key);
+            using (var hmacsha256 = new HMACSHA256(keyByte))
+            {
+                hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(data));
 
-                byte[] buff = hmacsha256.Hash;
-                string sbinary = "";
+                var buff = hmacsha256.Hash;
+                var sbinary = "";
 
-                for (int i = 0; i < buff.Length; i++)
+                for (var i = 0; i < buff.Length; i++)
                     sbinary += buff[i].ToString("X2"); /* hex format */
                 return sbinary.ToLower();
             }
         }
 #endif
-
-	}
-
+    }
 }

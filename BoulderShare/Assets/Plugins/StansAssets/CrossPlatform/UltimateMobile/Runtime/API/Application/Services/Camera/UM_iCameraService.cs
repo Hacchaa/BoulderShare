@@ -2,6 +2,10 @@ using System;
 
 namespace SA.CrossPlatform.App
 {
+    /// <summary>
+    /// Camera related API service.
+    /// Shared service instance is available via <see cref="UM_Application.CameraService"/>
+    /// </summary>
     public interface UM_iCameraService
     {
         /// <summary>
@@ -9,7 +13,7 @@ namespace SA.CrossPlatform.App
         /// </summary>
         /// <param name="maxThumbnailSize">
         /// Max image size. If picture size is bigger then imageSize value,
-        /// picture will be scaled to meet the requirements 
+        /// picture will be scaled to meet the requirements
         /// before transferring from native to unity side.
         /// </param>
         /// <param name="callback">Operation callback.</param>
@@ -20,7 +24,7 @@ namespace SA.CrossPlatform.App
         /// </summary>
         /// <param name="maxThumbnailSize">
         /// Max image size. If picture size is bigger then imageSize value,
-        /// picture will be scaled to meet the requirements 
+        /// picture will be scaled to meet the requirements
         /// before transferring from native to unity side.
         /// </param>
         /// <param name="callback">Operation callback.</param>

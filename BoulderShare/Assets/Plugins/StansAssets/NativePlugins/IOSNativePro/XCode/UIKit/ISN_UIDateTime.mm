@@ -17,10 +17,10 @@ static UnityAction OnDateChangedCallback;
 
 @protocol ISN_UIDateTimePicker;
 @interface ISN_UIDateTimePicker : JSONModel
-@property (nonatomic) int m_minuteInterval;
-@property (nonatomic) int m_datePickerMode;
-@property (nonatomic) long m_statrDate;
-@property (nonatomic) long m_countDownDuration;
+@property (nonatomic) int m_MinuteInterval;
+@property (nonatomic) int m_DatePickerMode;
+@property (nonatomic) long m_StartDate;
+@property (nonatomic) long m_CountDownDuration;
 @end
 
 
@@ -274,7 +274,7 @@ UIDatePicker *datePicker;
    
     datePicker.tag = 10;
     [datePicker addTarget:self action:@selector(DP_changeDate:) forControlEvents:UIControlEventValueChanged];
-    switch (request.m_datePickerMode) {
+    switch (request.m_DatePickerMode) {
         case 1:
             NSLog(@"mode: UIDatePickerModeTime");
             datePicker.datePickerMode = UIDatePickerModeTime;
@@ -299,16 +299,16 @@ UIDatePicker *datePicker;
             break;
     }
     
-    [datePicker setMinuteInterval:request.m_minuteInterval];
+    [datePicker setMinuteInterval:request.m_MinuteInterval];
     NSLog(@" datePicker.minuteInterval: %ld", (long) datePicker.minuteInterval);
     
-    if(request.m_countDownDuration != -1) {
-         datePicker.countDownDuration = request.m_countDownDuration;
+    if(request.m_CountDownDuration != -1) {
+        datePicker.countDownDuration = request.m_CountDownDuration;
     }
     
     
-    if(request.m_statrDate != -1) {
-        [datePicker setDate:[NSDate dateWithTimeIntervalSince1970:request.m_statrDate]];
+    if(request.m_StartDate != -1) {
+        [datePicker setDate:[NSDate dateWithTimeIntervalSince1970:request.m_StartDate]];
     }
         
         
@@ -883,7 +883,7 @@ static NSString * const headerReuseIdentifier = @"MonthSectionHeaderReusableView
     
     [cell.dayNumber setBackgroundColor:[UIColor redColor].CGColor];
     
-    NSString *dateStr = [NSString stringWithFormat:@"%d-%ld-%@", (int)_year, indexPath.section + 1, label.string];
+    NSString *dateStr = [NSString stringWithFormat:@"%d-%d-%@", (int)_year, indexPath.section + 1, label.string];
     
     ISN_SendCallbackToUnity(OnDatePickedCallback, dateStr);
     
@@ -1033,7 +1033,7 @@ static NSString * const MonthInYearViewCellKey6 = @"MonthInYearViewCell6";
             NSString *dateStr = [NSString stringWithFormat:dateStrFormat, (int) currentCellYear, i + 1];
             NSDate *currentCellDate = [dateFormat dateFromString:dateStr];
             NSRange range = [_calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:currentCellDate];
-            NSDateComponents *comps = [_calendar components:NSWeekdayCalendarUnit fromDate:currentCellDate];
+            NSDateComponents *comps = [_calendar components:NSCalendarUnitWeekday fromDate:currentCellDate];
             
             int startWeekDay = (int) [comps weekday] - 1;
             if (!self.startDayIsSunday) { // TODO: setting start of week day for calendar

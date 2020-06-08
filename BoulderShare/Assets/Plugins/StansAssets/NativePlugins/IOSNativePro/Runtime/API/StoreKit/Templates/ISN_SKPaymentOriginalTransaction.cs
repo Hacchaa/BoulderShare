@@ -3,45 +3,31 @@ using UnityEngine;
 using SA.Foundation.Templates;
 using SA.Foundation.Time;
 
-namespace SA.iOS.StoreKit 
+namespace SA.iOS.StoreKit
 {
     /// <inheritdoc cref="ISN_iSKPaymentTransaction" />
     [Serializable]
-    public class ISN_SKPaymentOriginalTransaction :  SA_Result, ISN_iSKPaymentTransaction
+    public class ISN_SKPaymentOriginalTransaction : SA_Result, ISN_iSKPaymentTransaction
     {
-        [SerializeField] string m_productIdentifier = null;
-        [SerializeField] string m_transactionIdentifier = null;
-        [SerializeField] private long m_unixDate = 0;
-        [SerializeField] ISN_SKPaymentTransactionState m_state = default(ISN_SKPaymentTransactionState);
-        
-        public string ProductIdentifier 
-        {
-            get { return m_productIdentifier; }
-        }
-        
-        public string TransactionIdentifier
-        {
-            get { return m_transactionIdentifier; }
-        }
+        [SerializeField]
+        string m_ProductIdentifier = null;
+        [SerializeField]
+        string m_TransactionIdentifier = null;
+        [SerializeField]
+        long m_UnixDate = 0;
+        [SerializeField]
+        ISN_SKPaymentTransactionState m_State = default;
 
-        public DateTime Date 
-        {
-            get { return SA_Unix_Time.ToDateTime(m_unixDate); }
-        }
+        public string ProductIdentifier => m_ProductIdentifier;
 
-        public ISN_SKPaymentTransactionState State 
-        {
-            get { return m_state; }
-        }
+        public string TransactionIdentifier => m_TransactionIdentifier;
 
-        public ISN_SKProduct Product 
-        {
-            get { return ISN_SKPaymentQueue.GetProductById(m_productIdentifier); }
-        }
+        public DateTime Date => SA_Unix_Time.ToDateTime(m_UnixDate);
 
-        public ISN_iSKPaymentTransaction OriginalTransaction
-        {
-            get { return null; }
-        }
+        public ISN_SKPaymentTransactionState State => m_State;
+
+        public ISN_SKProduct Product => ISN_SKPaymentQueue.GetProductById(m_ProductIdentifier);
+
+        public ISN_iSKPaymentTransaction OriginalTransaction => null;
     }
 }

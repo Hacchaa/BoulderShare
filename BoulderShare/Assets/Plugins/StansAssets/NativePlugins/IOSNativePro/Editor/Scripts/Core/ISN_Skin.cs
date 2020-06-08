@@ -2,30 +2,21 @@ using UnityEngine;
 using UnityEditor;
 using SA.Foundation.Editor;
 
-
 namespace SA.iOS
 {
-    public static class ISN_Skin
+    static class ISN_Skin
     {
-        public const string ICONS_PATH = ISN_Settings.IOS_NATIVE_FOLDER + "Editor/Art/Icons/";
-        public const string SOCIAL_ICONS_PATH = ISN_Settings.IOS_NATIVE_FOLDER + "Editor/Art/Social/";
+        public const string IconsPath = ISN_Settings.IOSNativeFolder + "Editor/Art/Icons/";
+        public const string SocialIconsPath = ISN_Settings.IOSNativeFolder + "Editor/Art/Social/";
 
-        public static Texture2D SettingsWindowIcon 
+        public static Texture2D SettingsWindowIcon =>
+            EditorGUIUtility.isProSkin
+                ? SA_EditorAssets.GetTextureAtPath(IconsPath + "ios_pro.png")
+                : SA_EditorAssets.GetTextureAtPath(IconsPath + "ios.png");
+
+        public static Texture2D GetIcon(string iconName)
         {
-            get
-            {
-                if (EditorGUIUtility.isProSkin) 
-                {
-                    return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + "ios_pro.png");
-                }
-
-                return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + "ios.png");
-            }
-        }
-
-        public static Texture2D GetIcon(string iconName) 
-        {
-            return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + iconName);
+            return SA_EditorAssets.GetTextureAtPath(IconsPath + iconName);
         }
     }
 }

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Osipov Stanislav (Stan's Assets) 
+// @author Osipov Stanislav (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -10,179 +10,159 @@
 using System;
 using System.Globalization;
 using UnityEngine;
-
 using SA.iOS.Foundation;
-using SA.iOS.StoreKit.Internal;
 
 namespace SA.iOS.StoreKit
 {
+    /// <summary>
+    /// Information about a product previously registered in App Store Connect.
+    /// </summary>
     [Serializable]
-	public class ISN_SKProduct  
-	{
-		//Getting the Product Identifier
-		[SerializeField] string m_productIdentifier = string.Empty;
+    public class ISN_SKProduct
+    {
+        //Getting the Product Identifier
+        [SerializeField]
+        string m_ProductIdentifier = string.Empty;
 
-		//Getting Product Attributes
-		[SerializeField] string m_localizedDescription = string.Empty;
-		[SerializeField] string m_localizedTitle =  "New Product";
+        //Getting Product Attributes
+        [SerializeField]
+        string m_LocalizedDescription = string.Empty;
+        [SerializeField]
+        string m_LocalizedTitle = "New Product";
 
-		//Getting Pricing Information
-		[SerializeField] float m_price = 0.99f;
-		[SerializeField] private ISN_NSLocale m_priceLocale = null;
-		[SerializeField] ISN_SKProductDiscount m_introductoryPrice  = null;
+        //Getting Pricing Information
+        [SerializeField]
+        float m_Price = 0.99f;
+        [SerializeField]
+        ISN_NSLocale m_PriceLocale = null;
+        [SerializeField]
+        ISN_SKProductDiscount m_IntroductoryPrice = null;
 
-		//Getting the Subscription Period and Duration
-		[SerializeField] ISN_SKProductSubscriptionPeriod m_subscriptionPeriod = null;
+        //Getting the Subscription Period and Duration
+        [SerializeField]
+        ISN_SKProductSubscriptionPeriod m_SubscriptionPeriod = null;
 
-		//Additional data
-		[SerializeField] string m_localizedPrice = string.Empty;
-        [SerializeField] ISN_SKProductEditorData m_editorData = new  ISN_SKProductEditorData();
-		
-       
+        //Additional data
+        [SerializeField]
+        string m_LocalizedPrice = string.Empty;
+        [SerializeField]
+        ISN_SKProductEditorData m_EditorData = new ISN_SKProductEditorData();
+
         /// <summary>
         /// The string that identifies the product to the Apple App Store.
         /// </summary>
-		public string ProductIdentifier {
-			get {
-				return m_productIdentifier;
-			}
-			set {
-				m_productIdentifier = value;
-			}
-		}
+        public string ProductIdentifier
+        {
+            get => m_ProductIdentifier;
+            set => m_ProductIdentifier = value;
+        }
 
-		/// <summary>
-		/// A description of the product.
-		/// </summary>
-		public string LocalizedDescription {
-			get {
-				return m_localizedDescription;
-			}
-			set {
-				m_localizedDescription = value;
-			}
-		}
+        /// <summary>
+        /// A description of the product.
+        /// </summary>
+        public string LocalizedDescription
+        {
+            get => m_LocalizedDescription;
+            set => m_LocalizedDescription = value;
+        }
 
-		/// <summary>
-		/// The name of the product.
-		/// </summary>
-		public string LocalizedTitle {
-			get {
-				return m_localizedTitle;
-			}			
-			set {
-				m_localizedTitle = value;
-			}
-		}
+        /// <summary>
+        /// The name of the product.
+        /// </summary>
+        public string LocalizedTitle
+        {
+            get => m_LocalizedTitle;
+            set => m_LocalizedTitle = value;
+        }
 
-		/// <summary>
-		/// The cost of the product in the local currency.
-		/// </summary>
-		public float Price {
-			get {
-				return m_price;
-			}
-			set {
-				m_price = value;
-			}
-		}
+        /// <summary>
+        /// The cost of the product in the local currency.
+        /// </summary>
+        public float Price
+        {
+            get => m_Price;
+            set => m_Price = value;
+        }
 
-		/// <summary>
-		/// The locale used to format the price of the product.
-		/// </summary>
-        public ISN_NSLocale PriceLocale {
-			get {
-				return m_priceLocale;
-			}
-		}
+        /// <summary>
+        /// The locale used to format the price of the product.
+        /// </summary>
+        public ISN_NSLocale PriceLocale => m_PriceLocale;
 
-		/// <summary>
-		/// The object containing introductory price information for the product.
-		/// </summary>
-		public ISN_SKProductDiscount IntroductoryPrice {
-			get {
-				return m_introductoryPrice;
-			}
-		}
+        /// <summary>
+        /// The object containing introductory price information for the product.
+        /// </summary>
+        public ISN_SKProductDiscount IntroductoryPrice => m_IntroductoryPrice;
 
-		/// <summary>
-		/// The period details for products that are subscriptions.
-		/// </summary>
-		public ISN_SKProductSubscriptionPeriod SubscriptionPeriod {
-			get {
-				return m_subscriptionPeriod;
-			}
-		}
+        /// <summary>
+        /// The period details for products that are subscriptions.
+        /// </summary>
+        public ISN_SKProductSubscriptionPeriod SubscriptionPeriod => m_SubscriptionPeriod;
 
-		
+        /// <summary>
+        /// Gets the price in micros.
+        /// </summary>
+        public long PriceInMicros => Convert.ToInt64(m_Price * 1000000f);
 
-		/// <summary>
-		/// Gets the price in micros.
-		/// </summary>
-		public long PriceInMicros {
-			get {
-				return Convert.ToInt64(m_price * 1000000f);
-			}
-		}
-
-		/// <summary>
-		/// The locale used to format the price of the product.
-		/// </summary>
-		public string LocalizedPrice {
-			get {
-				if (string.IsNullOrEmpty (m_localizedPrice)) {
-					return Price.ToString (CultureInfo.InvariantCulture) + " " + "$";
-				} else {
-					return m_localizedPrice;
-				}
-			}
-		}
-
-	
+        /// <summary>
+        /// The locale used to format the price of the product.
+        /// </summary>
+        public string LocalizedPrice
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_LocalizedPrice))
+                    return Price.ToString(CultureInfo.InvariantCulture) + " " + "$";
+                else
+                    return m_LocalizedPrice;
+            }
+        }
 
         //--------------------------------------
         // ISN_SKProductEditorData
         //--------------------------------------
 
-
         /// <summary>
-        /// Type of the product 
+        /// Type of the product
         /// </summary>
-        public ISN_SKProductType Type {
-            get { return m_editorData.ProductType; }
-            set { m_editorData.ProductType = value; }
+        public ISN_SKProductType Type
+        {
+            get => m_EditorData.ProductType;
+            set => m_EditorData.ProductType = value;
         }
-
 
         /// <summary>
         /// Gets icon of the product
         /// </summary>
-        public Texture2D Icon {
-            get { return m_editorData.Texture; }
-            set { m_editorData.Texture = value;}
+        public Texture2D Icon
+        {
+            get => m_EditorData.Texture;
+            set => m_EditorData.Texture = value;
         }
-
 
         /// <summary>
         /// Gets and updates Price Tier
         /// </summary>
-        public ISN_SKPriceTier PriceTier {
-            get {return m_editorData.PriceTier; }
-            set {
-                if (m_editorData.PriceTier != value) {
-                    m_editorData.PriceTier = value;
-                    m_price = ISN_SKUtil.GetPriceByTier(m_editorData.PriceTier);
+        internal ISN_SKPriceTier PriceTier
+        {
+            get => m_EditorData.PriceTier;
+            set
+            {
+                if (m_EditorData.PriceTier != value)
+                {
+                    m_EditorData.PriceTier = value;
+                    m_Price = ISN_SKUtil.GetPriceByTier(m_EditorData.PriceTier);
                 }
             }
         }
 
-
         /// <summary>
         /// Contains data that is only can be set using the Editor Plugin Settings
         /// </summary>
-        public ISN_SKProductEditorData EditorData {
-            get { return m_editorData; }
-            set { m_editorData = value; }
+        internal ISN_SKProductEditorData EditorData
+        {
+            get => m_EditorData;
+            set => m_EditorData = value;
         }
-	}
+    }
 }

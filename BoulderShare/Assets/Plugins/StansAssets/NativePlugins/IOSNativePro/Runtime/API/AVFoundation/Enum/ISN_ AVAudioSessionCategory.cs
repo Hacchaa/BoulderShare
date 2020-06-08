@@ -1,23 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.iOS.AVFoundation
 {
-
+    /// <summary>
+    /// Audio session category identifiers.
+    /// </summary>
     public enum ISN_AVAudioSessionCategory
     {
-        //The category for an app in which sound playback is nonprimary—that is, your app can be used successfully with the sound turned off.
+        /// <summary>
+        ///The category for an app in which sound playback is nonprimary—that is, your app can be used successfully with the sound turned off.
+        /// </summary>
         Ambient,
-        //The default audio session category.
+
+        /// <summary>
+        /// The default audio session category.
+        /// </summary>
         SoloAmbient,
-        //The category for playing recorded music or other sounds that are central to the successful use of your app.
+
+        /// <summary>
+        /// The category for playing recorded music or other sounds that are central to the successful use of your app.
+        /// </summary>
         Playback,
-        //The category for recording audio; this category silences playback audio.
+
+        /// <summary>
+        /// The category for recording audio; this category silences playback audio.
+        /// </summary>
         Record,
-        //The category for recording (input) and playback (output) of audio, such as for a VoIP (Voice over Internet Protocol) app.
+
+        /// <summary>
+        /// The category for recording (input) and playback (output) of audio, such as for a VoIP (Voice over Internet Protocol) app.
+        /// </summary>
         PlayAndRecord,
-        //The category for routing distinct streams of audio data to different output devices at the same time.
-        MultiRoute
+
+        /// <summary>
+        /// The category for routing distinct streams of audio data to different output devices at the same time.
+        /// </summary>
+        MultiRoute,
     }
 }

@@ -1,82 +1,87 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native 2018 - New Generation
-// @author Stan's Assets team 
+// @author Stan's Assets team
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using UnityEngine;
-using System.Collections.Generic;
 using System;
 using SA.Foundation.Async;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
-namespace SA.iOS.StoreKit.Internal
+namespace SA.iOS.StoreKit
 {
+    class ISN_SKEditorAPI : ISN_iSKAPI
+    {
+        readonly SA_Event<ISN_iSKPaymentTransaction> m_TransactionUpdated = new SA_Event<ISN_iSKPaymentTransaction>();
+        readonly SA_Event<ISN_iSKPaymentTransaction> m_TransactionRemoved = new SA_Event<ISN_iSKPaymentTransaction>();
+        readonly SA_Event<ISN_SKProduct> m_ShouldAddStorePayment = new SA_Event<ISN_SKProduct>();
+        readonly SA_Event<SA_Result> m_RestoreTransactionsComplete = new SA_Event<SA_Result>();
+        readonly SA_Event m_DidChangeStorefront = new SA_Event();
 
-    internal class ISN_SKEditorAPI : ISN_iSKAPI {
-        
-        private SA_Event<ISN_iSKPaymentTransaction> m_transactionUpdated = new SA_Event<ISN_iSKPaymentTransaction>();
-        private SA_Event<ISN_iSKPaymentTransaction> m_transactionRemoved = new SA_Event<ISN_iSKPaymentTransaction>();
-        private SA_Event<ISN_SKProduct> m_shouldAddStorePayment = new SA_Event<ISN_SKProduct>();
-        private SA_Event<SA_Result> m_restoreTransactionsComplete = new SA_Event<SA_Result>();
-        private SA_Event m_didChangeStorefront = new SA_Event();
-
-        public void LoadStore(ISN_SKLib.SA_PluginSettingsWindowStylesitRequest request, Action<ISN_SKInitResult> callback) {
-            SA_Coroutine.WaitForSeconds(DelayTime, () => {
-                ISN_SKInitResult res = new ISN_SKInitResult(ISN_Settings.Instance.InAppProducts);
+        public void LoadStore(ISN_SKLib.ISN_LoadStoreRequest request, Action<ISN_SKInitResult> callback)
+        {
+            SA_Coroutine.WaitForSeconds(DelayTime, () =>
+            {
+                var res = new ISN_SKInitResult(ISN_Settings.Instance.InAppProducts);
                 callback.Invoke(res);
             });
         }
 
-        public void AddPayment(string productIdentifier) {
-            SA_Coroutine.WaitForSeconds(DelayTime, () => {
-                var produdct = ISN_SKPaymentQueue.GetProductById(productIdentifier);
-                var tranasaction = new ISN_SKPaymentTransaction(produdct, ISN_SKPaymentTransactionState.Purchased);
+        public void AddPayment(string productIdentifier)
+        {
+            SA_Coroutine.WaitForSeconds(DelayTime, () =>
+            {
+                var product = ISN_SKPaymentQueue.GetProductById(productIdentifier);
+                var transaction = new ISN_SKPaymentTransaction(product, ISN_SKPaymentTransactionState.Purchased);
 
-                m_transactionUpdated.Invoke(tranasaction);
+                m_TransactionUpdated.Invoke(transaction);
             });
         }
 
-
-        public void FinishTransaction(ISN_iSKPaymentTransaction transaction) {
-            SA_Coroutine.WaitForSeconds(DelayTime, () => {
-                m_transactionRemoved.Invoke(transaction);
+        public void FinishTransaction(ISN_iSKPaymentTransaction transaction)
+        {
+            SA_Coroutine.WaitForSeconds(DelayTime, () =>
+            {
+                m_TransactionRemoved.Invoke(transaction);
             });
         }
 
-
-        public void RestoreCompletedTransactions() {
-            SA_Coroutine.WaitForSeconds(DelayTime, () => {
-                foreach(var product in ISN_SKPaymentQueue.Products) {
-                    if(product.Type == ISN_SKProductType.NonConsumable) {
-                        var tranasaction = new ISN_SKPaymentTransaction(product, ISN_SKPaymentTransactionState.Restored);
-                        m_transactionUpdated.Invoke(tranasaction);
+        public void RestoreCompletedTransactions()
+        {
+            SA_Coroutine.WaitForSeconds(DelayTime, () =>
+            {
+                foreach (var product in ISN_SKPaymentQueue.Products)
+                    if (product.Type == ISN_SKProductType.NonConsumable)
+                    {
+                        var transaction = new ISN_SKPaymentTransaction(product, ISN_SKPaymentTransactionState.Restored);
+                        m_TransactionUpdated.Invoke(transaction);
                     }
-                   
-                }
-                m_restoreTransactionsComplete.Invoke(new SA_Result());
+
+                m_RestoreTransactionsComplete.Invoke(new SA_Result());
             });
         }
 
-        public void SetTransactionObserverState(bool enabled) {
+        public void SetTransactionObserverState(bool enabled)
+        {
             //Just do nothing
         }
 
-        public ISN_SKAppStoreReceipt RetrieveAppStoreReceipt() {
+        public ISN_SKAppStoreReceipt RetrieveAppStoreReceipt()
+        {
             return new ISN_SKAppStoreReceipt(string.Empty);
         }
 
-      
-
-        public bool CanMakePayments() {
+        public bool CanMakePayments()
+        {
             return true;
         }
 
-        public void StoreRequestReview() {
+        public void StoreRequestReview()
+        {
             // do nothing
             // probably need to simulate show popup in an editor
         }
@@ -86,45 +91,24 @@ namespace SA.iOS.StoreKit.Internal
             return new ISN_SKStorefront();
         }
 
-        public void RefreshRequest(ISN_SKReceiptDictionary dictionary, Action<SA_Result> callback) {
-            SA_Coroutine.WaitForSeconds(DelayTime, () => {
+        public void RefreshRequest(ISN_SKReceiptDictionary dictionary, Action<SA_Result> callback)
+        {
+            SA_Coroutine.WaitForSeconds(DelayTime, () =>
+            {
                 callback.Invoke(new SA_Result());
             });
         }
 
-        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionUpdated {
-            get {
-                return m_transactionUpdated;
-            }
-        }
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionUpdated => m_TransactionUpdated;
 
-        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionRemoved {
-            get {
-                return m_transactionRemoved;
-            }
-        }
+        public SA_iEvent<ISN_iSKPaymentTransaction> TransactionRemoved => m_TransactionRemoved;
 
-        public SA_iEvent<ISN_SKProduct> ShouldAddStorePayment {
-            get {
-                return m_shouldAddStorePayment;
-            }
-        }
+        public SA_iEvent<ISN_SKProduct> ShouldAddStorePayment => m_ShouldAddStorePayment;
 
-        public SA_iEvent<SA_Result> RestoreTransactionsComplete {
-            get {
-                return m_restoreTransactionsComplete;
-            }
-        }
+        public SA_iEvent<SA_Result> RestoreTransactionsComplete => m_RestoreTransactionsComplete;
 
-        public SA_iEvent DidChangeStorefront
-        {
-            get { return m_didChangeStorefront; }
-        }
+        public SA_iEvent DidChangeStorefront => m_DidChangeStorefront;
 
-        private float DelayTime {
-            get {
-                return UnityEngine.Random.Range(0.1f, 3f);
-            }
-        }
+        float DelayTime => UnityEngine.Random.Range(0.1f, 3f);
     }
 }

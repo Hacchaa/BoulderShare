@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -12,11 +12,10 @@ using System.Collections.Generic;
 using SA.Foundation.Templates;
 using SA.Foundation.Events;
 
-namespace SA.iOS.UserNotifications.Internal
+namespace SA.iOS.UserNotifications
 {
-    internal interface ISN_iUNAPI
+    interface ISN_iUNAPI
     {
-
         SA_iEvent<ISN_UNNotification> WillPresentNotification { get; }
         SA_iEvent<ISN_UNNotificationResponse> DidReceiveNotificationResponse { get; }
 
@@ -30,11 +29,9 @@ namespace SA.iOS.UserNotifications.Internal
         void RemovePendingNotificationRequests(List<string> notificationRequestsIds);
         void GetPendingNotificationRequests(Action<List<ISN_UNNotificationRequest>> callback);
 
-
         void RemoveAllDeliveredNotifications();
         void RemoveDeliveredNotifications(List<string> notificationsIds);
         void GetDeliveredNotifications(Action<List<ISN_UNNotification>> callback);
-
 
         void ClearLastReceivedResponse();
     }

@@ -10,43 +10,42 @@
 using UnityEngine;
 using System.Collections;
 
-namespace SA.Foundation.Animation {
-	
-	public enum SA_EaseType {
-		easeInQuad,
-		easeOutQuad,
-		easeInOutQuad,
-		easeInCubic,
-		easeOutCubic,
-		easeInOutCubic,
-		easeInQuart,
-		easeOutQuart,
-		easeInOutQuart,
-		easeInQuint,
-		easeOutQuint,
-		easeInOutQuint,
-		easeInSine,
-		easeOutSine,
-		easeInOutSine,
-		easeInExpo,
-		easeOutExpo,
-		easeInOutExpo,
-		easeInCirc,
-		easeOutCirc,
-		easeInOutCirc,
-		linear,
-		spring,
-		easeInBounce,
-		easeOutBounce,
-		easeInOutBounce,
-		easeInBack,
-		easeOutBack,
-		easeInOutBack,
-		easeInElastic,
-		easeOutElastic,
-		easeInOutElastic,
-		punch
-	}
-
+namespace SA.Foundation.Animation
+{
+    public enum SA_EaseType
+    {
+        easeInQuad,
+        easeOutQuad,
+        easeInOutQuad,
+        easeInCubic,
+        easeOutCubic,
+        easeInOutCubic,
+        easeInQuart,
+        easeOutQuart,
+        easeInOutQuart,
+        easeInQuint,
+        easeOutQuint,
+        easeInOutQuint,
+        easeInSine,
+        easeOutSine,
+        easeInOutSine,
+        easeInExpo,
+        easeOutExpo,
+        easeInOutExpo,
+        easeInCirc,
+        easeOutCirc,
+        easeInOutCirc,
+        linear,
+        spring,
+        easeInBounce,
+        easeOutBounce,
+        easeInOutBounce,
+        easeInBack,
+        easeOutBack,
+        easeInOutBack,
+        easeInElastic,
+        easeOutElastic,
+        easeInOutElastic,
+        punch
+    }
 }
-

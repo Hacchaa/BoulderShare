@@ -9,15 +9,15 @@ namespace SA.iOS.UIKit
         /// An unspecified interface style.
         /// </summary>
         Unspecified,
-        
+
         /// <summary>
         /// The light interface style.
         /// </summary>
         Light,
-        
+
         /// <summary>
         /// The dark interface style.
         /// </summary>
-        Dark
+        Dark,
     }
 }

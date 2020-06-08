@@ -1,49 +1,54 @@
 using System;
 using SA.Foundation.Events;
+
 #if AN_FIREBASE_MESSAGING && (UNITY_IOS || UNITY_ANDROID)
 using Firebase.Messaging;
 #endif
 
-namespace SA.Android.Firebase.Messaging {
+namespace SA.Android.Firebase.Messaging
+{
+    public class AN_FirebaseMessaging
+    {
+        static event Action<string> OnFBTokenReceived = delegate { };
+        static readonly SA_Event<AN_FirebaseMessage> m_onFbMessageReceived = new SA_Event<AN_FirebaseMessage>();
 
-	public class AN_FirebaseMessaging {
-		
-		private static event Action<string> OnFBTokenReceived = delegate {};
-		private static SA_Event<AN_FirebaseMessage> m_onFbMessageReceived = new SA_Event<AN_FirebaseMessage>();
-		
-		private static string m_successfulTokenCache = string.Empty;
-		private static bool m_isConnectionInProgress = false;
-		private static bool m_isInited = false;
-		
-		/// <summary>
-		/// Initialize FCM service. 
-		/// Once the initialization is successfully established, OnFBTokenReceived will be invoked with registration token
-		/// and available after method callback
-		/// 
-		/// The Firebase Cloud Message library will be initialized when adding handlers for either the TokenReceived or MessageReceived events.
-		/// </summary>
-		/// <param name="callback">The Initialize result callback</param>
-		public static void Initialize(Action<string> callback) {
-			if (!m_isInited) {
-				m_isInited = true;
-				HandleEvents();
-			}
+        static readonly string m_successfulTokenCache = string.Empty;
+        static bool m_isConnectionInProgress = false;
+        static bool m_isInited = false;
 
-			if (!string.IsNullOrEmpty(m_successfulTokenCache)) {
-				callback.Invoke(m_successfulTokenCache);
-				return;
-			}
+        /// <summary>
+        /// Initialize FCM service. 
+        /// Once the initialization is successfully established, OnFBTokenReceived will be invoked with registration token
+        /// and available after method callback
+        /// 
+        /// The Firebase Cloud Message library will be initialized when adding handlers for either the TokenReceived or MessageReceived events.
+        /// </summary>
+        /// <param name="callback">The Initialize result callback</param>
+        public static void Initialize(Action<string> callback)
+        {
+            if (!m_isInited)
+            {
+                m_isInited = true;
+                HandleEvents();
+            }
 
-			OnFBTokenReceived += callback;
-			if (m_isConnectionInProgress) { return; }
+            if (!string.IsNullOrEmpty(m_successfulTokenCache))
+            {
+                callback.Invoke(m_successfulTokenCache);
+                return;
+            }
 
-			m_isConnectionInProgress = true;
-		}
+            OnFBTokenReceived += callback;
+            if (m_isConnectionInProgress) return;
 
-		/// <summary>
-		/// The Firebase Cloud Message library will be initialized when adding handlers for either the TokenReceived or MessageReceived events.
-		/// </summary>
-		private static void HandleEvents() {
+            m_isConnectionInProgress = true;
+        }
+
+        /// <summary>
+        /// The Firebase Cloud Message library will be initialized when adding handlers for either the TokenReceived or MessageReceived events.
+        /// </summary>
+        static void HandleEvents()
+        {
 #if AN_FIREBASE_MESSAGING && (UNITY_IOS || UNITY_ANDROID)
 			FirebaseMessaging.TokenReceived += OnFbPushTokenReceived;
 			FirebaseMessaging.MessageReceived += OnFbPushMessageReceived;
@@ -75,10 +80,6 @@ namespace SA.Android.Firebase.Messaging {
 		}
 #endif
 
-        public static SA_iEvent<AN_FirebaseMessage> OnFbMessageReceived {
-			get {
-				return m_onFbMessageReceived;
-			}
-		}
-	}
+        public static SA_iEvent<AN_FirebaseMessage> OnFbMessageReceived => m_onFbMessageReceived;
+    }
 }

@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.AVFoundation
 {
     /// <summary>
@@ -10,7 +5,14 @@ namespace SA.iOS.AVFoundation
     /// </summary>
     public enum ISN_AVMediaType
     {
+        /// <summary>
+        /// The media contains video.
+        /// </summary>
         Video = 0,
+
+        /// <summary>
+        /// The media contains audio media.
+        /// </summary>
         Audio = 1
     }
 }

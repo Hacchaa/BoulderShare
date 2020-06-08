@@ -145,7 +145,7 @@ static ISN_EventKit * s_sharedInstance;
     EKAlarm *alarm = nil;
     if(data.m_HasAlarm)
     {
-        if(data.m_isAbsoluteDate)
+        if(data.m_IsAbsoluteDate)
         {
             NSDate *m_AlarmDate = [NSDate dateWithTimeIntervalSince1970:data.m_DueDate];
             alarm = [EKAlarm alarmWithAbsoluteDate:m_AlarmDate];

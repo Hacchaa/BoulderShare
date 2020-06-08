@@ -1,6 +1,5 @@
 using System;
 
-
 namespace SA.CrossPlatform.GameServices
 {
     /// <summary>
@@ -13,12 +12,10 @@ namespace SA.CrossPlatform.GameServices
         /// </summary>
         long Rank { get; }
 
-
         /// <summary>
         /// The score earned by the player.
         /// </summary>
         long Value { get; }
-
 
         /// <summary>
         /// An integer value used by your game.
@@ -29,7 +26,6 @@ namespace SA.CrossPlatform.GameServices
         /// The date and time when the score was earned.
         /// </summary>
         DateTime Date { get; }
-
 
         /// <summary>
         /// The <see cref="Date"/> field value as unix time stamp

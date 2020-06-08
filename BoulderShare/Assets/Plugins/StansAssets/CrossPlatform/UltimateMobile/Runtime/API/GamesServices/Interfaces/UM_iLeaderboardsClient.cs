@@ -1,4 +1,3 @@
-
 using System;
 using SA.Foundation.Templates;
 
@@ -9,13 +8,12 @@ namespace SA.CrossPlatform.GameServices
     /// </summary>
     public interface UM_iLeaderboardsClient
     {
-        
         /// <summary>
         /// Show the native UI with the list of leaderboards for a game.
         /// </summary>
         /// <param name="callback">Operation callback.</param>
         void ShowUI(Action<SA_Result> callback);
-        
+
         /// <summary>
         /// Show the native UI of the specified leaderboard.
         /// </summary>
@@ -57,7 +55,7 @@ namespace SA.CrossPlatform.GameServices
         /// </param>
         /// <param name="callback">Operation callback.</param>
         void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback);
-        
+
         /// <summary>
         /// Asynchronously loads game registered leaderboards metadata
         /// </summary>

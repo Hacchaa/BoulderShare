@@ -96,7 +96,7 @@ extern "C" {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_LoadStore" data:data];
         
         NSError *jsonError;
-        SA_PluginSettingsWindowStylesitRequest *request = [[SA_PluginSettingsWindowStylesitRequest alloc] initWithChar:data error:&jsonError];
+        ISN_LoadStoreRequest *request = [[ISN_LoadStoreRequest alloc] initWithChar:data error:&jsonError];
         if (jsonError) {
             [ISN_Logger LogError:@"_ISN_LoadStore JSON parsing error: %@", jsonError.description];
         }

@@ -61,24 +61,16 @@ static ISN_UIWheelPickerController * s_sharedInstance;
     picker.showsSelectionIndicator = YES;
     [picker selectRow:0 inComponent:0 animated:YES];
     
-    UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 44)];
-    [toolBar setBarStyle:UIBarStyleDefault];
-    
-    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStylePlain target:self action:@selector(doneButton)];
-    
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target: self action:nil];
-    
-    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(cancelButton)];
-    
-    toolBar.items = @[cancel, flex, done];
-    done.tintColor = [UIColor blackColor];
-    
-    [picker addSubview:toolBar];
+    UIView *buttons = [[UIView alloc] init];
+    [buttons setUserInteractionEnabled:true];
+    [buttons setBackgroundColor:[UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.1]];
+
     picker.backgroundColor = [UIColor whiteColor];
     
     if (@available(iOS 12.0, *)) {
        if([vc traitCollection].userInterfaceStyle == UIUserInterfaceStyleDark) {
-            picker.backgroundColor = [UIColor grayColor];
+           picker.backgroundColor = [UIColor grayColor];
+           [buttons setBackgroundColor:[UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.7]];
        }
     }
     
@@ -87,9 +79,50 @@ static ISN_UIWheelPickerController * s_sharedInstance;
     [picker setFrame:CGRectMake(0, 0, self.inputView.frame.size.width, self.inputView.frame.size.height)];
     
     [self.inputView addSubview:picker];
-    [self.inputView addSubview:toolBar];
+    [self.inputView addSubview:buttons];
     
     [vc.view addSubview:self.inputView];
+    
+#pragma mark Toolbar
+    
+    CGFloat width = [UIScreen mainScreen].bounds.size.width*1/4;
+    
+    [buttons setTranslatesAutoresizingMaskIntoConstraints:false];
+    [buttons.leadingAnchor constraintEqualToAnchor:picker.leadingAnchor].active = true;
+    [buttons.topAnchor constraintEqualToAnchor:picker.topAnchor].active = true;
+    [buttons.trailingAnchor constraintEqualToAnchor:picker.trailingAnchor].active = true;
+    [buttons.widthAnchor constraintEqualToConstant:55].active = true;
+    
+    UIButton *cancel = [UIButton buttonWithType:UIButtonTypeSystem];
+    [cancel setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancel addTarget:self action:@selector(cancelButton) forControlEvents:UIControlEventTouchUpInside];
+    [buttons addSubview:cancel];
+    [cancel setTranslatesAutoresizingMaskIntoConstraints:false];
+    
+    [cancel.leadingAnchor constraintEqualToAnchor:buttons.leadingAnchor].active = true;
+    [cancel.topAnchor constraintEqualToAnchor:buttons.topAnchor].active = true;
+    [cancel.bottomAnchor constraintEqualToAnchor:buttons.bottomAnchor].active = true;
+    [cancel.widthAnchor constraintEqualToConstant:width].active = true;
+    
+    UIButton *done = [UIButton buttonWithType:UIButtonTypeSystem];
+    [done setTitle:@"Done" forState:UIControlStateNormal];
+    [done addTarget:self action:@selector(doneButton) forControlEvents:UIControlEventTouchUpInside];
+    [buttons addSubview:done];
+    [done setTranslatesAutoresizingMaskIntoConstraints:false];
+    
+    [done.trailingAnchor constraintEqualToAnchor:buttons.trailingAnchor].active = true;
+    [done.topAnchor constraintEqualToAnchor:buttons.topAnchor].active = true;
+    [done.bottomAnchor constraintEqualToAnchor:buttons.bottomAnchor].active = true;
+    [done.widthAnchor constraintEqualToConstant: width].active = true;
+    
+    UIButton *flex = [[UIButton alloc] init];
+    [buttons addSubview:flex];
+    [flex setTranslatesAutoresizingMaskIntoConstraints:false];
+    
+    [flex.trailingAnchor constraintEqualToAnchor:done.leadingAnchor].active = true;
+    [flex.topAnchor constraintEqualToAnchor:buttons.topAnchor].active = true;
+    [flex.bottomAnchor constraintEqualToAnchor:buttons.bottomAnchor].active = true;
+    [flex.leadingAnchor constraintEqualToAnchor:cancel.trailingAnchor].active = true;
 }
 
 - (void) doneButton

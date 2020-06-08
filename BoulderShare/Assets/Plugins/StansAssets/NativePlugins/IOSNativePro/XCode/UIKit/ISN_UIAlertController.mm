@@ -23,19 +23,19 @@ extern "C" {
             return;
         }
         
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:request.m_title  message:request.m_message  preferredStyle:request.m_preferredStyle];
-        for(ISN_UIAlertAction* actionRequest in request.m_actions) {
-            UIAlertAction* uiAction = [UIAlertAction actionWithTitle:actionRequest.m_title style:actionRequest.m_style handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:request.m_Title  message:request.m_Message  preferredStyle:request.m_PreferredStyle];
+        for(ISN_UIAlertAction* actionRequest in request.m_Actions) {
+            UIAlertAction* uiAction = [UIAlertAction actionWithTitle:actionRequest.m_Title style:actionRequest.m_Style handler:^(UIAlertAction * _Nonnull action) {
                 
                 ISN_UIAlertActionId *actionId = [[ISN_UIAlertActionId alloc] init];
-                [actionId setM_alertId:request.m_id];
-                [actionId setM_actionId:actionRequest.m_id];
+                [actionId setM_AlertId:request.m_Id];
+                [actionId setM_ActionId:actionRequest.m_Id];
                 
                 ISN_SendMessage(UNITY_UI_LISTENER, "OnUIAlertAction", [actionId toJSONString]);
             }];
             
-            if(actionRequest.m_image != NULL && actionRequest.m_image.length > 0) {
-                NSData *imageData = [[NSData alloc] initWithBase64EncodedString:actionRequest.m_image options:NSDataBase64DecodingIgnoreUnknownCharacters];
+            if(actionRequest.m_Image != NULL && actionRequest.m_Image.length > 0) {
+                NSData *imageData = [[NSData alloc] initWithBase64EncodedString:actionRequest.m_Image options:NSDataBase64DecodingIgnoreUnknownCharacters];
                 UIImage *image = [[UIImage alloc] initWithData:imageData];
                 [uiAction setValue:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forKey:@"image"];
             }
@@ -43,11 +43,11 @@ extern "C" {
             [alert addAction:uiAction];
             
             //Those properties has to be set only on actions that already sitting inside the alert actions array
-            if(!actionRequest.m_enabled) {
-                uiAction.enabled = actionRequest.m_enabled;
+            if(!actionRequest.m_Enabled) {
+                uiAction.enabled = actionRequest.m_Enabled;
             }
             
-            if(actionRequest.m_preffered) {
+            if(actionRequest.m_Preferred) {
                 alert.preferredAction = uiAction;
             }
         }
@@ -64,7 +64,7 @@ extern "C" {
         #endif
 
         [vc presentViewController:alert animated:YES completion:nil];
-        NSString* key = [NSString stringWithFormat:@"%d",request.m_id];
+        NSString* key = [NSString stringWithFormat:@"%d",request.m_Id];
         [alerts setObject:alert forKey:key];
     }
     

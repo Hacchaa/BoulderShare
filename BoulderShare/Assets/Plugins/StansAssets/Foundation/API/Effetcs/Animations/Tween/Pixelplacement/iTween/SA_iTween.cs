@@ -6654,7 +6654,7 @@ public class SA_iTween : MonoBehaviour{
 		
 	//andeeee from the Unity forum's steller Catmull-Rom class ( http://forum.unity3d.com/viewtopic.php?p=218400#218400 ):
 	private class CRSpline {
-		public Vector3[] pts;
+		public readonly Vector3[] pts;
 		
 		public CRSpline(params Vector3[] pts) {
 			this.pts = new Vector3[pts.Length];

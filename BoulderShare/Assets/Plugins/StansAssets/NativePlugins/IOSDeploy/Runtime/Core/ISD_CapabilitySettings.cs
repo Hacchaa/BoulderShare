@@ -3,27 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 namespace SA.iOS.XCode
 {
-	[Serializable]
-	public class ISD_CapabilitySettings
-	{
-		[Serializable]
-		public class Capability {
-			public bool Enabled = false;
-		}
+    [Serializable]
+    public class ISD_CapabilitySettings
+    {
+        [Serializable]
+        public class Capability
+        {
+            public bool Enabled = false;
+        }
 
-
-		[Serializable]
-		public class iCloudCapability : Capability {
-
-			public bool keyValueStorage = false;
-			public bool iCloudDocument = false;
-			public List<string> customContainers = new List<string>();
-
-		}
+        [Serializable]
+        public class iCloudCapability : Capability
+        {
+            public bool keyValueStorage = false;
+            public bool iCloudDocument = false;
+            public List<string> customContainers = new List<string>();
+        }
 
         [Serializable]
         public class PushNotificationsCapability : Capability
@@ -42,7 +39,6 @@ namespace SA.iOS.XCode
         {
             public List<string> merchants = new List<string>();
         }
-
 
         [Serializable]
         public class MapsCapability : Capability
@@ -69,7 +65,6 @@ namespace SA.iOS.XCode
             public List<MapsOptions> options = new List<MapsOptions>();
         }
 
-
         [Serializable]
         public class BackgroundModesCapability : Capability
         {
@@ -92,13 +87,11 @@ namespace SA.iOS.XCode
             public List<BackgroundModesOptions> options = new List<BackgroundModesOptions>();
         }
 
-
         [Serializable]
         public class KeychainSharingCapability : Capability
         {
             public List<string> accessGroups = new List<string>();
         }
-
 
         [Serializable]
         public class AssociatedDomainsCapability : Capability
@@ -111,9 +104,9 @@ namespace SA.iOS.XCode
         {
             public List<string> groups = new List<string>();
         }
-        
+
         public iCloudCapability iCloud = new iCloudCapability();
-		public PushNotificationsCapability PushNotifications = new PushNotificationsCapability();
+        public PushNotificationsCapability PushNotifications = new PushNotificationsCapability();
         public Capability GameCenter = new Capability();
         public Capability SignInWithApple = new Capability();
         public WalletCapability Wallet = new WalletCapability();
@@ -131,6 +124,5 @@ namespace SA.iOS.XCode
         public Capability HomeKit = new Capability();
         public Capability HealthKit = new Capability();
         public Capability WirelessAccessoryConfiguration = new Capability();
-
-	}
+    }
 }

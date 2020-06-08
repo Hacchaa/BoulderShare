@@ -1,9 +1,9 @@
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public enum UM_UIPlatform  {
+    enum UM_UIPlatform
+    {
         Unified = 0,
         Android = 1,
         IOS = 2
-        
     }
 }

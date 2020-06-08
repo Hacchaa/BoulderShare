@@ -1,21 +1,15 @@
 using SA.Foundation.Editor;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-
-    public class UM_AnalyticsResolver : SA_iAPIResolver
+    class UM_AnalyticsResolver : SA_iAPIResolver
     {
-        public bool IsSettingsEnabled {
-            get {
-                return true;
-            }
-
+        public bool IsSettingsEnabled
+        {
+            get => true;
             set { }
         }
 
-        public void ResetRequirementsCache()
-        {
-           
-        }
+        public void ResetRequirementsCache() { }
     }
 }

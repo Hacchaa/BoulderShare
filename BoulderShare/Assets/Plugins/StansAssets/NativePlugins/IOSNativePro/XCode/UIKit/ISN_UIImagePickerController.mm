@@ -41,24 +41,6 @@ static ISN_UIImagePickerController * s_sharedInstance;
 }
 
 
-
-//--------------------------------------
-// Save
-//--------------------------------------
-
-
-- (void) saveToCameraRoll:(UIImage *)image {
-    UIImageWriteToSavedPhotosAlbum(image,
-                                   self, // send the message to 'self' when calling the callback
-                                   @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), // the selector to tell the method to call on completion
-                                   NULL); // you generally won't need a contextInfo here
-}
-
-- (void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo {
-    SA_Result * result = [[SA_Result alloc] initWithNSError:error];
-    ISN_SendMessage(UNITY_UI_LISTENER, "OnImageSave", [result toJSONString]);
-}
-
 //--------------------------------------
 // Pick
 //--------------------------------------
@@ -105,14 +87,6 @@ extern "C" {
         UIImagePickerControllerSourceType sourceType = static_cast<UIImagePickerControllerSourceType>(type);
         return [UIImagePickerController isSourceTypeAvailable:sourceType];
     }
-    
-    void _ISN_UI_SaveToCameraRoll(int length, Byte *byteArrPtr) {
-        NSData *imageData = [NSData dataWithBytes:byteArrPtr length:length];
-        UIImage *image = [UIImage imageWithData:imageData];
-        
-        [[ISN_UIImagePickerController sharedInstance] saveToCameraRoll:image];
-    }
-    
     
     void _ISN_UI_PresentPickerController(char* data) {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_UI_PresentPickerController" data:data];

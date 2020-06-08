@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -13,32 +13,31 @@ using UnityEngine;
 
 namespace SA.iOS.GameKit
 {
+    /// <summary>
+    /// Saved Game Load Result.
+    /// </summary>
     [Serializable]
     public class ISN_GKSavedGameLoadResult : SA_Result
     {
-        [SerializeField] string m_data = string.Empty;
+        [SerializeField]
+        string m_Data = string.Empty;
 
-        public ISN_GKSavedGameLoadResult(string data) 
+        ISN_GKSavedGameLoadResult(string data)
         {
-            m_data = data;
+            m_Data = data;
         }
 
-        public ISN_GKSavedGameLoadResult(SA_Error error) : base(error) { }
+        ISN_GKSavedGameLoadResult(SA_Error error)
+            : base(error) { }
 
         /// <summary>
         /// Returns string representation of the data
         /// </summary>
-        public string StringData 
-        {
-            get { return m_data; }
-        }
+        public string StringData => m_Data;
 
         /// <summary>
         /// Returns bytes array representation of the data.
         /// </summary>
-        public byte[] BytesArrayData 
-        {
-            get { return Convert.FromBase64String(m_data); }
-        }
+        public byte[] BytesArrayData => Convert.FromBase64String(m_Data);
     }
 }

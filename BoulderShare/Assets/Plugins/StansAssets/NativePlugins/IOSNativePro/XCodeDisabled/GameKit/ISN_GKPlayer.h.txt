@@ -9,9 +9,9 @@
 
 @interface ISN_GKPlayer : JSONModel
 
-@property (nonatomic) NSString *m_playerID;
-@property (nonatomic) NSString *m_alias;
-@property (nonatomic) NSString *m_displayName;
+@property (nonatomic) NSString *m_PlayerId;
+@property (nonatomic) NSString *m_Alias;
+@property (nonatomic) NSString *m_DisplayName;
 
 -(id) initWithGKPlayer:(GKPlayer *) player;
 

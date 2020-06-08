@@ -8,8 +8,8 @@
 @protocol ISN_AVPlayer;
 @interface ISN_AVPlayer : JSONModel
 
-@property(nonatomic) ISN_NSURL* m_url;
-@property(nonatomic) float m_volume;
+@property(nonatomic) ISN_NSURL* m_Url;
+@property(nonatomic) float m_Volume;
 
 
 -(AVPlayer* ) toAVPlayer;

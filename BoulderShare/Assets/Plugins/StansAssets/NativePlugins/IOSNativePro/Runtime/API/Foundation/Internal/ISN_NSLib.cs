@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -9,23 +9,25 @@
 
 using UnityEngine;
 
-namespace SA.iOS.Foundation.Internal
+namespace SA.iOS.Foundation
 {
-
-    internal static class ISN_NSLib
+    static class ISN_NSLib
     {
-        private static ISN_NSAPI m_api = null;
+        static ISN_NSAPI s_Api = null;
 
-        public static ISN_NSAPI API {
-            get {
-                if (m_api == null) {
-                    if (Application.isEditor) 
-                        m_api = new ISN_NSEditorAPI();
-                    else 
-                        m_api = ISN_NSNativeAPI.Instance;
+        public static ISN_NSAPI Api
+        {
+            get
+            {
+                if (s_Api == null)
+                {
+                    if (Application.isEditor)
+                        s_Api = new ISN_NSEditorAPI();
+                    else
+                        s_Api = ISN_NSNativeAPI.Instance;
                 }
 
-                return m_api;
+                return s_Api;
             }
         }
     }

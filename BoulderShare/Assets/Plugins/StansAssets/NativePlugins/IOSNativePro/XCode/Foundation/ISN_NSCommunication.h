@@ -5,27 +5,27 @@
 
 @protocol ISN_NSArrayModel;
 @interface ISN_NSArrayModel : JSONModel
-@property (nonatomic) NSArray<NSString*> *m_value;
+@property (nonatomic) NSArray<NSString*> *m_Value;
 @end
 
 @protocol ISN_NSKeyValueObject;
 @interface ISN_NSKeyValueObject : JSONModel
-@property (nonatomic) NSString *m_key;
-@property (nonatomic) NSString *m_value;
+@property (nonatomic) NSString *m_Key;
+@property (nonatomic) NSString *m_Value;
 
 -(id) initWithData:(NSString *) key value:(NSString *) value;
 @end
 
 
 @interface  ISN_NSKeyValueResult : SA_Result
-@property (nonatomic) ISN_NSKeyValueObject *m_keyValueObject;
+@property (nonatomic) ISN_NSKeyValueObject *m_KeyValueObject;
 
 -(id) initWithNSKeyValueObject:(ISN_NSKeyValueObject *) keyValueObject;
 @end
 
 @interface ISN_NSStoreDidChangeExternallyNotification : JSONModel
-@property (nonatomic) int m_reason;
-@property (nonatomic) NSArray<ISN_NSKeyValueObject> *m_updatedData;
+@property (nonatomic) int m_Reason;
+@property (nonatomic) NSArray<ISN_NSKeyValueObject> *m_UpdatedData;
 @end
 
 
@@ -51,8 +51,8 @@
 @protocol ISN_NSRange;
 @interface ISN_NSRange : JSONModel
 
-@property(nonatomic) long m_location;
-@property(nonatomic) long m_length;
+@property(nonatomic) long m_Location;
+@property(nonatomic) long m_Length;
 
 -(id) initWithNSRange:(NSRange ) range;
 -(NSRange ) getNSRange;
@@ -61,19 +61,19 @@
 
 @protocol ISN_NSURL;
 @interface ISN_NSURL : JSONModel
-@property(nonatomic) NSString* m_url;
-@property(nonatomic) int m_type;
+@property(nonatomic) NSString* m_Url;
+@property(nonatomic) int m_Type;
 
 -(NSURL* ) toNSURL;
 @end
 
 @protocol ISN_NSLocale;
 @interface ISN_NSLocale : JSONModel
-@property (nonatomic) NSString* m_identifier;
-@property (nonatomic) NSString* m_countryCode;
-@property (nonatomic) NSString* m_languageCode;
-@property (nonatomic) NSString* m_currencySymbol;
-@property (nonatomic) NSString* m_currencyCode;
+@property (nonatomic) NSString* m_Identifier;
+@property (nonatomic) NSString* m_CountryCode;
+@property (nonatomic) NSString* m_LanguageCode;
+@property (nonatomic) NSString* m_CurrencySymbol;
+@property (nonatomic) NSString* m_CurrencyCode;
 
 
 -(id) initWithNSLocale:(NSLocale *) locale;

@@ -5,22 +5,18 @@ using UnityEngine.UI;
 
 public class UM_FB_Samples : MonoBehaviour
 {
+    [Header("Share  Buttons")]
+    [SerializeField]
+    Button m_LogIn = null;
 
-    [Header("Share  Buttons"), SerializeField]
-    private Button m_LogIn = null;
-
-
-    private void Start()
+    void Start()
     {
         m_LogIn.onClick.AddListener(() =>
         {
             m_LogIn.interactable = false;
             SA_FB.Login(result =>
             {
-                if (result.IsSucceeded)
-                {
-                    
-                }
+                if (result.IsSucceeded) { }
                 else
                 {
                     m_LogIn.interactable = true;

@@ -1,7 +1,6 @@
-
-public enum SA_VertexX  {
-	Left,
-	Right,
-	Center
+public enum SA_VertexX
+{
+    Left,
+    Right,
+    Center
 }
-

@@ -52,8 +52,8 @@ extern "C" {
                      [scoresArray addObject:isn_score];
                  }
                  
-                 result.m_scores = scoresArray;
-                 result.m_leaderboard = [[ISN_GKLeaderboard alloc] initWithGKLeaderboard:leaderboardRequest];
+                 result.m_Scores = scoresArray;
+                 result.m_Leaderboard = [[ISN_GKLeaderboard alloc] initWithGKLeaderboard:leaderboardRequest];
              }
              
              ISN_SendCallbackToUnity(callback, [result toJSONString]);
@@ -72,7 +72,7 @@ extern "C" {
         }
         
         NSMutableArray<GKScore*> *scores = [[NSMutableArray<GKScore*> alloc] init];
-        for(ISN_GKScore* score in requestData.m_scores) {
+        for(ISN_GKScore* score in requestData.m_Scores) {
             GKScore* gk_socre  = [score toGKScore];
             [scores addObject:gk_socre];
         }

@@ -1,19 +1,17 @@
 using System;
 using SA.Foundation.Templates;
 
-
 namespace SA.CrossPlatform.Advertisement
 {
-    public interface UM_iRewardedAds
+    /// <summary>
+    /// A client to interact with the rewarded advertisement.
+    /// </summary>
+    public interface UM_iRewardedAds : UM_IAdvertisement
     {
-
-        void Load(Action<SA_Result> callback);
-        void Load(string id, Action<SA_Result> callback);
-        void Show(Action<UM_RewardedAdsResult> callabck);
-
         /// <summary>
-        /// Indicates if rewarded ads is ready to be shown
+        /// Show rewarded ads.
         /// </summary>
-        bool IsReady { get; }
+        /// <param name="callback">Callback is called when ad is closed.</param>
+        void Show(Action<UM_RewardedAdsResult> callback);
     }
 }

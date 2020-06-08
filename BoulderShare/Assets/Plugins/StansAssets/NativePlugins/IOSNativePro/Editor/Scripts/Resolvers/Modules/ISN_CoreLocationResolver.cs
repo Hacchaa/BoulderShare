@@ -2,10 +2,10 @@ using SA.iOS.XCode;
 
 namespace SA.iOS
 {
-    public class ISN_CoreLocationResolver : ISN_APIResolver
+    class ISN_CoreLocationResolver : ISN_APIResolver
     {
-
-        protected override ISN_XcodeRequirements GenerateRequirements() {
+        protected override ISN_XcodeRequirements GenerateRequirements()
+        {
             var requirements = new ISN_XcodeRequirements();
             requirements.AddFramework(new ISD_Framework(ISD_iOSFramework.CoreLocation));
 
@@ -24,22 +24,14 @@ namespace SA.iOS
             return requirements;
         }
 
+        protected override string LibFolder => "CoreLocation/";
 
-        protected override string LibFolder
+        public override bool IsSettingsEnabled
         {
-            get { return "CoreLocation/"; }
-        }
-        
-        public override bool IsSettingsEnabled 
-        {
-            get { return ISN_Settings.Instance.CoreLocation; }
-            set { ISN_Settings.Instance.CoreLocation = value; }
+            get => ISN_Settings.Instance.CoreLocation;
+            set => ISN_Settings.Instance.CoreLocation = value;
         }
 
-        public override string DefineName
-        {
-            get { return "CORE_LOCATION_API_ENABLED"; }
-        }
+        public override string DefineName => "CORE_LOCATION_API_ENABLED";
     }
 }
-

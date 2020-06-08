@@ -5,82 +5,74 @@ using UnityEditor.Build;
 using UnityEditor;
 using SA.iOS.XCode;
 using SA.Foundation.Utility;
-
 #if UNITY_2018_1_OR_NEWER
 using UnityEditor.Build.Reporting;
+
 #endif
 
 namespace SA.iOS
 {
 #if UNITY_2018_1_OR_NEWER
-    public  class ISN_Preprocessor : IPreprocessBuildWithReport
+    class ISN_Preprocessor : IPreprocessBuildWithReport
 #else
-    public class ISN_Preprocessor : IPreprocessBuild
+    class ISN_Preprocessor : IPreprocessBuild
 #endif
     {
         //--------------------------------------
         // Static
         //--------------------------------------
-        
-        public static void Resolve(bool forced = false) 
+
+        public static void Resolve(bool forced = false)
         {
             var pluginVersionUpdated = ISN_Settings.UpdateVersion(ISN_Settings.FormattedVersion) && !SA_PluginTools.IsDevelopmentMode;
 
             Refresh();
-            foreach (var resolver in Resolvers) 
-            {
-                resolver.Run(pluginVersionUpdated || forced);
-            }
+            foreach (var resolver in Resolvers) resolver.Run(pluginVersionUpdated || forced);
 
-            foreach (var resolver in Resolvers) 
-            {
-                resolver.RunAdditionalPreprocess();
-            }
+            foreach (var resolver in Resolvers) resolver.RunAdditionalPreprocess();
         }
 
-        public static void DropToDefault() 
+        public static void DropToDefault()
         {
             ISN_Settings.Delete();
             ISD_Settings.Delete();
 
-            //Looks like a unity bug. 
+            //Looks like a unity bug.
             //As always let's use the delay call magic
-            EditorApplication.delayCall += () => 
+            EditorApplication.delayCall += () =>
             {
-                EditorApplication.delayCall += () => 
+                EditorApplication.delayCall += () =>
                 {
                     Refresh();
-                    Resolve(forced: true);
+                    Resolve(true);
                 };
             };
         }
 
-        public static void Refresh() 
+        public static void Refresh()
         {
             s_Resolvers = null;
         }
 
-
-        public static T GetResolver<T>() where T : ISN_APIResolver 
+        public static T GetResolver<T>() where T : ISN_APIResolver
         {
-            return (T) GetResolver(typeof(T));
+            return (T)GetResolver(typeof(T));
         }
 
-        private static ISN_APIResolver GetResolver(Type resolverType) 
+        static ISN_APIResolver GetResolver(Type resolverType)
         {
-            foreach (var resolver in Resolvers) 
-            {
-                if (resolver.GetType() == resolverType) 
-                {
+            foreach (var resolver in Resolvers)
+                if (resolver.GetType() == resolverType)
                     return resolver;
-                }
-            }
             return null;
         }
 
-        private static List<ISN_APIResolver> s_Resolvers;
-        public static IEnumerable<ISN_APIResolver> Resolvers {
-            get {
+        static List<ISN_APIResolver> s_Resolvers;
+
+        public static IEnumerable<ISN_APIResolver> Resolvers
+        {
+            get
+            {
                 if (s_Resolvers != null) return s_Resolvers;
 
                 s_Resolvers = new List<ISN_APIResolver>
@@ -109,19 +101,16 @@ namespace SA.iOS
 
         public static void ChangeFileDefine(string file, string tag, bool isEnabled)
         {
-            if (SA_FilesUtil.IsFileExists(file)) 
+            if (SA_FilesUtil.IsFileExists(file))
             {
-
                 var defineLine = "#define " + tag;
-                if (!isEnabled) {
-                    defineLine = "//" + defineLine;
-                }
+                if (!isEnabled) defineLine = "//" + defineLine;
 
-                string[] content = SA_FilesUtil.ReadAllLines(file);
+                var content = SA_FilesUtil.ReadAllLines(file);
                 content[0] = defineLine;
                 SA_FilesUtil.WriteAllLines(file, content);
-            } 
-            else 
+            }
+            else
             {
                 Debug.LogError(file + " not found");
             }
@@ -131,34 +120,27 @@ namespace SA.iOS
         // IPreprocessBuild
         //--------------------------------------
 
-        public void OnPreprocessBuild(BuildTarget target, string path) 
+        public void OnPreprocessBuild(BuildTarget target, string path)
         {
             Preprocess(target);
         }
-        
+
 #if UNITY_2018_1_OR_NEWER
-        public void OnPreprocessBuild(BuildReport report) {
+        public void OnPreprocessBuild(BuildReport report)
+        {
             Preprocess(report.summary.platform);
         }
 #endif
 
-        public int callbackOrder
-        {
-            get { return 0; }
-        }
+        public int callbackOrder => 0;
 
         //--------------------------------------
         // Private Methods
         //--------------------------------------
 
-        private static void Preprocess(BuildTarget target) 
+        static void Preprocess(BuildTarget target)
         {
-            if (target == BuildTarget.iOS || target == BuildTarget.tvOS || target == BuildTarget.StandaloneOSX) 
-            {
-                Resolve();
-            }
+            if (target == BuildTarget.iOS || target == BuildTarget.tvOS || target == BuildTarget.StandaloneOSX) Resolve();
         }
     }
 }
-
-

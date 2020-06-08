@@ -185,13 +185,12 @@ public class ModifyView: BNScreenInput
             }
             stack.ModifyRoute(route, wallImage);
 
-            if (inputedSprite != null){
+            if (wallImage != null){
                 //gymboardの設定
                 BNGym g = stack.GetTargetGym();
                 if (string.IsNullOrEmpty(g.GetBoardImagePath())){
-                    BNImage bni = new BNImage(inputedSprite.texture);
-                    g.SetBoardImagePath(bni.fileName);
-                    stack.ModifyGym(g, bni);  
+                    g.SetBoardImagePath(wallImage.fileName);
+                    stack.ModifyGym(g);  
                 }
             }
             stack.ClearRecord();
@@ -210,6 +209,13 @@ public class ModifyView: BNScreenInput
             stack.DeleteGym();
         }else if(type == ViewType.Route){
             stack.DeleteRoute();
+
+            //ジムボード画像の変更が必要かどうか
+            BNGym g = stack.GetTargetGym();
+            if (!stack.HasWallImage(g.GetBoardImagePath())){
+                g.SetBoardImagePath(stack.FindOldestWallImageName());
+                stack.ModifyGym(g);
+            }
         }
 
         ReverseTransitionDouble();

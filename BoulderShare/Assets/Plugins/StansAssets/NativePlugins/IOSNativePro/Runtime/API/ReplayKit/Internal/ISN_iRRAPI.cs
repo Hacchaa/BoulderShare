@@ -1,8 +1,8 @@
 //#define REPLAY_KIT_API_ENABLED
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Osipov Stanislav (Stan's Assets) 
+// @author Osipov Stanislav (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -12,9 +12,9 @@ using System;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
-namespace SA.iOS.ReplayKit.Internal
+namespace SA.iOS.ReplayKit
 {
-    internal interface ISN_iRRAPI
+    interface ISN_iRRAPI
     {
         void StartRecording(Action<SA_Result> callback);
         void StopRecording(Action<ISN_RPStopResult> callback);
@@ -24,7 +24,7 @@ namespace SA.iOS.ReplayKit.Internal
 
         void SetMicrophoneEnabled(bool enabled);
 
-        bool IsReplayKitAvaliable();
+        bool IsReplayKitAvailable();
         bool IsReplayKitRecording();
         bool IsReplayKitMicEnabled();
 

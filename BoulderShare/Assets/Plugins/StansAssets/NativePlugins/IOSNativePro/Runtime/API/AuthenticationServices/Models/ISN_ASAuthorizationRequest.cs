@@ -7,6 +7,7 @@ namespace SA.iOS.AuthenticationServices
     /// </summary>
     public abstract class ISN_ASAuthorizationRequest : ISN_NativeObject
     {
-        internal ISN_ASAuthorizationRequest(ulong hash) : base(hash) { }
+        internal ISN_ASAuthorizationRequest(ulong hash)
+            : base(hash) { }
     }
 }

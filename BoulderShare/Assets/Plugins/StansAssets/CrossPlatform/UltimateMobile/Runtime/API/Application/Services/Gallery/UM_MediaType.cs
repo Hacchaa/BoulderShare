@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-
 namespace SA.CrossPlatform.App
 {
     /// <summary>
@@ -11,6 +10,5 @@ namespace SA.CrossPlatform.App
     {
         Image = 0,
         Video = 1
-
     }
 }

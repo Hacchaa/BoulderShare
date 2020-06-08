@@ -22,22 +22,23 @@ namespace SA.iOS.Examples
         public const string SMALL_PACK = "your.product.id1.here";
         public const string NC_PACK = "your.product.id2.here";
 
-        private static bool IsInitialized = false;
+        static bool IsInitialized = false;
 
-        public void init()  {
+        public void init()
+        {
             // just make sure we init only once
-            if (!IsInitialized) {
+            if (!IsInitialized)
+            {
                 ISN_SKPaymentQueue.RegisterProductId(SMALL_PACK);
                 ISN_SKPaymentQueue.RegisterProductId(NC_PACK);
 
                 IsInitialized = true;
 
-
-				ISN_SKPaymentQueue.Init(result => {
-					Debug.Log("result.Products.Count " + result.Products.Count);
-					Debug.Log("result.InvalidProductIdentifiers.Count " + result.InvalidProductIdentifiers.Count);
-
-				});
+                ISN_SKPaymentQueue.Init(result =>
+                {
+                    Debug.Log("result.Products.Count " + result.Products.Count);
+                    Debug.Log("result.InvalidProductIdentifiers.Count " + result.InvalidProductIdentifiers.Count);
+                });
 
                 //Since current class is implement's ISN_iSKPaymentTransactionObserver
                 //we can add it as the transaction observer
@@ -45,13 +46,12 @@ namespace SA.iOS.Examples
             }
         }
 
-
         //--------------------------------------
         //  Private Methods
         //--------------------------------------
 
-        private static void UnlockProducts(ISN_iSKPaymentTransaction transaction)  {
-
+        static void UnlockProducts(ISN_iSKPaymentTransaction transaction)
+        {
             //At this point user already paid for content, so we need to provide it
             //Unless, we want to make sure that payment was legit, and nobody trying to hack us
             //In order to do it, we have to use server side verification, you can read more about it here:
@@ -60,30 +60,28 @@ namespace SA.iOS.Examples
             //this step isn't required. Use it only if you want to make sure that payment is 100% legit
             //So far let's just print a Base64 receipt data
 
-          //  Debug.Log("Receipt: " + ISN_SKPaymentQueue.AppStoreReceipt.AsBase64StringString);
+            //  Debug.Log("Receipt: " + ISN_SKPaymentQueue.AppStoreReceipt.AsBase64StringString);
 
-            switch (transaction.ProductIdentifier) {
+            switch (transaction.ProductIdentifier)
+            {
                 case SMALL_PACK:
                     //code for adding small game money amount here
                     break;
                 case NC_PACK:
                     //code for unlocking cool item here
                     break;
-
             }
 
             //After connect was provided to use we can finally finish the transaction
             ISN_SKPaymentQueue.FinishTransaction(transaction);
         }
 
-
-
         //--------------------------------------
         //  ISN_TransactionObserver implementation
         //--------------------------------------
 
-        public void OnTransactionUpdated(ISN_iSKPaymentTransaction transaction) {
-
+        public void OnTransactionUpdated(ISN_iSKPaymentTransaction transaction)
+        {
             //Transactions have been updated.
             //Let's act accordingly
             Debug.Log("transaction JSON: " + JsonUtility.ToJson(transaction));
@@ -91,8 +89,8 @@ namespace SA.iOS.Examples
             Debug.Log("OnTransactionComplete: " + transaction.ProductIdentifier);
             Debug.Log("OnTransactionComplete: state: " + transaction.State);
 
-            switch (transaction.State) {
-
+            switch (transaction.State)
+            {
                 case ISN_SKPaymentTransactionState.Purchasing:
                     //No actions is required here, we probably don't even have a ProductIdentifier
                     //but we can use this callback to show preloader for example, since we know that user is currently
@@ -122,19 +120,20 @@ namespace SA.iOS.Examples
                     break;
             }
 
-            if (transaction.State == ISN_SKPaymentTransactionState.Failed) {
+            if (transaction.State == ISN_SKPaymentTransactionState.Failed)
                 Debug.Log("Error code: " + transaction.Error.Code + "\n" + "Error description:" + transaction.Error.Message);
-            } else {
+            else
                 Debug.Log("product " + transaction.ProductIdentifier + " state: " + transaction.State);
-            }
         }
 
-        public void OnTransactionRemoved(ISN_iSKPaymentTransaction result) {
+        public void OnTransactionRemoved(ISN_iSKPaymentTransaction result)
+        {
             //Your application does not typically need to anything on this event,  
             //but it may be used to update user interface to reflect that a transaction has been completed.
         }
 
-        public bool OnShouldAddStorePayment(ISN_SKProduct result) {
+        public bool OnShouldAddStorePayment(ISN_SKProduct result)
+        {
             // Return true to continue the transaction in your app.
             // Return false to defer or cancel the transaction.
             // If you return false, you can continue the transaction later using requestId <see cref="ISN_SKProduct"/>
@@ -143,19 +142,17 @@ namespace SA.iOS.Examples
             return true;
         }
 
-
-        public void OnRestoreTransactionsComplete(SA_Result result) {
-
+        public void OnRestoreTransactionsComplete(SA_Result result)
+        {
             // Tells the observer that the payment queue has finished sending restored transactions.
             // 
             // This method is called after all restore transactions have been processed by the payment queue. 
             // Your application is not required to do anything in this method.
 
-            if (result.IsSucceeded) {
+            if (result.IsSucceeded)
                 Debug.Log("Restore Completed");
-            } else {
+            else
                 Debug.Log("Error: " + result.Error.Code + " message: " + result.Error.Message);
-            }
         }
 
         public void DidChangeStorefront()

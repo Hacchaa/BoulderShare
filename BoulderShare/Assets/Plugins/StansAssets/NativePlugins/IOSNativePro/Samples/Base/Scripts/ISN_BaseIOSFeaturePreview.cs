@@ -11,17 +11,14 @@ using UnityEngine.SceneManagement;
 
 namespace SA.iOS.Examples
 {
-
     public class ISN_BaseIOSFeaturePreview : MonoBehaviour
     {
-
         protected GUIStyle style;
 
         protected int buttonWidth = 400;
         protected int buttonHeight = 150;
         protected float StartY = 40;
         protected float StartX = 20;
-
 
         protected float XStartPos = 20;
         protected float YStartPos = 20;
@@ -31,7 +28,8 @@ namespace SA.iOS.Examples
 
         protected float YLableStep = 100;
 
-        protected virtual void InitStyles() {
+        protected virtual void InitStyles()
+        {
             style = new GUIStyle();
             style.normal.textColor = Color.white;
             style.fontSize = 16;
@@ -40,16 +38,19 @@ namespace SA.iOS.Examples
             style.wordWrap = true;
         }
 
-        public virtual void Start() {
+        public virtual void Start()
+        {
             InitStyles();
         }
 
-        public void UpdateToStartPos() {
+        public void UpdateToStartPos()
+        {
             StartY = YStartPos;
             StartX = XStartPos;
         }
 
-        public void LoadLevel(string levelName) {
+        public void LoadLevel(string levelName)
+        {
             SceneManager.LoadScene(levelName);
         }
     }

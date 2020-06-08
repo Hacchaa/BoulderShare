@@ -4,8 +4,10 @@ using SA.iOS.AdSupport;
 
 public class ASIdentifierManagerExample : MonoBehaviour
 {
-    [SerializeField] private Text advertisingTrackingEnabled = null;
-    [SerializeField] private Text advertisingIdentifier = null;
+    [SerializeField]
+    Text advertisingTrackingEnabled = null;
+    [SerializeField]
+    Text advertisingIdentifier = null;
 
     public void GetAdvertisingIdentifier()
     {

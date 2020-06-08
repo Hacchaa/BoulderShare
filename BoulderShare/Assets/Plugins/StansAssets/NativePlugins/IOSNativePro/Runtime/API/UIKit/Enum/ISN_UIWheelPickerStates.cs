@@ -8,16 +8,16 @@ namespace SA.iOS.UIKit
         /// <summary>
         ///  User pick variant.
         /// </summary>
-        IN_PROGRESS, 
-        
+        InProgress,
+
         /// <summary>
         /// User picker variant.
         /// </summary>
-        DONE,
-        
+        Done,
+
         /// <summary>
         ///  User canceled and closed ISN_UIWheelPicker
         /// </summary>
-        CANCELED   
+        Canceled
     }
 }

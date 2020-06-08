@@ -1,20 +1,8 @@
-
-namespace SA.iOS.EventKit.Internal
+namespace SA.iOS.EventKit
 {
-    internal static class ISN_EventKitLib
+    static class ISN_EventKitLib
     {
-        private static ISN_EventKitAPI m_api = null;
-        public static ISN_EventKitAPI API 
-        {
-            get 
-            {
-                if (m_api == null) 
-                {
-                    m_api = ISN_EventKitNativeAPI.Instance;
-                }
-
-                return m_api;
-            }
-        }
+        static ISN_EventKitAPI s_Api;
+        public static ISN_EventKitAPI Api => s_Api ?? (s_Api = ISN_EventKitNativeAPI.Instance);
     }
 }

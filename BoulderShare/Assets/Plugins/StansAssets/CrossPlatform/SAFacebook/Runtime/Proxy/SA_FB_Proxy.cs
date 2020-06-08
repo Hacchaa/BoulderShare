@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,11 +9,11 @@ using FB_Plugin = Facebook.Unity;
 
 namespace SA.Facebook
 {
-
     public delegate void InitDelegate();
-    public delegate void HideUnityDelegate(bool isUnityShown);
-    public delegate void FacebookDelegate<T>(T result) where T : IResult;
 
+    public delegate void HideUnityDelegate(bool isUnityShown);
+
+    public delegate void FacebookDelegate<T>(T result) where T : IResult;
 
     public enum HttpMethod
     {
@@ -23,15 +22,11 @@ namespace SA.Facebook
         DELETE = 2
     }
 
-
-
-
-    internal static class SA_FB_Proxy {
-
-        public static void Init(InitDelegate onInitComplete = null, HideUnityDelegate onHideUnity = null, string authResponse = null) {
+    static class SA_FB_Proxy
+    {
+        public static void Init(InitDelegate onInitComplete = null, HideUnityDelegate onHideUnity = null, string authResponse = null)
+        {
 #if SA_FB_INSTALLED
-
-            
             FB_Plugin.FB.Init(() => {
                 if (onInitComplete != null) {
                     onInitComplete.Invoke();
@@ -45,16 +40,16 @@ namespace SA.Facebook
 #endif
         }
 
-        public static void SetAppId(string appId) {
-
+        public static void SetAppId(string appId)
+        {
 #if SA_FB_INSTALLED
             List<string> appIds = new List<string>() { appId };
             FB_Plugin.Settings.FacebookSettings.AppIds = appIds;
 #endif
         }
 
-        public static void API(string query, HttpMethod method, FacebookDelegate<IGraphResult> callback = null, IDictionary<string, string> formData = null) {
-
+        public static void API(string query, HttpMethod method, FacebookDelegate<IGraphResult> callback = null, IDictionary<string, string> formData = null)
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.API(query, (FB_Plugin.HttpMethod)method, (result) => {
                 if(callback != null) {
@@ -67,10 +62,8 @@ namespace SA.Facebook
 #endif
         }
 
-
-
-        public static void Init(string appId, string clientToken = null, bool cookie = true, bool logging = true, bool status = true, bool xfbml = false, bool frictionlessRequests = true, string authResponse = null, string javascriptSDKLocale = "en_US", HideUnityDelegate onHideUnity = null, InitDelegate onInitComplete = null) {
-
+        public static void Init(string appId, string clientToken = null, bool cookie = true, bool logging = true, bool status = true, bool xfbml = false, bool frictionlessRequests = true, string authResponse = null, string javascriptSDKLocale = "en_US", HideUnityDelegate onHideUnity = null, InitDelegate onInitComplete = null)
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.Init(appId,
                 clientToken,
@@ -94,8 +87,8 @@ namespace SA.Facebook
 #endif
         }
 
-
-        public static void LogInWithReadPermissions(IEnumerable<string> permissions = null, FacebookDelegate<ILoginResult> callback = null) {
+        public static void LogInWithReadPermissions(IEnumerable<string> permissions = null, FacebookDelegate<ILoginResult> callback = null)
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.LogInWithReadPermissions(permissions, (result) => {
                 if(callback != null) {
@@ -106,7 +99,8 @@ namespace SA.Facebook
 #endif
         }
 
-        public static void LogInWithPublishPermissions(IEnumerable<string> permissions = null, FacebookDelegate<ILoginResult> callback = null) {
+        public static void LogInWithPublishPermissions(IEnumerable<string> permissions = null, FacebookDelegate<ILoginResult> callback = null)
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.LogInWithPublishPermissions(permissions, (result) => {
                 if (callback != null) {
@@ -117,42 +111,38 @@ namespace SA.Facebook
 #endif
         }
 
-
-        public static void LogOut() {
+        public static void LogOut()
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.LogOut();
 #endif
         }
 
-
-
-
-
-
-        public static void ActivateApp() {
+        public static void ActivateApp()
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.ActivateApp();
 #endif
         }
 
-
-        public static void LogAppEvent(string logEvent, float? valueToSum = null, Dictionary<string, object> parameters = null) {
+        public static void LogAppEvent(string logEvent, float? valueToSum = null, Dictionary<string, object> parameters = null)
+        {
 #if SA_FB_INSTALLED
-
             FB_Plugin.FB.LogAppEvent(logEvent, valueToSum, parameters);
 #endif
         }
 
-        public static void LogPurchase(float logPurchase, string currency = null, Dictionary<string, object> parameters = null) {
+        public static void LogPurchase(float logPurchase, string currency = null, Dictionary<string, object> parameters = null)
+        {
 #if SA_FB_INSTALLED
             FB_Plugin.FB.LogPurchase(logPurchase, currency, parameters);
 #endif
         }
 
-
-       
-        public static bool IsInitialized {
-            get {
+        public static bool IsInitialized
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return FB_Plugin.FB.IsInitialized;
 #else
@@ -161,10 +151,11 @@ namespace SA.Facebook
             }
         }
 
-        public static bool IsLoggedIn {
-            get {
+        public static bool IsLoggedIn
+        {
+            get
+            {
 #if SA_FB_INSTALLED
-               
                 return FB_Plugin.FB.IsLoggedIn;
 #else
                 return false;
@@ -172,39 +163,40 @@ namespace SA.Facebook
             }
         }
 
-
-        public static string GraphApiVersion {
-            get {
+        public static string GraphApiVersion
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return FB_Plugin.FB.GraphApiVersion;
 #else
-                return  string.Empty;
+                return string.Empty;
 #endif
             }
         }
 
-
-        public static string ClientToken {
-            get {
+        public static string ClientToken
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return FB_Plugin.FB.ClientToken;
 #else
-                return  string.Empty;
+                return string.Empty;
 #endif
             }
         }
 
-        public static string AppId {
-            get {
+        public static string AppId
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return FB_Plugin.FB.AppId;
 #else
-                return  string.Empty;
+                return string.Empty;
 #endif
             }
         }
-
-       
     }
 }
-

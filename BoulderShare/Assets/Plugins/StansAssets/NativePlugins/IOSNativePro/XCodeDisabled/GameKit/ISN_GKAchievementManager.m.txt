@@ -25,8 +25,8 @@ static ISN_GKAchievementManager * s_sharedInstance;
     
     for (ISN_GKAchievement* achievement in achievementsArray) {
       
-        GKAchievement* achieve = [[GKAchievement alloc] initWithIdentifier:achievement.m_identifier];
-        achieve.percentComplete = achievement.m_percentComplete;
+        GKAchievement* achieve = [[GKAchievement alloc] initWithIdentifier:achievement.m_Identifier];
+        achieve.percentComplete = achievement.m_PercentComplete;
         if(achieve.percentComplete >= 100.0) {
             achieve.percentComplete = 100.0;
             achieve.showsCompletionBanner = true;
@@ -104,7 +104,7 @@ extern "C" {
             [ISN_Logger LogError:@"ISN_GKAchievementSubmitRequest JSON parsing error: %@", jsonError.description];
         }
         
-        [[ISN_GKAchievementManager sharedInstance] reportAchievements:callbackd withAchievementsArray:requestData.m_achievements];
+        [[ISN_GKAchievementManager sharedInstance] reportAchievements:callbackd withAchievementsArray:requestData.m_Achievements];
     }
     
 #if __cplusplus

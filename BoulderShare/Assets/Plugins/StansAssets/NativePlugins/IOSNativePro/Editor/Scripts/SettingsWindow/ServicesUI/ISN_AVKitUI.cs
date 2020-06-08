@@ -5,47 +5,24 @@ using SA.Foundation.Editor;
 
 namespace SA.iOS
 {
-    public class ISN_AVKitUI : ISN_ServiceSettingsUI
+    class ISN_AVKitUI : ISN_ServiceSettingsUI
     {
-
-        public override void OnAwake() {
+        public override void OnAwake()
+        {
             base.OnAwake();
 
-            AddFeatureUrl("AVPlayer View", "https://unionassets.com/ios-native-pro/avplayerviewcontroller-663");
-            AddFeatureUrl("Video Player", "https://unionassets.com/ios-native-pro/avplayerviewcontroller-663");
-
+            AddFeatureUrl("AVPlayer View", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/AVPlayerViewController");
+            AddFeatureUrl("Video Player", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/AVPlayerViewController");
         }
 
-        public override string Title {
-            get {
-                return "AVKit";
-            }
-        }
+        public override string Title => "AVKit";
 
-        public override string Description {
-            get {
-                return " The AVKit framework provides a high-level interface for playing video content..";
-            }
-        }
+        public override string Description => " The AVKit framework provides a high-level interface for playing video content..";
 
-        protected override Texture2D Icon {
-            get {
-                return SA_EditorAssets.GetTextureAtPath(ISN_Skin.ICONS_PATH + "AVKit_icon.png");
-            }
-        }
+        protected override Texture2D Icon => SA_EditorAssets.GetTextureAtPath(ISN_Skin.IconsPath + "AVKit_icon.png");
 
-        public override SA_iAPIResolver Resolver {
-            get {
-                return ISN_Preprocessor.GetResolver<ISN_AVKitResolver>();
-            }
-        }
+        public override SA_iAPIResolver Resolver => ISN_Preprocessor.GetResolver<ISN_AVKitResolver>();
 
-
-        protected override void OnServiceUI() {
-           
-        }
-
-
+        protected override void OnServiceUI() { }
     }
-
 }

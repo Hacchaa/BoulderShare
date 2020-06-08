@@ -12,7 +12,7 @@ namespace SA.iOS.AuthenticationServices
         /// </summary>
         /// <param name="credential">Information provided about a user after successful authentication.</param>
         void DidCompleteWithAuthorization(ISN_ASAuthorizationAppleIDCredential credential);
-        
+
         /// <summary>
         /// Tells the delegate that authorization failed, and provides an error to explain why.
         /// </summary>

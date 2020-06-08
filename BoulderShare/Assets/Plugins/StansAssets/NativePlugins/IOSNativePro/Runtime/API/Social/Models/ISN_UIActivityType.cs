@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace SA.iOS.Social
 {
-
     /// <summary>
     /// Activity types for which the system has built-in support.
     /// </summary>
@@ -29,18 +27,17 @@ namespace SA.iOS.Social
         /// <summary>
         /// The object posts the provided content to the Messages app.
         /// </summary>
-        public const string Message= "com.apple.UIKit.activity.Message";
+        public const string Message = "com.apple.UIKit.activity.Message";
 
         /// <summary>
         /// The object posts the provided content to a new email message.
         /// </summary>
         public const string Mail = "com.apple.UIKit.activity.Mail";
 
-
         /// <summary>
         /// The object prints the provided content.
         /// </summary>
-        public const string Print= "com.apple.UIKit.activity.Print";
+        public const string Print = "com.apple.UIKit.activity.Print";
 
         /// <summary>
         /// The object posts the provided content to the pasteboard.
@@ -60,7 +57,7 @@ namespace SA.iOS.Social
         /// <summary>
         /// The object adds the URL to Safari’s reading list
         /// </summary>
-        public const string AddToReadingList= "com.apple.UIKit.activity.AddToReadingList";
+        public const string AddToReadingList = "com.apple.UIKit.activity.AddToReadingList";
 
         /// <summary>
         /// The object posts the provided image to the user’s Flickr account.
@@ -85,12 +82,11 @@ namespace SA.iOS.Social
         /// <summary>
         /// The object opens the content in iBooks.
         /// </summary>
-        public const string OpenInIBooks= "com.apple.UIKit.activity.OpenInIBooks";
+        public const string OpenInIBooks = "com.apple.UIKit.activity.OpenInIBooks";
 
         /// <summary>
         /// The object opens the content in Pdf.
         /// </summary>
         public const string MarkupAsPDF = "com.apple.UIKit.activity.MarkupAsPDF";
     }
-      
 }

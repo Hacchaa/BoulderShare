@@ -1,11 +1,9 @@
-
-
 using UnityEngine;
 
 public static class UM_RewardManager
 {
-    private const string k_CoinsKey = "um_coins";
-    private const string k_GoldStatusKey = "um_gold_status";
+    const string k_CoinsKey = "um_coins";
+    const string k_GoldStatusKey = "um_gold_status";
 
     public static void AddCoins()
     {
@@ -21,23 +19,16 @@ public static class UM_RewardManager
     {
         get
         {
-            if (PlayerPrefs.HasKey(k_CoinsKey))
-            {
-                return PlayerPrefs.GetInt(k_CoinsKey);
-            }
+            if (PlayerPrefs.HasKey(k_CoinsKey)) return PlayerPrefs.GetInt(k_CoinsKey);
             return 0;
         }
     }
 
-    public static bool HasGoldStatus
-    {
-        get { return PlayerPrefs.HasKey(k_GoldStatusKey); }
-    }
+    public static bool HasGoldStatus => PlayerPrefs.HasKey(k_GoldStatusKey);
 
     public static void Reset()
     {
         PlayerPrefs.DeleteKey(k_CoinsKey);
         PlayerPrefs.DeleteKey(k_GoldStatusKey);
     }
-    
 }

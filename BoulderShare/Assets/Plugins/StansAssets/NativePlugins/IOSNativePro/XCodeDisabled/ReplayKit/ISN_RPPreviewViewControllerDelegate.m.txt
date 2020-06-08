@@ -15,7 +15,7 @@
     
     [previewController dismissViewControllerAnimated:YES completion:nil];
     NSMutableArray *items = [NSMutableArray arrayWithArray:[activityTypes allObjects]];
-    ISN_PRPreivewResult* result = [[ISN_PRPreivewResult alloc] initWithActivityTypes:items];
+    ISN_PRPreviewResult* result = [[ISN_PRPreviewResult alloc] initWithActivityTypes:items];
     
     ISN_SendMessage(UNITY_RP_LISTENER, "OnShareDialogResult", [result toJSONString]);
 }

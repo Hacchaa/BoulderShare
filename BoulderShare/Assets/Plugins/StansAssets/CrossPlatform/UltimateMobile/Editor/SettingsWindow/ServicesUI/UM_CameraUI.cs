@@ -2,58 +2,33 @@ using SA.Foundation.Editor;
 using SA.iOS;
 using UnityEngine;
 
-
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-
-    public class UM_CameraUI : UM_ServiceSettingsUI
+    class UM_CameraUI : UM_ServiceSettingsUI
     {
-
         public class ISNSettings : UM_NativeServiceLayoutBasedSetting
         {
-            public override SA_ServiceLayout Layout { get { return CreateInstance<ISN_AVKitUI>(); } }
-            public override bool IsEnabled {
-                get {
-                    return ISN_Preprocessor.GetResolver<ISN_AVKitResolver>().IsSettingsEnabled;
-                }
-            }
+            protected override SA_ServiceLayout Layout => CreateInstance<ISN_AVKitUI>();
+
+            public override bool IsEnabled => ISN_Preprocessor.GetResolver<ISN_AVKitResolver>().IsSettingsEnabled;
         }
 
-
-        public override void OnLayoutEnable() {
+        public override void OnLayoutEnable()
+        {
             base.OnLayoutEnable();
             AddPlatfrom(UM_UIPlatform.IOS, new ISNSettings());
             AddPlatfrom(UM_UIPlatform.Android, new UM_GalleryUI.ANSettings());
 
-            AddFeatureUrl("Capture an Image", "https://unionassets.com/ultimate-mobile-pro/camera-api-747#capture-image-from-camera-1");
-            AddFeatureUrl("Capture a Video", "https://unionassets.com/ultimate-mobile-pro/camera-api-747#capture-image-from-camera");
+            AddFeatureUrl("Capture an Image", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Camera-API#capture-image-from-camera");
+            AddFeatureUrl("Capture a Video", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Camera-API#capture-video-from-camera");
         }
 
+        public override string Title => "Camera";
 
-        public override string Title {
-            get {
-                return "Camera";
-            }
-        }
+        public override string Description => "Capture image or video with device camera";
 
-        public override string Description {
-            get {
-                return "Capture image or video with device camera";
-            }
-        }
+        protected override Texture2D Icon => UM_Skin.GetServiceIcon("um_camera_icon.png");
 
-        protected override Texture2D Icon {
-            get {
-                return UM_Skin.GetServiceIcon("um_camera_icon.png");
-            }
-        }
-
-
-
-        protected override void OnServiceUI() {
-           
-        }
-
-       
+        protected override void OnServiceUI() { }
     }
 }

@@ -1,5 +1,8 @@
 namespace SA.CrossPlatform.InApp
 {
+    /// <summary>
+    /// Product type options.
+    /// </summary>
     public enum UM_ProductType
     {
         /// <summary>
@@ -14,9 +17,8 @@ namespace SA.CrossPlatform.InApp
         /// </summary>
         NonConsumable,
 
-
         /// <summary>
-        /// A product that allows users to purchase a service with a limited duration. 
+        /// A product that allows users to purchase a service with a limited duration.
         /// Example: Gold account upgrade.
         /// </summary>
         Subscription

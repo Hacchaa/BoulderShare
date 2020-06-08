@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Templates;
-
 
 namespace SA.iOS.StoreKit
 {
@@ -12,7 +10,6 @@ namespace SA.iOS.StoreKit
     /// </summary>
     public abstract class ISN_SKRequest
     {
-
         /// <summary>
         /// Sends the request to the Apple App Store.
         /// </summary>

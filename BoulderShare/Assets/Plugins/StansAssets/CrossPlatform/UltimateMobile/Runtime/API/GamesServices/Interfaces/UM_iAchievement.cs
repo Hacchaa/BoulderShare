@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.CrossPlatform.GameServices
 {
+    /// <summary>
+    /// Data interface for retrieving achievement information.
+    /// </summary>
     public interface UM_iAchievement
     {
-
         /// <summary>
         /// The achievement ID.
         /// </summary>
@@ -19,13 +16,13 @@ namespace SA.CrossPlatform.GameServices
         string Name { get; }
 
         /// <summary>
-        /// Retrieves the number of steps this user has gone toward unlocking this achievement; 
+        /// Retrieves the number of steps this user has gone toward unlocking this achievement;
         /// only applicable for <see cref="UM_AchievementType.INCREMENTAL"/> achievement types.
         /// </summary>
         int CurrentSteps { get; }
 
         /// <summary>
-        /// Retrieves the total number of steps necessary to unlock this achievement; 
+        /// Retrieves the total number of steps necessary to unlock this achievement;
         /// only applicable for <see cref="UM_AchievementType.INCREMENTAL"/> achievement types.
         /// </summary>
         int TotalSteps { get; }

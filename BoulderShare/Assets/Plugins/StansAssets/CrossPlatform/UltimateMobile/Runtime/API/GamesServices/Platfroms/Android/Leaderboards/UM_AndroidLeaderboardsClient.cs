@@ -7,31 +7,31 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.GameServices
 {
-    internal class UM_AndroidLeaderboardsClient : UM_AbstractLeaderboardsClient, UM_iLeaderboardsClient
+    class UM_AndroidLeaderboardsClient : UM_AbstractLeaderboardsClient, UM_iLeaderboardsClient
     {
-        public void ShowUI(Action<SA_Result> callback) 
+        public void ShowUI(Action<SA_Result> callback)
         {
             var client = AN_Games.GetLeaderboardsClient();
-            client.GetAllLeaderboardsIntent(result => 
+            client.GetAllLeaderboardsIntent(result =>
             {
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var intent = result.Intent;
                     var proxy = new AN_ProxyActivity();
-                    proxy.StartActivityForResult(intent, intentResult => 
+                    proxy.StartActivityForResult(intent, intentResult =>
                     {
                         proxy.Finish();
-                        callback.Invoke(intentResult); 
+                        callback.Invoke(intentResult);
                     });
-                } 
-                else 
+                }
+                else
                 {
-                    callback.Invoke(result);  
+                    callback.Invoke(result);
                 }
             });
         }
 
-        public void ShowUI(string leaderboardId, Action<SA_Result> callback) 
+        public void ShowUI(string leaderboardId, Action<SA_Result> callback)
         {
             ShowUI(leaderboardId, UM_LeaderboardTimeSpan.AllTime, callback);
         }
@@ -42,50 +42,51 @@ namespace SA.CrossPlatform.GameServices
             var client = AN_Games.GetLeaderboardsClient();
             client.GetLeaderboardIntent(leaderboardId, span, result =>
             {
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var intent = result.Intent;
                     var proxy = new AN_ProxyActivity();
-                    proxy.StartActivityForResult(intent, intentResult => 
+                    proxy.StartActivityForResult(intent, intentResult =>
                     {
                         proxy.Finish();
                         callback.Invoke(intentResult);
                     });
-
-                } 
-                else 
+                }
+                else
                 {
                     callback.Invoke(result);
                 }
             });
         }
-        
-        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback) 
+
+        public void SubmitScore(string leaderboardId, long score, int context, Action<SA_Result> callback)
         {
             var client = AN_Games.GetLeaderboardsClient();
-            client.SubmitScoreImmediate(leaderboardId, score, context.ToString(), result => 
+            client.SubmitScoreImmediate(leaderboardId, score, context.ToString(), result =>
             {
                 ReportScoreSubmited(leaderboardId, score, result);
                 callback.Invoke(result);
             });
         }
 
-        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback) 
+        public void LoadLeaderboardsMetadata(Action<UM_LoadLeaderboardsMetaResult> callback)
         {
             var leaderboards = AN_Games.GetLeaderboardsClient();
-            leaderboards.LoadLeaderboardMetadata(false, result => 
+            leaderboards.LoadLeaderboardMetadata(false, result =>
             {
                 UM_LoadLeaderboardsMetaResult um_result;
-                if (result.IsSucceeded) {
+                if (result.IsSucceeded)
+                {
                     var um_leaderboards = new List<UM_iLeaderboard>();
-                    foreach (var leaderboard in result.Leaderboards) 
+                    foreach (var leaderboard in result.Leaderboards)
                     {
                         var um_leaderboardMetda = new UM_LeaderboardMeta(leaderboard.LeaderboardId, leaderboard.DisplayName);
                         um_leaderboards.Add(um_leaderboardMetda);
                     }
+
                     um_result = new UM_LoadLeaderboardsMetaResult(um_leaderboards);
-                } 
-                else 
+                }
+                else
                 {
                     um_result = new UM_LoadLeaderboardsMetaResult(result.Error);
                 }
@@ -94,34 +95,38 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-        public void LoadCurrentPlayerScore(string leaderboardId, UM_LeaderboardTimeSpan span, UM_LeaderboardCollection collection, Action<UM_ScoreLoadResult> callback) 
+        public void LoadCurrentPlayerScore(string leaderboardId, UM_LeaderboardTimeSpan span, UM_LeaderboardCollection collection, Action<UM_ScoreLoadResult> callback)
         {
             var leaderboards = AN_Games.GetLeaderboardsClient();
             var an_timeSpan = ToAndroidSpan(span);
             var an_collection = ToAndroidCollection(collection);
-            
-            leaderboards.LoadCurrentPlayerLeaderboardScore(leaderboardId, an_timeSpan, an_collection, res => 
+
+            leaderboards.LoadCurrentPlayerLeaderboardScore(leaderboardId, an_timeSpan, an_collection, res =>
             {
                 UM_ScoreLoadResult um_result;
-                if (res.IsSucceeded) {
-                    AN_LeaderboardScore an_score = res.Data;
+                if (res.IsSucceeded)
+                {
+                    var an_score = res.Data;
 
                     int context;
-                    try {
+                    try
+                    {
                         context = Convert.ToInt32(an_score.ScoreTag);
-                    } catch(Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         Debug.LogWarning("Failed to convert anroid score tag to int. leaderboardId: " + leaderboardId + " error: " + ex.Message);
                         context = 0;
                     }
 
-                    UM_Score score = new UM_Score(an_score.RawScore,
+                    var score = new UM_Score(an_score.RawScore,
                         an_score.Rank,
                         context,
                         an_score.TimestampMillis);
 
                     um_result = new UM_ScoreLoadResult(score);
-                } 
-                else 
+                }
+                else
                 {
                     um_result = new UM_ScoreLoadResult(res.Error);
                 }
@@ -129,11 +134,11 @@ namespace SA.CrossPlatform.GameServices
                 callback.Invoke(um_result);
             });
         }
-        
-        private AN_Leaderboard.TimeSpan ToAndroidSpan(UM_LeaderboardTimeSpan span)
+
+        AN_Leaderboard.TimeSpan ToAndroidSpan(UM_LeaderboardTimeSpan span)
         {
             var an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
-            switch (span) 
+            switch (span)
             {
                 case UM_LeaderboardTimeSpan.AllTime:
                     an_timeSpan = AN_Leaderboard.TimeSpan.AllTime;
@@ -149,10 +154,10 @@ namespace SA.CrossPlatform.GameServices
             return an_timeSpan;
         }
 
-        private AN_Leaderboard.Collection ToAndroidCollection(UM_LeaderboardCollection collection)
+        AN_Leaderboard.Collection ToAndroidCollection(UM_LeaderboardCollection collection)
         {
             var an_collection = AN_Leaderboard.Collection.Public;
-            switch (collection) 
+            switch (collection)
             {
                 case UM_LeaderboardCollection.Public:
                     an_collection = AN_Leaderboard.Collection.Public;

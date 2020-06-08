@@ -4,33 +4,34 @@ using SA.iOS.Contacts;
 
 namespace SA.CrossPlatform.App
 {
-    internal class UM_IOSContactsService : UM_iContactsService
+    class UM_IOSContactsService : UM_iContactsService
     {
         public int GetContactsCount()
         {
             throw new NotImplementedException();
         }
 
-        public void Retrieve(Action<UM_ContactsResult> callback) 
+        public void Retrieve(Action<UM_ContactsResult> callback)
         {
-            ISN_CNContactStore.FetchPhoneContacts(result => 
+            ISN_CNContactStore.FetchPhoneContacts(result =>
             {
                 UM_ContactsResult loadResult;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var contacts = new List<UM_iContact>();
-                    foreach (var contact in result.Contacts) 
+                    foreach (var contact in result.Contacts)
                     {
                         UM_iContact um_contact = new UM_IOSContact(contact);
                         contacts.Add(um_contact);
                     }
 
                     loadResult = new UM_ContactsResult(contacts);
-                } 
-                else 
+                }
+                else
                 {
                     loadResult = new UM_ContactsResult(result.Error);
                 }
+
                 callback.Invoke(loadResult);
             });
         }

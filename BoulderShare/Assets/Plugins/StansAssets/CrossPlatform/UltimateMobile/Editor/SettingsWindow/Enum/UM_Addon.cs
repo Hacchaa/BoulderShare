@@ -1,7 +1,9 @@
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public enum UM_Addon {
+    enum UM_Addon
+    {
         AdMob,
-        Playmaker
+        UnityAds,
+        Playmaker,
     }
 }

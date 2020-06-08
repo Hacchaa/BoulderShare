@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -9,11 +9,10 @@
 
 using SA.Foundation.Events;
 
-namespace SA.iOS.Foundation.Internal
+namespace SA.iOS.Foundation
 {
-    internal interface ISN_NSAPI
+    interface ISN_NSAPI
     {
-
         //--------------------------------------
         // NSUbiquitousKeyValueStore
         //--------------------------------------
@@ -24,8 +23,6 @@ namespace SA.iOS.Foundation.Internal
         void ResetCloud();
 
         SA_Event<ISN_NSStoreDidChangeExternallyNotification> StoreDidChangeReceiveResponse { get; }
-
-
 
         //--------------------------------------
         // Time Zone
@@ -50,6 +47,5 @@ namespace SA.iOS.Foundation.Internal
         //--------------------------------------
 
         string UbiquityIdentityToken { get; }
-
     }
 }

@@ -4,59 +4,33 @@ using UnityEngine;
 using UnityEditor;
 using SA.Foundation.Editor;
 
-
 namespace SA.iOS
 {
-    public class ISN_SocialUI : ISN_ServiceSettingsUI
+    class ISN_SocialUI : ISN_ServiceSettingsUI
     {
-
-        public override void OnAwake() {
+        public override void OnAwake()
+        {
             base.OnAwake();
 
-            AddFeatureUrl("Facebook", "https://unionassets.com/ios-native-pro/facebook-644");
-            AddFeatureUrl("Twitter", "https://unionassets.com/ios-native-pro/twitter-648");
-            AddFeatureUrl("Instagram", "https://unionassets.com/ios-native-pro/instagram-649");
-            AddFeatureUrl("E-Mail", "https://unionassets.com/ios-native-pro/e-mail-651");
-            AddFeatureUrl("WhatsApp", "https://unionassets.com/ios-native-pro/whats-650");
-            AddFeatureUrl("Text Message", "https://unionassets.com/ios-native-pro/text-message-652");
-            AddFeatureUrl("Default Sharing Dialog", "https://unionassets.com/ios-native-pro/default-sharing-dialog-653");
+            AddFeatureUrl("Facebook", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Facebook");
+            AddFeatureUrl("Twitter", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Twitter");
+            AddFeatureUrl("Instagram", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Instagram");
+            AddFeatureUrl("E-Mail", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/E-Mail");
+            AddFeatureUrl("WhatsApp", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/WhatsApp");
+            AddFeatureUrl("Text Message", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Text-Message");
+            AddFeatureUrl("Default Sharing Dialog", "https://github.com/StansAssets/com.stansassets.ios-native/wiki/Default-Sharing-Dialog");
         }
 
-        public override string Title {
-            get {
-                return "Social";
-            }
-        }
+        public override string Title => "Social";
 
-        public override string Description {
-            get {
-                return "Integrate your app with supported social networking services.";
-            }
-        }
+        public override string Description => "Integrate your app with supported social networking services.";
 
-        protected override Texture2D Icon {
-            get {
-               return  SA_EditorAssets.GetTextureAtPath(ISN_Skin.ICONS_PATH + "Social_icon.png");
-            }
-        }
+        protected override Texture2D Icon => SA_EditorAssets.GetTextureAtPath(ISN_Skin.IconsPath + "Social_icon.png");
 
-        public override SA_iAPIResolver Resolver {
-            get {
-                return ISN_Preprocessor.GetResolver<ISN_SocialResolver>();
-            }
-        }
+        public override SA_iAPIResolver Resolver => ISN_Preprocessor.GetResolver<ISN_SocialResolver>();
 
+        protected override IEnumerable<string> SupportedPlatforms => new List<string>() { "iOS", "Unity Editor" };
 
-        protected override IEnumerable<string> SupportedPlatforms {
-            get {
-                return new List<string>() { "iOS", "Unity Editor" };
-            }
-        }
-
-
-        protected override void OnServiceUI() {
-              
-        }
-
+        protected override void OnServiceUI() { }
     }
 }

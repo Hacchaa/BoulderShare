@@ -1,22 +1,26 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Time;
 using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.InApp
 {
     [Serializable]
-    public class UM_AbstractTransaction<T>
+    abstract class UM_AbstractTransaction<T>
     {
-        [SerializeField] protected string m_id;
-        [SerializeField] protected string m_productId;
-        [SerializeField] protected long m_unixTimestamp;
+        [SerializeField]
+        protected string m_id;
+        [SerializeField]
+        protected string m_productId;
+        [SerializeField]
+        protected long m_unixTimestamp;
 
-        [SerializeField] protected UM_TransactionState m_state;
-        [SerializeField] protected SA_Error m_error = null;
-        
+        [SerializeField]
+        protected UM_TransactionState m_state;
+        [SerializeField]
+        protected SA_Error m_error = null;
+
         public object NativeTemplate { get; private set; }
 
         protected void SetNativeTransaction(T nativeTemplate)
@@ -24,25 +28,18 @@ namespace SA.CrossPlatform.InApp
             NativeTemplate = nativeTemplate;
         }
 
-        public string Id 
-        {
-            get { return m_id; }
-        }
+        public string Id => m_id;
 
-        public string ProductId 
-        {
-            get { return m_productId; }
-        }
+        public string ProductId => m_productId;
 
-
-        public DateTime Timestamp 
+        public DateTime Timestamp
         {
             get
             {
                 var timestamp = DateTime.MinValue;
                 try
                 {
-                    timestamp =  SA_Unix_Time.ToDateTime(m_unixTimestamp);
+                    timestamp = SA_Unix_Time.ToDateTime(m_unixTimestamp);
                 }
                 catch (Exception ex)
                 {
@@ -53,14 +50,8 @@ namespace SA.CrossPlatform.InApp
             }
         }
 
-        public SA_Error Error 
-        {
-            get { return m_error; }
-        }
+        public SA_Error Error => m_error;
 
-        public UM_TransactionState State 
-        {
-            get { return m_state; }
-        }
+        public UM_TransactionState State => m_state;
     }
 }

@@ -7,49 +7,55 @@ using UnityEngine.UI;
 
 public class UM_MedialPlayerExample : MonoBehaviour
 {
-   [Header("Unified")]
-   [SerializeField] Button m_PlayButton = null;
-   
-   [Header("iOS Only")]
-   [SerializeField] Button m_IOSPlayButton = null;
-   [SerializeField] Toggle m_AllowsPictureInPicturePlayback = null;
-   [SerializeField] Toggle m_ShouldCloseWhenFinished = null;
-   [SerializeField] Toggle m_ShowsPlaybackControls = null;
-   
-   //"https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
-   //http://techslides.com/demos/sample-videos/small.mp4
-   private const string k_ExampleVideoUrl = "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+    [Header("Unified")]
+    [SerializeField]
+    Button m_PlayButton = null;
 
-   void Awake()
-   {
-      m_PlayButton.onClick.AddListener(() =>
-      {
-         UM_MediaPlayer.ShowRemoteVideo(k_ExampleVideoUrl, () => {
-            Debug.Log("Video closed");
-         });
-      });
+    [Header("iOS Only")]
+    [SerializeField]
+    Button m_IOSPlayButton = null;
+    [SerializeField]
+    Toggle m_AllowsPictureInPicturePlayback = null;
+    [SerializeField]
+    Toggle m_ShouldCloseWhenFinished = null;
+    [SerializeField]
+    Toggle m_ShowsPlaybackControls = null;
 
-      IOSOnlySetup();
-   }
-   
-   private void IOSOnlySetup() 
-   {
-      m_IOSPlayButton.onClick.AddListener(() =>
-      {
-         var url = ISN_NSURL.URLWithString(k_ExampleVideoUrl);
-         var player = new ISN_AVPlayer(url);
+    //"https://videocdn.bodybuilding.com/video/mp4/62000/62792m.mp4";
+    //http://techslides.com/demos/sample-videos/small.mp4
+    const string k_ExampleVideoUrl = "https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
 
-         var viewController = new ISN_AVPlayerViewController();
-         viewController.Player = player;
+    void Awake()
+    {
+        m_PlayButton.onClick.AddListener(() =>
+        {
+            UM_MediaPlayer.ShowRemoteVideo(k_ExampleVideoUrl, () =>
+            {
+                Debug.Log("Video closed");
+            });
+        });
 
-         //Optional setting that you can apply
-         player.Volume = 0.8f;
+        IOSOnlySetup();
+    }
 
-         viewController.ShowsPlaybackControls = m_ShowsPlaybackControls.isOn;
-         viewController.AllowsPictureInPicturePlayback = m_AllowsPictureInPicturePlayback.isOn;
-         viewController.ShouldCloseWhenFinished = m_ShouldCloseWhenFinished.isOn;
+    void IOSOnlySetup()
+    {
+        m_IOSPlayButton.onClick.AddListener(() =>
+        {
+            var url = ISN_NSUrl.UrlWithString(k_ExampleVideoUrl);
+            var player = new ISN_AVPlayer(url);
 
-         viewController.Show();
-      });
-   }
+            var viewController = new ISN_AVPlayerViewController();
+            viewController.Player = player;
+
+            //Optional setting that you can apply
+            player.Volume = 0.8f;
+
+            viewController.ShowsPlaybackControls = m_ShowsPlaybackControls.isOn;
+            viewController.AllowsPictureInPicturePlayback = m_AllowsPictureInPicturePlayback.isOn;
+            viewController.ShouldCloseWhenFinished = m_ShouldCloseWhenFinished.isOn;
+
+            viewController.Show();
+        });
+    }
 }

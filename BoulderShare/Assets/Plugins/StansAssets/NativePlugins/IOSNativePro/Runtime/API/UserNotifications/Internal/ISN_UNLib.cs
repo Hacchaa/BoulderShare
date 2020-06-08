@@ -1,44 +1,41 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Utility;
-namespace SA.iOS.UserNotifications.Internal
+
+namespace SA.iOS.UserNotifications
 {
     /// <summary>
     /// This class is for plugin internal use only
     /// </summary>
-    internal static class ISN_UNLib
+    static class ISN_UNLib
     {
+        static ISN_iUNAPI s_Api;
 
-        private static ISN_iUNAPI m_api = null;
-        public static ISN_iUNAPI API {
-            get {
+        public static ISN_iUNAPI Api
+        {
+            get
+            {
+                if (!ISN_Settings.Instance.UserNotifications) SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PluginTittle, "User Notifications");
 
-                if (!ISN_Settings.Instance.UserNotifications) {
-                    SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PLUGIN_NAME, "User Notifications");
+                if (s_Api == null)
+                {
+                    if (Application.isEditor)
+                        s_Api = new ISN_UNEditorAPI();
+                    else
+                        s_Api = ISN_UNNativeAPI.Instance;
                 }
 
-
-                if (m_api == null) {
-                    if (Application.isEditor) {
-                        m_api = new ISN_UNEditorAPI();
-                    } else {
-                        m_api = ISN_UNNativeAPI.Instance;
-                    }
-                }
-
-                return m_api;
+                return s_Api;
             }
         }
     }

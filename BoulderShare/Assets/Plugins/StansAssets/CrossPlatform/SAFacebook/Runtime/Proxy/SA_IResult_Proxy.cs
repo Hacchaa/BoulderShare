@@ -7,8 +7,7 @@ using FB_Plugin = Facebook.Unity;
 
 namespace SA.Facebook
 {
-
-    internal class SA_IResult_Proxy : IResult
+    class SA_IResult_Proxy : IResult
     {
 #if SA_FB_INSTALLED
         private FB_Plugin.IResult m_result;
@@ -18,8 +17,10 @@ namespace SA.Facebook
         }
 
 #endif
-        public string Error {
-            get {
+        public string Error
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return m_result.Error;
 #else
@@ -28,35 +29,39 @@ namespace SA.Facebook
             }
         }
 
-        public IDictionary<string, object> ResultDictionary {
-            get {
+        public IDictionary<string, object> ResultDictionary
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return m_result.ResultDictionary;
 #else
                 return null;
 #endif
-                
             }
         }
-        public string RawResult {
-            get {
+
+        public string RawResult
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                 return m_result.RawResult;
 #else
                 return string.Empty;
 #endif
-                
             }
         }
 
-        public bool Cancelled {
-            get {
+        public bool Cancelled
+        {
+            get
+            {
 #if SA_FB_INSTALLED
                  return m_result.Cancelled;
 #else
                 return false;
 #endif
-               
             }
         }
     }

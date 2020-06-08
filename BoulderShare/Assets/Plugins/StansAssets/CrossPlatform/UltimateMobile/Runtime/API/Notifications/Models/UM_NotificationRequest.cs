@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 namespace SA.CrossPlatform.Notifications
 {
     /// <summary>
@@ -13,17 +11,19 @@ namespace SA.CrossPlatform.Notifications
     [Serializable]
     public class UM_NotificationRequest
     {
-        [SerializeField] int m_identifier;
-        [SerializeField] UM_Notification m_content;
-        [SerializeField] UM_iNotificationTrigger m_trigger;
+        [SerializeField]
+        int m_identifier;
+        [SerializeField]
+        UM_Notification m_content;
+        [SerializeField]
+        UM_iNotificationTrigger m_trigger;
 
-       
-        public UM_NotificationRequest(int identifier, UM_Notification content, UM_iNotificationTrigger trigger) {
+        public UM_NotificationRequest(int identifier, UM_Notification content, UM_iNotificationTrigger trigger)
+        {
             m_identifier = identifier;
             m_content = content;
             m_trigger = trigger;
         }
-
 
         /// <summary>
         /// The unique identifier for this notification request.
@@ -35,11 +35,7 @@ namespace SA.CrossPlatform.Notifications
         /// If you use the same identifier when scheduling a new notification, 
         /// the system removes the previously scheduled notification with that identifier and replaces it with the new one.
         /// </summary>
-        public int Identifier {
-            get {
-                return m_identifier;
-            }
-        }
+        public int Identifier => m_identifier;
 
         /// <summary>
         /// The content associated with the notification.
@@ -48,16 +44,12 @@ namespace SA.CrossPlatform.Notifications
         /// The content object contains the badge information, sound to be played, 
         /// or alert text to be displayed to the user, in addition to the notification’s thread identifier.
         /// </summary>
-        public UM_Notification Content {
-            get {
-                return m_content;
-            }
+        public UM_Notification Content
+        {
+            get => m_content;
 
-            set {
-                m_content = value;
-            }
+            set => m_content = value;
         }
-
 
         /// <summary>
         /// The conditions that trigger the delivery of the notification.
@@ -65,10 +57,6 @@ namespace SA.CrossPlatform.Notifications
         /// For notifications that have already been delivered, use this property 
         /// to determine what caused the delivery to occur.
         /// </summary>
-        public UM_iNotificationTrigger Trigger {
-            get {
-                return m_trigger;
-            }
-        }
+        public UM_iNotificationTrigger Trigger => m_trigger;
     }
 }

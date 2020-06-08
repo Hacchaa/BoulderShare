@@ -7,25 +7,37 @@ using System.Collections.Generic;
 using System.IO;
 using SA.iOS.UIKit;
 
-public class UM_DialogsExample : MonoBehaviour 
+public class UM_DialogsExample : MonoBehaviour
 {
-    [Header("Cross-platform")] 
-    [SerializeField] Button m_Message = null;
-    [SerializeField] Button m_Dialog = null;
-    [SerializeField] Button m_DestructiveDialog = null;
-    [SerializeField] Button m_ComplexDialog = null;
-    [SerializeField] Button m_Preloader = null;
-    [SerializeField] Button m_RateUs = null;
-    [SerializeField] Button m_Calendar = null;
-    [SerializeField] Button m_WheelPicker = null;
+    [Header("Cross-platform")]
+    [SerializeField]
+    Button m_Message = null;
+    [SerializeField]
+    Button m_Dialog = null;
+    [SerializeField]
+    Button m_DestructiveDialog = null;
+    [SerializeField]
+    Button m_ComplexDialog = null;
+    [SerializeField]
+    Button m_Preloader = null;
+    [SerializeField]
+    Button m_RateUs = null;
+    [SerializeField]
+    Button m_Calendar = null;
+    [SerializeField]
+    Button m_WheelPicker = null;
 
-    [Header("iOS Only")] 
-    [SerializeField] private Button m_DateTimePicker = null;
-    [SerializeField] private Button m_DatePicker = null;
-    [SerializeField] private Button m_TimePicker = null;
-    [SerializeField] private Button m_CountdownTimer = null;
-    
-    void Start() 
+    [Header("iOS Only")]
+    [SerializeField]
+    Button m_DateTimePicker = null;
+    [SerializeField]
+    Button m_DatePicker = null;
+    [SerializeField]
+    Button m_TimePicker = null;
+    [SerializeField]
+    Button m_CountdownTimer = null;
+
+    void Start()
     {
         m_Message.onClick.AddListener(Message);
         m_Dialog.onClick.AddListener(Dialog);
@@ -39,80 +51,71 @@ public class UM_DialogsExample : MonoBehaviour
         InitIOSDialogs();
     }
 
-    private void WheelPicker()
+    void WheelPicker()
     {
-        var values = new List<string>{"Test 1", "Test 2", "Test 3"};
+        var values = new List<string> { "Test 1", "Test 2", "Test 3" };
         var picker = new UM_WheelPickerDialog(values);
-        picker.Show(result => 
+        picker.Show(result =>
         {
-            if(result.IsSucceeded)
-            {
+            if (result.IsSucceeded)
                 Debug.Log("User picked - " + result.Value);
-            }
             else
-            {
                 Debug.Log("Failed to pick value - " + result.Error.FullMessage);
-            }
         });
     }
 
-    private void PickDate() 
+    void PickDate()
     {
-        int year = DateTime.Now.Year;
+        var year = DateTime.Now.Year;
         var picker = new UM_DatePickerDialog(year);
-        picker.Show(result => 
+        picker.Show(result =>
         {
-            if (result.IsSucceeded) 
+            if (result.IsSucceeded)
             {
                 Debug.Log("Date picked result.Year: " + result.Date.Year);
                 Debug.Log("Date picked result.Month: " + result.Date.Month);
                 Debug.Log("Date picked result.Day: " + result.Date.Day);
-            } 
-            else 
+            }
+            else
             {
                 Debug.Log("Failed to pick a date: " + result.Error.FullMessage);
             }
         });
     }
 
-    private void RateUsDialog() 
+    void RateUsDialog()
     {
         UM_ReviewController.RequestReview();
     }
 
-    private void Preloader() 
+    void Preloader()
     {
         UM_Preloader.LockScreen();
         SA_Coroutine.WaitForSeconds(2f, UM_Preloader.UnlockScreen);
     }
 
-    private string ScreenshotPath;
+    string ScreenshotPath;
 
-    private void Update()
+    void Update()
     {
-        if(string.IsNullOrEmpty(ScreenshotPath))
+        if (string.IsNullOrEmpty(ScreenshotPath))
             return;
-        
-        if(File.Exists(ScreenshotPath))
+
+        if (File.Exists(ScreenshotPath))
             Debug.Log("We have the file");
         else
             Debug.Log("No file");
     }
 
-
-    private void Message()
+    void Message()
     {
-
         ScreenCapture.CaptureScreenshot("image.png");
-        ScreenshotPath = System.IO.Path.Combine (Application.persistentDataPath,"image.png");
-         
-        
-        
-        
+        ScreenshotPath = Path.Combine(Application.persistentDataPath, "image.png");
+
         var title = "Congrats";
         var message = "Your account has been verified";
         var builder = new UM_NativeDialogBuilder(title, message);
-        builder.SetPositiveButton("Okay", () => 
+        builder.SetPositiveButton("Okay", () =>
         {
             Debug.Log("Okay button pressed");
         });
@@ -122,18 +125,18 @@ public class UM_DialogsExample : MonoBehaviour
         SA_Coroutine.WaitForSeconds(2f, dialog.Hide);
     }
 
-    private void Dialog() 
+    void Dialog()
     {
         var title = "Save";
         var message = "Do you want to save your progress?";
 
         var builder = new UM_NativeDialogBuilder(title, message);
-        builder.SetPositiveButton("Yes", () => 
+        builder.SetPositiveButton("Yes", () =>
         {
             Debug.Log("Yes button pressed");
         });
 
-        builder.SetNegativeButton("No", () => 
+        builder.SetNegativeButton("No", () =>
         {
             Debug.Log("No button pressed");
         });
@@ -141,17 +144,17 @@ public class UM_DialogsExample : MonoBehaviour
         dialog.Show();
     }
 
-    private void DestructiveDialog() 
+    void DestructiveDialog()
     {
         var title = "Confirmation ";
         var message = "Do you want to delete this item?";
         var builder = new UM_NativeDialogBuilder(title, message);
-        builder.SetNegativeButton("Cancel", () => 
+        builder.SetNegativeButton("Cancel", () =>
         {
             Debug.Log("Cancel button pressed");
         });
 
-        builder.SetDestructiveButton("Delete", () => 
+        builder.SetDestructiveButton("Delete", () =>
         {
             Debug.Log("Delete button pressed");
         });
@@ -160,20 +163,20 @@ public class UM_DialogsExample : MonoBehaviour
         dialog.Show();
     }
 
-    private void ComplexDialog() 
+    void ComplexDialog()
     {
         var title = "Save";
         var message = "Do you want to save your progress?";
         var builder = new UM_NativeDialogBuilder(title, message);
-        builder.SetPositiveButton("Yes", () => 
+        builder.SetPositiveButton("Yes", () =>
         {
             Debug.Log("Yes button pressed");
         });
-        builder.SetNegativeButton("No", () => 
+        builder.SetNegativeButton("No", () =>
         {
             Debug.Log("No button pressed");
         });
-        builder.SetNeutralButton("Later", () => 
+        builder.SetNeutralButton("Later", () =>
         {
             Debug.Log("Later button pressed");
         });
@@ -181,21 +184,22 @@ public class UM_DialogsExample : MonoBehaviour
         dialog.Show();
     }
 
-    private void InitIOSDialogs()
+    void InitIOSDialogs()
     {
         m_DateTimePicker.onClick.AddListener(() =>
         {
-            DateTime starDate = DateTime.Now;
+            var starDate = DateTime.Now;
             starDate = starDate.AddDays(-20);
 
-            ISN_UIDateTimePicker picker = new ISN_UIDateTimePicker();
+            var picker = new ISN_UIDateTimePicker();
             picker.SetDate(starDate);
 
-            picker.Show((DateTime date) => {
+            picker.Show((DateTime date) =>
+            {
                 UM_DialogsUtility.ShowMessage("Completed", "User picked date: " + date.ToLongDateString());
             });
         });
-        
+
         m_DatePicker.onClick.AddListener(() =>
         {
             //20 days ago
@@ -206,31 +210,33 @@ public class UM_DialogsExample : MonoBehaviour
             picker.SetDate(starDate);
             picker.DatePickerMode = ISN_UIDateTimePickerMode.Date;
 
-            picker.Show(date => {
+            picker.Show(date =>
+            {
                 UM_DialogsUtility.ShowMessage("Completed", "User picked date: " + date.ToLongDateString());
             });
         });
-        
+
         m_TimePicker.onClick.AddListener(() =>
         {
             //20 hours ago
             var starDate = DateTime.Now;
-            starDate =  starDate.AddHours(-20);
+            starDate = starDate.AddHours(-20);
 
             var picker = new ISN_UIDateTimePicker();
             picker.SetDate(starDate);
             picker.DatePickerMode = ISN_UIDateTimePickerMode.Time;
             picker.MinuteInterval = 30;
 
-            picker.Show(date => {
+            picker.Show(date =>
+            {
                 UM_DialogsUtility.ShowMessage("Completed", "User picked date: " + date.ToLongDateString());
             });
         });
-        
+
         m_CountdownTimer.onClick.AddListener(() =>
         {
             var picker = new ISN_UIDateTimePicker();
-             
+
             picker.DatePickerMode = ISN_UIDateTimePickerMode.CountdownTimer;
             picker.MinuteInterval = 10;
 
@@ -241,7 +247,8 @@ public class UM_DialogsExample : MonoBehaviour
             var span = new TimeSpan(hours, minutes, seconds);
             picker.SetCountDownDuration(span);
 
-            picker.Show(date => {
+            picker.Show(date =>
+            {
                 UM_DialogsUtility.ShowMessage("Completed", "User picked date: " + date.ToLongDateString());
             });
         });

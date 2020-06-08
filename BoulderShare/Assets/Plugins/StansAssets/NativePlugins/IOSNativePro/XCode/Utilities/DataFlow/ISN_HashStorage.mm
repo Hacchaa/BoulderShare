@@ -24,7 +24,7 @@ static NSMutableDictionary * s_objectsMap = nil;
     
     NSString *stringKey = [NSString stringWithFormat: @"%lu",  (unsigned long)hashCode];
     if([self GetFromStringKey:stringKey] == nil) {
-         NSLog(@"Object Added %@ with key %@", object, stringKey);
+         NSLog(@"ISN_HashStorage: Object Added %@ with key %@", object, stringKey);
          [[self ObjectsMap] setValue:object forKey:stringKey];
     }
 

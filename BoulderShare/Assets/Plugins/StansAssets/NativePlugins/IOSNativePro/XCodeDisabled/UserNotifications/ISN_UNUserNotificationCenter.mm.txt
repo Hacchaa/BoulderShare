@@ -84,7 +84,7 @@ extern "C" {
         }
         
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-        [center removePendingNotificationRequestsWithIdentifiers:requestData.m_notificationIds];
+        [center removePendingNotificationRequestsWithIdentifiers:requestData.m_NotificationIds];
     }
     
     
@@ -93,7 +93,7 @@ extern "C" {
 
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
         [center getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
-            ISN_UNNotifcationRequests * result  = [[ISN_UNNotifcationRequests alloc] init];
+            ISN_UNNotificationRequests * result  = [[ISN_UNNotificationRequests alloc] init];
             
             NSMutableArray <ISN_UNNotificationRequest> *notifications = [[NSMutableArray<ISN_UNNotificationRequest> alloc] init];
             
@@ -102,7 +102,7 @@ extern "C" {
                 [notifications addObject:notification];
             }
             
-            result.m_requests = notifications;
+            result.m_Requests = notifications;
             
             ISN_SendMessage(UNITY_UN_LISTENER, "OnGetPendingNotificationRequests", [result toJSONString]);
            
@@ -129,7 +129,7 @@ extern "C" {
         }
         
         UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
-        [center removeDeliveredNotificationsWithIdentifiers:requestData.m_notificationIds];
+        [center removeDeliveredNotificationsWithIdentifiers:requestData.m_NotificationIds];
     }
     
     
@@ -148,7 +148,7 @@ extern "C" {
                 [isn_notifications addObject:isn_notification];
             }
             
-            result.m_notifications = isn_notifications;
+            result.m_Notifications = isn_notifications;
             ISN_SendMessage(UNITY_UN_LISTENER, "OnGetDeliveredNotifications", [result toJSONString]);
         }];
         

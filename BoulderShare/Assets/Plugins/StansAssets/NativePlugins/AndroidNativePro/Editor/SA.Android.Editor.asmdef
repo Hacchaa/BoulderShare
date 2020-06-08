@@ -6,7 +6,8 @@
         "SA.Foundation.Editor",
         "SA.Foundation.ThirdParty.Editor",
         "SA.Android.Manifest",
-        "SA.Android.Manifest.Editor"
+        "SA.Android.Manifest.Editor",
+        "StansAssets.Foundation.Editor"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
@@ -18,5 +19,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": []
+    "versionDefines": [],
+    "defineConstraints": []
 }

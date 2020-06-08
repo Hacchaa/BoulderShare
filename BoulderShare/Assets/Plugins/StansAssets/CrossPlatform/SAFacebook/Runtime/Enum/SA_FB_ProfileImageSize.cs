@@ -5,6 +5,6 @@ namespace SA.Facebook
         large,
         normal,
         small,
-        square
+        square,
     }
 }

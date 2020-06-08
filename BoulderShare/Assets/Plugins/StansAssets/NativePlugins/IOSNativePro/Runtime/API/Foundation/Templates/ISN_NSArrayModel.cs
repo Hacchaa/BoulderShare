@@ -5,29 +5,27 @@ using UnityEngine;
 namespace SA.iOS.Foundation
 {
     /// <summary>
-    /// Array representation model. 
+    /// Array representation model.
     /// Use to send data to the native part using JSONUtility.
     /// </summary>
     [Serializable]
-    public class ISN_NSArrayModel 
+    public class ISN_NSArrayModel
     {
-        [SerializeField] List<string> m_value = new List<string>();
+        [SerializeField]
+        List<string> m_Value = new List<string>();
 
         /// <summary>
-        /// Add's list item to the model.
+        /// Adds list item to the model.
         /// </summary>
         /// <param name="item"></param>
-        public void Add(string item) {
-            m_value.Add(item);
+        public void Add(string item)
+        {
+            m_Value.Add(item);
         }
 
         /// <summary>
         /// List values
         /// </summary>
-        public List<string> Value {
-            get {
-                return m_value;
-            }
-        }
+        public List<string> Value => m_Value;
     }
 }

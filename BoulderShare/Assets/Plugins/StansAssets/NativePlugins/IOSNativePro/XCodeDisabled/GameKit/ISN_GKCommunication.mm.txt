@@ -7,8 +7,8 @@
     -(id) initWithGKLocalPlayer:(GKLocalPlayer *) player {
         self = [super initWithGKPlayer:player];
         if(self) {
-            self.m_authenticated = player.authenticated;
-            self.m_underage      = player.underage;
+            self.m_Authenticated = player.authenticated;
+            self.m_Underage      = player.underage;
         }
         return self;
     }
@@ -29,15 +29,15 @@
     -(id) initWithGKSavedGameWithId:(GKSavedGame *) savedGame withId:(NSString *)gameId {
         self = [super init];
         if(self) {
-            self.m_deviceName       = savedGame.deviceName  == NULL ? @"" : savedGame.deviceName;
-            self.m_name             = savedGame.name        == NULL ? @"" : savedGame.name;
+            self.m_DeviceName       = savedGame.deviceName  == NULL ? @"" : savedGame.deviceName;
+            self.m_Name             = savedGame.name        == NULL ? @"" : savedGame.name;
             
             if(savedGame.modificationDate != NULL) {
-                self.m_modificationDate = [savedGame.modificationDate timeIntervalSince1970];
+                self.m_ModificationDate = [savedGame.modificationDate timeIntervalSince1970];
             } else {
-                self.m_modificationDate = 0;
+                self.m_ModificationDate = 0;
             }
-            self.m_id = gameId;
+            self.m_Id = gameId;
         }
         return self;
     }
@@ -48,7 +48,7 @@
 -(id) initWithSKSavedGamesArray:(NSArray<ISN_GKSavedGame> *) array{
     self = [super init];
     if(self) {
-        self.m_savedGames = array;
+        self.m_SavedGames = array;
     }
     return  self;
 }
@@ -59,7 +59,7 @@
     -(id) initWithGKSavedGameData:(ISN_GKSavedGame *) savedGame {
         self = [super init];
         if(self) {
-            self.m_savedGame = savedGame;
+            self.m_SavedGame = savedGame;
         }
         return self;
     }
@@ -74,7 +74,7 @@
     -(id) initWithGKLoadData:(NSString *) data {
         self = [super init];
         if(self) {
-            self.m_data = data == NULL ? @"" : data;
+            self.m_Data = data == NULL ? @"" : data;
         }
         return self;
     }
@@ -92,8 +92,8 @@
 -(id) initWithGKAchievementData:(GKAchievement *) achievement {
     self = [super init];
     if(self) {
-        self.m_identifier = achievement.identifier;
-        self.m_percentComplete = achievement.percentComplete;
+        self.m_Identifier = achievement.identifier;
+        self.m_PercentComplete = achievement.percentComplete;
         //self.m_completed = achievement.completed;
         
         if(achievement.lastReportedDate != NULL) {
@@ -101,9 +101,9 @@
             NSTimeZone *zone = [NSTimeZone systemTimeZone];
             NSInteger interval = [zone secondsFromGMTForDate:achievement.lastReportedDate];
             mydate = [mydate dateByAddingTimeInterval:interval];
-            self.m_lastReportedDate = [mydate timeIntervalSince1970];
+            self.m_LastReportedDate = [mydate timeIntervalSince1970];
         } else {
-            self.m_lastReportedDate = 0;
+            self.m_LastReportedDate = 0;
         }
     }
     return self;
@@ -116,7 +116,7 @@
 -(id) initWithGKAchievementsData:(NSArray<ISN_GKAchievement> *) array {
     self = [super init];
     if(self) {
-        self.m_achievements = array;
+        self.m_Achievements = array;
     }
     return  self;
 }
@@ -132,9 +132,9 @@
     
     self = [super init];
     if(self) {
-        self.m_rank = score.rank;
-        self.m_context = score.context;
-        self.m_value = score.value;
+        self.m_Rank = score.rank;
+        self.m_Context = score.context;
+        self.m_Value = score.value;
         
         
         if(score.date != NULL) {
@@ -142,25 +142,25 @@
             NSTimeZone *zone = [NSTimeZone systemTimeZone];
             NSInteger interval = [zone secondsFromGMTForDate:score.date];
             mydate = [mydate dateByAddingTimeInterval:interval];
-            self.m_date = [mydate timeIntervalSince1970];
+            self.m_Date = [mydate timeIntervalSince1970];
         } else {
-            self.m_date = 0;
+            self.m_Date = 0;
         }
         
-        self.m_leaderboardIdentifier = score.leaderboardIdentifier;
-        self.m_formattedValue = score.formattedValue  == NULL ? @"" : score.formattedValue;
+        self.m_LeaderboardIdentifier = score.leaderboardIdentifier;
+        self.m_FormattedValue = score.formattedValue  == NULL ? @"" : score.formattedValue;
         
         if(score.player != NULL) {
-            self.m_player = [[ISN_GKPlayer alloc] initWithGKPlayer:score.player];
+            self.m_Player = [[ISN_GKPlayer alloc] initWithGKPlayer:score.player];
         }
     }
     return self;
 }
 
 - (GKScore *) toGKScore {
-    GKScore *score = [[GKScore alloc] initWithLeaderboardIdentifier: self.m_leaderboardIdentifier];
-    score.value = self.m_value;
-    score.context = self.m_context;
+    GKScore *score = [[GKScore alloc] initWithLeaderboardIdentifier: self.m_LeaderboardIdentifier];
+    score.value = self.m_Value;
+    score.context = self.m_Context;
     
     return score;
 }
@@ -174,16 +174,16 @@
 -(id) initWithGKLeaderboard:(GKLeaderboard *) leaderboard {
     self = [super init];
     if(self) {
-        self.m_identifier = leaderboard.identifier;
-        self.m_groupIdentifier = leaderboard.groupIdentifier  == NULL ? @"" : leaderboard.groupIdentifier;
-        self.m_title = leaderboard.title  == NULL ? @"" : leaderboard.title;
+        self.m_Identifier = leaderboard.identifier;
+        self.m_GroupIdentifier = leaderboard.groupIdentifier  == NULL ? @"" : leaderboard.groupIdentifier;
+        self.m_Title = leaderboard.title  == NULL ? @"" : leaderboard.title;
         
-        self.m_playerScope = leaderboard.playerScope;
-        self.m_timeScope = leaderboard.timeScope;
+        self.m_PlayerScope = leaderboard.playerScope;
+        self.m_TimeScope = leaderboard.timeScope;
         
-        self.m_range = [[ISN_NSRange alloc] initWithNSRange:leaderboard.range];
+        self.m_Range = [[ISN_NSRange alloc] initWithNSRange:leaderboard.range];
      
-        self.m_maxRange = leaderboard.maxRange;
+        self.m_MaxRange = leaderboard.maxRange;
         
        NSMutableArray<ISN_GKScore> *scoresArray = [[NSMutableArray<ISN_GKScore> alloc] init];
         
@@ -194,10 +194,10 @@
             }
         }
         
-        self.m_scores = scoresArray;
+        self.m_Scores = scoresArray;
         
         if(leaderboard.localPlayerScore != NULL) {
-            self.m_localPlayerScore = [[ISN_GKScore alloc] initWithGKScore:leaderboard.localPlayerScore];
+            self.m_LocalPlayerScore = [[ISN_GKScore alloc] initWithGKScore:leaderboard.localPlayerScore];
         }
       
     }
@@ -207,13 +207,13 @@
 - (GKLeaderboard*) toGKLeaderboard {
     GKLeaderboard *leaderboard = [[GKLeaderboard alloc] init];
     
-    if(self.m_identifier.length > 0) {
-        leaderboard.identifier = self.m_identifier;
+    if(self.m_Identifier.length > 0) {
+        leaderboard.identifier = self.m_Identifier;
     }
     
-    leaderboard.playerScope = self.m_playerScope;
-    leaderboard.timeScope = self.m_timeScope;
-    leaderboard.range = [self.m_range getNSRange];
+    leaderboard.playerScope = self.m_PlayerScope;
+    leaderboard.timeScope = self.m_TimeScope;
+    leaderboard.range = [self.m_Range getNSRange];
     
   
     
@@ -229,7 +229,7 @@
 -(id) initWithGKLeaderboards:(NSArray<ISN_GKLeaderboard> *) array {
     self = [super init];
     if(self) {
-        self.m_leaderboards = array;
+        self.m_Leaderboards = array;
     }
     return  self;
 }
@@ -246,7 +246,7 @@
 @end
 
 
-@implementation ISN_IdentityVerificationSignatureResult
+@implementation ISN_GKIdentityVerificationSignatureResult
 
 -(id) init { return self = [super init]; }
 @end

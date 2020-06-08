@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SA.Foundation.Templates;
-using SA.iOS.AuthenticationServices.Internal;
 using SA.iOS.Utilities;
 
 namespace SA.iOS.AuthenticationServices
@@ -29,7 +28,7 @@ namespace SA.iOS.AuthenticationServices
         /// When authorization succeeds, the system tells the controller’s delegate
         /// by calling the <see cref="ISN_IASAuthorizationControllerDelegate.DidCompleteWithAuthorization"/> method with an authorization instance.
         /// If authorization fails, the system calls the <see cref="ISN_IASAuthorizationControllerDelegate.DidCompleteWithError"/> method instead.
-        /// 
+        ///
         /// Some authorization flows require a presentation context to ask the user for information or consent.
         /// </summary>
         public void PerformRequests()

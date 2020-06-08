@@ -3,7 +3,7 @@ using SA.iOS.CoreLocation;
 using SA.Foundation.Templates;
 using SA.iOS.UIKit;
 
-public class ISN_CoreLocationDelegateExample : ISN_iCLLocationManagerDelegate
+public class ISN_CoreLocationDelegateExample : ISN_ICLLocationManagerDelegate
 {
     public void DidChangeAuthorizationStatus(ISN_CLAuthorizationStatus authorizationStatus)
     {
@@ -19,7 +19,7 @@ public class ISN_CoreLocationDelegateExample : ISN_iCLLocationManagerDelegate
                 location.Coordinate.Latitude,
                 location.Coordinate.Longitude);
             locationsInfo += "\n";
-            
+
             //We will print rest of info as debug log:
             Debug.Log("location.Floor: " + location.Floor);
             Debug.Log("location.Speed: " + location.Speed);
@@ -29,6 +29,7 @@ public class ISN_CoreLocationDelegateExample : ISN_iCLLocationManagerDelegate
             Debug.Log("location.Coordinate.Latitude: " + location.Coordinate.Latitude);
             Debug.Log("location.Coordinate.Longitude: " + location.Coordinate.Longitude);
         }
+
         ShowMessage("DidUpdateLocations ", locationsInfo);
     }
 
@@ -52,12 +53,12 @@ public class ISN_CoreLocationDelegateExample : ISN_iCLLocationManagerDelegate
         ShowMessage("DidResumeLocationUpdates ", "DidResumeLocationUpdates event received");
     }
 
-    private void ShowMessage(string title, string message)
+    void ShowMessage(string title, string message)
     {
         var alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.Alert);
-        var yesAction = new ISN_UIAlertAction("Ok", ISN_UIAlertActionStyle.Default, () => {});
+        var yesAction = new ISN_UIAlertAction("Ok", ISN_UIAlertActionStyle.Default, () => { });
         alert.AddAction(yesAction);
-        
+
         alert.Present();
     }
 }

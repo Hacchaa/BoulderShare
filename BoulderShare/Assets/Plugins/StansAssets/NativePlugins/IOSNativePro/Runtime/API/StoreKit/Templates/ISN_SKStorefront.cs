@@ -20,25 +20,20 @@ namespace SA.iOS.StoreKit
     [Serializable]
     public class ISN_SKStorefront
     {
-        [SerializeField] string m_CountryCode = string.Empty;
-        [SerializeField] string m_Identifier = string.Empty;
-        
+        [SerializeField]
+        string m_CountryCode = string.Empty;
+        [SerializeField]
+        string m_Identifier = string.Empty;
+
         /// <summary>
         /// The three-letter code representing the country associated with the App Store storefront.
         /// This property uses the ISO 3166-1 Alpha-3 country code representation.
         /// </summary>
-        public string CountryCode
-        {
-            get { return m_CountryCode; }
-        }
+        public string CountryCode => m_CountryCode;
 
         /// <summary>
         /// A value defined by Apple that uniquely identifies an App Store storefront.
         /// </summary>
-        public string Identifier
-        {
-            get { return m_Identifier; }
-        }
+        public string Identifier => m_Identifier;
     }
 }
-

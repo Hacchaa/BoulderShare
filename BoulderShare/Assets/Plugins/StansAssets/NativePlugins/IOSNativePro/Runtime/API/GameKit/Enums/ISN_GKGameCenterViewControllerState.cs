@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -20,7 +20,7 @@ namespace SA.iOS.GameKit
         Default = -1,
 
         /// <summary>
-        /// Indicates that the view controller presents leaderboard content. 
+        /// Indicates that the view controller presents leaderboard content.
         /// </summary>
         Leaderboards = 0,
 
@@ -32,6 +32,6 @@ namespace SA.iOS.GameKit
         /// <summary>
         /// Indicates that the view controller presents challenges content.
         /// </summary>
-        Challenges = 2
+        Challenges = 2,
     }
 }

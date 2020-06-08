@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace SA.iOS.StoreKit
 {
     /// <summary>
@@ -9,10 +5,29 @@ namespace SA.iOS.StoreKit
     /// </summary>
     public enum ISN_SKPaymentTransactionState
     {
-        Purchasing = 0,    // Transaction is being added to the server queue.
-        Purchased = 1,     // Transaction is in queue, user has been charged.  Client should complete the transaction.
-        Failed = 2,        // Transaction was cancelled or failed before being added to the server queue.
-        Restored = 3,      // Transaction was restored from user's purchase history.  Client should complete the transaction.
-        Deferred = 4
+        /// <summary>
+        /// Transaction is being added to the server queue.
+        /// </summary>
+        Purchasing = 0,
+
+        /// <summary>
+        ///  Transaction is in queue, user has been charged.  Client should complete the transaction.
+        /// </summary>
+        Purchased = 1,
+
+        /// <summary>
+        /// Transaction was cancelled or failed before being added to the server queue.
+        /// </summary>
+        Failed = 2,
+
+        /// <summary>
+        ///  Transaction was restored from user's purchase history.  Client should complete the transaction.
+        /// </summary>
+        Restored = 3,
+
+        /// <summary>
+        /// A transaction that is in the queue, but its final status is pending external action such as Ask to Buy.
+        /// </summary>
+        Deferred = 4,
     }
 }

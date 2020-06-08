@@ -37,24 +37,25 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         IReadOnlyList<BNRecord> list = route.GetRecords();
         IEnumerable<BNRecord> sortedList ;
         if (list.Any()){
-            sortedList = list.OrderByDescending(x => x.GetDate2()).ThenByDescending(x => x.GetTryNumber());
+            sortedList = list.OrderByDescending(x => x.GetTime()).ThenByDescending(x => x.GetTryNumber());
 
             //日付毎にリストに格納
             foreach(BNRecord record in sortedList){
                 RecordScrollerData data = new RecordScrollerData();
-                data.date = record.GetDate2();
+                string dat = record.GetDate2();
+                data.date = record.GetDate3();
                 data.record = record;
                 data.completeRate = record.GetCompleteRate();
                 data.comment = record.GetComment();
                 data.tryNumber = record.GetTryNumber();
                 data.conditionImageRef = conditionImageRef[(int)record.GetCondition()];
 
-                if (string.IsNullOrEmpty(curDate) || !curDate.Equals(data.date)){
-                    dateList.Add(data.date);
+                if (string.IsNullOrEmpty(curDate) || !curDate.Equals(dat)){
+                    dateList.Add(dat);
                     targetList = new List<RecordScrollerData>();
                     dataList.Add(targetList);
                     
-                    curDate = data.date;
+                    curDate = dat;
                 }
                 targetList.Add(data);
             }

@@ -1,28 +1,27 @@
-using UnityEngine;
-
 using System;
 using SA.Foundation.Templates;
 
-
 namespace SA.CrossPlatform.Advertisement
 {
-
     /// <summary>
-    /// A client to interact with banner advertisements functionality.
+    /// A client to interact with the banner advertisement.
     /// </summary>
-    public interface UM_iBannerAds 
+    public interface UM_iBannerAds : UM_IAdvertisement
     {
-
-        void Load(Action<SA_Result> callback);
-        void Load(string id, Action<SA_Result> callback);
+        /// <summary>
+        /// Show banner. Make sure to only call this method when the ad is ready.
+        /// </summary>
+        /// <param name="callback">Callback is called when banner is shown.</param>
         void Show(Action callback);
-        void Hide();
-        void Destroy();
-
 
         /// <summary>
-        /// Indicates if banner ad is ready to be shown
+        /// Hides banner active banner. Should only be called when active banner exists.
         /// </summary>
-        bool IsReady { get; }
+        void Hide();
+
+        /// <summary>
+        /// Destroy banner instance. Make sure that banner instance exists before calling this method.
+        /// </summary>
+        void Destroy();
     }
 }

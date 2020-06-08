@@ -17,20 +17,15 @@
 
 @protocol ISN_MPMediaItem;
 @interface ISN_MPMediaItem : JSONModel
-@property (nonatomic) NSString* m_title;
-@property (nonatomic) NSString* m_artist;
-@property (nonatomic) NSString* m_albumTitle;
-@property (nonatomic) NSString* m_composer;
-@property (nonatomic) NSString* m_genre;
-@property (nonatomic) NSString* m_lyrics;
-
+@property (nonatomic) NSString* m_Title;
+@property (nonatomic) NSString* m_Artist;
+@property (nonatomic) NSString* m_AlbumTitle;
+@property (nonatomic) NSString* m_Composer;
+@property (nonatomic) NSString* m_Genre;
+@property (nonatomic) NSString* m_Lyrics;
 
 -(id) initWithMPMediaItem:(MPMediaItem *) item;
 @end
-
-
-
-
 
 
 @interface ISN_MPMusicPlayerController : JSONModel

@@ -1,8 +1,10 @@
 namespace SA.iOS.CoreLocation
 {
+    /// <summary>
+    /// Constants indicating the app's authorization to use location services.
+    /// </summary>
     public enum ISN_CLAuthorizationStatus
     {
-
         /// <summary>
         /// User has not yet made a choice with regards to this application
         /// </summary>
@@ -39,6 +41,6 @@ namespace SA.iOS.CoreLocation
         /// This value is not available on MacOS.  It should be used on iOS, tvOS and
         /// watchOS.
         /// </summary>
-        AuthorizedWhenInUse
+        AuthorizedWhenInUse,
     }
 }

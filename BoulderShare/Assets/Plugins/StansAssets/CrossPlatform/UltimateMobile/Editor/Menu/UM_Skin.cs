@@ -2,46 +2,44 @@ using UnityEditor;
 using UnityEngine;
 using SA.Foundation.Editor;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public static class UM_Skin
+    static class UM_Skin
     {
-        private const string ICONS_PATH = UM_Settings.PLUGIN_FOLDER + "Editor/Art/Icons/";
+        const string ICONS_PATH = UM_Settings.PLUGIN_FOLDER + "Editor/Art/Icons/";
 
-        public static Texture2D SettingsWindowIcon 
+        public static Texture2D SettingsWindowIcon
         {
             get
             {
-                if (EditorGUIUtility.isProSkin) 
-                {
-                    return GetDefaultIcon("ultimate_icon_pro.png");
-                }
+                if (EditorGUIUtility.isProSkin) return GetDefaultIcon("ultimate_icon_pro.png");
 
                 return GetDefaultIcon("ultimate_icon.png");
             }
         }
 
-        public static Texture2D GetServiceIcon(string iconName) 
+        public static Texture2D GetServiceIcon(string iconName)
         {
             return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + "Services/" + iconName);
         }
 
-        public static Texture2D GetPlatformIcon(string iconName) 
+        public static Texture2D GetPlatformIcon(string iconName)
         {
             return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + "Platforms/" + iconName);
         }
 
-        public static Texture2D GetDefaultIcon(string iconName) 
+        public static Texture2D GetDefaultIcon(string iconName)
         {
             return SA_EditorAssets.GetTextureAtPath(ICONS_PATH + "Default/" + iconName);
         }
 
-        private static GUIStyle m_PlatformBlockHeader = null;
-        public static GUIStyle PlatformBlockHeader 
+        static GUIStyle m_PlatformBlockHeader = null;
+
+        public static GUIStyle PlatformBlockHeader
         {
-            get 
+            get
             {
-                if (m_PlatformBlockHeader == null) 
+                if (m_PlatformBlockHeader == null)
                 {
                     m_PlatformBlockHeader = new GUIStyle(SA_PluginSettingsWindowStyles.ServiceBlockHeader);
                     m_PlatformBlockHeader.fontSize = 11;

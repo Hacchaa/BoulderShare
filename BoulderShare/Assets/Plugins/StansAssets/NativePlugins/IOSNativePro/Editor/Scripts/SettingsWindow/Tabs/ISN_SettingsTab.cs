@@ -5,49 +5,45 @@ using SA.iOS.Editor;
 
 namespace SA.iOS
 {
-    public class ISN_SettingsTab : SA_GUILayoutElement
+    class ISN_SettingsTab : SA_GUILayoutElement
     {
+        readonly GUIContent m_Info = new GUIContent("Info[?]:", "Full communication logs between Native plugin part");
+        readonly GUIContent m_Warnings = new GUIContent("Warnings[?]:", "Warnings");
+        readonly GUIContent m_Errors = new GUIContent("Errors[?]:", "Errors");
 
-        GUIContent Info = new GUIContent("Info[?]:", "Full comunication logs between Native plugin part");
-        GUIContent Warnings = new GUIContent("Warnings[?]:", "Warnings");
-        GUIContent Errors = new GUIContent("Errors[?]:", "Errors");
+        public override void OnGUI()
+        {
+            using (new SA_WindowBlockWithSpace(new GUIContent("Log Level")))
+            {
+                EditorGUILayout.HelpBox("We recommend you to keep full logging level while your project in development mode. " +
+                    "Full communication logs between Native plugin part & " +
+                    "Unity side will be only available with Info logging level enabled. \n" +
+                    "Disabling the error logs isn't recommended", MessageType.Info);
 
-        public override void OnGUI() {
-
-            using (new SA_WindowBlockWithSpace(new GUIContent("Log Level"))) {
-                EditorGUILayout.HelpBox("We recommend you to keep full loggin level while your project in development mode. " +
-                                        "Full comunication logs between Native plugin part & " +
-                                        "Unity side will be only avalibale with Info loggin level enabled. \n" +
-                                        "Disabling the error logs isn't recommended", MessageType.Info);
-
-
-                using (new SA_GuiBeginHorizontal()) {
-
+                using (new SA_GuiBeginHorizontal())
+                {
                     var logLevel = ISN_Settings.Instance.LogLevel;
 
-                    logLevel.Info = GUILayout.Toggle(logLevel.Info, Info, GUILayout.Width(80));
-                    logLevel.Warning = GUILayout.Toggle(logLevel.Warning, Warnings, GUILayout.Width(100));
-                    logLevel.Error = GUILayout.Toggle(logLevel.Error, Errors, GUILayout.Width(100));
+                    logLevel.Info = GUILayout.Toggle(logLevel.Info, m_Info, GUILayout.Width(80));
+                    logLevel.Warning = GUILayout.Toggle(logLevel.Warning, m_Warnings, GUILayout.Width(100));
+                    logLevel.Error = GUILayout.Toggle(logLevel.Error, m_Errors, GUILayout.Width(100));
                 }
             }
 
-            using (new SA_WindowBlockWithSpace(new GUIContent("Debug"))) {
+            using (new SA_WindowBlockWithSpace(new GUIContent("Debug")))
+            {
                 EditorGUILayout.HelpBox("API Resolver's are normally launched with build pre-process stage", MessageType.Info);
-                using (new SA_GuiBeginHorizontal()) {
-
-                    bool pressed = GUILayout.Button("Start API Resolvers");
-                    if (pressed) {
-                        SA_PluginsEditor.DisableLibstAtPath(ISN_Settings.IOS_NATIVE_XCODE_SOURCE);
-                        ISN_Preprocessor.Resolve(forced: true);
-                    }
+                using (new SA_GuiBeginHorizontal())
+                {
+                    var pressed = GUILayout.Button("Start API Resolvers");
+                    if (pressed) ISN_Preprocessor.Resolve(true);
                 }
 
                 EditorGUILayout.HelpBox("Action will reset all of the plugin settings to default.", MessageType.Info);
-                using (new SA_GuiBeginHorizontal()) {
-                    bool pressed = GUILayout.Button("Reset To Defaults");
-                    if (pressed) {
-                        ISN_Preprocessor.DropToDefault();
-                    }
+                using (new SA_GuiBeginHorizontal())
+                {
+                    var pressed = GUILayout.Button("Reset To Defaults");
+                    if (pressed) ISN_Preprocessor.DropToDefault();
                 }
             }
 
@@ -57,10 +53,10 @@ namespace SA.iOS
                 var pressed = GUILayout.Button("Export settings");
                 if (pressed)
                 {
-                    string path = EditorUtility.SaveFilePanel("Save settings as JSON",
-                    "",
-                    "ISN_Settings",
-                    "isn_settings");
+                    var path = EditorUtility.SaveFilePanel("Save settings as JSON",
+                        "",
+                        "ISN_Settings",
+                        "isn_settings");
                     ISN_SettingsManager.Export(path);
                 }
 
@@ -68,7 +64,7 @@ namespace SA.iOS
                 pressed = GUILayout.Button("Import settings");
                 if (pressed)
                 {
-                    string path = EditorUtility.OpenFilePanel("Import settings from json",
+                    var path = EditorUtility.OpenFilePanel("Import settings from json",
                         "",
                         "isn_settings");
                     ISN_SettingsManager.Import(path);

@@ -3,19 +3,19 @@ using SA.Android.Camera;
 
 namespace SA.CrossPlatform.App
 {
-    internal class UM_AndroidCameraService : UM_iCameraService
+    class UM_AndroidCameraService : UM_iCameraService
     {
-        public void TakePicture(int thumbnailSize, Action<UM_MediaResult> callback) 
+        public void TakePicture(int thumbnailSize, Action<UM_MediaResult> callback)
         {
-            AN_Camera.CaptureImage(thumbnailSize, result => 
+            AN_Camera.CaptureImage(thumbnailSize, result =>
             {
                 UM_MediaResult pickResult;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var media = new UM_Media(result.Media.Thumbnail, result.Media.RawBytes, result.Media.Path, UM_MediaType.Image);
                     pickResult = new UM_MediaResult(media);
-                } 
-                else 
+                }
+                else
                 {
                     pickResult = new UM_MediaResult(result.Error);
                 }
@@ -24,16 +24,16 @@ namespace SA.CrossPlatform.App
             });
         }
 
-        public void TakeVideo(int thumbnailSize, Action<UM_MediaResult> callback) 
+        public void TakeVideo(int thumbnailSize, Action<UM_MediaResult> callback)
         {
-            AN_Camera.CaptureVideo(thumbnailSize, result => 
+            AN_Camera.CaptureVideo(thumbnailSize, result =>
             {
                 UM_MediaResult pickResult;
-                if (result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
                     var media = new UM_Media(result.Media.Thumbnail, result.Media.RawBytes, result.Media.Path, UM_MediaType.Image);
                     pickResult = new UM_MediaResult(media);
-                } 
+                }
                 else
                 {
                     pickResult = new UM_MediaResult(result.Error);

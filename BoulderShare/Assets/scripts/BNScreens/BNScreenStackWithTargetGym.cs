@@ -247,5 +247,32 @@ public class BNScreenStackWithTargetGym : BNTStack
     public void ClearRecord(){
         targetRecord = null;
     }
+    public string FindOldestWallImageName(){
+        if (targetGym == null){
+            return "";
+        }
+        foreach(BNRoute r in targetGym.GetRoutes()){
+            BNWallImageNames n = r.GetFirstWallImageFileNames();
+            if (n != null && !string.IsNullOrEmpty(n.fileName)){
+                return n.fileName;
+            }
+        }
+
+        return "";
+    }
+    public bool HasWallImage(string fileName){
+        if (targetGym == null || string.IsNullOrEmpty(fileName)){
+            return false;
+        }
+
+        foreach(BNRoute r in targetGym.GetRoutes()){
+            foreach(BNWallImageNames names in r.GetWallImageFileNames()){
+                if (names.fileName.Equals(fileName)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 }

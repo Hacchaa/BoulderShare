@@ -1,14 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
-/// Values representing the duration of an interval, from a day up to a year.
-/// </summary>
-public enum ISN_SKProductPeriodUnit
+namespace SA.iOS.StoreKit
 {
-    Day = 0,     //An interval lasting one day.
-    Week = 1,    //An interval lasting one month.
-    Month = 2,   //An interval lasting one week.
-    Year = 3     //An interval lasting one year.
+    /// <summary>
+    /// Values representing the duration of an interval, from a day up to a year.
+    /// </summary>
+    public enum ISN_SKProductPeriodUnit
+    {
+        /// <summary>
+        /// An interval lasting one day.
+        /// </summary>
+        Day = 0,
+
+        /// <summary>
+        /// An interval lasting one month.
+        /// </summary>
+        Week = 1,
+
+        /// <summary>
+        /// An interval lasting one week.
+        /// </summary>
+        Month = 2,
+
+        /// <summary>
+        /// An interval lasting one year.
+        /// </summary>
+        Year = 3,
+    }
 }

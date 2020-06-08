@@ -6,40 +6,22 @@ using SA.iOS.Editor;
 namespace SA.CrossPlatform.Editor
 {
     [Serializable]
-    internal class UM_ExportedSettings
+    class UM_ExportedSettings
     {
-        public string Settings
-        {
-            get
-            {
-                return m_Settings;
-            }
-        }
+        public string Settings => m_Settings;
 
-        public AN_ExportedSettings AndroidSettings
-        {
-            get
-            {
-                return m_AndroidSettings;
-            }
-        }
+        public AN_ExportedSettings AndroidSettings => m_AndroidSettings;
 
-        public ISN_ExportedSettings ISNSettings
-        {
-            get
-            {
-                return m_ISNSettings;
-            }
-        }
+        public ISN_ExportedSettings ISNSettings => m_ISNSettings;
 
         [SerializeField]
-        private string m_Settings;
+        string m_Settings;
 
         [SerializeField]
-        private AN_ExportedSettings m_AndroidSettings;
+        AN_ExportedSettings m_AndroidSettings;
 
         [SerializeField]
-        private ISN_ExportedSettings m_ISNSettings;
+        ISN_ExportedSettings m_ISNSettings;
 
         public UM_ExportedSettings()
         {

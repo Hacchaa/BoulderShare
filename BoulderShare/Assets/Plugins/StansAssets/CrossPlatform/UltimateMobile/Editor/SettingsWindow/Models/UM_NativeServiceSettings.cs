@@ -2,15 +2,12 @@ using UnityEngine;
 using System;
 using SA.Foundation.Editor;
 
-
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public abstract class UM_NativeServiceSettings 
+    abstract class UM_NativeServiceSettings
     {
-
         public abstract string ServiceName { get; }
         public abstract Type ServiceUIType { get; }
         public abstract bool IsEnabled { get; }
-
     }
 }

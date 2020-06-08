@@ -14,14 +14,15 @@ namespace SA.Foundation.Utility
         /// </summary>
         /// <param name="typeFullName">full type name</param>
         /// <returns>Create type instance</returns>
-        public static object CreateInstance(string typeFullName) {
+        public static object CreateInstance(string typeFullName)
+        {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies) {
-                foreach (Type type in assembly.GetTypes()) {
-                    if (type.FullName != null && !type.FullName.Equals(typeFullName)) 
-                        continue;
-                    return Activator.CreateInstance(type);
-                }
+            foreach (var assembly in assemblies)
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.FullName != null && !type.FullName.Equals(typeFullName))
+                    continue;
+                return Activator.CreateInstance(type);
             }
 
             return null;

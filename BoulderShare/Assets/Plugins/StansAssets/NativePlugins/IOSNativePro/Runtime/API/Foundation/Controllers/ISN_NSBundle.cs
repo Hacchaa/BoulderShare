@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-
 #if UNITY_IPHONE || UNITY_TVOS
 using System.Runtime.InteropServices;
+
 #endif
 
 namespace SA.iOS.Foundation
@@ -19,36 +19,36 @@ namespace SA.iOS.Foundation
     [Serializable]
     public class ISN_NSBundle
     {
-       [SerializeField] private string m_PreferredLocalization = string.Empty;
-       [SerializeField] private string m_DevelopmentLocalization = string.Empty;
-        
-        #if UNITY_IPHONE || UNITY_TVOS
-            [DllImport("__Internal")] static extern bool _ISN_NS_IsRunningInAppStoreEnvironment();
-            [DllImport("__Internal")] static extern string _ISN_NS_GetBuildInfo();
-            [DllImport("__Internal")] static extern string _ISN_NS_GetMainBundle();
-        #endif
+        [SerializeField]
+        string m_PreferredLocalization = string.Empty;
+        [SerializeField]
+        string m_DevelopmentLocalization = string.Empty;
 
+#if UNITY_IPHONE || UNITY_TVOS
+        [DllImport("__Internal")]
+        static extern bool _ISN_NS_IsRunningInAppStoreEnvironment();
+
+        [DllImport("__Internal")]
+        static extern string _ISN_NS_GetBuildInfo();
+
+        [DllImport("__Internal")]
+        static extern string _ISN_NS_GetMainBundle();
+#endif
 
         /// <summary>
         /// language ID according to the user's language preferences and available localizations.
         /// </summary>
-        public string PreferredLocalization
-        {
-            get { return m_PreferredLocalization; }
-        }
-        
+        public string PreferredLocalization => m_PreferredLocalization;
+
         /// <summary>
         /// The localization for the development language.
         /// This property corresponds to the value in the CFBundleDevelopmentRegion key of the bundle’s property list (Info.plist).
         /// </summary>
-        public string DevelopmentLocalization
-        {
-            get { return m_DevelopmentLocalization; }
-        }
+        public string DevelopmentLocalization => m_DevelopmentLocalization;
 
         /// <summary>
         /// Returns the bundle object that contains the current executable.
-        /// 
+        ///
         /// The NSBundle object corresponding to the bundle directory that contains the current executable.
         /// This method may return a valid bundle object even for unbundled apps.
         /// It may also return nil if the bundle object could not be created, so always check the return value.
@@ -61,50 +61,49 @@ namespace SA.iOS.Foundation
         {
             get
             {
-            #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
+#if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                 var data = _ISN_NS_GetMainBundle();
                 return JsonUtility.FromJson<ISN_NSBundle>(data);
-            #else
+#else
                 var bundle = new ISN_NSBundle
                 {
-                    m_PreferredLocalization = "en", 
+                    m_PreferredLocalization = "en",
                     m_DevelopmentLocalization = "en"
                 };
                 return bundle;
-            #endif
+#endif
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether this application is running in AppStore environment.
         /// </summary>
-        public static bool IsRunningInAppStoreEnvironment 
+        public static bool IsRunningInAppStoreEnvironment
         {
-            get 
+            get
             {
-                #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
+#if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                     return _ISN_NS_IsRunningInAppStoreEnvironment();
-                #else
-                    return false;
-                #endif
+#else
+                return false;
+#endif
             }
         }
 
         /// <summary>
-        /// Gets the information about current build 
+        /// Gets the information about current build
         /// </summary>
-        public static ISN_NSBuildInfo BuildInfo 
+        public static ISN_NSBuildInfo BuildInfo
         {
-            get 
+            get
             {
-                #if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
+#if (UNITY_IPHONE || UNITY_TVOS) && !UNITY_EDITOR
                     string data = _ISN_NS_GetBuildInfo();
                     return JsonUtility.FromJson<ISN_NSBuildInfo>(data);
-                #else
-                    return new ISN_NSBuildInfo();
-                #endif
+#else
+                return new ISN_NSBuildInfo();
+#endif
             }
-        } 
+        }
     }
 }
-

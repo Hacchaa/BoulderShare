@@ -12,11 +12,15 @@ namespace SA.Android.GMS.Games
     {
 #pragma warning disable 414
 
-        [SerializeField] long m_playedTimeMillis = 0;
-        [SerializeField] long m_progressValue = 0;
+        [SerializeField]
+        long m_playedTimeMillis = 0;
+        [SerializeField]
+        long m_progressValue = 0;
 
-        [SerializeField] string m_describtion;
-        [SerializeField] string m_coverImageBase64;
+        [SerializeField]
+        string m_describtion;
+        [SerializeField]
+        string m_coverImageBase64;
 
 #pragma warning restore 414
 
@@ -27,13 +31,15 @@ namespace SA.Android.GMS.Games
 
         public class Builder
         {
-            private AN_SnapshotMetadataChange m_meta;
+            readonly AN_SnapshotMetadataChange m_meta;
 
-            public Builder() {
+            public Builder()
+            {
                 m_meta = new AN_SnapshotMetadataChange();
             }
 
-            public AN_SnapshotMetadataChange Build() {
+            public AN_SnapshotMetadataChange Build()
+            {
                 return m_meta;
             }
 
@@ -41,7 +47,8 @@ namespace SA.Android.GMS.Games
             /// Cover image to set for the snapshot.
             /// <param name="coverImage"></param>
             /// </summary>
-            public void SetCoverImage(Texture2D coverImage) {
+            public void SetCoverImage(Texture2D coverImage)
+            {
                 m_meta.m_coverImageBase64 = coverImage.ToBase64String();
             }
 
@@ -49,7 +56,8 @@ namespace SA.Android.GMS.Games
             /// Description to set for the snapshot.
             /// <param name="description">description</param>
             /// </summary>
-            public void SetDescription(string description) {
+            public void SetDescription(string description)
+            {
                 m_meta.m_describtion = description;
             }
 
@@ -58,12 +66,11 @@ namespace SA.Android.GMS.Games
             /// Value should always be above zero.
             /// <param name="playedTimeMillis">player played time in milliseconds</param>
             /// </summary>
-            public void SetPlayedTimeMillis(long playedTimeMillis) {
-
-                if(playedTimeMillis <=0) {
+            public void SetPlayedTimeMillis(long playedTimeMillis)
+            {
+                if (playedTimeMillis <= 0)
                     Debug.LogError("AN_SnapshotMetadataChange::SetPlayedTimeMillis was set to " + playedTimeMillis + " " +
                         "it may lead to negative consequences, make sure this value is always > 0");
-                }
 
                 m_meta.m_playedTimeMillis = playedTimeMillis;
             }
@@ -73,12 +80,11 @@ namespace SA.Android.GMS.Games
             /// Value should always be above zero.
             /// </summary>
             /// <param name="progressValue">player progress value</param>
-            public void SetProgressValue(long progressValue) {
-
-                if (progressValue <= 0) {
+            public void SetProgressValue(long progressValue)
+            {
+                if (progressValue <= 0)
                     Debug.LogError("AN_SnapshotMetadataChange::SetProgressValue was set to " + progressValue + " " +
                         "it may lead to negative consequences, make sure this value is always > 0");
-                }
 
                 m_meta.m_progressValue = progressValue;
             }

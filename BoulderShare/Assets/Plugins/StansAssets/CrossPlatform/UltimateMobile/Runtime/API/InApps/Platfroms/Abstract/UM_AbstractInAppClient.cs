@@ -6,13 +6,13 @@ using SA.CrossPlatform.Analytics;
 
 namespace SA.CrossPlatform.InApp
 {
-    internal abstract class UM_AbstractInAppClient 
+    abstract class UM_AbstractInAppClient
     {
-        private bool m_IsConnected;
-        private bool m_IsConnectionInProgress;
-        private bool m_IsObserverRegistered;
-        private event Action<SA_iResult> m_OnConnect = delegate { };
-        private Dictionary<string, UM_iProduct> m_Products = new Dictionary<string, UM_iProduct>();
+        bool m_IsConnected;
+        bool m_IsConnectionInProgress;
+        bool m_IsObserverRegistered;
+        event Action<SA_iResult> m_OnConnect = delegate { };
+        Dictionary<string, UM_iProduct> m_Products = new Dictionary<string, UM_iProduct>();
         protected UM_iTransactionObserver m_Observer;
 
         //--------------------------------------
@@ -28,7 +28,6 @@ namespace SA.CrossPlatform.InApp
         /// </summary>
         protected abstract Dictionary<string, UM_iProduct> GetServerProductsInfo();
 
-
         //--------------------------------------
         //  Public Methods
         //--------------------------------------
@@ -37,25 +36,22 @@ namespace SA.CrossPlatform.InApp
         {
             Connect(null, callback);
         }
-        
+
         public void Connect(IEnumerable<UM_ProductTemplate> products, Action<SA_iResult> callback)
         {
-            if (m_IsConnected) 
+            if (m_IsConnected)
             {
                 callback.Invoke(new SA_Result());
                 return;
             }
 
             m_OnConnect += callback;
-            if (m_IsConnectionInProgress) { return; }
+            if (m_IsConnectionInProgress) return;
             m_IsConnectionInProgress = true;
 
-            ConnectToTheBillingService(products,result => 
+            ConnectToTheBillingService(products, result =>
             {
-                if(result.IsSucceeded) 
-                {
-                    m_Products = GetServerProductsInfo();
-                }
+                if (result.IsSucceeded) m_Products = GetServerProductsInfo();
 
                 m_IsConnected = true;
                 m_IsConnectionInProgress = false;
@@ -63,7 +59,7 @@ namespace SA.CrossPlatform.InApp
 
                 //Checking if we should add an observer
                 //In case user added it before service was connected
-                if (m_Observer != null && !m_IsObserverRegistered) 
+                if (m_Observer != null && !m_IsObserverRegistered)
                 {
                     m_IsObserverRegistered = true;
                     ObserveTransactions();
@@ -73,17 +69,17 @@ namespace SA.CrossPlatform.InApp
             });
         }
 
-        private void ConnectToTheBillingService(IEnumerable<UM_ProductTemplate> products, Action<SA_iResult> callback)
+        void ConnectToTheBillingService(IEnumerable<UM_ProductTemplate> products, Action<SA_iResult> callback)
         {
             if (products == null)
                 ConnectToService(callback);
-            else 
+            else
                 ConnectToService(products, callback);
         }
-        
-        public void SetTransactionObserver(UM_iTransactionObserver observer) 
+
+        public void SetTransactionObserver(UM_iTransactionObserver observer)
         {
-            if(m_Observer != null) 
+            if (m_Observer != null)
             {
                 Debug.LogWarning("UM_AbstractInAppClient::SetTransactionObserver you can only set one Transactions Observer");
                 return;
@@ -93,11 +89,11 @@ namespace SA.CrossPlatform.InApp
 
             // Make sure we adding actual observer only when connect to the service. 
             // Otherwise we will wait for a successful connection 
-            if(IsConnected) 
+            if (IsConnected)
             {
                 m_IsObserverRegistered = true;
                 ObserveTransactions();
-            } 
+            }
         }
 
         /// <summary>
@@ -107,11 +103,8 @@ namespace SA.CrossPlatform.InApp
         public UM_iProduct GetProductById(string productIdentifier)
         {
             UM_iProduct product;
-            if (m_Products.TryGetValue(productIdentifier, out product))
-            {
-                return product;
-            }
-            
+            if (m_Products.TryGetValue(productIdentifier, out product)) return product;
+
             return null;
         }
 
@@ -122,27 +115,21 @@ namespace SA.CrossPlatform.InApp
         /// <summary>
         /// Returns <c>true</c> if we are currently connected to the store services. Otherwise <c>false</c>
         /// </summary>
-        public bool IsConnected 
-        {
-            get { return m_IsConnected; }
-        }
+        public bool IsConnected => m_IsConnected;
 
         /// <summary>
         /// A list of products, one product for each valid product identifier provided in the original init request.
         /// only valid to use when <see cref="IsConnected"/> is <c>true</c>
         /// </summary>
-        public IEnumerable<UM_iProduct> Products 
-        {
-            get { return new List<UM_iProduct>(m_Products.Values); }
-        }
+        public IEnumerable<UM_iProduct> Products => new List<UM_iProduct>(m_Products.Values);
 
         //--------------------------------------
         //  Protected Methods
         //--------------------------------------
 
-        protected void UpdateTransaction(UM_iTransaction transaction) 
+        protected void UpdateTransaction(UM_iTransaction transaction)
         {
-            if (m_Observer == null) 
+            if (m_Observer == null)
             {
                 Debug.LogError("UpdateTransaction has been called before m_observer is set");
                 return;
@@ -152,9 +139,10 @@ namespace SA.CrossPlatform.InApp
             m_Observer.OnTransactionUpdated(transaction);
         }
 
-        protected void SetRestoreTransactionsResult(SA_Result result) 
+        protected void SetRestoreTransactionsResult(SA_Result result)
         {
-            if (m_Observer == null) {
+            if (m_Observer == null)
+            {
                 Debug.LogError("SetRestoreTransactionsResult has been called before m_observer is set");
                 return;
             }

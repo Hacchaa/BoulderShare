@@ -5,7 +5,7 @@ using SA.Android.Vending.BillingClient;
 namespace SA.CrossPlatform.InApp
 {
     [Serializable]
-    internal class UM_AndroidProduct : UM_AbstractProduct<AN_SkuDetails>, UM_iProduct
+    class UM_AndroidProduct : UM_AbstractProduct<AN_SkuDetails>, UM_iProduct
     {
         protected override void OnOverride(AN_SkuDetails productTemplate)
         {
@@ -15,9 +15,9 @@ namespace SA.CrossPlatform.InApp
             m_priceCurrencyCode = productTemplate.PriceCurrencyCode;
 
             m_title = productTemplate.Title;
-            if(!string.IsNullOrEmpty(m_title)) 
-                m_title =  Regex.Replace(m_title, "\\ \\(.*\\)", string.Empty); 
-            
+            if (!string.IsNullOrEmpty(m_title))
+                m_title = Regex.Replace(m_title, "\\ \\(.*\\)", string.Empty);
+
             m_description = productTemplate.Description;
             switch (productTemplate.Type)
             {

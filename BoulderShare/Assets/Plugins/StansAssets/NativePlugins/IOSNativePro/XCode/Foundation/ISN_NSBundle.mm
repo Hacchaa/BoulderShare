@@ -2,8 +2,8 @@
 #import "ISN_Foundation.h"
 
 @interface ISN_NSBuildInfo : JSONModel
-@property (nonatomic) NSString* m_appVersion;
-@property (nonatomic) NSString* m_buildNumber;
+@property (nonatomic) NSString* m_AppVersion;
+@property (nonatomic) NSString* m_BuildNumber;
 @end
 
 
@@ -33,7 +33,7 @@
 @end
 
 extern "C" {
-    
+
     //we don't have this on Unity C# part
     bool _ISN_NS_isAppStoreReceiptSandbox() {
 #if TARGET_IPHONE_SIMULATOR
@@ -41,12 +41,12 @@ extern "C" {
 #else
         NSURL *appStoreReceiptURL = NSBundle.mainBundle.appStoreReceiptURL;
         NSString *appStoreReceiptLastComponent = appStoreReceiptURL.lastPathComponent;
-        
+
         BOOL isSandboxReceipt = [appStoreReceiptLastComponent isEqualToString:@"sandboxReceipt"];
         return isSandboxReceipt;
 #endif
     }
-    
+
     bool _ISN_NS_IsRunningInAppStoreEnvironment() {
 #if TARGET_IPHONE_SIMULATOR
         return NO;
@@ -58,20 +58,20 @@ extern "C" {
         return YES;
 #endif
     }
-    
+
     char* _ISN_NS_GetBuildInfo() {
         ISN_NSBuildInfo *buildInfo = [[ISN_NSBuildInfo alloc] init];
         NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-        [buildInfo setM_appVersion:[infoDict objectForKey:@"CFBundleShortVersionString"]]; // example: 1.0.0
-        [buildInfo setM_buildNumber:[infoDict objectForKey:@"CFBundleVersion"]]; // example: 42
-        
+        [buildInfo setM_AppVersion:[infoDict objectForKey:@"CFBundleShortVersionString"]]; // example: 1.0.0
+        [buildInfo setM_BuildNumber:[infoDict objectForKey:@"CFBundleVersion"]]; // example: 42
+
         return ISN_ConvertToChar([buildInfo toJSONString]);
     }
-    
+
     char* _ISN_NS_GetMainBundle() {
         NSBundle* bundle = [NSBundle mainBundle];
         ISN_NSBundle* isn_bundle = [[ISN_NSBundle alloc] initWithNSBundle:bundle];
-        
+
         return ISN_ConvertToChar([isn_bundle toJSONString]);
     }
 }

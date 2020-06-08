@@ -1,21 +1,17 @@
 using SA.Facebook;
 using SA.Foundation.Editor;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public class UM_FacebookResolver : SA_iAPIResolver
+    class UM_FacebookResolver : SA_iAPIResolver
     {
-        public bool IsSettingsEnabled {
-            get {
-                return SA_FB.IsSDKInstalled;
-            }
+        public bool IsSettingsEnabled
+        {
+            get => SA_FB.IsSDKInstalled;
 
             set { }
         }
 
-        public void ResetRequirementsCache()
-        {
-            
-        }
+        public void ResetRequirementsCache() { }
     }
 }

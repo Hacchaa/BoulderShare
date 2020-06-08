@@ -4,7 +4,6 @@ using SA.Foundation.Templates;
 
 namespace SA.iOS.GameKit
 {
-
     /// <summary>
     /// Game Kit signature generation result
     /// </summary>
@@ -12,71 +11,47 @@ namespace SA.iOS.GameKit
     public class ISN_GKIdentityVerificationSignatureResult : SA_Result
     {
 #pragma warning disable 649
-        [SerializeField] string m_publicKeyUrl;
-        [SerializeField] string m_signature;
-        [SerializeField] string m_salt;
-        [SerializeField] private long m_timestamp;
+        [SerializeField]
+        string m_PublicKeyUrl;
+        [SerializeField]
+        string m_Signature;
+        [SerializeField]
+        string m_Salt;
+        [SerializeField]
+        long m_Timestamp;
 #pragma warning restore 649
 
-        public ISN_GKIdentityVerificationSignatureResult(SA_Error error) : base(error) {
-
-        }
+        internal ISN_GKIdentityVerificationSignatureResult(SA_Error error)
+            : base(error) { }
 
         /// <summary>
         /// The URL for the public encryption key.
         /// </summary>
-        public string PublicKeyUrl {
-            get {
-                return m_publicKeyUrl;
-            }
-        }
-
+        public string PublicKeyUrl => m_PublicKeyUrl;
 
         /// <summary>
         /// The date and time that the signature was created.
         /// </summary>
-        public long Timestamp {
-            get {
-                return m_timestamp;
-            }
-        }
-
+        public long Timestamp => m_Timestamp;
 
         /// <summary>
         /// The verification signature data generated.
         /// </summary>
-        public byte[] Signature {
-            get {
-                return m_signature.BytesFromBase64String();
-            }
-        }
+        public byte[] Signature => m_Signature.BytesFromBase64String();
 
         /// <summary>
         /// The verification signature data generated.
         /// </summary>
-        public string SignatureAsBse64String {
-            get {
-                return m_signature;
-            }
-        }
-
+        public string SignatureAsBse64String => m_Signature;
 
         /// <summary>
         /// A random NSString used to compute the hash and keep it randomized.
         /// </summary>
-        public byte[] Salt {
-            get {
-                return m_salt.BytesFromBase64String();
-            }
-        }
+        public byte[] Salt => m_Salt.BytesFromBase64String();
 
         /// <summary>
         /// A random NSString used to compute the hash and keep it randomized.
         /// </summary>
-        public string SaltAsBse64String {
-            get {
-                return m_salt;
-            }
-        }
+        public string SaltAsBse64String => m_Salt;
     }
 }

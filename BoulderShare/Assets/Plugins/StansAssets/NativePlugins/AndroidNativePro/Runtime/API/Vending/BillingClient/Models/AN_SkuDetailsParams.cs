@@ -18,10 +18,12 @@ namespace SA.Android.Vending.BillingClient
         [Serializable]
         public class Builder
         {
-            [SerializeField] internal string m_Type;
-            [SerializeField] internal List<string> m_SkusList;
+            [SerializeField]
+            internal string m_Type;
+            [SerializeField]
+            internal List<string> m_SkusList;
 
-            internal Builder() { } 
+            internal Builder() { }
 
             /// <summary>
             /// Specify the type of SKUs we are querying for.
@@ -53,9 +55,10 @@ namespace SA.Android.Vending.BillingClient
             }
         }
 
-        [SerializeField] private Builder m_Builder;
+        [SerializeField]
+        Builder m_Builder;
 
-        private AN_SkuDetailsParams(Builder builder)
+        AN_SkuDetailsParams(Builder builder)
         {
             m_Builder = builder;
         }
@@ -72,17 +75,11 @@ namespace SA.Android.Vending.BillingClient
         /// <summary>
         /// SKUs list to we are querying.
         /// </summary>
-        public List<string> SkusList
-        {
-            get { return m_Builder.m_SkusList; }
-        }
+        public List<string> SkusList => m_Builder.m_SkusList;
 
         /// <summary>
         /// SKUs type we are querying for.
         /// </summary>
-        public AN_BillingClient.SkuType SkuType
-        {
-            get { return SA_EnumUtil.ParseEnum<AN_BillingClient.SkuType>(m_Builder.m_Type); }
-        }
+        public AN_BillingClient.SkuType SkuType => SA_EnumUtil.ParseEnum<AN_BillingClient.SkuType>(m_Builder.m_Type);
     }
 }

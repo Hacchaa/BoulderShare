@@ -1,4 +1,3 @@
-using SA.iOS.UIKit.Internal;
 using SA.iOS.Utilities;
 
 namespace SA.iOS.UIKit
@@ -9,17 +8,12 @@ namespace SA.iOS.UIKit
     /// </summary>
     public class ISN_UITraitCollection : ISN_NativeObject
     {
-        internal ISN_UITraitCollection(ulong hash) : base(hash)
-        {
-        }
+        internal ISN_UITraitCollection(ulong hash)
+            : base(hash) { }
 
         /// <summary>
         /// The style associated with the user interface.
         /// </summary>
-        public ISN_UIUserInterfaceStyle UserInterfaceStyle
-        {
-            get { return ISN_UILib.API.TraitCollection_UserInterfaceStyle(NativeHashCode); }
-        }
-        
+        public ISN_UIUserInterfaceStyle UserInterfaceStyle => ISN_UILib.Api.TraitCollection_UserInterfaceStyle(NativeHashCode);
     }
 }

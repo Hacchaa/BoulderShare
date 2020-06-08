@@ -1,16 +1,16 @@
 using SA.iOS.XCode;
 
-namespace SA.iOS 
+namespace SA.iOS
 {
-    public class ISN_UIKitResolver : ISN_LSApplicationQueriesSchemesResolver
+    class ISN_UIKitResolver : ISN_LSApplicationQueriesSchemesResolver
     {
-        protected override ISN_XcodeRequirements GenerateRequirements() 
+        protected override ISN_XcodeRequirements GenerateRequirements()
         {
             var requirements = new ISN_XcodeRequirements();
             var property = new ISD_BuildProperty("GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
             requirements.AddBuildProperty(property);
-            
-            if (ISN_Settings.Instance.ApplicationQueriesSchemes.Count > 0) 
+
+            if (ISN_Settings.Instance.ApplicationQueriesSchemes.Count > 0)
             {
                 var LSApplicationQueriesSchemes = new ISD_PlistKey();
                 LSApplicationQueriesSchemes.Name = "LSApplicationQueriesSchemes";
@@ -18,7 +18,7 @@ namespace SA.iOS
 
                 requirements.AddInfoPlistKey(LSApplicationQueriesSchemes);
 
-                foreach (var scheme in ISN_Settings.Instance.ApplicationQueriesSchemes) 
+                foreach (var scheme in ISN_Settings.Instance.ApplicationQueriesSchemes)
                 {
                     var schemeName = new ISD_PlistKey();
                     schemeName.StringValue = scheme.Identifier;
@@ -28,26 +28,26 @@ namespace SA.iOS
             }
 
             var settings = ISN_Settings.Instance;
-            ResolvePlistKey(settings.CameraUsageDescriptionEnabled, 
+            ResolvePlistKey(settings.CameraUsageDescriptionEnabled,
                 "NSCameraUsageDescription",
                 settings.CameraUsageDescription, requirements);
-            
-            ResolvePlistKey(settings.PhotoLibraryUsageDescriptionEnabled, 
+
+            ResolvePlistKey(settings.PhotoLibraryUsageDescriptionEnabled,
                 "NSPhotoLibraryUsageDescription",
                 settings.PhotoLibraryUsageDescription, requirements);
-            
-            ResolvePlistKey(settings.PhotoLibraryAddUsageDescriptionEnabled, 
+
+            ResolvePlistKey(settings.PhotoLibraryAddUsageDescriptionEnabled,
                 "NSPhotoLibraryAddUsageDescription",
                 settings.PhotoLibraryAddUsageDescription, requirements);
-            
-            ResolvePlistKey(settings.MicrophoneUsageDescriptionEnabled, 
+
+            ResolvePlistKey(settings.MicrophoneUsageDescriptionEnabled,
                 "NSMicrophoneUsageDescription",
                 settings.MicrophoneUsageDescription, requirements);
 
             return requirements;
         }
 
-        private void ResolvePlistKey(bool isEnabled, string name, string value, ISN_XcodeRequirements requirements)
+        void ResolvePlistKey(bool isEnabled, string name, string value, ISN_XcodeRequirements requirements)
         {
             if (isEnabled)
             {
@@ -62,10 +62,14 @@ namespace SA.iOS
                 ISD_API.RemoveInfoPlistKey(name);
             }
         }
-        
-        public override bool IsSettingsEnabled { get { return true; } set { } }
-        protected override string LibFolder { get { return string.Empty; } }
-        public override string DefineName { get { return string.Empty; } }
+
+        public override bool IsSettingsEnabled
+        {
+            get => true;
+            set { }
+        }
+
+        protected override string LibFolder => string.Empty;
+        public override string DefineName => string.Empty;
     }
 }
-

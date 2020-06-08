@@ -1,15 +1,15 @@
-using System;
 using SA.Foundation.Templates;
-
 
 namespace SA.iOS.CoreLocation
 {
-    public interface ISN_iCLLocationManagerDelegate
+    /// <summary>
+    /// The methods that you use to receive events from an associated location manager object.
+    /// </summary>
+    public interface ISN_ICLLocationManagerDelegate
     {
-
         /// <summary>
         /// Tells the delegate that the authorization status for the application changed.
-        /// 
+        ///
         /// This method is called whenever the application’s ability to use location services changes.
         /// Changes can occur because the user allowed or denied the use of location services for your application
         /// or for the system as a whole.
@@ -38,7 +38,7 @@ namespace SA.iOS.CoreLocation
 
         /// <summary>
         /// Tells the delegate that updates will no longer be deferred.
-        /// 
+        ///
         /// The location manager object calls this method to let you know that it has stopped deferring the delivery of location events.
         /// The manager may call this method for any number of reasons.
         /// For example, it calls it when you stop location updates altogether,
@@ -54,7 +54,7 @@ namespace SA.iOS.CoreLocation
         /// When the location manager detects that the device’s location is not changing,
         /// it can pause the delivery of updates in order to shut down the appropriate hardware and save power.
         /// When it does this, it calls this method to let your app know that this has happened.
-        /// 
+        ///
         /// After a pause occurs, it is your responsibility to restart location services again at an appropriate time.
         /// You might use your implementation of this method to start region monitoring at the user's current location
         /// or enable the visits location service to determine when the user starts moving again.

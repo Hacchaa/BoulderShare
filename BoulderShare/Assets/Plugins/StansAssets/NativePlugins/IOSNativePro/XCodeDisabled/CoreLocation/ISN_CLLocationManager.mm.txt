@@ -49,7 +49,7 @@ static UnityAction locationManagerDidResumeLocationUpdates;
         [isn_locations addObject:isn_location];
     }
     
-    [result setM_locations:isn_locations];
+    [result setM_Locations:isn_locations];
     ISN_SendCallbackToUnity(didUpdateLocations, [result toJSONString]);
     
 }

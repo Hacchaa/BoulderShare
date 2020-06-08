@@ -26,7 +26,7 @@ namespace SA.CrossPlatform.GameServices
         /// <param name="achievementId">The achievement ID to reveal.</param>
         /// <param name="callback">Result callback</param>
         void Reveal(string achievementId, Action<SA_Result> callback);
-        
+
         /// <summary>
         /// Asynchronously unlocks an achievement for the currently signed in player. 
         /// If the achievement is hidden this will reveal it to the player.

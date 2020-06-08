@@ -3,7 +3,10 @@ using SA.Foundation.Templates;
 
 namespace SA.CrossPlatform.InApp
 {
-    public interface UM_iTransaction 
+    /// <summary>
+    /// Transaction template.
+    /// </summary>
+    public interface UM_iTransaction
     {
         /// <summary>
         /// A string that uniquely identifies a successful payment transaction.
@@ -33,12 +36,12 @@ namespace SA.CrossPlatform.InApp
         /// </summary>
         /// <value>The state.</value>
         UM_TransactionState State { get; }
-        
+
         /// <summary>
         /// Native transaction template originally provided by the platform specific SDK.
         /// This template was used to fill in all the object properties,
         /// and may contain more platform specific information.
         /// </summary>
-        object NativeTemplate { get;}
+        object NativeTemplate { get; }
     }
 }

@@ -10,12 +10,14 @@ namespace SA.CrossPlatform.App
         /// <summary>
         /// Returns a shared instance of <see cref="UM_iGalleryService"/>
         /// </summary>
-        private static UM_iBuildInfo m_info;
-        public static UM_iBuildInfo Info 
+        static UM_iBuildInfo m_info;
+
+        public static UM_iBuildInfo Info
         {
-            get {
-                if (m_info == null) {
-                    switch (Application.platform) 
+            get
+            {
+                if (m_info == null)
+                    switch (Application.platform)
                     {
                         case RuntimePlatform.Android:
                             m_info = new UM_AndroidBuildInfo();
@@ -27,10 +29,9 @@ namespace SA.CrossPlatform.App
                             m_info = new UM_EditorBuildInfo();
                             break;
                     }
-                }
+
                 return m_info;
             }
         }
-
     }
 }

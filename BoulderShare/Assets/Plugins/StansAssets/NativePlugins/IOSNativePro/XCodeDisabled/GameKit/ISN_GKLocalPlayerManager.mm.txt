@@ -267,8 +267,8 @@ extern "C" {
             [ISN_Logger LogError:@"ISN_GKResolveSavedGamesRequest JSON parsing error: %@", jsonError.description];
         }
         
-        NSData *m_data = [requestData.m_data dataUsingEncoding:NSUTF8StringEncoding];
-        [[ISN_GKLocalPlayerManager sharedInstance] resolveConflictingSavedGames:callback withConflictedSavedGamesIds:requestData.m_conflictedGames withData:m_data];
+        NSData *m_data = [requestData.m_Data dataUsingEncoding:NSUTF8StringEncoding];
+        [[ISN_GKLocalPlayerManager sharedInstance] resolveConflictingSavedGames:callback withConflictedSavedGamesIds:requestData.m_ConflictedGames withData:m_data];
 #endif
     }
     
@@ -278,20 +278,20 @@ extern "C" {
         GKLocalPlayer *localPlayer =  [GKLocalPlayer localPlayer];
         [localPlayer generateIdentityVerificationSignatureWithCompletionHandler:^(NSURL *publicKeyUrl, NSData *signature, NSData *salt, uint64_t timestamp, NSError *error) {
             
-            ISN_IdentityVerificationSignatureResult* result;
+            ISN_GKIdentityVerificationSignatureResult* result;
             if(error != NULL) {
-                result = [[ISN_IdentityVerificationSignatureResult alloc] initWithNSError:error];
+                result = [[ISN_GKIdentityVerificationSignatureResult alloc] initWithNSError:error];
             } else {
-                result = [[ISN_IdentityVerificationSignatureResult alloc] init];
+                result = [[ISN_GKIdentityVerificationSignatureResult alloc] init];
                 
 
                 NSLog(@"generateIdentityVerificationSignatureWithCompletionHandler");
                 NSLog(@"timestamp: %llu", timestamp);
             
-                [result setM_salt:[salt base64EncodedStringWithOptions:NSDataBase64DecodingIgnoreUnknownCharacters]];
-                [result setM_signature:[signature base64EncodedStringWithOptions:NSDataBase64DecodingIgnoreUnknownCharacters]];
-                [result setM_publicKeyUrl:publicKeyUrl.absoluteString];
-                [result setM_timestamp:timestamp];
+                [result setM_Salt:[salt base64EncodedStringWithOptions:NSDataBase64DecodingIgnoreUnknownCharacters]];
+                [result setM_Signature:[signature base64EncodedStringWithOptions:NSDataBase64DecodingIgnoreUnknownCharacters]];
+                [result setM_PublicKeyUrl:publicKeyUrl.absoluteString];
+                [result setM_Timestamp:timestamp];
             }
             
             ISN_SendCallbackToUnity(callback, [result toJSONString]);

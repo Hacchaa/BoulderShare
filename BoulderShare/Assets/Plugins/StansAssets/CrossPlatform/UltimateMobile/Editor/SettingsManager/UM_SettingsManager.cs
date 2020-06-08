@@ -7,14 +7,14 @@ using SA.Foundation.Utility;
 
 namespace SA.CrossPlatform.Editor
 {
-    internal static class UM_SettingsManager
+    static class UM_SettingsManager
     {
         public static void Export(string filepath)
         {
             if (filepath.Length != 0)
             {
-                UM_ExportedSettings exportedSettings = new UM_ExportedSettings();
-                string dataJson = JsonUtility.ToJson(exportedSettings);
+                var exportedSettings = new UM_ExportedSettings();
+                var dataJson = JsonUtility.ToJson(exportedSettings);
                 if (dataJson != null)
                     File.WriteAllBytes(filepath, dataJson.ToBytes());
             }
@@ -24,10 +24,10 @@ namespace SA.CrossPlatform.Editor
         {
             if (filepath.Length != 0)
             {
-                string fileContent = File.ReadAllText(filepath);
+                var fileContent = File.ReadAllText(filepath);
                 if (fileContent != null)
                 {
-                    UM_ExportedSettings importedSettings = JsonUtility.FromJson<UM_ExportedSettings>(fileContent);
+                    var importedSettings = JsonUtility.FromJson<UM_ExportedSettings>(fileContent);
                     JsonUtility.FromJsonOverwrite(importedSettings.Settings, UM_Settings.Instance);
                     JsonUtility.FromJsonOverwrite(importedSettings.AndroidSettings.AndroidSettings, AN_Settings.Instance);
                     SA_FilesUtil.Write(AN_Settings.ANDROID_GAMES_IDS_FILE_PATH, importedSettings.AndroidSettings.XmlSettings.GamesIds);

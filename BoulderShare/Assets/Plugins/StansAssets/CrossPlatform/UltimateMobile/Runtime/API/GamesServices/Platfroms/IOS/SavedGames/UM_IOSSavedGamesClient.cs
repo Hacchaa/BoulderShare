@@ -2,65 +2,66 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SA.iOS.GameKit;
-
 using SA.Foundation.Time;
 using SA.Foundation.Templates;
-
 
 namespace SA.CrossPlatform.GameServices
 {
     /// <summary>
     /// A client to interact with saved games functionality.
     /// </summary>
-    internal class UM_IOSSavedGamesClient : UM_AbstractSavedGamesClient, UM_iSavedGamesClient
+    class UM_IOSSavedGamesClient : UM_AbstractSavedGamesClient, UM_iSavedGamesClient
     {
-
-
         //Automatic conflict resolution
-        public UM_IOSSavedGamesClient() {
+        public UM_IOSSavedGamesClient()
+        {
             ISN_GKLocalPlayerListener.HasConflictingSavedGames.AddListener(HasConflictingSavedGames);
         }
 
-
-        private void HasConflictingSavedGames(ISN_GKSavedGameFetchResult result) {
-
+        void HasConflictingSavedGames(ISN_GKSavedGameFetchResult result)
+        {
             ISN_GKSavedGame resultGame = null;
             var conflictedSavedGamesIds = new List<string>();
-            foreach (var game in result.SavedGames) {
+            foreach (var game in result.SavedGames)
+            {
                 conflictedSavedGamesIds.Add(game.Id);
 
-                if(resultGame == null) {
+                if (resultGame == null)
+                {
                     resultGame = game;
-                } else {
+                }
+                else
+                {
                     var gameUnixTime = SA_Unix_Time.ToUnixTime(game.ModificationDate);
                     var currentResultTime = SA_Unix_Time.ToUnixTime(resultGame.ModificationDate);
-                    if(gameUnixTime > currentResultTime) {
-                        resultGame = game; 
-                    }
+                    if (gameUnixTime > currentResultTime) resultGame = game;
                 }
             }
 
-            ISN_GKLocalPlayer.LoadGameData(resultGame, (dataLoadResult) =>  {
-                if(dataLoadResult.IsSucceeded) {
-                    ISN_GKLocalPlayer.ResolveConflictingSavedGames(conflictedSavedGamesIds, dataLoadResult.BytesArrayData, (resResult) => {
-
-                    });
-                }
+            ISN_GKLocalPlayer.LoadGameData(resultGame, (dataLoadResult) =>
+            {
+                if (dataLoadResult.IsSucceeded)
+                    ISN_GKLocalPlayer.ResolveConflictingSavedGames(conflictedSavedGamesIds, dataLoadResult.BytesArrayData, (resResult) => { });
             });
-
         }
 
-        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback) {
-            ISN_GKLocalPlayer.FetchSavedGames((result) => {
+        public void FetchSavedGames(Action<UM_SavedGamesMetadataResult> callback)
+        {
+            ISN_GKLocalPlayer.FetchSavedGames((result) =>
+            {
                 UM_SavedGamesMetadataResult loadResult;
 
-                if (result.IsSucceeded) {
+                if (result.IsSucceeded)
+                {
                     loadResult = new UM_SavedGamesMetadataResult();
-                    foreach (var game in result.SavedGames) {
+                    foreach (var game in result.SavedGames)
+                    {
                         var isn_meta = new UM_IOSSavedGameMetadata(game);
                         loadResult.AddMetadata(isn_meta);
                     }
-                } else {
+                }
+                else
+                {
                     loadResult = new UM_SavedGamesMetadataResult(result.Error);
                 }
 
@@ -68,9 +69,10 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-
-        public void SaveGame(string name, byte[] data, Action<SA_Result> callback) {
-            ISN_GKLocalPlayer.SavedGame(name, data, (result) => {
+        public void SaveGame(string name, byte[] data, Action<SA_Result> callback)
+        {
+            ISN_GKLocalPlayer.SavedGame(name, data, (result) =>
+            {
                 ReportGameSave(name, result);
                 callback.Invoke(result);
             });
@@ -84,15 +86,17 @@ namespace SA.CrossPlatform.GameServices
 
             SaveGame(name, extendedData, callback);
         }
-        
-        private byte[] Combine(params byte[][] arrays)
+
+        byte[] Combine(params byte[][] arrays)
         {
             var rv = new byte[arrays.Sum(a => a.Length)];
             var offset = 0;
-            foreach (var array in arrays) {
+            foreach (var array in arrays)
+            {
                 Buffer.BlockCopy(array, 0, rv, offset, array.Length);
                 offset += array.Length;
             }
+
             return rv;
         }
 
@@ -105,16 +109,19 @@ namespace SA.CrossPlatform.GameServices
         {
             LoadFromGameKitData(game, true, callback);
         }
-        
-        public void LoadFromGameKitData(UM_iSavedGameMetadata game, bool parseMeta, Action<UM_SavedGameDataLoadResult> callback) {
+
+        public void LoadFromGameKitData(UM_iSavedGameMetadata game, bool parseMeta, Action<UM_SavedGameDataLoadResult> callback)
+        {
             var isn_meta = (UM_IOSSavedGameMetadata)game;
-            ISN_GKLocalPlayer.LoadGameData(isn_meta.NativeMeta, (result) => {
+            ISN_GKLocalPlayer.LoadGameData(isn_meta.NativeMeta, (result) =>
+            {
                 UM_SavedGameDataLoadResult loadResult;
-                if(result.IsSucceeded) {
+                if (result.IsSucceeded)
+                {
                     if (parseMeta)
                     {
                         var meta = new UM_SaveInfo();
-                        meta.SetProgressValue(BitConverter.ToInt64(result.BytesArrayData, 0)); 
+                        meta.SetProgressValue(BitConverter.ToInt64(result.BytesArrayData, 0));
                         meta.SetPlayedTimeMillis(BitConverter.ToInt64(result.BytesArrayData, 8));
 
                         var userData = new byte[result.BytesArrayData.Length - 16];
@@ -125,8 +132,9 @@ namespace SA.CrossPlatform.GameServices
                     {
                         loadResult = new UM_SavedGameDataLoadResult(result.BytesArrayData, new UM_SaveInfo());
                     }
-                  
-                } else  {
+                }
+                else
+                {
                     loadResult = new UM_SavedGameDataLoadResult(result.Error);
                 }
 
@@ -134,12 +142,10 @@ namespace SA.CrossPlatform.GameServices
             });
         }
 
-
-       
-        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback) {
-            var isn_meta = (UM_IOSSavedGameMetadata) game;
+        public void Delete(UM_iSavedGameMetadata game, Action<SA_Result> callback)
+        {
+            var isn_meta = (UM_IOSSavedGameMetadata)game;
             ISN_GKLocalPlayer.DeleteSavedGame(isn_meta.NativeMeta, callback);
         }
-
     }
 }

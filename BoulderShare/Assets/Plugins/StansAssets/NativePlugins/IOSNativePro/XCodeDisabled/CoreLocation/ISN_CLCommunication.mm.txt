@@ -25,23 +25,23 @@
     
     self = [super init];
     if(self) {
-        self.m_identifier = region.identifier;
-        self.m_notifyOnEntry = region.notifyOnEntry;
-        self.m_notifyOnExit = region.notifyOnExit;
-        self.m_radius = region.radius;
-        self.m_center = [[ISN_CLLocationCoordinate2D alloc] initWithCLLocationCoordinate2D:region.center];
+        self.m_Identifier = region.identifier;
+        self.m_NotifyOnEntry = region.notifyOnEntry;
+        self.m_NotifyOnExit = region.notifyOnExit;
+        self.m_Radius = region.radius;
+        self.m_Center = [[ISN_CLLocationCoordinate2D alloc] initWithCLLocationCoordinate2D:region.center];
     }
     return self;
 }
 -(CLCircularRegion *) getCLCircularRegion {
     
     CLCircularRegion* region = [[CLCircularRegion alloc]
-                                initWithCenter:[self.m_center getCLLocationCoordinate2D]
-                                radius:self.m_radius identifier:
-                                self.m_identifier];
+                                initWithCenter:[self.m_Center getCLLocationCoordinate2D]
+                                radius:self.m_Radius identifier:
+                                self.m_Identifier];
    
-    region.notifyOnExit = self.m_notifyOnExit;
-    region.notifyOnEntry = self.m_notifyOnEntry;
+    region.notifyOnExit = self.m_NotifyOnExit;
+    region.notifyOnEntry = self.m_NotifyOnEntry;
     
     return  region;
 }

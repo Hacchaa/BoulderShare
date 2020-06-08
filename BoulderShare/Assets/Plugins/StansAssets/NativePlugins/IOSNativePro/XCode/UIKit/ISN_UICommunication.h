@@ -2,7 +2,7 @@
 
 
 @interface ISN_UIAvailableMediaTypes : JSONModel
-@property (nonatomic) NSArray <NSString *> *m_types;
+@property (nonatomic) NSArray <NSString *> *m_Types;
 -(id) initWithArray:(NSArray <NSString *> *) array;
 @end
 
@@ -22,10 +22,10 @@
 #endif
 
 @interface ISN_UIPickerControllerResult : SA_Result
-@property (nonatomic) NSString*  m_mediaURL;
-@property (nonatomic) NSString*  m_imageURL;
-@property (nonatomic) NSString*  m_mediaType;
-@property (nonatomic) NSString*  m_encodedImage;
+@property (nonatomic) NSString*  m_MediaUrl;
+@property (nonatomic) NSString*  m_ImageUrl;
+@property (nonatomic) NSString*  m_MediaType;
+@property (nonatomic) NSString*  m_EncodedImage;
 
 @end
 
@@ -54,37 +54,37 @@
 
 @protocol ISN_UIAlertAction;
 @interface ISN_UIAlertAction : JSONModel
-@property (nonatomic) int m_id;
-@property (nonatomic) NSString* m_title;
-@property (nonatomic) NSString* m_image;
-@property (nonatomic) UIAlertActionStyle m_style;
+@property (nonatomic) int m_Id;
+@property (nonatomic) NSString* m_Title;
+@property (nonatomic) NSString* m_Image;
+@property (nonatomic) UIAlertActionStyle m_Style;
 
 
 
-@property (nonatomic) bool m_enabled;
-@property (nonatomic) bool m_preffered;
+@property (nonatomic) bool m_Enabled;
+@property (nonatomic) bool m_Preferred;
 @end
 
 
 @protocol ISN_UIAlertController;
 @interface ISN_UIAlertController : JSONModel
-@property (nonatomic) int m_id;
-@property (nonatomic) NSString* m_title;
-@property (nonatomic) NSString* m_message;
-@property (nonatomic) UIAlertControllerStyle m_preferredStyle;
-@property (nonatomic) NSArray <ISN_UIAlertAction>* m_actions;
+@property (nonatomic) int m_Id;
+@property (nonatomic) NSString* m_Title;
+@property (nonatomic) NSString* m_Message;
+@property (nonatomic) UIAlertControllerStyle m_PreferredStyle;
+@property (nonatomic) NSArray <ISN_UIAlertAction>* m_Actions;
 @end
 
 
 
 @interface ISN_UIAlertActionId : JSONModel
-@property (nonatomic) int m_alertId;
-@property (nonatomic) int m_actionId;
+@property (nonatomic) int m_AlertId;
+@property (nonatomic) int m_ActionId;
 @end
 
 
 @interface ISN_UIRegisterRemoteNotificationsResult : SA_Result
-@property (nonatomic) NSString* m_deviceTokenUTF8;
+@property (nonatomic) NSString* m_DeviceTokenUtf8;
 @end
 
 @interface ISN_UIApplicationEvents : JSONModel

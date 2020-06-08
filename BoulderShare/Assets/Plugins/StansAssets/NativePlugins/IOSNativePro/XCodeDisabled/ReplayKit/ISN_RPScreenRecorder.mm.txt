@@ -113,7 +113,7 @@ static ISN_RPScreenRecorder * s_sharedInstance;
     
     ISN_RPStopResult* result =  [[ISN_RPStopResult alloc] initWithNSError:error];
     if(previewViewController != NULL) {
-        [result setM_hasPreviewController:true];
+        [result setM_HasPreviewController:true];
         [self setPreviewViewController:previewViewController];
     }
     

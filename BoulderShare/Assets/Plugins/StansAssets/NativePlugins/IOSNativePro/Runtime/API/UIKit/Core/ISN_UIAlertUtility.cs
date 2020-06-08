@@ -10,11 +10,12 @@ namespace SA.iOS.UIKit
         /// </summary>
         /// <param name="title">Alert title.</param>
         /// <param name="message">Alert message.</param>
-        public static void ShowMessage(string title, string message) 
+        public static void ShowMessage(string title, string message)
         {
             var alert = new ISN_UIAlertController(title, message, ISN_UIAlertControllerStyle.Alert);
-            var defaultAction = new ISN_UIAlertAction("Ok", ISN_UIAlertActionStyle.Default, () => {
-                //Do something
+            var defaultAction = new ISN_UIAlertAction("Ok", ISN_UIAlertActionStyle.Default, () =>
+            {
+                //Do nothing
             });
 
             alert.AddAction(defaultAction);
@@ -22,4 +23,3 @@ namespace SA.iOS.UIKit
         }
     }
 }
-

@@ -6,12 +6,12 @@
 @end
 
 
-@implementation ISN_PRPreivewResult
+@implementation ISN_PRPreviewResult
 -(id) init { return self = [super init]; }
 -(id) initWithActivityTypes:(NSArray <NSString *>*) activityTypes; {
     self = [super init];
     if(self) {
-        self.m_activityTypes = activityTypes;
+        self.m_ActivityTypes = activityTypes;
     }
     return  self;
 }

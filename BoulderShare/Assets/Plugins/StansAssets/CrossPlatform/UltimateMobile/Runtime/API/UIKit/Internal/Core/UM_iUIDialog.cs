@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.CrossPlatform.UI
 {
-    public interface UM_iUIDialog 
+    /// <summary>
+    /// Native dialog interface.
+    /// </summary>
+    public interface UM_iUIDialog
     {
         void Show();
         void Hide();

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
-//  
+//
 // @module IOS Native Plugin
-// @author Koretsky Konstantin (Stan's Assets) 
+// @author Koretsky Konstantin (Stan's Assets)
 // @support support@stansassets.com
 // @website https://stansassets.com
 //
@@ -12,21 +12,20 @@ using System.Collections.Generic;
 using SA.Foundation.Events;
 using SA.Foundation.Templates;
 
-namespace SA.iOS.GameKit.Internal
+namespace SA.iOS.GameKit
 {
-    internal interface ISN_iGKAPI
+    interface ISN_iGKAPI
     {
         void AuthenticateLocalPlayer(Action<SA_Result> callback);
         void GenerateIdentityVerificationSignatureWithCompletionHandler(Action<ISN_GKIdentityVerificationSignatureResult> callback);
         ISN_GKLocalPlayer LocalPlayer { get; }
         void ShowGameKitView(ISN_GKGameCenterViewController view, Action<SA_Result> callback);
-        
+
         //--------------------------------------
         // GKPlayer
         //--------------------------------------
 
         void GKPlayerLoadPhotoForSize(string playerId, int size, Action<ISN_GKImageLoadResult> callback);
-
 
         //--------------------------------------
         // Saved Games
@@ -44,11 +43,11 @@ namespace SA.iOS.GameKit.Internal
         //--------------------------------------
         // Achievements
         //--------------------------------------
-        
+
         void ResetAchievements(Action<SA_Result> callback);
         void LoadAchievements(Action<ISN_GKAchievementsResult> callback);
         void ReportAchievements(List<ISN_GKAchievement> achievements, Action<SA_Result> callback);
-        
+
         //--------------------------------------
         // Leaderboards
         //--------------------------------------

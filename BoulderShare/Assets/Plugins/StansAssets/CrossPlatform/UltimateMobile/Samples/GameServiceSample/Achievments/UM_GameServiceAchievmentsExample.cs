@@ -1,58 +1,72 @@
 using UnityEngine;
 using UnityEngine.UI;
 using SA.CrossPlatform.GameServices;
-using SA.CrossPlatform.UI;
 
 namespace SA.CrossPlatform.Samples
 {
     public class UM_GameServiceAchievmentsExample : MonoBehaviour
     {
-        [SerializeField] private Button m_NativeUIButton = null;
-        [SerializeField] private Button m_LoadButton = null;
+        [SerializeField]
+        Button m_NativeUIButton = null;
+        [SerializeField]
+        Button m_LoadButton = null;
+        [SerializeField]
+        UM_AchievmentsMetaView m_AchievmentMetaView = null;
 
-        [SerializeField] private UM_AchievmentsMetaView m_AchievmentMetaView = null;
-        private void Start() 
+        void Start()
         {
             m_AchievmentMetaView.gameObject.SetActive(false);
-            
             m_LoadButton.onClick.AddListener(LoadMeta);
-            m_NativeUIButton.onClick.AddListener(() => {
+            m_NativeUIButton.onClick.AddListener(() =>
+            {
                 var client = UM_GameService.AchievementsClient;
-                client.ShowUI(UM_DialogsUtility.DisplayResultMessage);
+                client.ShowUI(result =>
+                {
+                    if (result.IsSucceeded)
+                    {
+                        Debug.Log("Operation completed successfully!");
+                    }
+                    else
+                    {
+                        Debug.LogError($"Failed to show achievements UI {result.Error.FullMessage}");
+                    }
+                });
             });
         }
-        private void LoadMeta() 
+
+        void LoadMeta()
         {
             var client = UM_GameService.AchievementsClient;
-            client.Load(result => 
+            client.Load(result =>
             {
-                if(result.IsSucceeded) 
+                if (result.IsSucceeded)
                 {
-                    foreach(var achievement in result.Achievements)
+                    foreach (var achievement in result.Achievements)
                     {
                         PrintAchievementInfo(achievement);
                         var view = Instantiate(m_AchievmentMetaView.gameObject, m_AchievmentMetaView.transform.parent);
                         view.SetActive(true);
                         view.transform.localScale = Vector3.one;
-
                         var meta = view.GetComponent<UM_AchievmentsMetaView>();
                         meta.SetTitle(achievement.Name + " / " + achievement.State);
                     }
-                } else {
-                    UM_DialogsUtility.DisplayResultMessage(result);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load achievements meta {result.Error.FullMessage}");
                 }
             });
         }
 
-        private void PrintAchievementInfo(UM_iAchievement achievement)
+        void PrintAchievementInfo(UM_iAchievement achievement)
         {
-            UM_Logger.Log("------------------------------------------------");
-            UM_Logger.Log("achievement.Identifier: " + achievement.Identifier);
-            UM_Logger.Log("achievement.Name: " + achievement.Name);
-            UM_Logger.Log("achievement.State: " + achievement.State);
-            UM_Logger.Log("achievement.Type: " + achievement.Type);
-            UM_Logger.Log("achievement.TotalSteps: " + achievement.TotalSteps);
-            UM_Logger.Log("achievement.CurrentSteps: " + achievement.CurrentSteps);
+            Debug.Log("------------------------------------------------");
+            Debug.Log($"achievement.Identifier: {achievement.Identifier}");
+            Debug.Log($"achievement.Name: {achievement.Name}");
+            Debug.Log($"achievement.State: {achievement.State}");
+            Debug.Log($"achievement.Type: {achievement.Type}");
+            Debug.Log($"achievement.TotalSteps: {achievement.TotalSteps}");
+            Debug.Log($"achievement.CurrentSteps: {achievement.CurrentSteps}");
         }
     }
 }

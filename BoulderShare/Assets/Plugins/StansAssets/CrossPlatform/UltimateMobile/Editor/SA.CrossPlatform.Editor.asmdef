@@ -14,12 +14,17 @@
         "SA.Android.Manifest",
         "SA.Android.Manifest.Editor",
         "SA.Facebook",
-        "SA.Facebook.Editor",
-        "SA.Foundation.Tests",
-        "SA.Foundation.Tests.Editor"
+        "SA.Facebook.Editor"
     ],
+    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
-    "excludePlatforms": []
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

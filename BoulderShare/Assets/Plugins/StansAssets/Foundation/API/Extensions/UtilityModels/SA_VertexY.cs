@@ -1,7 +1,6 @@
-
-public enum SA_VertexY  {
-	Top,
-	Bottom,
-	Center
+public enum SA_VertexY
+{
+    Top,
+    Bottom,
+    Center
 }
-

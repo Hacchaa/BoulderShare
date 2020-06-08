@@ -1,12 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.Facebook
 {
-
-
     /// <summary>
     /// Contain list of facebook permissions
     /// https://developers.facebook.com/docs/facebook-login/permissions/v2.0

@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 namespace SA.iOS.StoreKit
 {
     /// <summary>
@@ -10,7 +5,6 @@ namespace SA.iOS.StoreKit
     /// </summary>
     public enum ISN_SKReceiptProperty
     {
-
         /// <summary>
         /// A key whose int value is interpreted as a Boolean value, indicating whether the receipt is expired.
         /// </summary>
@@ -24,7 +18,6 @@ namespace SA.iOS.StoreKit
         /// <summary>
         /// A key whose int value is interpreted as a Boolean value, indicating whether the receipt is a Volume Purchase Plan receipt.
         /// </summary>
-        IsVolumePurchase = 2
-
+        IsVolumePurchase = 2,
     }
 }

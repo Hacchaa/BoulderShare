@@ -11,7 +11,7 @@
 
 @protocol ISN_NSNotification;
 @interface ISN_NSNotification : JSONModel
-@property NSString *m_name;
+@property NSString *m_Name;
 
 -(id) initWithNSNotification:(NSNotification *) notification;
 @end
@@ -23,7 +23,7 @@
 -(id) initWithNSNotification:(NSNotification *) notification  {
     self = [super init];
     if(self) {
-        self.m_name = notification.name;
+        self.m_Name = notification.name;
     }
     return self;
 }
@@ -31,25 +31,25 @@
 
 
 extern "C" {
-    
-    
+
+
     void _ISN_NSNotificationCenter_AddObserverForName(char* name, UnityAction callback) {
-        
-        
+
+
         [ISN_Logger LogNativeMethodInvoke:"_ISN_NSNotificationCenter_AddObserverForName" data:name];
-        
+
         NSString* notificationName =  ISN_ConvertToString(name);
         [[NSNotificationCenter defaultCenter] addObserverForName:notificationName
                                                           object:nil
                                                            queue:nil
                                                       usingBlock:^(NSNotification * _Nonnull note) {
-                                                          
+
                                                           ISN_NSNotification *isn_note = [[ISN_NSNotification alloc] initWithNSNotification:note];
                                                           ISN_SendCallbackToUnity(callback, [isn_note toJSONString]);
-                                                          
+
                                                       }];
-    
+
     }
-    
- 
+
+
 }

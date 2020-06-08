@@ -22,59 +22,47 @@ namespace SA.iOS.Foundation
     [Serializable]
     public class ISN_NSPersonNameComponents
     {
-        [SerializeField] string m_NamePrefix = string.Empty;
-        [SerializeField] string m_GivenName = string.Empty;
-        [SerializeField] string m_MiddleName = string.Empty;
-        [SerializeField] string m_FamilyName = string.Empty;
-        [SerializeField] string m_NameSuffix = string.Empty;
-        [SerializeField] string m_Nickname = string.Empty;
+        [SerializeField]
+        string m_NamePrefix = string.Empty;
+        [SerializeField]
+        string m_GivenName = string.Empty;
+        [SerializeField]
+        string m_MiddleName = string.Empty;
+        [SerializeField]
+        string m_FamilyName = string.Empty;
+        [SerializeField]
+        string m_NameSuffix = string.Empty;
+        [SerializeField]
+        string m_Nickname = string.Empty;
 
         /// <summary>
         /// The portion of a name’s full form of address that precedes the name itself (for example, “Dr.,” “Mr.,” “Ms.”).
         /// </summary>
-        public string NamePrefix
-        {
-            get { return m_NamePrefix; }
-        }
+        public string NamePrefix => m_NamePrefix;
 
         /// <summary>
         /// Name bestowed upon an individual to differentiate them from other members of a group that share a family name (for example, “Johnathan”).
         /// </summary>
-        public string GivenName
-        {
-            get { return m_GivenName; }
-        }
+        public string GivenName => m_GivenName;
 
         /// <summary>
         /// Secondary name bestowed upon an individual to differentiate them from others that have the same given name (for example, “Maple”).
         /// </summary>
-        public string MiddleName
-        {
-            get { return m_MiddleName; }
-        }
+        public string MiddleName => m_MiddleName;
 
         /// <summary>
         /// Name bestowed upon an individual to denote membership in a group or family. (for example, “Appleseed”).
         /// </summary>
-        public string FamilyName
-        {
-            get { return m_FamilyName; }
-        }
+        public string FamilyName => m_FamilyName;
 
         /// <summary>
         /// The portion of a name’s full form of address that follows the name itself (for example, “Esq.,” “Jr.,” “Ph.D.”).
         /// </summary>
-        public string NameSuffix
-        {
-            get { return m_NameSuffix; }
-        }
+        public string NameSuffix => m_NameSuffix;
 
         /// <summary>
         /// Name substituted for the purposes of familiarity (for example, "Johnny").
         /// </summary>
-        public string Nickname
-        {
-            get { return m_Nickname; }
-        }
+        public string Nickname => m_Nickname;
     }
 }

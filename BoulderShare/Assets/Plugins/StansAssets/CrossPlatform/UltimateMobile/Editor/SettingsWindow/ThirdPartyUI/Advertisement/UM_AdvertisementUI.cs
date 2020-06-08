@@ -2,228 +2,189 @@ using UnityEngine;
 using UnityEditor;
 using SA.Foundation.Editor;
 using SA.CrossPlatform.Advertisement;
+using UnityEditor.PackageManager;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
     public class UM_AdvertisementUI : UM_PluginSettingsUI
     {
-        private static SA_iGUILayoutElement s_AdMobSettingsLayout;
+        static SA_iGUILayoutElement s_AdMobSettingsLayout;
+        static SA_iGUILayoutElement s_UnityAdsSettingsLayout;
 
         public static void RegisterAdMobUILayout(SA_iGUILayoutElement layoutElement)
         {
             s_AdMobSettingsLayout = layoutElement;
         }
-        
-        private class UM_AdsResolver : SA_iAPIResolver
-        {
-            public bool IsSettingsEnabled 
-            {
-                get { return UM_DefinesResolver.IsAdMobInstalled || UM_DefinesResolver.IsUnityAdsInstalled; }
-                set { }
-            }
 
-            public void ResetRequirementsCache()
-            {
-                
-            }
+        public static void RegisterUnityAdsUILayout(SA_iGUILayoutElement layoutElement)
+        {
+            s_UnityAdsSettingsLayout = layoutElement;
         }
 
-        private class UM_GoogleAdsResolver : SA_iAPIResolver
+        class UM_AdsResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled 
+            public bool IsSettingsEnabled
             {
-                get { return UM_DefinesResolver.IsAdMobInstalled; }
+                get => UM_DefinesResolver.IsAdMobInstalled || UM_DefinesResolver.IsUnityAdsInstalled;
                 set { }
             }
 
-            public void ResetRequirementsCache()
+            public void ResetRequirementsCache() { }
+        }
+
+        class UM_GoogleAdsResolver : SA_iAPIResolver
+        {
+            public bool IsSettingsEnabled
             {
-                
+                get => UM_DefinesResolver.IsAdMobInstalled;
+                set { }
             }
+
+            public void ResetRequirementsCache() { }
         }
 
         public class UM_UnityAdsResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled 
+            public bool IsSettingsEnabled
             {
-                get { return UM_DefinesResolver.IsUnityAdsInstalled; }
+                get => UM_DefinesResolver.IsUnityAdsInstalled;
                 set { }
             }
 
-            public void ResetRequirementsCache()
-            {
-                
-            }
+            public void ResetRequirementsCache() { }
         }
 
         public class UM_ChartBoostResolver : SA_iAPIResolver
         {
-            public bool IsSettingsEnabled 
+            public bool IsSettingsEnabled
             {
-                get { return false; }
+                get => false;
                 set { }
             }
 
-            public void ResetRequirementsCache()
-            {
-                
-            }
+            public void ResetRequirementsCache() { }
         }
-        
-        private const string AD_MOB_SDK_DOWNLOAD_URL = "https://github.com/googleads/googleads-mobile-unity/releases/download/v4.0.0/GoogleMobileAds-v4.0.0.unitypackage";
-        private const string UNITY_ADS_SDK_DOWNLOAD_URL = "https://assetstore.unity.com/packages/add-ons/services/unity-monetization-3-0-66123";
 
-        private UM_AdsResolver m_ServiceResolver;
+        const string k_AdMobSdkDownloadUrl = "https://github.com/googleads/googleads-mobile-unity/releases/download/v5.0.1/GoogleMobileAds-v5.0.1.unitypackage";
 
-        private UM_AdvertisementPlatfromUI m_AdMobBlock;
-        private UM_AdvertisementPlatfromUI m_UnityAdBlock;
-        private UM_AdvertisementPlatfromUI m_ChartboostBlock;
-        
-        public override void OnAwake() 
+        UM_AdsResolver m_ServiceResolver;
+
+        UM_AdvertisementPlatformUI m_AdMobBlock;
+        UM_AdvertisementPlatformUI m_UnityAdBlock;
+        UM_AdvertisementPlatformUI m_ChartboostBlock;
+
+        public override void OnAwake()
         {
             base.OnAwake();
+            AddFeatureUrl("Getting Started", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Getting-Started-(Advertisement)");
+            AddFeatureUrl("Initialization", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Enabling-the-Ads-Service");
+            AddFeatureUrl("Banner Ads", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Banner-Ads");
+            AddFeatureUrl("Non-rewarded Ads", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Non-rewarded-Ads");
+            AddFeatureUrl("Rewarded Ads", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Rewarded-Ads");
 
-            AddFeatureUrl("Getting Started", "https://unionassets.com/ultimate-mobile-pro/getting-started-778");
-            AddFeatureUrl("Initialization", "https://unionassets.com/ultimate-mobile-pro/enabling-the-ads-service-779");
-            AddFeatureUrl("Banner Ads", "https://unionassets.com/ultimate-mobile-pro/banner-ads-780");
-            AddFeatureUrl("Non-rewarded Ads", "https://unionassets.com/ultimate-mobile-pro/non-rewarded-ads-782");
-            AddFeatureUrl("Rewarded Ads", "https://unionassets.com/ultimate-mobile-pro/rewarded-ads-781");
-
-            AddFeatureUrl("Unity Ads", "https://unionassets.com/ultimate-mobile-pro/unity-ads-783");
-            AddFeatureUrl("Google AdMob", "https://unionassets.com/ultimate-mobile-pro/google-admob-784");
-            AddFeatureUrl("Google EU Consent", "https://unionassets.com/ultimate-mobile-pro/google-admob-784#consent-from-european-users");
-            AddFeatureUrl("Chartboost", "https://unionassets.com/ultimate-mobile-pro/chartboost-785");
+            AddFeatureUrl("Unity Ads", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Unity-Ads");
+            AddFeatureUrl("Google AdMob", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Google-AdMob");
+            AddFeatureUrl("Google EU Consent", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Google-AdMob#consent-from-european-users");
+            AddFeatureUrl("Chartboost", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Chartboost");
         }
 
-        public override void OnLayoutEnable() 
+        public override void OnLayoutEnable()
         {
             base.OnLayoutEnable();
-            m_UnityAdBlock = new UM_AdvertisementPlatfromUI("Unity Ads", "unity_icon.png", new UM_UnityAdsResolver(), () => 
-            {
-                DrawUnityAdsUI();
-            });
+            m_UnityAdBlock = new UM_AdvertisementPlatformUI("Unity Ads", "unity_icon.png", new UM_UnityAdsResolver(), DrawUnityAdsUI);
 
-            m_AdMobBlock = new UM_AdvertisementPlatfromUI("Google AdMob", "google_icon.png", new UM_GoogleAdsResolver(), () => 
-            {
-                DrawAdmobUI();
-            });
+            m_AdMobBlock = new UM_AdvertisementPlatformUI("Google AdMob", "google_icon.png", new UM_GoogleAdsResolver(), DrawAdMobUI);
 
-            m_ChartboostBlock = new UM_AdvertisementPlatfromUI("Chartboost", "chartboost_icon.png", new UM_ChartBoostResolver(), () => 
+            m_ChartboostBlock = new UM_AdvertisementPlatformUI("Chartboost", "chartboost_icon.png", new UM_ChartBoostResolver(), () =>
             {
                 EditorGUILayout.HelpBox("COMING SOON!", MessageType.Info);
             });
         }
 
+        public override string Title => "Advertisement";
+        public override string Description => "Integrate banner, rewarded and non-rewarded adsfor you game, using the supported ads platfroms.";
+        protected override Texture2D Icon => UM_Skin.GetServiceIcon("um_advertisement_icon.png");
+        public override SA_iAPIResolver Resolver => m_ServiceResolver ?? (m_ServiceResolver = new UM_AdsResolver());
 
-        public override string Title 
-        {
-            get { return "Advertisement"; }
-        }
-
-        public override string Description 
-        {
-            get
-            {
-                return
-                    "Integrate banner, rewarded and non-rewarded adsfor you game, using the supported ads platfroms.";
-            }
-        }
-
-        protected override Texture2D Icon 
-        {
-            get { return UM_Skin.GetServiceIcon("um_advertisement_icon.png"); }
-        }
-
-        public override SA_iAPIResolver Resolver 
-        {
-            get 
-            {
-                if(m_ServiceResolver == null) 
-                {
-                    m_ServiceResolver = new UM_AdsResolver();
-                }
-
-                return m_ServiceResolver;
-            }
-        }
-
-        protected override void OnServiceUI() 
+        protected override void OnServiceUI()
         {
             m_UnityAdBlock.OnGUI();
             m_AdMobBlock.OnGUI();
             m_ChartboostBlock.OnGUI();
         }
 
-        private void DrawAdmobUI() 
+        void DrawAdMobUI()
         {
-            if (UM_DefinesResolver.IsAdMobInstalled) 
+            if (UM_DefinesResolver.IsAdMobInstalled)
             {
                 EditorGUILayout.HelpBox("Google Mobile Ads SDK Installed!", MessageType.Info);
-                DrawAdMobSettings();
-            } 
-            else 
-            {
-                EditorGUILayout.HelpBox("Google Mobile Ads SDK Missing!", MessageType.Warning);
-                using (new SA_GuiBeginHorizontal()) 
+                using (new SA_GuiBeginHorizontal())
                 {
                     GUILayout.FlexibleSpace();
-                    var click = GUILayout.Button("Import SDK", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (click) 
-                    {
-                        SA_PackageManager.DownloadAndImport("Google Mobile Ads SDK", AD_MOB_SDK_DOWNLOAD_URL, interactive:false);
-                    }
+                    ShowImportGoogleMobileAdsSdkButton("Re-Import SDK");
+                }
 
+                GUILayout.Space(10);
+                DrawAdMobSettings();
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Google Mobile Ads SDK Missing!", MessageType.Warning);
+                using (new SA_GuiBeginHorizontal())
+                {
+                    GUILayout.FlexibleSpace();
+                    ShowImportGoogleMobileAdsSdkButton("Import SDK");
                     var refreshClick = GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (refreshClick) 
-                    {
-                        UM_DefinesResolver.ProcessAssets();
-                    }
+                    if (refreshClick) UM_DefinesResolver.ProcessAssets();
                 }
             }
         }
 
-        
-        private static void DrawAdMobSettings() 
+        void ShowImportGoogleMobileAdsSdkButton(string buttonName)
+        {
+            var click = GUILayout.Button(buttonName, EditorStyles.miniButton, GUILayout.Width(120));
+            if (click) SA_PackageManager.DownloadAndImport("Google Mobile Ads SDK", k_AdMobSdkDownloadUrl, false);
+        }
+
+        static void DrawAdMobSettings()
         {
             if (s_AdMobSettingsLayout == null)
                 UM_SettingsUtil.DrawAddonRequestUI(UM_Addon.AdMob);
             else
                 s_AdMobSettingsLayout.OnGUI();
         }
-        
-        private static void DrawUnityAdsUI() 
+
+        static void DrawUnityAdsSettings()
+        {
+            if (s_UnityAdsSettingsLayout == null)
+                UM_SettingsUtil.DrawAddonRequestUI(UM_Addon.UnityAds);
+            else
+                s_UnityAdsSettingsLayout.OnGUI();
+        }
+
+        static void DrawUnityAdsUI()
         {
             if (UM_DefinesResolver.IsUnityAdsInstalled)
             {
                 DrawUnityAdsSettings();
-            } 
-            else 
+            }
+            else
             {
-                EditorGUILayout.HelpBox("Unity Monetization SDK Missing!", MessageType.Warning);
-                using (new SA_GuiBeginHorizontal()) 
+                EditorGUILayout.HelpBox("Unity SDK Package Missing!", MessageType.Warning);
+                using (new SA_GuiBeginHorizontal())
                 {
                     GUILayout.FlexibleSpace();
-                    var click = GUILayout.Button("Download SDK", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (click) 
+                    var click = GUILayout.Button("Install Unity Ads", EditorStyles.miniButton, GUILayout.Width(120));
+                    if (click)
                     {
-                        Application.OpenURL(UNITY_ADS_SDK_DOWNLOAD_URL);
-                    }
-
-                    var refreshClick = GUILayout.Button("Refresh", EditorStyles.miniButton, GUILayout.Width(120));
-                    if (refreshClick) 
-                    {
-                        UM_DefinesResolver.ProcessAssets();
+                        Client.Add(UM_DefinesResolver.UnityAdsPackageName);
                     }
                 }
             }
         }
-        
-        private static void DrawUnityAdsSettings() 
-        {
-            UM_AdvertisementUnityAdsUI.OnGUI();
-        }
 
-        public static void DrawPlatformIds(UM_PlatfromAdIds platform) 
+
+        public static void DrawPlatformIds(UM_PlatformAdIds platform)
         {
             platform.AppId = EditorGUILayout.TextField("App Id: ", platform.AppId);
             platform.BannerId = EditorGUILayout.TextField("Banner Id: ", platform.BannerId);

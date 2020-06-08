@@ -1,61 +1,46 @@
 using UnityEngine;
 using SA.Android;
+using SA.Android.Editor;
 using SA.iOS;
 using SA.Foundation.Editor;
 
-namespace SA.CrossPlatform
+namespace SA.CrossPlatform.Editor
 {
-    public class UM_LocalNotificationsUI : UM_ServiceSettingsUI
+    class UM_LocalNotificationsUI : UM_ServiceSettingsUI
     {
         public class ISNSettings : UM_NativeServiceLayoutBasedSetting
         {
-            public override SA_ServiceLayout Layout { get { return CreateInstance<ISN_UserNotificationsUI>(); } }
-            public override bool IsEnabled 
-            {
-                get { return ISN_Preprocessor.GetResolver<ISN_UserNotificationsResolver>().IsSettingsEnabled; }
-            }
+            protected override SA_ServiceLayout Layout => CreateInstance<ISN_UserNotificationsUI>();
+
+            public override bool IsEnabled => ISN_Preprocessor.GetResolver<ISN_UserNotificationsResolver>().IsSettingsEnabled;
         }
 
         public class ANSettings : UM_NativeServiceLayoutBasedSetting
         {
-            public override SA_ServiceLayout Layout { get { return CreateInstance<AN_LocalNotificationsFeaturesUI>(); } }
-            public override bool IsEnabled 
-            {
-                get { return AN_Preprocessor.GetResolver<AN_LocalNotificationsResolver>().IsSettingsEnabled; }
-            }
+            protected override SA_ServiceLayout Layout => CreateInstance<AN_LocalNotificationsFeaturesUI>();
+
+            public override bool IsEnabled => AN_Preprocessor.GetResolver<AN_LocalNotificationsResolver>().IsSettingsEnabled;
         }
 
-        public override void OnLayoutEnable() 
+        public override void OnLayoutEnable()
         {
             base.OnLayoutEnable();
             AddPlatfrom(UM_UIPlatform.IOS, new ISNSettings());
             AddPlatfrom(UM_UIPlatform.Android, new ANSettings());
 
-            AddFeatureUrl("Getting Started", "https://unionassets.com/ultimate-mobile-pro/getting-started-735");
-            AddFeatureUrl("Scheduling", "https://unionassets.com/ultimate-mobile-pro/scheduling-notifications-737");
-            AddFeatureUrl("Canceling", "https://unionassets.com/ultimate-mobile-pro/responding-to-notification-738#canceling-notifications");
-            AddFeatureUrl("Responding", "https://unionassets.com/ultimate-mobile-pro/responding-to-notification-738");
-            AddFeatureUrl("Application Badges", "https://unionassets.com/ultimate-mobile-pro/applicationicon-badge-number-848");
+            AddFeatureUrl("Getting Started", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Getting-Started-(Local-Notifications)");
+            AddFeatureUrl("Scheduling", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Scheduling-Notifications");
+            AddFeatureUrl("Canceling", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Responding-to-Notification#canceling-notifications");
+            AddFeatureUrl("Responding", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/Responding-to-Notification");
+            AddFeatureUrl("Application Badges", "https://github.com/StansAssets/com.stansassets.ultimate-mobile/wiki/ApplicationIcon-Badge-Number");
         }
 
+        public override string Title => "Local Notifications";
 
-        public override string Title 
-        {
-            get { return "Local Notifications"; }
-        }
+        public override string Description => "Supports the delivery and handling of local notifications.";
 
-        public override string Description 
-        {
-            get { return "Supports the delivery and handling of local notifications."; }
-        }
+        protected override Texture2D Icon => UM_Skin.GetServiceIcon("um_notification_icon.png");
 
-        protected override Texture2D Icon 
-        {
-            get { return UM_Skin.GetServiceIcon("um_notification_icon.png"); }
-        }
-        
-        protected override void OnServiceUI() {
-
-        }
+        protected override void OnServiceUI() { }
     }
 }

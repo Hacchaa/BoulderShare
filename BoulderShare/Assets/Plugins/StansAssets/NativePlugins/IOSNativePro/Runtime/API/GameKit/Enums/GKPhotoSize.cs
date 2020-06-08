@@ -1,13 +1,10 @@
-
 namespace SA.iOS.GameKit
 {
-
     /// <summary>
     /// The size of a photo loaded by Game Center.
     /// </summary>
-    public enum GKPhotoSize 
+    public enum GKPhotoSize
     {
-
         /// <summary>
         /// Load a small photo.
         /// </summary>
@@ -16,7 +13,6 @@ namespace SA.iOS.GameKit
         /// <summary>
         /// Load a normal sized photo.
         /// </summary>
-        Normal
-
+        Normal,
     }
 }

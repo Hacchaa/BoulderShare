@@ -1,46 +1,40 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 using SA.Foundation.Utility;
 using SA.iOS.XCode;
 
-namespace SA.iOS.StoreKit.Internal
+namespace SA.iOS.StoreKit
 {
     /// <summary>
     /// This class is for plugin internal use only
     /// </summary>
-    internal static class ISN_SKLib 
+    static class ISN_SKLib
     {
-        
-        private static ISN_iSKAPI m_api = null;
-        public static ISN_iSKAPI API {
-            get {
+        static ISN_iSKAPI s_Api;
 
-                if (!ISD_API.Capability.InAppPurchase.Enabled) {
-                    SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PLUGIN_NAME, "Store Kit");
+        public static ISN_iSKAPI Api
+        {
+            get
+            {
+                if (!ISD_API.Capability.InAppPurchase.Enabled) SA_Plugins.OnDisabledAPIUseAttempt(ISN_Settings.PluginTittle, "Store Kit");
+
+                if (s_Api == null)
+                {
+                    if (Application.isEditor)
+                        s_Api = new ISN_SKEditorAPI();
+                    else
+                        s_Api = ISN_SKNativeAPI.Instance;
                 }
 
-
-                if (m_api == null) {
-                    if (Application.isEditor) {
-                        m_api = new ISN_SKEditorAPI();
-                    } else {
-                        m_api = ISN_SKNativeAPI.Instance;
-                    }
-                }
-
-                return m_api;
+                return s_Api;
             }
         }
 
-
-
         [Serializable]
-        public class SA_PluginSettingsWindowStylesitRequest {
+        public class ISN_LoadStoreRequest
+        {
             public List<string> ProductIdentifiers = new List<string>();
         }
-
-      
     }
 }

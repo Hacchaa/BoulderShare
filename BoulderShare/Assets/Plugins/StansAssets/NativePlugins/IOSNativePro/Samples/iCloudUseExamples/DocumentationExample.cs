@@ -1,52 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using SA.iOS.Foundation;
 using SA.iOS.AVFoundation;
 using SA.iOS.Photos;
 using SA.iOS.ReplayKit;
 using SA.iOS.UIKit;
 
-
-public class DocumentationExample : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-        ISN_NSBuildInfo buildInfo = ISN_NSBundle.BuildInfo;
+public class DocumentationExample : MonoBehaviour
+{
+    // Use this for initialization
+    void Start()
+    {
+        var buildInfo = ISN_NSBundle.BuildInfo;
         Debug.Log("AppVersion: " + buildInfo.AppVersion);
         Debug.Log("BuildNumber: " + buildInfo.BuildNumber);
 
-
-        if (ISN_NSBundle.IsRunningInAppStoreEnvironment) {
+        if (ISN_NSBundle.IsRunningInAppStoreEnvironment)
+        {
             Debug.Log("This app was downloaded from an AppStore");
         }
 
-
-
-        ISN_UIAlertController alert = new ISN_UIAlertController("Hello", "Would you like to continue.", ISN_UIAlertControllerStyle.Alert);
-        ISN_UIAlertAction yesAction = new ISN_UIAlertAction("Yes", ISN_UIAlertActionStyle.Default, () => {
+        var alert = new ISN_UIAlertController("Hello", "Would you like to continue.", ISN_UIAlertControllerStyle.Alert);
+        var yesAction = new ISN_UIAlertAction("Yes", ISN_UIAlertActionStyle.Default, () =>
+        {
             //User said yes
         });
 
-        //We can highlight button to show that 
-        //this option is preffered to be choosen
-        yesAction.MakePreffered();
+        //We can highlight button to show that
+        //this option is preferred to be chosen
+        yesAction.MakePreferred();
 
-        ISN_UIAlertAction noAction = new ISN_UIAlertAction("No", ISN_UIAlertActionStyle.Default, () => {
+        var noAction = new ISN_UIAlertAction("No", ISN_UIAlertActionStyle.Default, () =>
+        {
             //User said no
         });
 
         alert.AddAction(yesAction);
         alert.AddAction(noAction);
 
-
         alert.Present();
-
 
         ISN_Preloader.LockScreen();
         ISN_Preloader.UnlockScreen();
-
 
         Debug.Log("Name:" + ISN_UIDevice.CurrentDevice.Name);
         Debug.Log("SystemName:" + ISN_UIDevice.CurrentDevice.SystemName);
@@ -57,7 +53,6 @@ public class DocumentationExample : MonoBehaviour {
 
         Debug.Log("UserInterfaceIdiom:" + ISN_UIDevice.CurrentDevice.UserInterfaceIdiom);
         Debug.Log("IdentifierForVendor:" + ISN_UIDevice.CurrentDevice.IdentifierForVendor);
-
 
         /*
         ISN_UIImagePickerController.SaveScreenshotToCameraRoll((result) => {
@@ -86,35 +81,47 @@ public class DocumentationExample : MonoBehaviour {
         status = ISN_PHPhotoLibrary.AuthorizationStatus;
         Debug.Log("Photo Library Authorization Status: " + status);
 
-        ISN_UIImagePickerController picker = new ISN_UIImagePickerController();
+        var picker = new ISN_UIImagePickerController();
         picker.SourceType = ISN_UIImagePickerControllerSourceType.Camera;
-        picker.MediaTypes = new List<string>() { ISN_UIMediaType.IMAGE };
+        picker.MediaTypes = new List<string>() { ISN_UIMediaType.Image };
 
-        picker.Present((result) => {
-            if (result.IsSucceeded) {
+        picker.Present((result) =>
+        {
+            if (result.IsSucceeded)
+            {
                 Debug.Log("Image captured: " + result.Image);
-            } else {
+            }
+            else
+            {
                 Debug.Log("Madia picker failed with reason: " + result.Error.Message);
             }
         });
 
-        ISN_RPScreenRecorder.StopRecording((result) => {
-            if (result.IsSucceeded) {
+        ISN_RPScreenRecorder.StopRecording((result) =>
+        {
+            if (result.IsSucceeded)
+            {
                 Debug.Log("Scrren recodring is started");
-            } else {
+            }
+            else
+            {
                 Debug.Log("User decalied screen recording request");
             }
         });
 
-        bool isAvailable = ISN_RPScreenRecorder.IsAvailable;
+        var isAvailable = ISN_RPScreenRecorder.IsAvailable;
 
-
-        ISN_RPScreenRecorder.StopRecording((result) => {
-            if (result.HasPreviewController) {
-                result.PreviewController.Present((prevewResult) => {
-                    if (prevewResult.IsSucceeded) {
+        ISN_RPScreenRecorder.StopRecording((result) =>
+        {
+            if (result.HasPreviewController)
+            {
+                result.PreviewController.Present((prevewResult) =>
+                {
+                    if (prevewResult.IsSucceeded)
+                    {
                         Debug.Log("User Saved video");
-                        foreach (string activity in prevewResult.ActivityTypes) {
+                        foreach (var activity in prevewResult.ActivityTypes)
+                        {
                             Debug.Log("Video was shared to: " + activity);
                         }
                     }
@@ -122,26 +129,29 @@ public class DocumentationExample : MonoBehaviour {
             }
         });
 
-        ISN_RPScreenRecorder.DidChangeAvailability.AddListener(() => {
+        ISN_RPScreenRecorder.DidChangeAvailability.AddListener(() =>
+        {
             Debug.Log("Replay Kit avalibility has chnaged:");
             Debug.Log("Replay Kit avaliable: " + ISN_RPScreenRecorder.IsAvailable);
         });
 
-
-        ISN_RPScreenRecorder.DidStopRecording.AddListener((result) => {
-            if (result.HasPreviewController) {
-                result.PreviewController.Present((prevewResult) => {
-                    if (prevewResult.IsSucceeded) {
+        ISN_RPScreenRecorder.DidStopRecording.AddListener((result) =>
+        {
+            if (result.HasPreviewController)
+            {
+                result.PreviewController.Present((prevewResult) =>
+                {
+                    if (prevewResult.IsSucceeded)
+                    {
                         Debug.Log("User Saved video");
-                        foreach (string activity in prevewResult.ActivityTypes) {
+                        foreach (var activity in prevewResult.ActivityTypes)
+                        {
                             Debug.Log("Video was shared to: " + activity);
                         }
                     }
                 });
             }
         });
-
-
 
         /*
 
@@ -166,13 +176,10 @@ public class DocumentationExample : MonoBehaviour {
         }
 */
 
-
-
-        ISN_NSUbiquitousKeyValueStore.StoreDidChangeExternallyNotification.AddListener((changes) => {
+        ISN_NSUbiquitousKeyValueStore.StoreDidChangeExternallyNotification.AddListener((changes) =>
+        {
             // get changes that might have happened while this
             // instance of your app wasn't running
         });
-	}
-	
-	
+    }
 }

@@ -6,7 +6,6 @@
 
 @interface ISN_AVAudioSession : NSObject
 -(SA_Result*) setSessionActive:(bool) isActive;
--(SA_Result*) setSessionCategory:(int)category;
 @end
 
 @implementation ISN_AVAudioSession
@@ -38,40 +37,6 @@ static ISN_AVAudioSession * s_sharedInstance;
 }
 
 
--(SA_Result*) setSessionCategory:(int)category {
-    NSString *sessionCategory = @"";
-    
-    switch (category) {
-        case 0:
-            sessionCategory = AVAudioSessionCategoryAmbient;
-            break;
-        case 1:
-            sessionCategory = AVAudioSessionCategorySoloAmbient;
-            break;
-        case 2:
-            sessionCategory = AVAudioSessionCategoryPlayback;
-            break;
-        case 3:
-            sessionCategory = AVAudioSessionCategoryRecord;
-            break;
-        case 4:
-            sessionCategory = AVAudioSessionCategoryPlayAndRecord;
-            break;
-        case 5:
-            sessionCategory = AVAudioSessionCategoryMultiRoute;
-            break;
-        default:
-            sessionCategory = AVAudioSessionCategorySoloAmbient;
-            break;
-    }
-    
-    NSError * error = nil;
-    [[AVAudioSession sharedInstance] setCategory: sessionCategory error: &error];
-    
-    SA_Result* result = [[SA_Result alloc] initWithNSError:error];
-    return  result;
-}
-
 -(SA_Result*) setSessionActive:(bool) isActive {
     NSError * error = nil;
     [[AVAudioSession sharedInstance] setActive:isActive error:&error];
@@ -86,7 +51,7 @@ extern "C" {
     
     int _ISN_AV_AudioSessionRecordPermission() {
         NSLog(@"recordPermission: %lu", (unsigned long)[[AVAudioSession sharedInstance] recordPermission]);
-        return [[AVAudioSession sharedInstance] recordPermission];
+        return (int) [[AVAudioSession sharedInstance] recordPermission];
     }
     
     void _ISN_AV_AudioSessionRequestRecordPermission(UnityAction callback) {
@@ -96,16 +61,68 @@ extern "C" {
             }
         }];
     }
+
+    NSString* GetCategoryName(int category) {
+       NSString *sessionCategory = @"";
+       switch (category) {
+              case 0:
+                  sessionCategory = AVAudioSessionCategoryAmbient;
+                  break;
+              case 1:
+                  sessionCategory = AVAudioSessionCategorySoloAmbient;
+                  break;
+              case 2:
+                  sessionCategory = AVAudioSessionCategoryPlayback;
+                  break;
+              case 3:
+                  sessionCategory = AVAudioSessionCategoryRecord;
+                  break;
+              case 4:
+                  sessionCategory = AVAudioSessionCategoryPlayAndRecord;
+                  break;
+              case 5:
+                  sessionCategory = AVAudioSessionCategoryMultiRoute;
+                  break;
+              default:
+                  sessionCategory = AVAudioSessionCategorySoloAmbient;
+                  break;
+          }
+       
+       return sessionCategory;
+    }
     
     char* _ISN_AV_AudioSessionSetCategory(int category) {
         NSString *tmp = [NSString stringWithFormat:@"%d", category];
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AV_AudioSessionSetCategory" data:[tmp UTF8String]];
         
-        
-        SA_Result* result = [[ISN_AVAudioSession sharedInstance] setSessionCategory:category];
+        NSError * error = nil;
+        NSString *sessionCategory = GetCategoryName(category);
+       
+        [[AVAudioSession sharedInstance] setCategory: sessionCategory error: &error];
+        SA_Result* result = [[SA_Result alloc] initWithNSError:error];
+           
         return  ISN_ConvertToChar([result toJSONString]);
     }
-    
+
+    char* _ISN_AV_AudioSessionSetCategoryWithOptions(int category, int options) {
+         NSString *tmp = [NSString stringWithFormat:@"%d", category];
+        [ISN_Logger LogNativeMethodInvoke:"_ISN_AV_AudioSessionSetCategory" data:[tmp UTF8String]];
+
+        NSError * error = nil;
+        NSString *sessionCategory = GetCategoryName(category);
+
+       
+        [[AVAudioSession sharedInstance] setCategory:sessionCategory withOptions:options error: &error];
+        SA_Result* result = [[SA_Result alloc] initWithNSError:error];
+          
+        return  ISN_ConvertToChar([result toJSONString]);
+    }
+
+    int _ISN_AV_AudioSessionGetCategoryOptions() {
+        return  [[AVAudioSession sharedInstance] categoryOptions];
+    }
+
+
     char* _ISN_AV_AudioSessionSetActive(bool isActive) {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AV_AudioSessionSetActive" data: isActive ? "enabled"  : "disabled"];
         
@@ -118,8 +135,6 @@ extern "C" {
         [ISN_Logger LogNativeMethodInvoke:"_ISN_AV_AudioSessionCategory" data: ""];
         return ISN_ConvertToChar([AVAudioSession sharedInstance].category);
     }
-    
-    
 }
 
 

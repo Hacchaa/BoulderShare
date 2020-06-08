@@ -1,10 +1,10 @@
 using SA.iOS.XCode;
 
-namespace SA.iOS 
+namespace SA.iOS
 {
-    public class ISN_ContactsResolver : ISN_APIResolver
+    class ISN_ContactsResolver : ISN_APIResolver
     {
-        protected override ISN_XcodeRequirements GenerateRequirements() 
+        protected override ISN_XcodeRequirements GenerateRequirements()
         {
             var requirements = new ISN_XcodeRequirements();
             requirements.AddFramework(new ISD_Framework(ISD_iOSFramework.Contacts));
@@ -16,25 +16,18 @@ namespace SA.iOS
             NSContactsUsageDescription.Type = ISD_PlistKeyType.String;
 
             requirements.AddInfoPlistKey(NSContactsUsageDescription);
-            
+
             return requirements;
         }
-        
-        protected override string LibFolder
+
+        protected override string LibFolder => "Contacts/";
+
+        public override bool IsSettingsEnabled
         {
-            get { return "Contacts/"; }
+            get => ISN_Settings.Instance.Contacts;
+            set => ISN_Settings.Instance.Contacts = value;
         }
 
-        public override bool IsSettingsEnabled 
-        {
-            get { return ISN_Settings.Instance.Contacts; }
-            set { ISN_Settings.Instance.Contacts = value; }
-        }
-
-        public override string DefineName
-        {
-            get { return "CONTACTS_API_ENABLED"; }
-        }
+        public override string DefineName => "CONTACTS_API_ENABLED";
     }
 }
-
