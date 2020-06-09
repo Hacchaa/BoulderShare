@@ -182,7 +182,9 @@ namespace BoulderNotes{
         public string GetID(){
             return id;
         }
-
+        public bool GetHasInsight(){
+            return hasInsight;
+        }
         public List<BNWallImageNames> GetWallImageFileNames(){
             return new List<BNWallImageNames>(wallImageFileNames);
         }
@@ -326,15 +328,19 @@ namespace BoulderNotes{
         }
 
         public void SetRecords(IReadOnlyList<BNRecord> list){
-            records = list.OrderBy(x=>x.GetID()).ToList();
+            records = list.OrderBy(x=>x.GetTime()).ThenBy(x=>x.GetID()).ToList();
             ReCalculateInfo();
         }
 
         //同じIDを持つBNRecordがrecordsに存在しないと仮定
         public void AddRecord(BNRecord rec){
+            //Debug.Log("addRecord:"+hasInsight);
             int i = 0;
             foreach(BNRecord r in records){
-                if (r.GetID().CompareTo(rec.GetID()) > 0){
+                int com = r.GetTime().CompareTo(rec.GetTime());
+                if (com == 0 && r.GetID().CompareTo(rec.GetID()) > 0){
+                    break;
+                }else if(com > 0){
                     break;
                 }
                 i++;
@@ -365,8 +371,8 @@ namespace BoulderNotes{
             }
         }
         public void ReCalculateInfo(){
-            CalculateStatus();
             ResetRecordTryNumbers();
+            CalculateStatus();
         }
         private void CalculateStatus(){
             bool isComplete = false;
@@ -381,6 +387,7 @@ namespace BoulderNotes{
                         totalClearStatus = BNRoute.ClearStatus.Onsight;
                     }
                     totalClearRate = 100;
+                    //Debug.Log("calculatestatus first:"+hasInsight);
                     return ;
                 }
 
@@ -400,6 +407,7 @@ namespace BoulderNotes{
             }
 
             totalClearRate = maxClearRate;
+            //Debug.Log("calculatestatus end:"+hasInsight);
         }
 
         public string GetWallTypeName(){
@@ -459,7 +467,7 @@ namespace BoulderNotes{
 
         public BNRecord(){
             id = BNGymDataCenter.PREFIX_ID_RECORD + DateTime.Now.ToString(BNGymDataCenter.FORMAT_ID);
-            SetTime(DateTime.Now);
+            SetTime(DateTime.Now);                
         }
 
         public bool IsSame(BNRecord rec){

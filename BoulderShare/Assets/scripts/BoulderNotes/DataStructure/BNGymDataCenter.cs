@@ -37,7 +37,7 @@ namespace BoulderNotes{
         private const string ES3_FILE_GYM = "gym";
         private const string ES3_FILE_ROUTE = "route";
         private const string ES3_DIC_IMAGES = "images";
-
+        public string[] ConditionNames= new string[5]{"とても悪い","悪い","普通","良い","とても良い"};
 
         private List<BNGym> gyms;
         private List<string> routeTags;

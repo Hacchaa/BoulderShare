@@ -11,19 +11,22 @@ public class RegisterRecordView : BNScreenInput
 {
     [SerializeField] private GameObject deleteButton;
     [SerializeField] private TextMeshProUGUI dayText;
-    [SerializeField] private TextMeshProUGUI tryNumberText;
+    [SerializeField] private TextMeshProUGUI timeText;
     [SerializeField] private Slider completeRateSlider;
     [SerializeField] private Slider conditionSlider;
     [SerializeField] private TextMeshProUGUI commentText;
 
     [SerializeField] private Image selectedConditon;
     [SerializeField] private AssetReference[] conditionRef;
-
+    [SerializeField] private TextMeshProUGUI conditionText;
+    [SerializeField] private TextMeshProUGUI clearRateText;
     [SerializeField] private BNRecord record;
     [SerializeField] private BNRoute route;
     [SerializeField] private ClearStatusToggle[] toggles;
     [SerializeField] private GameObject clearStatusObj;
     private BNScreenStackWithTargetGym stack;
+    private string recordTime;
+    private bool hasInsight;
   
     public override void InitForFirstTransition(){
         ClearFields();
@@ -36,6 +39,15 @@ public class RegisterRecordView : BNScreenInput
                 return ;
             }
             BNRoute.ClearStatus status = route.GetTotalClearStatus();
+            hasInsight = route.GetHasInsight();
+            //toggleの初期値をrouteのhasInsightに依存させる
+            if (status == BNRoute.ClearStatus.RP || status == BNRoute.ClearStatus.NoAchievement){
+                if (hasInsight){
+                    status = BNRoute.ClearStatus.Flash;
+                }else{
+                    status = BNRoute.ClearStatus.Onsight;
+                }
+            }
             for(int i = 0 ; i < toggles.Length ; i++){
                 toggles[i].Init(status);
             }
@@ -45,15 +57,17 @@ public class RegisterRecordView : BNScreenInput
             if (record == null){
                 //Debug.Log("new");
                 //新規作成
-                dayText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_DATE);
-                tryNumberText.text = route.GetNewTryNumber()+"";
+                dayText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_DATE2);
+                timeText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_HM);
+                recordTime = DateTime.Now.ToString(BNGymDataCenter.FORMAT_TIME);
                 deleteButton.SetActive(false);
                 clearStatusObj.SetActive(false);
             }else{
                 //Debug.Log("edit");
                 //編集
-                dayText.text = record.GetDate2();
-                tryNumberText.text = record.GetTryNumber()+"";
+                dayText.text = record.GetDate();
+                timeText.text = record.GetDate3();
+                recordTime = record.GetTime();
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
                 inputedText = record.GetComment();
@@ -73,13 +87,14 @@ public class RegisterRecordView : BNScreenInput
         base.ClearFields();
         dayText.text = "";
         completeRateSlider.value = 50f;
+        clearRateText.text = "50%";
         conditionSlider.value = 2f;
         SetSelectedCondition(2);
         commentText.text = "";
-        tryNumberText.text = "";
         record = null;
         route = null;
         stack = null;
+        hasInsight = true;
     }
 
     public override void UpdateScreen(){
@@ -90,10 +105,11 @@ public class RegisterRecordView : BNScreenInput
         if (route == null || stack == null){
             return ;
         }
-
+        DateTime time = DateTime.ParseExact(recordTime,BNGymDataCenter.FORMAT_TIME, null);
+        route.SetHasInsight(hasInsight);
         if (record != null){
-            //record.SetTime(time);
-            record.SetTryNumber(int.Parse(tryNumberText.text));
+            record.SetTime(time);
+            //record.SetTryNumber(route.GetNewTryNumber());
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
             record.SetComment(inputedText);
@@ -112,7 +128,8 @@ public class RegisterRecordView : BNScreenInput
             }
         }else{
             record = new BNRecord();
-            record.SetTryNumber(int.Parse(tryNumberText.text));
+            record.SetTime(time);
+            record.SetTryNumber(route.GetNewTryNumber());
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
             record.SetComment(inputedText);
@@ -155,6 +172,7 @@ public class RegisterRecordView : BNScreenInput
 
     public void OnConditionSliderValueChanged(float value){
         SetSelectedCondition((int)value);
+        conditionText.text = BNGymDataCenter.Instance.ConditionNames[(int)value];
     }
 
     private void SetSelectedCondition(int index){
@@ -166,13 +184,14 @@ public class RegisterRecordView : BNScreenInput
     }
     public void SetHasInsight(BNRoute.ClearStatus s){
         if (s == BNRoute.ClearStatus.Flash){
-            route.SetHasInsight(true);
+            hasInsight = true;
         }else if(s == BNRoute.ClearStatus.Onsight){
-            route.SetHasInsight(false);
+            hasInsight = false;
         }
     }
 
     public void OnClearSliderValueChanged(float v){
+        clearRateText.text = (int)v + "%";
         if (v == 100f){
             if (record != null && record.GetTryNumber() == 1){
                 clearStatusObj.SetActive(true);

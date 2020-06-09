@@ -10,7 +10,7 @@ public class InputItemsView: BNScreen
     public enum TargetItem{None, WallType, Grade, Texts, Tape, Image, Sort};
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TargetItem currentTargetItem;
-    private BNScreenInput screen;
+    [SerializeField] private BNScreenInput screen;
 
     [SerializeField] private WallTypeToggleGroup wallTypeGroup;
     [SerializeField] private GradeToggleGroup gradeGroup;
