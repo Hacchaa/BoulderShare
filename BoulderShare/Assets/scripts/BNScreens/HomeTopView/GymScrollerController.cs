@@ -13,6 +13,7 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     public EnhancedScroller myScroller;
     public GymCellView gymCellViewPrefab;
     public GymCellFootView gymCellFootViewPrefab;
+    public GymNoGymsCellView gymNoGymsCellViewPrefab;
 
     public void Init(){
         _data = new List<GymScrollerDataBase>();
@@ -23,19 +24,23 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         _data.Clear();
         IEnumerable<BNGym> sorted = list;
         if (sortType == SortToggle.SortType.Latest){
-            //sorted = list;
+            sorted = list.OrderByDescending(x => x.GetTimeStamp());
         }else if (sortType == SortToggle.SortType.Name){
             sorted = list.OrderBy(x => x.GetGymName());
         }else if(sortType == SortToggle.SortType.More){
             //sorted = list;
         }
-
-        foreach(BNGym gym in sorted){
-            GymScrollerData data = new GymScrollerData();
-            data.gymName = gym.GetGymName();
-            data.gymID = gym.GetID();
-            data.boardImagePath = gym.GetBoardImagePath();
-            _data.Add(data);
+        
+        if (!sorted.Any()){
+            _data.Add(new GymNoGymsScrollerData());
+        }else{
+            foreach(BNGym gym in sorted){
+                GymScrollerData data = new GymScrollerData();
+                data.gymName = gym.GetGymName();
+                data.gymID = gym.GetID();
+                data.boardImagePath = gym.GetBoardImagePath();
+                _data.Add(data);
+            }
         }
         _data.Add(new GymScrollerDataBase());
         myScroller.ReloadData();
@@ -49,6 +54,9 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (_data[dataIndex] is GymScrollerData){
             return 80f;
         }
+        if (_data[dataIndex] is GymNoGymsScrollerData){
+            return 170f;
+        }
 
         return 60f;
     }
@@ -58,6 +66,9 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             GymCellView cellView = scroller.GetCellView(gymCellViewPrefab) as GymCellView;
             cellView.SetData((_data[dataIndex] as GymScrollerData));
             cellView.clickDel = ToGymView;
+            return cellView;
+        }else if (_data[dataIndex] is GymNoGymsScrollerData){
+            GymNoGymsCellView cellView = scroller.GetCellView(gymNoGymsCellViewPrefab) as GymNoGymsCellView;
             return cellView;
         }else{
             GymCellFootView  cell = scroller.GetCellView(gymCellFootViewPrefab) as GymCellFootView;

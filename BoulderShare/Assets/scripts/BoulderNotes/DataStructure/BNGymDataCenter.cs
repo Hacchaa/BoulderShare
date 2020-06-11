@@ -37,10 +37,14 @@ namespace BoulderNotes{
         private const string ES3_FILE_GYM = "gym";
         private const string ES3_FILE_ROUTE = "route";
         private const string ES3_DIC_IMAGES = "images";
+        private const string ES3_FILE_SETTING = "setting";
+        private const string ES3_KEY_SETTING = "BNSetting";
         public string[] ConditionNames= new string[5]{"とても悪い","悪い","普通","良い","とても良い"};
 
         private List<BNGym> gyms;
+        private BNSetting setting;
         private List<string> routeTags;
+
         public void Init(){
             gyms = new List<BNGym>();
             routeTags = new List<string>();
@@ -56,8 +60,33 @@ namespace BoulderNotes{
                     }
                 }
             }
-
+            setting = ReadSetting();
+            if (setting == null){
+                setting = new BNSetting();
+                WriteSetting();
+            }
             routeTags = routeTags.Distinct().OrderBy(x=>x).ToList();
+        }
+
+        public SortToggle.SortType GetGymSortType(){
+            if (setting == null){
+                return SortToggle.SortType.Latest;
+            }
+            return setting.gymSort;
+        }
+
+        public void SaveGymSortType(SortToggle.SortType type){
+            setting.gymSort = type;
+            WriteSetting();
+        }
+
+        private BNSetting ReadSetting(){
+            BNSetting s = null;
+            string path = ES3_ROOTPATH + "/" + ES3_FILE_SETTING + ES3_EXTENSION;
+            if (ES3.KeyExists(ES3_KEY_SETTING, path)){
+                s = ES3.Load<BNSetting>(ES3_KEY_SETTING, path);
+            }
+            return s;
         }
    
         public List<string> ReadGymIDs(){
@@ -166,6 +195,11 @@ namespace BoulderNotes{
             return false;
         }
 
+        private void WriteSetting(){
+            string path = ES3_ROOTPATH + "/" + ES3_FILE_SETTING + ES3_EXTENSION;
+            ES3.Save<BNSetting>(ES3_KEY_SETTING, setting, path);             
+        }
+
         private bool WriteGymIDs(List<string> ids){
             string path = ES3_ROOTPATH + "/" + ES3_FILE_BNGYMIDS + ES3_EXTENSION;
             ES3.Save<List<string>>(ES3_KEY_BNGYMIDS, ids, path); 
@@ -185,7 +219,7 @@ namespace BoulderNotes{
             if (IsGymExistsInCache(id)){
                 return false;
             }
-
+            gym.SetTimeStamp(DateTime.Now);
             gyms.Insert(0,gym);
             //ES3に書き込み
             //gymID
@@ -276,6 +310,8 @@ namespace BoulderNotes{
             if (target == null){
                 return false;
             }
+
+            gym.SetTimeStamp(DateTime.Now);
 
             gyms.Remove(target);
             gyms.Insert(0, gym);

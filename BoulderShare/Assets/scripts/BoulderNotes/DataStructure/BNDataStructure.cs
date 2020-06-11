@@ -19,8 +19,19 @@ namespace BoulderNotes{
     }
 
     [Serializable]
+    public class BNSetting{
+        public SortToggle.SortType gymSort;
+
+        public BNSetting(){
+            gymSort = SortToggle.SortType.Latest;
+        }
+    }
+
+    [Serializable]
     public class BNGym{
         [SerializeField] private string id;
+        //ジムの更新日時を記録
+        [SerializeField] private string timeStamp;
         [SerializeField] private List<BNRoute> routes;
         [SerializeField] private string gradeTableImagePath;
         [SerializeField] private string gymName;
@@ -35,6 +46,14 @@ namespace BoulderNotes{
         }
         public string GetID(){
             return id;
+        }
+
+        public string GetTimeStamp(){
+            return timeStamp;
+        }
+
+        public void SetTimeStamp(DateTime time){
+            timeStamp = time.ToString(BNGymDataCenter.FORMAT_TIME);
         }
 
         public string GetGymName(){
@@ -437,6 +456,14 @@ namespace BoulderNotes{
 
         public bool HasTag(string str){
             return tags.Contains(str);
+        }
+        public BNRecord FindRecord(int n){
+            foreach(BNRecord rec in records){
+                if (rec.GetTryNumber() == n){
+                    return rec;
+                }
+            }
+            return null;
         }
 
     }

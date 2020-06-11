@@ -63,7 +63,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30B8\u30E0\u306E\u307F\u8FFD\u52A0"
+  m_text: "\u30B8\u30E0\u306E\u8FFD\u52A0"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d31f65fcc10a75b45924be3b30f4dcc6, type: 2}
   m_sharedMaterial: {fileID: 21144778597838196, guid: d31f65fcc10a75b45924be3b30f4dcc6,
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 8921640478892906566}
-    characterCount: 6
+    characterCount: 5
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

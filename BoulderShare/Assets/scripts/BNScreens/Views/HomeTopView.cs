@@ -12,6 +12,7 @@ public class HomeTopView : BNScreenInput
     public override void InitForFirstTransition(){
         scroller.Init();
         ClearFields();
+        sortType = BNGymDataCenter.Instance.GetGymSortType();
     }
 
     public override void UpdateScreen(){
@@ -20,6 +21,7 @@ public class HomeTopView : BNScreenInput
             (belongingStack as BNScreenStackWithTargetGym).ClearGym();
         }
         sortText.text = SortToggle.GetSortTypeName(sortType);
+        BNGymDataCenter.Instance.SaveGymSortType(sortType);
     }
     public void ToGymView(){
         BNScreens.Instance.Transition(BNScreens.BNScreenType.GymRoutesView, BNScreens.TransitionType.Push);
