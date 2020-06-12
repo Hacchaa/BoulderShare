@@ -232,6 +232,15 @@ namespace BoulderNotes{
         public void AddWallImageFileName(BNWallImageNames names){
             wallImageFileNames.Add(names);
         }
+        public void ModifyWallImageFileName(BNWallImageNames names){
+            foreach(BNWallImageNames nam in wallImageFileNames){
+                //上書き
+                if (nam.fileName.Equals(names.fileName)){
+                    nam.editedFileName = names.editedFileName;
+                }
+                break;
+            }
+        }
         public void SetWallImageFileNames(List<BNWallImageNames> list){
             wallImageFileNames = new List<BNWallImageNames>(list);
         }

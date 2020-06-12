@@ -170,7 +170,7 @@ public class EditWallImageView: BNScreen
             string name = str[0] + BNGymDataCenter.POSTFIX_ID_WALLIMAGEEDITED + "." + str[1];
             BNWallImage wallImage = new BNWallImage(image, name);
             wallImageNames.editedFileName = name;
-            route.AddWallImageFileName(wallImageNames);
+            route.ModifyWallImageFileName(wallImageNames);
 
             stack.ModifyRoute(route, wallImage);
         }

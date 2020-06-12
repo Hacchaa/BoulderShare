@@ -20,7 +20,8 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
     public RecordLineCellView recordLineCellViewPrefab;
     public RecordBrankCellView recordBrankCellViewPrefab;
     public RecordMainInfoCellView recordMainInfoCellViewPrefab;
-
+    public RecordRouteWallImageCellView recordRouteWallImageCellViewPrefab;
+    public RecordRouteWallImageTitleCellView recordRouteWallImageTitleCellViewPrefab;
     public void Init(){
         _data = new List<RecordScrollerDataBase>();
         myScroller.Delegate = this;        
@@ -98,6 +99,12 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (tryN > 0){
             _data.Add(new RecordLineScrollerData());
         }
+
+        //フォトギャラリー
+        _data.Add(new RecordRouteWallImageTitleScrollerData());
+        foreach(BNWallImageNames nam in route.GetWallImageFileNames()){
+            _data.Add(new RecordRouteWallImageScrollerData(){names = nam});
+        }
         myScroller.ReloadData();
     }
 
@@ -123,6 +130,12 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         }
         if (_data[dataIndex] is RecordMainInfoScrollerData){
             return 158f;
+        }
+        if (_data[dataIndex] is RecordRouteWallImageTitleScrollerData){
+            return 80f;
+        }
+        if (_data[dataIndex] is RecordRouteWallImageScrollerData){
+            return 200f;
         }
 
         //case in RecordLineScrollerData
@@ -162,10 +175,26 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             recordMainCellView.SetData((_data[dataIndex] as RecordMainInfoScrollerData));
             return recordMainCellView;
         }
+        if (_data[dataIndex] is RecordRouteWallImageScrollerData){
+            RecordRouteWallImageCellView recordRouteWallImageCellView = scroller.GetCellView(recordRouteWallImageCellViewPrefab) as RecordRouteWallImageCellView;
+            recordRouteWallImageCellView.SetData((_data[dataIndex] as RecordRouteWallImageScrollerData), (view.GetBelongingStack() as BNScreenStackWithTargetGym), ToDisplayImageView);
+            return recordRouteWallImageCellView;
+        }
+        if (_data[dataIndex] is RecordRouteWallImageTitleScrollerData){
+            RecordRouteWallImageTitleCellView recordRouteWallImageTitleCellView = scroller.GetCellView(recordRouteWallImageTitleCellViewPrefab) as RecordRouteWallImageTitleCellView;
+            recordRouteWallImageTitleCellView.SetData((_data[dataIndex] as RecordRouteWallImageTitleScrollerData), ToAddPhotoView);
+            return recordRouteWallImageTitleCellView;
+        }
 
         //case in RecordLineScrollerData
         return scroller.GetCellView(recordBrankCellViewPrefab) as RecordBrankCellView;
 
+    }
+
+    public void ToAddPhotoView(){
+    }
+    public void ToDisplayImageView(BNWallImageNames names){
+        view.SaveTargetWallImageNamesInStack(names);
     }
  
     public void ToRecordView(BNRecord rec){

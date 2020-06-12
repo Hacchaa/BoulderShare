@@ -143,6 +143,11 @@ public class RouteView : BNScreen
             (belongingStack as BNScreenStackWithTargetGym).StoreTargetRecord(rec.GetID());
         }
     }
+    public void SaveTargetWallImageNamesInStack(BNWallImageNames names){
+        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
+            (belongingStack as BNScreenStackWithTargetGym).SetTargetImageNames(names);
+        }        
+    }
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();
     }

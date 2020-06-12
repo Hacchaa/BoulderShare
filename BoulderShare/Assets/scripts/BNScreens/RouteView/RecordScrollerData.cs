@@ -34,6 +34,13 @@ public class RecordSubTitleScrollerData : RecordScrollerDataBase {
 public class RecordDateTitleScrollerData : RecordScrollerDataBase {
     public string date;
 }
+public class RecordRouteWallImageTitleScrollerData : RecordScrollerDataBase{
+}
+
+public class RecordRouteWallImageScrollerData : RecordScrollerDataBase{
+    public BNWallImageNames names;
+    public bool isTopImage;
+}
 
 public class RecordLineScrollerData : RecordScrollerDataBase{
     

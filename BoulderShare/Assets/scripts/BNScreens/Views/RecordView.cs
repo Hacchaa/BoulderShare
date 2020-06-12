@@ -73,7 +73,7 @@ public class RecordView : BNScreen
     private void LoadRecord(BNRecord record){
         dayText.text = record.GetDate() + Environment.NewLine + record.GetDate3();
         tryNumberText.text = "" + record.GetTryNumber() + "回目";
-        completeRateText.text = record.GetCompleteRate() + "%";
+        completeRateText.text = record.GetCompleteRate() + "<size=50%>%";
         completeRateCircle.fillAmount = (record.GetCompleteRate()+0f) / 100f;
         Addressables.LoadAssetsAsync<Sprite>(conditionRef[(int)record.GetCondition()], OnLoadSprite);
         commentText.text = record.GetComment();    
