@@ -26,7 +26,7 @@ public class BNTransitionFadeTo : BNTransitionBase
         base.Complete(isReverse);
         if (isReverse){
             if (screen != null){
-                screen.gameObject.SetActive(false);
+                screen.HideScreen();
             }
         }
     }

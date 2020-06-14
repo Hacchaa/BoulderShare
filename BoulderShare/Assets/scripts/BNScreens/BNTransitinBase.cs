@@ -24,7 +24,6 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
     protected Canvas tabCanvas;
     protected bool isAnotherWithHeadBG;
     protected bool isAnotherWithTab;
-    protected bool isActiveWhenHiding;
 
     protected Action OnComplete;
 
@@ -34,7 +33,6 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
         this.head = head;
         this.headBG = headBG;
         this.tab = tab;
-        isActiveWhenHiding = false;
 
         if (content != null){
             content.gameObject.SetActive(true);
@@ -166,7 +164,7 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
 
 	public abstract void TransitionLerp(float t);
     public virtual void Ready(){
-        screen.gameObject.SetActive(true);
+        screen.ShowScreen();
         //SetAllBlocksRaycasts(false);
         BNScreens.Instance.Interactive(false);
     }

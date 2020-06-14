@@ -71,10 +71,10 @@ public class BNTransitionPushTo : BNTransitionBase
         //fade out head components
         if (headCG != null){
             headCG.alpha = t;
-        }
+        }/*
         if (headBGCG != null){
             headBGCG.alpha = t;
-        }
+        }*/
     }
 
     override public void Ready(){
@@ -91,7 +91,7 @@ public class BNTransitionPushTo : BNTransitionBase
         base.Complete(isReverse);
         if (isReverse){
             if (screen != null){
-                screen.gameObject.SetActive(false);
+                screen.HideScreen();
             }
             if (HasTab() && !isAnotherWithTab){
                 tab.gameObject.SetActive(false);

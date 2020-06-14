@@ -71,10 +71,10 @@ public class BNTransitionPushFrom : BNTransitionBase
         if (headCG != null){
             headCG.alpha = 1.0f - t;
         } 
-
+        /*
         if (headBGCG != null){
             headBGCG.alpha = 1.0f - t;
-        }
+        }*/
     }
 
     override public void Ready(){
@@ -100,7 +100,7 @@ public class BNTransitionPushFrom : BNTransitionBase
                 headBG.gameObject.SetActive(true);
             }
         }else{
-            screen.gameObject.SetActive(isActiveWhenHiding);
+            screen.HideScreen();
             if (HasTab() && !isAnotherWithTab){
                 tab.gameObject.SetActive(false);
             }

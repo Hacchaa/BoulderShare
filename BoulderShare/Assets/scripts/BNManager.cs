@@ -29,6 +29,7 @@ public class BNManager : SingletonMonoBehaviour<BNManager>
         yield return null;
         BNScreens.Instance.Init();  
     }
+    
 /*
     private void OnLoadCornerPanel(Sprite spr){
         cornerPanelFillSprites[index] = spr;

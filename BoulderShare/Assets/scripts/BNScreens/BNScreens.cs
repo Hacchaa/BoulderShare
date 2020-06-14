@@ -19,16 +19,12 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
 
     private Dictionary<BNScreenType, BNScreen> map;
     private int currentStackIndex;
-    private List<BNScreen> usedScreens;
-    [SerializeField] private Transform usedScreenRoot;
 
     public void Init(){
         map = new Dictionary<BNScreenType, BNScreen>();
         foreach(BNScreenData data in screenPrefabs){
             map.Add(data.t, data.screen);
         }
-
-        usedScreens = new List<BNScreen>();
 
         foreach(BNTStack stack in stacks){
             stack.Init();
@@ -68,29 +64,6 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
             return obj;
         }
         return null;
-    }
-    public BNScreen RecycleScreen(BNScreens.BNScreenType screenType, Transform parent){
-        BNScreen screen = null;
-        //Debug.Log("screenType:"+screenType.ToString());
-        foreach(BNScreen s in usedScreens){
-            //Debug.Log("s.getscreentype():"+s.GetScreenType().ToString());
-            if (s.GetScreenType() == screenType){
-                screen = s;
-                break;
-            }
-        }
-        if (screen != null){
-            //Debug.Log("found:"+screen.GetScreenType().ToString());
-            screen.transform.SetParent(parent, false);
-            usedScreens.Remove(screen);            
-        }
-        return screen;
-    }
-
-    public void AddUsedScreen(BNScreen screen){
-        //Debug.Log("addusedScreen:"+screen.GetScreenType().ToString());
-        usedScreens.Add(screen);
-        screen.transform.SetParent(usedScreenRoot, false);
     }
 
 }

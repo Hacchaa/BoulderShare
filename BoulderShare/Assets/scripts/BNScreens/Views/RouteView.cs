@@ -9,28 +9,14 @@ using System.Linq;
 namespace BoulderNotes{
 public class RouteView : BNScreen
 {
-    [SerializeField] private TextMeshProUGUI gradeText;
-    [SerializeField] private TextMeshProUGUI wallTypeText;
-    [SerializeField] private TextMeshProUGUI periodText; 
-    [SerializeField] private TextMeshProUGUI kanteText;
-    [SerializeField] private GameObject finishedObj;
-
     [SerializeField] private RecordScrollerController scroller;
-    
-
     [SerializeField] private BNRoute route;
-
     [SerializeField] private Image favoriteImage;
     [SerializeField] private Sprite favoriteOn;
     [SerializeField] private Sprite favoriteOff;
 
-    [SerializeField] private ClassificationView classView;
-
     private DateTime pushedTime;
     private bool isFavorite;
-
-    [SerializeField] private Transform tagRoot;
-    [SerializeField] private RouteTagView tagPrefab;
     [SerializeField] private List<Image> headBGImages;
     [SerializeField] private float headBGThreshold = 200f;
 
@@ -51,12 +37,14 @@ public class RouteView : BNScreen
 
     public override void InitForFirstTransition(){
         scroller.Init();
-        classView.Init();
         GradHeadBG(0f);
 
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             stack = belongingStack as BNScreenStackWithTargetGym;
         }
+        wallImageRect = wallImage.GetComponent<RectTransform>();
+        wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
+        scrollRectRect = scrollRect.GetComponent<RectTransform>();
     }
 
     public BNWallImageNames GetSelectedWallImageName(){
@@ -67,30 +55,13 @@ public class RouteView : BNScreen
         return selectedWallImage;
     }
 
-    public void ClearFields(){
-        gradeText.text ="";
-        periodText.text = "";
-        kanteText.text = "";
-
-        if (tagRoot != null){
-            foreach(Transform t in tagRoot){
-                Destroy(t.gameObject);
-            }
-        }
-    }
-
     public override void UpdateScreen(){
-        ClearFields();
         if (stack != null){
             //recordIDを削除
             stack.ClearRecord();
             route = stack.GetTargetRoute();
             if (route != null){
-                gradeText.text = route.GetGrade() + "級";
-                wallTypeText.text = route.GetWallTypeName();
-                periodText.text = route.GetPeriod();
 
-                finishedObj.SetActive(route.IsFinished());
                 if (route.IsFavorite()){
                     favoriteImage.sprite = favoriteOn;
                 }else{
@@ -98,25 +69,11 @@ public class RouteView : BNScreen
                 }
                 isFavorite = route.IsFavorite();
 
-                if (route.IsUsedKante()){
-                    kanteText.text = "カンテあり";
-                }else{
-                    kanteText.text = "カンテなし";
-                }
                 //Debug.Log("route.gettags().count "+route.GetTags().Count);
                 //tag
-                foreach(string str in route.GetTags()){
-
-                    RouteTagView view = Instantiate<RouteTagView>(tagPrefab, tagRoot);
-                    view.gameObject.SetActive(true);
-                    view.SetData(str);
-                    view.DeactiveDeleteButton();
-                }
-
                 scroller.FetchData(route);
             }
     
-
             selectedWallImage = null;
             selectedWallImageName = null;
 
@@ -130,10 +87,7 @@ public class RouteView : BNScreen
                 wallImage.sprite = defaultSpr;
                 editWallImageButton.SetActive(false);
             }
-    
-            wallImageRect = wallImage.GetComponent<RectTransform>();
-            wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
-            scrollRectRect = scrollRect.GetComponent<RectTransform>();
+
             FitWallImageToParent();
         }
     }
@@ -207,6 +161,10 @@ public class RouteView : BNScreen
     }
 
     public void GradHeadBGFromScroller(Vector2 v){
+        //Debug.Log("gradHead");
+        if (!processedInit){
+            return ;
+        }
         //現在スクロールpt量を計算
         float cur = scrollRect.content.anchoredPosition.y;
         float r = cur / headBGThreshold;
@@ -234,6 +192,9 @@ public class RouteView : BNScreen
     }
  
     public void DebugScroll(Vector2 v){
+        if (wallImageParent == null){
+            return ;
+        }
         //Debug.Log("v="+v.y);
         //Debug.Log("diffHeight:"+(scrollRect.content.rect.height - scrollRectRect.rect.height)*(v.y-1f));
         float deltaH = Mathf.Abs(scrollRect.content.anchoredPosition.y);

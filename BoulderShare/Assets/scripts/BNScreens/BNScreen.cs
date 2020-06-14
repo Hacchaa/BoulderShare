@@ -23,6 +23,10 @@ public class BNScreen : MonoBehaviour
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> toMap;
     protected BNTStack belongingStack;
 
+    private CanvasGroup contentCG;
+    private CanvasGroup headCG;
+    private CanvasGroup headBGCG;
+    protected bool processedInit = false;
 
     public void SetBelongingStack(BNTStack s){
         belongingStack = s;
@@ -46,6 +50,16 @@ public class BNScreen : MonoBehaviour
    public void Init(){
        fromMap = new Dictionary<BNScreens.TransitionType, BNTransitionBase>();
        toMap = new Dictionary<BNScreens.TransitionType, BNTransitionBase>();
+
+        if (content != null){
+            contentCG = content.GetComponent<CanvasGroup>();
+        }
+        if (head != null){
+            headCG = head.GetComponent<CanvasGroup>();
+        }
+        if (headBG != null){
+            headBGCG = headBG.GetComponent<CanvasGroup>();
+        }
 
        float topHeight = CanvasResolutionManager.Instance.GetStatusBarHeight();
        float botHeight = CanvasResolutionManager.Instance.GetBotSafeAreaInset();
@@ -135,6 +149,7 @@ public class BNScreen : MonoBehaviour
                 toMap.Add(t.type, t.transition);
             }
        }
+       processedInit = true;
    }
 
    public void InitSO(){
@@ -158,6 +173,33 @@ public class BNScreen : MonoBehaviour
            return map[type];
        }
        return null;
+   }
+
+    public void ShowScreen(){
+       contentCG.blocksRaycasts = true;
+       headCG.blocksRaycasts = true;
+       headBGCG.blocksRaycasts = true;
+
+       contentCG.alpha = 1f;
+       headCG.alpha = 1f;
+       headBGCG.alpha = 1f;
+
+       contentCG.interactable = true;
+       headCG.interactable = true;
+       headBGCG.interactable = true;
+   }
+    public void HideScreen(){
+       contentCG.blocksRaycasts = false;
+       headCG.blocksRaycasts = false;
+       headBGCG.blocksRaycasts = false;
+
+       contentCG.alpha = 0f;
+       headCG.alpha = 0f;
+       headBGCG.alpha = 0f;
+
+       contentCG.interactable = false;
+       headCG.interactable = false;
+       headBGCG.interactable = false;
    }
 }
 

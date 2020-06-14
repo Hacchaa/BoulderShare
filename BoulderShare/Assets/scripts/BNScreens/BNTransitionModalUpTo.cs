@@ -28,7 +28,7 @@ public class BNTransitionModalUpTo : BNTransitionBase
         base.Complete(isReverse);
         if (isReverse){
             if (screen != null){
-                screen.gameObject.SetActive(false);
+                screen.HideScreen();
             }
         }else{
             SetAllBlocksRaycasts(true);
