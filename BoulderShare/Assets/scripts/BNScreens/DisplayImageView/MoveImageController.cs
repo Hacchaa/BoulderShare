@@ -141,6 +141,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 
             Vector2 v;
         	RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, data.position, data.pressEventCamera, out v);
+			v += new Vector2((displayArea.pivot.x - 0.5f) * displayArea.rect.width, (displayArea.pivot.y - 0.5f) * displayArea.rect.height);
             isAlreadyUpdate = true;
 			needVelocity = true;
 			cursor.anchoredPosition = v;
@@ -354,6 +355,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 		//スクリーン座標からmoveRectのローカル座標に変換
 		Vector2 center;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, screenPosition, data.pressEventCamera, out center);
+		center += new Vector2((displayArea.pivot.x - 0.5f) * displayArea.rect.width, (displayArea.pivot.y - 0.5f) * displayArea.rect.height);
 		prevCenterPositionWithDoubleFinger = center;
 		cursor.anchoredPosition = center;
 		if (moveRect.sizeDelta.x < firstSize.x || moveRect.sizeDelta.x > firstSize.x * zoomRateLimit){
