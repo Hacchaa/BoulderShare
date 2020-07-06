@@ -18,6 +18,7 @@ public class DisplayImageScroller : MonoBehaviour, IInitializePotentialDragHandl
     private int n;
     private int curFrame;
     private bool isAlreadyUpdate = false;
+    private int finger;
     public void Init(DisplayImageControllerManager m, ScrollRect sr, Vector2 fSize, int frames, float spa){
         manager = m;
         scrollRect = sr;
@@ -39,6 +40,7 @@ public class DisplayImageScroller : MonoBehaviour, IInitializePotentialDragHandl
         scrollRect.content.anchorMin = setting;
         scrollRect.content.sizeDelta = contentSize;
         scrollRect.content.anchoredPosition = Vector2.zero;
+        finger = DisplayImageControllerManager.FINGER_NONE;
     }
 
     public int GetCurrentFrameIndex(){
@@ -46,10 +48,16 @@ public class DisplayImageScroller : MonoBehaviour, IInitializePotentialDragHandl
     }
 
     public void OnInitializePotentialDrag(PointerEventData data){
-        scrollRect.OnInitializePotentialDrag(data);
+        if (!manager.HasFinger(0)){
+            scrollRect.OnInitializePotentialDrag(data);
+            finger = DisplayImageControllerManager.FINGER_NONE;
+        }
     }
     public void OnDrag(PointerEventData ped)
     {   
+        if (finger != ped.pointerId){
+            return ;
+        }        
         if(!isAlreadyUpdate){
             scrollRect.OnDrag(ped);
             isAlreadyUpdate = true;
@@ -61,6 +69,10 @@ public class DisplayImageScroller : MonoBehaviour, IInitializePotentialDragHandl
 
     public void OnBeginDrag(PointerEventData ped)
     {
+        if(finger != DisplayImageControllerManager.FINGER_NONE){
+            return ;
+        }
+        finger = ped.pointerId;
         scrollRect.viewport.sizeDelta = frameSize;
         scrollRect.content.anchoredPosition += new Vector2(scrollRect.viewport.anchoredPosition.x, 0f);
         scrollRect.viewport.anchoredPosition = Vector2.zero;
@@ -75,6 +87,11 @@ public class DisplayImageScroller : MonoBehaviour, IInitializePotentialDragHandl
     }
     public void OnEndDrag(PointerEventData ped)
     {
+        if (finger != ped.pointerId){
+            return ;
+        }
+        finger = DisplayImageControllerManager.FINGER_NONE;
+
         float x = -scrollRect.content.anchoredPosition.x;
         //int target = Mathf.Clamp(Mathf.FloorToInt((x + (frameSize.x + space)/2f) / (frameSize.x + space)), 0, n-1);
         int target;

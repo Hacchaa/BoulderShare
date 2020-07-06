@@ -110,24 +110,26 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 			Vector2 del = dP1 / CanvasResolutionManager.Instance.GetRatioOfPtToPx();
 			Vector2 prev;
 			del = CalcBoundsDelta(del);
-			moveRect.anchoredPosition += new Vector2(0f, del.y);
+
 			if (displayImage.IsInTheRightSide()){
+				moveRect.anchoredPosition += new Vector2(0f, del.y);
 				manager.AddScrollPositionX(del.x);
 				del = manager.GetScrollContentPosition();
 				if (del.x > 0f){
-					moveRect.anchoredPosition += del;
+					moveRect.anchoredPosition += new Vector2(del.x, 0f);
 					manager.ResetScrollPosition();
 				}
 			}else if(displayImage.IsInTheLeftSide()){
+				moveRect.anchoredPosition += new Vector2(0f, del.y);
 				manager.AddScrollPositionX(del.x);
 				del = manager.GetScrollContentPosition();
 				if (del.x < 0f){
-					moveRect.anchoredPosition += del;
+					moveRect.anchoredPosition += new Vector2(del.x, 0f);
 					manager.ResetScrollPosition();
 				}
 			}else{
 				prev = moveRect.anchoredPosition;
-				moveRect.anchoredPosition += CalcBoundsDelta(del);
+				moveRect.anchoredPosition += del;
 				if(displayImage.IsInTheRightSide()){
 					displayImage.ClampOnRight();
 					manager.AddScrollPositionX((prev + del - moveRect.anchoredPosition).x);
@@ -150,7 +152,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 			return ;
 		}
 
-		manager.ResetScrollPosition();
+		//manager.ResetScrollPosition();
 
 		//拡大縮小
         // Find the position in the previous frame of each touch.
@@ -175,11 +177,14 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 	public void OnEndDrag(PointerEventData data){
 		if (!manager.HasFinger(0)){
 			m_Dragging = false;
+			manager.EnableScroller();
 		}
 		BoundSizeWithAnim();
-		manager.EnableScroller();
     }
 	public void OnLateUpdate(){
+		if (doneZoomAnim){
+			return ;
+		}
 		UpdateBounds();
 		float deltaTime = Time.unscaledDeltaTime;
 		Vector2 offset = CalculateOffset(Vector2.zero);
@@ -187,6 +192,7 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 		if (!m_Dragging && (offset != Vector2.zero || m_Velocity != Vector2.zero))
 		{
 			Vector2 position = moveRect.anchoredPosition;
+			//Debug.Log("position Before:"+position.x);
 			for (int axis = 0; axis < 2; axis++)
 			{
 				// Apply spring physics if movement is elastic and content has an offset from the view.
@@ -197,11 +203,18 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 						//外側のscrollRectに速度を渡す
 						manager.AddScrollVelocityX(speed);
 						m_Velocity[axis] = 0f;
-						if (offset[axis] > 0f){
-							displayImage.ClampOnLeft();
+						float diff ;
+						if (offset[axis] < 0f){
+							//Debug.Log("clampOnLeft");
+							diff = displayImage.ClampOnLeft();
 						}else{
-							displayImage.ClampOnRight();
+							//Debug.Log("clampOnright");
+							diff = displayImage.ClampOnRight();
 						}
+						//Debug.Log("diff:"+diff);
+						manager.AddScrollPositionX(-diff);
+						position[axis]=moveRect.anchoredPosition.x;
+						//Debug.Log("position.x:"+position.x);
 					}else{
 						float smoothTime = elasticity;
 
@@ -231,9 +244,6 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 			}else{
 				m_Velocity = Vector2.zero;
 			}
-		}
-		if (doneZoomAnim){
-			m_Velocity = Vector2.zero;
 		}
 
 		if (moveRect.anchoredPosition != m_PrevPosition)

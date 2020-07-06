@@ -101,7 +101,7 @@ public class DisplayImageView: BNScreen
             #endif
 			return ;
 		}
-        PickImageManager.Instance.OpenMediaActiveSheet(OnLoadGradeTable, OnSelecteDeleteAction);
+        PickImageManager.Instance.OpenMediaActiveSheet(OnLoadGradeTable, null, OnSelecteDeleteAction);
         #endif
     }
     private void OnSelecteDeleteAction(){

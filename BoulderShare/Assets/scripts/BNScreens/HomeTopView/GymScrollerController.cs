@@ -29,6 +29,7 @@ public class GymScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
             sorted = list.OrderBy(x => x.GetGymName());
         }else if(sortType == SortToggle.SortType.More){
             //sorted = list;
+            sorted = list.OrderByDescending(x => x.GetRoutes().Count);
         }
         
         if (!sorted.Any()){

@@ -19,7 +19,7 @@ public class DisplayImageControllerManager : MonoBehaviour, IInitializePotential
     private bool canMove;
     private bool isDeterminedEvent;
 	private int[] eTouches;
-	private const int FINGER_NONE = -100;
+	public static int FINGER_NONE = -100;
     private int imageNum;
     private bool needClickEvent;
     private bool isAnimationing;

@@ -169,10 +169,10 @@ public class RegisterView: BNScreenWithGyms
             stack.StoreTargetGym(gym.GetID());
         }else if(type == ViewType.Route){
             BNRoute route = new BNRoute();
-            route.SetGrade(stack.GetTargetGrade());
-            route.SetWallType(stack.GetTargetWallType());
+            route.SetGrade(grade);
+            route.SetWallType(wallType);
             route.SetIsUsedKante(kanteToggle.IsOn());
-            route.SetTape(stack.GetTargetTape());
+            route.SetTape(tape);
             
             //画像の保存
             List<BNWallImage> wallImageList = new List<BNWallImage>();

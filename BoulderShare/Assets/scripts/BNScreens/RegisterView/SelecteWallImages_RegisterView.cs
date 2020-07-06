@@ -40,7 +40,7 @@ public class SelecteWallImages_RegisterView : MonoBehaviour
             Delete(index);
             return ;
         }
-        PickImageManager.Instance.OpenMediaActiveSheet(OnLoadTex);
+        PickImageManager.Instance.OpenMediaActiveSheet(OnLoadTex, "画像を選択");
     }
     public void Delete(int index){
         int n = list.Count;

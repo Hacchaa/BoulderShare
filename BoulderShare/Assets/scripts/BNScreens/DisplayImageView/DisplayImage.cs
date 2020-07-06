@@ -81,13 +81,19 @@ public class DisplayImage : MonoBehaviour
         return false;
     }
 
-    public void ClampOnRight(){
+    public float ClampOnRight(){
         float x = root.rect.width/2f - imageRect.rect.width/2f;
+        float diff = x - imageRect.anchoredPosition.x;
         imageRect.anchoredPosition = new Vector2(x, imageRect.anchoredPosition.y);
+
+        return diff;
     }
-    public void ClampOnLeft(){
-        float x = root.rect.width/2f - imageRect.rect.width/2f;
-        imageRect.anchoredPosition = new Vector2(-x, imageRect.anchoredPosition.y);
+    public float ClampOnLeft(){
+        float x = -root.rect.width/2f - (-imageRect.rect.width/2f);
+        float diff = x - imageRect.anchoredPosition.x;
+        imageRect.anchoredPosition = new Vector2(x, imageRect.anchoredPosition.y);
+
+        return diff;
     }
 
     public bool HasEditedSprite(){

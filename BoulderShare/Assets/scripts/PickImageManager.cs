@@ -15,7 +15,7 @@ namespace BoulderNotes{
 public class PickImageManager : SingletonMonoBehaviour<PickImageManager>
 {
     private OnLoadTextureDel loadTextureDel;
-    public void OpenMediaActiveSheet(OnLoadTextureDel del, Action OnSelecteDelete = null){
+    public void OpenMediaActiveSheet(OnLoadTextureDel del, string title, Action OnSelecteDelete = null){
         loadTextureDel = del;
 
 		#if UNITY_IPHONE
@@ -26,7 +26,7 @@ public class PickImageManager : SingletonMonoBehaviour<PickImageManager>
             #endif
 			return ;
 		}
-			ISN_UIAlertController alert = new ISN_UIAlertController("グレード表を選択", null, ISN_UIAlertControllerStyle.ActionSheet);
+			ISN_UIAlertController alert = new ISN_UIAlertController(title, null, ISN_UIAlertControllerStyle.ActionSheet);
 			ISN_UIAlertAction cameraAction = new ISN_UIAlertAction("写真を撮る", ISN_UIAlertActionStyle.Default, PickImageFromCamera);
 			ISN_UIAlertAction libAction = new ISN_UIAlertAction("アルバムから選ぶ", ISN_UIAlertActionStyle.Default, PickImageFromLibrary);
 			ISN_UIAlertAction cancelAction = new ISN_UIAlertAction("キャンセル", ISN_UIAlertActionStyle.Cancel, ()=>{});

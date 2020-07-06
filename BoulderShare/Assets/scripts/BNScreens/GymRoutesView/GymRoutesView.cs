@@ -87,7 +87,7 @@ public class GymRoutesView : BNScreenWithGyms
             stackWithTargetGym.SetTargetImageNames(names);
             ToDisplayImageViewForGradeTable();
         }else{
-            PickImageManager.Instance.OpenMediaActiveSheet(OnLoadGradeTable);
+            PickImageManager.Instance.OpenMediaActiveSheet(OnLoadGradeTable, "グレード表を選択", null);
         }
     }
 

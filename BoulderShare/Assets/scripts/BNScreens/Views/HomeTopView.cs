@@ -49,6 +49,7 @@ public class HomeTopView : BNScreenWithGyms
         BNScreens.Instance.Transition(BNScreens.BNScreenType.RegisterView, BNScreens.TransitionType.Push);
     }
     public void ToInputViewSort(){
+        //Debug.Log("inputview");
         stack.SetTargetItemToInput(InputItemsView.TargetItem.Sort);
         BNScreens.Instance.Transition(BNScreens.BNScreenType.InputItemsView, BNScreens.TransitionType.Push);
     }

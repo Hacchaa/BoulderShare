@@ -49,11 +49,13 @@ public class EditRouteTapeView: BNScreenWithGyms
             RTape t = stack.GetTargetTape();
             if (t == null){
                 routeTape.LoadDefault();
+                tapeTextIF.Text = "";
             }else{
                 routeTape.LoadTape(t);
                 if (!t.isDefault){
                     selectedDefault = false;
                 }
+                tapeTextIF.Text = t.tapeText;
             }
         }
     }
