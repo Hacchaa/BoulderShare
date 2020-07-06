@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace BoulderNotes{
 public class BNScreen : MonoBehaviour
@@ -19,20 +20,23 @@ public class BNScreen : MonoBehaviour
     [SerializeField] private bool stretchContentToTop = false;
   
     [SerializeField] private List<Transition> transitions;
+    [SerializeField] private List<Behaviour> needEnabledList;
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> fromMap;
     private Dictionary<BNScreens.TransitionType, BNTransitionBase> toMap;
     protected BNTStack belongingStack;
 
     private CanvasGroup contentCG;
-    private CanvasGroup headCG;
-    private CanvasGroup headBGCG;
+    protected CanvasGroup headCG;
+    protected CanvasGroup headBGCG;
+    private GraphicRaycaster contentGR;
+    private GraphicRaycaster headGR;
     protected bool processedInit = false;
 
-    public void SetBelongingStack(BNTStack s){
+    public virtual void SetBelongingStack(BNTStack s){
         belongingStack = s;
     }
 
-    public BNTStack GetBelongingStack(){
+    public virtual BNTStack GetBelongingStack(){
         return belongingStack;
     }
 
@@ -53,9 +57,11 @@ public class BNScreen : MonoBehaviour
 
         if (content != null){
             contentCG = content.GetComponent<CanvasGroup>();
+            contentGR = content.GetComponent<GraphicRaycaster>();
         }
         if (head != null){
             headCG = head.GetComponent<CanvasGroup>();
+            headGR = head.GetComponent<GraphicRaycaster>();
         }
         if (headBG != null){
             headBGCG = headBG.GetComponent<CanvasGroup>();
@@ -175,7 +181,12 @@ public class BNScreen : MonoBehaviour
        return null;
    }
 
+    public bool IsShowedScreen(){
+        return contentCG.blocksRaycasts;
+    }
+
     public void ShowScreen(){
+    //Debug.Log("showScreen");
        contentCG.blocksRaycasts = true;
        headCG.blocksRaycasts = true;
        headBGCG.blocksRaycasts = true;
@@ -184,9 +195,17 @@ public class BNScreen : MonoBehaviour
        headCG.alpha = 1f;
        headBGCG.alpha = 1f;
 
-       contentCG.interactable = true;
-       headCG.interactable = true;
-       headBGCG.interactable = true;
+       //contentCG.interactable = true;
+       //headCG.interactable = true;
+       //headBGCG.interactable = true;
+
+       contentGR.enabled = true;
+       headGR.enabled = true;
+
+       foreach(Behaviour b in needEnabledList){
+           b.enabled = true;
+       }
+
    }
     public void HideScreen(){
        contentCG.blocksRaycasts = false;
@@ -197,9 +216,17 @@ public class BNScreen : MonoBehaviour
        headCG.alpha = 0f;
        headBGCG.alpha = 0f;
 
-       contentCG.interactable = false;
-       headCG.interactable = false;
-       headBGCG.interactable = false;
+       //contentCG.interactable = false;
+       //headCG.interactable = false;
+       //headBGCG.interactable = false;
+
+       contentGR.enabled = false;
+       headGR.enabled = false;
+
+
+       foreach(Behaviour b in needEnabledList){
+           b.enabled = false;
+       }
    }
 }
 

@@ -90,6 +90,7 @@ MonoBehaviour:
   onColor: {r: 0.29803923, g: 0.854902, b: 0.3921569, a: 1}
   offColor: {r: 0.91372555, g: 0.91372555, b: 0.9215687, a: 1}
   mark: {fileID: 6895112518650129743}
+  isCurrentOn: 0
 --- !u!114 &6895112518629081698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,7 +190,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

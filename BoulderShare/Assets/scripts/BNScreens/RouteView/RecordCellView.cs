@@ -9,36 +9,31 @@ using UnityEngine.AddressableAssets;
 namespace BoulderNotes{
 public class RecordCellView : EnhancedScrollerCellView
 {
-    public Color low;
-    public Color middle;
-    public Color high;
-    public TextMeshProUGUI completeRatePercentText;
-    public TextMeshProUGUI completeRateText;
-    public TextMeshProUGUI tryNumberText;
-    public TextMeshProUGUI commentText;
-    public Image condition;
-    public BNRecord record;
-    public TextMeshProUGUI timeText;
-    public OnButtonClickedDelegateWithBNRecord clickDel;
+    [SerializeField] private Color low;
+    [SerializeField] private Color middle;
+    [SerializeField] private Color high;
+    [SerializeField] private TextMeshProUGUI completeRateText;
+    [SerializeField] private TextMeshProUGUI tryNumberAndTimeText;
+    [SerializeField] private TextMeshProUGUI commentText;
+    [SerializeField] private Image condition;
+    [SerializeField] private BNRecord record;
+    [SerializeField] private OnButtonClickedDelegateWithBNRecord clickDel;
 
-    public void SetData(RecordScrollerData data){
-        completeRateText.text = data.completeRate + "";
+    public void SetData(RecordScrollerData data, OnButtonClickedDelegateWithBNRecord onClickDel){
+        clickDel = onClickDel;
+        completeRateText.SetText("{0}<size=50%>%", data.completeRate);
         //色設定
         if (data.completeRate <= 25){
             completeRateText.color = low;
-            completeRatePercentText.color = low;
         }else if(data.completeRate <= 74){
             completeRateText.color = middle;
-            completeRatePercentText.color = middle;
         }else{
             completeRateText.color = high;
-            completeRatePercentText.color = high;
         }
-        tryNumberText.text = data.tryNumber + "回目";
+        tryNumberAndTimeText.SetText("{0}回目  "+data.date, data.tryNumber);
         commentText.text = data.comment;
-        Addressables.LoadAssetsAsync<Sprite>(data.conditionImageRef, OnLoadSprite);
+        BNManager.Instance.GetConditionSprite(data.condition, OnLoadSprite);
         record = data.record;
-        timeText.text = data.date;
     }
 
     private void OnLoadSprite(Sprite spr){

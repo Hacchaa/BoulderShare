@@ -164,9 +164,9 @@ public abstract class BNTransitionBase : MonoBehaviour, ITransitionable
 
 	public abstract void TransitionLerp(float t);
     public virtual void Ready(){
-        screen.ShowScreen();
+        //screen.ShowScreen();
         //SetAllBlocksRaycasts(false);
-        BNScreens.Instance.Interactive(false);
+        //BNScreens.Instance.Interactive(false);
     }
     public virtual void Complete(bool isReverse){
         BNScreens.Instance.Interactive(true);

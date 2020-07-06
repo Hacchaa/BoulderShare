@@ -57,7 +57,20 @@ public class BNTransitionController
 
     	DOVirtual.Float(t, dist, duration, value => {
     		BNTransitionLerp(value);
-    	}).SetEase(Ease.OutQuart).OnComplete(() =>{
+    	}).SetEase(Ease.OutQuart)
+        //onstartは上の処理と同じフレームで呼ばれる
+        .OnStart(() =>{
+            //Debug.Log("t:"+t);
+            //Debug.Log("dist:"+dist);
+            
+            if(!from.GetScreen().IsShowedScreen()){
+                from.GetScreen().ShowScreen();
+            }
+            if(!to.GetScreen().IsShowedScreen()){
+                to.GetScreen().ShowScreen();
+            }
+        })
+        .OnComplete(() =>{
             Complete();
         });
     }

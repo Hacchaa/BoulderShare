@@ -5,9 +5,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
+using SA.iOS.UIKit;
 
 namespace BoulderNotes {
-public class RegisterRecordView : BNScreenInput
+public class RegisterRecordView : BNScreenWithGyms
 {
     [SerializeField] private GameObject deleteButton;
     [SerializeField] private TextMeshProUGUI dayText;
@@ -30,8 +31,9 @@ public class RegisterRecordView : BNScreenInput
   
     public override void InitForFirstTransition(){
         ClearFields();
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            stack = (belongingStack as BNScreenStackWithTargetGym);
+        stack = GetScreenStackWithGyms();
+        if (stack != null){
+            stack.ClearInputs();
             route = stack.GetTargetRoute();
 
             if (route == null){
@@ -70,7 +72,7 @@ public class RegisterRecordView : BNScreenInput
                 recordTime = record.GetTime();
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
-                inputedText = record.GetComment();
+                stack.SetTargetString(record.GetComment());
 
                 if (record.GetTryNumber() == 1 && record.GetCompleteRate() == 100){
                     clearStatusObj.SetActive(true);
@@ -83,8 +85,7 @@ public class RegisterRecordView : BNScreenInput
         }
     }
 
-    public override void ClearFields(){
-        base.ClearFields();
+    public void ClearFields(){
         dayText.text = "";
         completeRateSlider.value = 50f;
         clearRateText.text = "50%";
@@ -98,7 +99,7 @@ public class RegisterRecordView : BNScreenInput
     }
 
     public override void UpdateScreen(){
-        commentText.text = inputedText;
+        commentText.text = stack.GetTargetString();
     }
 
     public void Register(){
@@ -112,7 +113,7 @@ public class RegisterRecordView : BNScreenInput
             //record.SetTryNumber(route.GetNewTryNumber());
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            record.SetComment(inputedText);
+            record.SetComment(stack.GetTargetString());
 
             BNRecord oldRecord = null;
             foreach(BNRecord r in route.GetRecords()){
@@ -132,7 +133,7 @@ public class RegisterRecordView : BNScreenInput
             record.SetTryNumber(route.GetNewTryNumber());
             record.SetCompleteRate((int)completeRateSlider.value);
             record.SetCondition((BNRecord.Condition)((int)conditionSlider.value));
-            record.SetComment(inputedText);
+            record.SetComment(stack.GetTargetString());
 
             route.AddRecord(record);           
         }
@@ -160,9 +161,15 @@ public class RegisterRecordView : BNScreenInput
         ReverseTransition();
     }
 
+    public void InputText(){
+        stack.SetTargetItemToInput(InputItemsView.TargetItem.Texts);
+        BNScreens.Instance.Transition(BNScreens.BNScreenType.InputItemsView, BNScreens.TransitionType.Push);
+    }
+
     public void ReverseTransition(float t = 1.0f, int n = 1){
         route = null;
         record = null;
+        stack.ClearInputs();
         BNScreens.Instance.ReverseTransition(t, n);
     }
 
@@ -176,7 +183,7 @@ public class RegisterRecordView : BNScreenInput
     }
 
     private void SetSelectedCondition(int index){
-        Addressables.LoadAssetsAsync<Sprite>(conditionRef[index], OnLoadSprite);
+        BNManager.Instance.GetConditionSprite(index, OnLoadSprite);
     }
 
     private void OnLoadSprite(Sprite spr){
@@ -203,6 +210,23 @@ public class RegisterRecordView : BNScreenInput
         }else{
             clearStatusObj.SetActive(false);
         }
+    }
+
+    public void OnClickingDateButton(){
+        ISN_UIDateTimePicker picker = new ISN_UIDateTimePicker();
+        picker.DatePickerMode = ISN_UIDateTimePickerMode.Date;
+
+        picker.Show((DateTime d) =>{
+            dayText.text = d.ToString(BNGymDataCenter.FORMAT_DATE2);
+        });
+    }
+    public void OnClickingTimeButton(){
+        ISN_UIDateTimePicker picker = new ISN_UIDateTimePicker();
+        picker.DatePickerMode = ISN_UIDateTimePickerMode.Time;
+
+        picker.Show((DateTime d) =>{
+            timeText.text = d.ToString(BNGymDataCenter.FORMAT_HM);
+        });
     }
 }
 }

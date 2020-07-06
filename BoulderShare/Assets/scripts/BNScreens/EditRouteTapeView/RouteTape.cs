@@ -49,6 +49,10 @@ public class RouteTape : MonoBehaviour
         if (t == null){
             return ;
         }
+        if (t.isDefault){
+            LoadDefault();
+            return ;
+        }
         if (!string.IsNullOrEmpty(t.spriteName)){
             //Debug.Log("t.spriteName:"+t.spriteName);
             Addressables.LoadAssetsAsync<Sprite>(t.spriteName, OnLoad);
@@ -65,6 +69,7 @@ public class RouteTape : MonoBehaviour
         tape.tapeText = text.text;
         tape.color = img.color;
         tape.imageRot = img.transform.localRotation;
+        tape.isDefault = isDefault;
         return tape;
     }
 

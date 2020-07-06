@@ -12,7 +12,7 @@ public class WallTypeToggleGroup : MonoBehaviour
     [SerializeField] private ScrollRect scroller;
 
     public void Init(WallTypeMap.Type t){
-        scroller.verticalNormalizedPosition = 0.0f;
+        //scroller.verticalNormalizedPosition = 0.0f;
         selectedType = t;
         foreach(WallTypeToggle tog in toggles){
             tog.Init(t);

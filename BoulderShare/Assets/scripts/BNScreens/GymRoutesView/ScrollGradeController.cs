@@ -30,7 +30,6 @@ public class ScrollGradeController : MonoBehaviour
         }
         currentItem = items[0];
         currentItem.FocusOn();
-        scrollRect.horizontalNormalizedPosition = 0.0f;
         RectTransform rect = GetComponent<RectTransform>();
         movedContent.anchorMin = Vector2.one * 0.5f;
         movedContent.anchorMax = Vector2.one * 0.5f;
@@ -52,6 +51,7 @@ public class ScrollGradeController : MonoBehaviour
             total += arr[i];
         }
         items[0].SetNum(total);
+        scrollRect.horizontalNormalizedPosition = 0.0f;
     }
 
     public void Register(ScrollGradeItem item){

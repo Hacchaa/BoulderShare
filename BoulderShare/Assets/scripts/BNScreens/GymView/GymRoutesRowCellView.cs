@@ -20,11 +20,11 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
 
     private string routeID;
     private OnButtonClickedDelegateWithString del;
-    private OnButtonClickedDelegateWithImageNames onZoom;
+    private OnButtonClickedDelegateWithString onZoom;
     private bool completedInit = false;
     [SerializeField] private Image maskImage;
     private BNWallImageNames imageNames;
-    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithImageNames onZoomButtonClicked){
+    public void SetData(GymRoutesScrollerData data, BNScreenStackWithTargetGym stack, OnButtonClickedDelegateWithString onButtonClicked, OnButtonClickedDelegateWithString onZoomButtonClicked){
         del = onButtonClicked;
         onZoom = onZoomButtonClicked;
         if(data.routeTape != null){
@@ -137,7 +137,7 @@ public class GymRoutesRowCellView : EnhancedScrollerCellView
     public void OnZoomClicked(){
         if (onZoom != null){
             //TemporaryRepository_BNScreens.Instance.bNWallImageNames = imageNames;
-            onZoom(imageNames);
+            onZoom(routeID);
         }
     }
 }

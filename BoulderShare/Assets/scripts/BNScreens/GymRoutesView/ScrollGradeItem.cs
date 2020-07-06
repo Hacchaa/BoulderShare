@@ -27,6 +27,9 @@ public class ScrollGradeItem : MonoBehaviour
             BNManager.Instance.GetCornerPanelFill(OnLoadFill);
             BNManager.Instance.GetCornerPanelStroke(OnLoadFlame);
         }
+        if (!gameObject.activeSelf){
+            gameObject.SetActive(true);
+        }
     }
     private void OnLoadFlame(Sprite sprite){
         flameImage.sprite = sprite;

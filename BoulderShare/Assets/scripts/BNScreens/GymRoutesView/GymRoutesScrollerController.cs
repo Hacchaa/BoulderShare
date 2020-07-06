@@ -134,9 +134,9 @@ public class GymRoutesScrollerController : MonoBehaviour, IEnhancedScrollerDeleg
     public void ToRegisterView(){
         view.ToRegisterView();
     }
-    public void ToDisplayImageView(BNWallImageNames names){
-        (view.GetBelongingStack() as BNScreenStackWithTargetGym).SetTargetImageNames(names);
-        view.ToDisplayImageView();
+    public void ToDisplayImageView(string routeID){
+        view.SaveTargetRouteInStack(routeID);
+        view.ToDisplayImageViewForImages();
     }
 
     public Vector2 GetCurentScrollPosition(){

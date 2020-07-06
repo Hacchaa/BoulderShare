@@ -11,12 +11,35 @@ public class BNScreenStackWithTargetGym : BNTStack
     [SerializeField] private BNRoute targetRoute;
     [SerializeField] private BNRecord targetRecord;
     private BNWallImageNames targetImageNames;
+    private InputItemsView.TargetItem targetItemToInput;
+    private WallTypeMap.Type targetWallType;
+    private BNGradeMap.Grade targetGrade;
+    private RTape targetTape;
+    private string targetString;
+    private Sprite targetSprite;
+    private SortToggle.SortType targetSortType;
+    private bool inputWalltype = false;
+    private bool inputGrade = false;
+    private DisplayImageView.DisplayType targetDisplayType;
+
     public override void Init(){
         base.Init();
         targetGym = null;
         targetRecord = null;
         targetRecord = null;
+        ClearInputs();
+    }
+    public void ClearInputs(){
         targetImageNames = null;
+        targetTape = null;
+        targetSprite = null;
+        targetWallType = WallTypeMap.Type.Slab;
+        inputWalltype = false;
+        targetGrade = BNGradeMap.Grade.None;
+        inputGrade = false;
+        targetItemToInput = InputItemsView.TargetItem.None;
+        targetSortType = SortToggle.SortType.None;  
+        targetDisplayType = DisplayImageView.DisplayType.WallImages;
     }
     public BNGym GetTargetGym(){
         if (targetGym == null){
@@ -41,6 +64,36 @@ public class BNScreenStackWithTargetGym : BNTStack
 
     public BNWallImageNames GetTargetImageNames(){
         return targetImageNames;
+    }
+    public InputItemsView.TargetItem GetTargetItemToInput(){
+        return targetItemToInput;
+    }
+    public WallTypeMap.Type GetTargetWallType(){
+        return targetWallType;
+    }
+    public DisplayImageView.DisplayType GetTargetDisplayType(){
+        return targetDisplayType;
+    }
+    public bool InputWallType(){
+        return inputWalltype;
+    }
+    public bool InputGrade(){
+        return inputGrade;
+    }
+    public BNGradeMap.Grade GetTargetGrade(){
+        return targetGrade;
+    }
+    public RTape GetTargetTape(){
+        return targetTape;
+    }
+    public string GetTargetString(){
+        return targetString;
+    }
+    public Sprite GetTargetSprite(){
+        return targetSprite;
+    }
+    public SortToggle.SortType GetTargetSortType(){
+        return targetSortType;
     }
 
     //gym,wall,routeは階層構造を維持する
@@ -78,6 +131,32 @@ public class BNScreenStackWithTargetGym : BNTStack
 
     public void SetTargetImageNames(BNWallImageNames names){
         targetImageNames = names;
+    }
+    public void SetTargetItemToInput(InputItemsView.TargetItem item){
+        targetItemToInput = item;
+    }
+    public void SetTargetWallType(WallTypeMap.Type type){
+        targetWallType = type;
+        inputWalltype = true;
+    }
+    public void SetTargetGrade(BNGradeMap.Grade grade){
+        targetGrade = grade;
+        inputGrade = true;
+    }
+    public void SetTargetTape(RTape tape){
+        targetTape = tape;
+    }
+    public void SetTargetString(string str){
+        targetString = str;
+    }
+    public void SetTargetSprite(Sprite sprite){
+        targetSprite = sprite;
+    }
+    public void SetTargetSortType(SortToggle.SortType sortType){
+        targetSortType = sortType;
+    }
+    public void SetTargetDisplayType(DisplayImageView.DisplayType t){
+        targetDisplayType = t;
     }
 /*
     public Sprite LoadWallImage(string fileName){
@@ -119,11 +198,17 @@ public class BNScreenStackWithTargetGym : BNTStack
         }
         return BNGymDataCenter.Instance.LoadWallImageByES3(targetGym,fileName);
     }
+    public Texture2D LoadTextureByES3(string fileName){
+        if (targetGym == null){
+            return null;
+        }
+        return BNGymDataCenter.Instance.LoadTextureByES3(targetGym,fileName);
+    }
     public void WriteGym(BNGym gym, BNImage bnImage = null){
         BNGymDataCenter.Instance.WriteGym(gym, bnImage);
     }
     
-    public void WriteRoute(BNRoute route, BNWallImage wallImage = null){
+    public void WriteRoute(BNRoute route, List<BNWallImage> wallImages = null){
         if (targetGym == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
@@ -135,10 +220,10 @@ public class BNScreenStackWithTargetGym : BNTStack
         targetGym.AddRoute(route);
         BNGymDataCenter.Instance.ModifyGym(targetGym);
 
-        if (wallImage == null){
+        if (wallImages == null){
             return ;
         }
-        BNGymDataCenter.Instance.SaveWallImage(targetGym, wallImage);
+        BNGymDataCenter.Instance.SaveWallImages(targetGym, wallImages);
     }
     public void WriteRecord(BNRecord record){
         if (targetGym == null || targetRoute == null || record == null || string.IsNullOrEmpty(record.GetID())){
@@ -158,14 +243,18 @@ public class BNScreenStackWithTargetGym : BNTStack
         ModifyGym(targetGym, bnImage);
     }
 
-    public void ModifyGym(BNGym gym, BNImage bnImage = null){
+    public void ModifyGym(BNGym gym, BNImage gradeTableImage = null){
         if (targetGym == null || gym == null){
             return ;
         }
         if (!targetGym.GetID().Equals(gym.GetID())){
             return ;
         }
-        bool success = BNGymDataCenter.Instance.ModifyGym(gym, bnImage);
+        string file = targetGym.GetGradeTableImagePath();
+        if (gradeTableImage != null && !string.IsNullOrEmpty(file)){
+            BNGymDataCenter.Instance.DeleteWallImage(targetGym, file);
+        }
+        bool success = BNGymDataCenter.Instance.ModifyGym(gym, gradeTableImage);
         if (success){
             ClearRoute();
             targetGym = gym;                
@@ -173,7 +262,7 @@ public class BNScreenStackWithTargetGym : BNTStack
     }
     
     //routeは必ずcloneしたものにする
-    public void ModifyRoute(BNRoute route, BNWallImage addWallImage = null, List<string> removeList = null){
+    public void ModifyRoute(BNRoute route, List<BNWallImage> addWallImages = null, List<string> removeList = null){
         if (targetGym == null || targetRoute == null || route == null || string.IsNullOrEmpty(route.GetID())){
             return ;
         }
@@ -182,8 +271,8 @@ public class BNScreenStackWithTargetGym : BNTStack
             if (removeList != null){
                 BNGymDataCenter.Instance.DeleteWallImages(targetGym, removeList);
             }
-            if (addWallImage != null){
-                BNGymDataCenter.Instance.SaveWallImage(targetGym, addWallImage);
+            if (addWallImages != null){
+                BNGymDataCenter.Instance.SaveWallImages(targetGym, addWallImages);
             }
 
             targetGym.DeleteRoute(targetRoute);
@@ -212,6 +301,21 @@ public class BNScreenStackWithTargetGym : BNTStack
 
         BNGymDataCenter.Instance.DeleteGym(targetGym.GetID());
         ClearGym();
+    }
+
+    public void DeleteGradeTable(){
+        //Debug.Log("deleteGradeTable");
+        if (targetGym == null){
+            return ;
+        }
+
+        string file = targetGym.GetGradeTableImagePath();
+        if (!string.IsNullOrEmpty(file)){
+            //Debug.Log("go DeleteWallImage");
+            BNGymDataCenter.Instance.DeleteWallImage(targetGym, file);
+            targetGym.SetGradeTableImagePath("");
+            BNGymDataCenter.Instance.ModifyGym(targetGym, null);
+        }
     }
     public void DeleteRoute(){
         if (targetGym == null || targetRoute == null){

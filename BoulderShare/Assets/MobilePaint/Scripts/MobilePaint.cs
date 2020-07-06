@@ -3041,8 +3041,10 @@ namespace unitycoder_MobilePaint
         {
             if (lineRenderer)
             {
-                lineRenderer.SetColors(paintColor, paintColor);
-                lineRenderer.SetWidth(brushSize*2f / resolutionScaler, brushSize*2f / resolutionScaler);
+                lineRenderer.startColor = paintColor;
+                lineRenderer.endColor = paintColor;
+                lineRenderer.startWidth = brushSize*2f/resolutionScaler;
+                lineRenderer.endWidth = brushSize*2f/resolutionScaler;
             }
 
             if (previewLineCircleEnd)

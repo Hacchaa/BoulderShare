@@ -12,9 +12,9 @@ public class RecordOverviewCellView : EnhancedScrollerCellView
     public TextMeshProUGUI daysText;
 
     public void SetData(RecordOverviewScrollerData data){
-        completeRateText.text = data.completeRate + "";
-        tryCountText.text = data.tryCount + "";
-        daysText.text = data.days + "";
+        completeRateText.SetText("<b>{0}</b><size=50%><color=#212121>%",data.completeRate);
+        tryCountText.SetText("<b>{0}</b><size=50%><color=#212121>回",data.tryCount);
+        daysText.SetText("<b>{0}</b><size=50%><color=#212121>日",data.days);
     }
 }
 }

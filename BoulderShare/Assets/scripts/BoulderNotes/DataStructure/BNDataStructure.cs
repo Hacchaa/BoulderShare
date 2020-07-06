@@ -21,7 +21,6 @@ namespace BoulderNotes{
     [Serializable]
     public class BNSetting{
         public SortToggle.SortType gymSort;
-
         public BNSetting(){
             gymSort = SortToggle.SortType.Latest;
         }
@@ -487,6 +486,7 @@ namespace BoulderNotes{
         public string spriteName;
         public string tapeText;
         public Color color;
+        public bool isDefault;
         public RTape Clone(){
             return (RTape)this.MemberwiseClone();
         }

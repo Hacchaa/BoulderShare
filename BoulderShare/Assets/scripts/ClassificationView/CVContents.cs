@@ -13,7 +13,9 @@ namespace BoulderNotes{
             Clear();
             for(int i = 0 ; i < contents.Length ; i++){
                 contents[i].Init(w);
-                contents[i].Deactive();
+                if (i != 0){
+                    contents[i].Deactive();
+                }
             }  
 
             contents[0].Active();

@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 
 namespace BoulderNotes{
-public class RouteView : BNScreen
+public class RouteView : BNScreenWithGyms
 {
     [SerializeField] private RecordScrollerController scroller;
     [SerializeField] private BNRoute route;
@@ -39,9 +39,8 @@ public class RouteView : BNScreen
         scroller.Init();
         GradHeadBG(0f);
 
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            stack = belongingStack as BNScreenStackWithTargetGym;
-        }
+        stack = GetScreenStackWithGyms();
+  
         wallImageRect = wallImage.GetComponent<RectTransform>();
         wallImageParent = wallImage.transform.parent.GetComponent<RectTransform>();
         scrollRectRect = scrollRect.GetComponent<RectTransform>();

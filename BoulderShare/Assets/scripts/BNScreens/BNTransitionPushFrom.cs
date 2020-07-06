@@ -17,7 +17,6 @@ public class BNTransitionPushFrom : BNTransitionBase
     [SerializeField] private Vector2 headBGBase;
     [SerializeField] private Vector2 tabBase;
     [SerializeField] private Vector2 contentBase;
-    private bool isNeedHeadBG ;
 
 
     public override void Init(BNScreen screen, RectTransform content, RectTransform head, RectTransform headBG, RectTransform tab){
@@ -82,7 +81,6 @@ public class BNTransitionPushFrom : BNTransitionBase
         if (tab != null){
             tab.gameObject.SetActive(true);
         }
-        isNeedHeadBG = false;
         if (HasHeadBG()){
             /*
             if(!isAnotherWithHeadBG){

@@ -50,10 +50,10 @@ public class BNScreens : SingletonMonoBehaviour<BNScreens>{
     }
 
     public void Transition(BNScreenType screen, TransitionType transition){
-        stacks[currentStackIndex].Transition(screen, transition);
+        StartCoroutine(stacks[currentStackIndex].Transition(screen, transition));
     }
     public void ReverseTransition(float t = 1.0f, int rtTimes = 1){
-        stacks[currentStackIndex].ReverseTransition(t, rtTimes);
+        StartCoroutine(stacks[currentStackIndex].ReverseTransition(t, rtTimes));
     }
 
     public BNScreen MakeScreen(BNScreenType t, Transform parent){

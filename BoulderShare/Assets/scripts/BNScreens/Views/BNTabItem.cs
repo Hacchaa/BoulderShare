@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace BoulderNotes{
 public class BNTabItem : MonoBehaviour
 {
     [SerializeField] private BNScreens.BNTabName bnTabName;
-    [SerializeField] private GameObject focusImage;
-    [SerializeField] private GameObject defocusImage;
+    [SerializeField] private Sprite focusSprite;
+    [SerializeField] private Sprite defocusSprite;
+    [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI text;
     
     public BNScreens.BNTabName GetTabName(){
@@ -16,15 +18,13 @@ public class BNTabItem : MonoBehaviour
     }
 
     public void Focus(Color textColor){
-        focusImage.SetActive(true);
-        defocusImage.SetActive(false);
+        icon.sprite = focusSprite;
 
         SetTextColor(textColor);
     }
 
     public void DeFocus(Color textColor){
-        focusImage.SetActive(false);
-        defocusImage.SetActive(true);  
+        icon.sprite = defocusSprite;  
 
         SetTextColor(textColor);      
     }

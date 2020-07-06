@@ -18,9 +18,6 @@ public class BNTransitionFadeTo : BNTransitionBase
 
     override public void Ready(){
         base.Ready();
-        contentCG.alpha = 0f;
-        headCG.alpha = 0f;
-        headBGCG.alpha = 0f;
     }
     override public void Complete(bool isReverse){
         base.Complete(isReverse);

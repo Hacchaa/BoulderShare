@@ -6,14 +6,13 @@ using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using AdvancedInputFieldPlugin;
 namespace BoulderNotes{
-public class EditRouteTapeView: BNScreen
+public class EditRouteTapeView: BNScreenWithGyms
 {
     [SerializeField] private AssetLabelReference label;
     [SerializeField] private Transform routeTapeRoot;
     [SerializeField] private RouteTapeShape shapePrefab;
     [SerializeField] private RouteTape routeTape;
     [SerializeField] private ClassificationView classView;
-    private BNScreenInput screen;
     [SerializeField] private InputItemsView.TargetItem currentTargetItem;
     private RouteTapeShape[] shapes;
     [SerializeField] private RouteTapeShapeDefault shapeDefaultPrefab;
@@ -21,6 +20,8 @@ public class EditRouteTapeView: BNScreen
     [SerializeField] private Sprite defaultSprite;
     [SerializeField] private AdvancedInputField tapeTextIF;
     private bool selectedDefault;
+    private BNScreenStackWithTargetGym stack;
+
     public override void InitForFirstTransition(){
         classView.Init();
         selectedDefault = true;
@@ -36,29 +37,22 @@ public class EditRouteTapeView: BNScreen
 
             RouteTapeShapeDefault def = Instantiate<RouteTapeShapeDefault>(shapeDefaultPrefab, routeTapeRoot);
             def.Init(this);
+
+            //sprite読み込み
+            Addressables.LoadAssetsAsync<Sprite>(label, OnLoadHoldMarkSprite);
         }
 
-
-        //sprite読み込み
-        Addressables.LoadAssetsAsync<Sprite>(label, OnLoadHoldMarkSprite);
-
         //初期値取得
-        screen = null;
-        
-        if (belongingStack != null){
-            BNScreen s = belongingStack.GetPreviousScreen(1);
-            if (s is BNScreenInput){
-                screen = s as BNScreenInput;
-                currentTargetItem = screen.GetCurrentTargetItem();
-
-                if (currentTargetItem == InputItemsView.TargetItem.Tape){
-                    RTape t = screen.GetTape();
-                    if (t == null){
-                        routeTape.LoadDefault();
-                    }else{
-                        routeTape.LoadTape(t);
-                        selectedDefault = false;
-                    }
+        stack = GetScreenStackWithGyms();
+        currentTargetItem = stack.GetTargetItemToInput();
+        if (currentTargetItem == InputItemsView.TargetItem.Tape){
+            RTape t = stack.GetTargetTape();
+            if (t == null){
+                routeTape.LoadDefault();
+            }else{
+                routeTape.LoadTape(t);
+                if (!t.isDefault){
+                    selectedDefault = false;
                 }
             }
         }
@@ -115,16 +109,11 @@ public class EditRouteTapeView: BNScreen
         }
     }
 
-
     public void Register(){
-        if (screen != null && currentTargetItem == InputItemsView.TargetItem.Tape){
-            if(routeTape.IsDefault()){
-                screen.SetTape(null);
-            }else{
-                screen.SetTape(routeTape.GetTape());
-            }
-            ReverseTransition();
+        if (currentTargetItem == InputItemsView.TargetItem.Tape){
+            stack.SetTargetTape(routeTape.GetTape());
         }
+        ReverseTransition();
     }
 
     public void ReverseTransition(){

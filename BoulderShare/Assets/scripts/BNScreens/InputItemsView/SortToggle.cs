@@ -7,7 +7,7 @@ using TMPro;
 namespace BoulderNotes{
 public class SortToggle : MonoBehaviour
 {
-    public enum SortType{Latest, Name, More};
+    public enum SortType{Latest, Name, More, None};
     [SerializeField] private SortType sortType;
     [SerializeField] private SortToggleGroup group;
     [SerializeField] private Toggle toggle;

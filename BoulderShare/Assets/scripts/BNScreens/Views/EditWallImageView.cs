@@ -168,11 +168,12 @@ public class EditWallImageView: BNScreen
         if (stack != null){
             string[] str = wallImageNames.fileName.Split('.');
             string name = str[0] + BNGymDataCenter.POSTFIX_ID_WALLIMAGEEDITED + "." + str[1];
-            BNWallImage wallImage = new BNWallImage(image, name);
+            List<BNWallImage> wallImages = new List<BNWallImage>();
+            wallImages.Add(new BNWallImage(image, name));
             wallImageNames.editedFileName = name;
             route.ModifyWallImageFileName(wallImageNames);
 
-            stack.ModifyRoute(route, wallImage);
+            stack.ModifyRoute(route, wallImages);
         }
         /*
         testImage.sprite = Sprite.Create(

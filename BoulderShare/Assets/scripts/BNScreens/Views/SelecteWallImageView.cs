@@ -13,27 +13,14 @@ using SA.iOS.AVFoundation;
 using SA.iOS.Photos;
 
 namespace BoulderNotes {
-public class SelecteWallImageView : BNScreen
+public class SelecteWallImageView : BNScreenWithGyms
 {
-    private BNScreenInput screen;
     [SerializeField] private Image image;
+    private BNScreenStackWithTargetGym stack;
 
     public override void InitForFirstTransition(){
-        ClearField();
-        if (belongingStack != null){
-            BNScreen s = belongingStack.GetPreviousScreen(1);
-
-            if (s == null || !(s is BNScreenInput)){
-                return ;
-            }
-            screen = s as BNScreenInput;
-        }
+        stack = GetScreenStackWithGyms();
     }
-
-    private void ClearField(){
-        screen = null;
-    }
-
 
     public override void UpdateScreen(){
         
@@ -149,7 +136,7 @@ public class SelecteWallImageView : BNScreen
         picker.Present((result) => {
             if (result.IsSucceeded) {
                 Debug.Log("IMAGE local path: " + result.ImageURL);
-                screen.SetSprite(result.Image.ToSprite());
+                stack.SetTargetSprite(result.Image.ToSprite());
                 ReverseTransition();
             } else {
                 Debug.Log("Madia picker failed with reason: " + result.Error.Message);
@@ -170,7 +157,7 @@ public class SelecteWallImageView : BNScreen
         picker.Present((result) => {
             if (result.IsSucceeded) {
                 Debug.Log("IMAGE local path: " + result.ImageURL);
-                screen.SetSprite(result.Image.ToSprite());
+                stack.SetTargetSprite(result.Image.ToSprite());
                 ReverseTransition();
             } else {
                 Debug.Log("Madia picker failed with reason: " + result.Error.Message);
@@ -223,7 +210,7 @@ public class SelecteWallImageView : BNScreen
                     new Vector2(0.5f, 0.5f),
                     texture.height/4);
                 image.sprite = sprite;
-                screen.SetSprite(sprite);
+                stack.SetTargetSprite(sprite);
                 ReverseTransition();
             }
         }

@@ -49,7 +49,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
                 data.completeRate = record.GetCompleteRate();
                 data.comment = record.GetComment();
                 data.tryNumber = record.GetTryNumber();
-                data.conditionImageRef = conditionImageRef[(int)record.GetCondition()];
+                data.condition = record.GetCondition();
 
                 if (string.IsNullOrEmpty(curDate) || !curDate.Equals(dat)){
                     dateList.Add(dat);
@@ -147,8 +147,7 @@ public class RecordScrollerController : MonoBehaviour, IEnhancedScrollerDelegate
         if (_data[dataIndex] is RecordScrollerData){
             RecordCellView recordCellView = scroller.GetCellView(recordCellViewPrefab) as RecordCellView;
             RecordScrollerData data = _data[dataIndex] as RecordScrollerData;
-            recordCellView.SetData(data);
-            recordCellView.clickDel = ToRecordView;
+            recordCellView.SetData(data, ToRecordView);
             return recordCellView;
         }
         if (_data[dataIndex] is RecordOverviewScrollerData){

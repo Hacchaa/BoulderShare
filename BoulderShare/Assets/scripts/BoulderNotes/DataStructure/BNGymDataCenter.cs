@@ -76,6 +76,9 @@ namespace BoulderNotes{
         }
 
         public void SaveGymSortType(SortToggle.SortType type){
+            if (setting.gymSort == type){
+                return ;
+            }
             setting.gymSort = type;
             WriteSetting();
         }
@@ -416,6 +419,16 @@ namespace BoulderNotes{
 
             WriteGymIDs(ReadGymIDsFromCache());
         }
+
+        public void DeleteWallImage(BNGym gym, string wallImageName){
+            //Debug.Log("delete wallImage");
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" +ES3_DIC_IMAGES + "/" ;
+            if (string.IsNullOrEmpty(wallImageName)){
+                return ;
+            }
+            //Debug.Log("delete acutually: "+path+wallImageName);
+            ES3.DeleteFile(path+wallImageName);
+        }
         public void DeleteWallImages(BNGym gym, List<string> wallImageNames){
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" +ES3_DIC_IMAGES + "/" ;
             foreach(string name in wallImageNames){
@@ -438,6 +451,9 @@ namespace BoulderNotes{
         }.*/
 
         public void SaveWallImages(BNGym gym, List<BNWallImage> wallImageList){
+            if (wallImageList == null){
+                return ;
+            }
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
             foreach(BNWallImage bnImage in wallImageList){
                 if (string.IsNullOrEmpty(bnImage.fileName) || bnImage.texture == null){
@@ -455,6 +471,7 @@ namespace BoulderNotes{
             ES3.SaveImage(wallImage.texture, path+wallImage.fileName);
     
         }
+
         public void SaveImage(BNGym gym, BNImage bnImage){
             if (string.IsNullOrEmpty(bnImage.fileName) || bnImage.texture == null){
                 return ;
@@ -467,10 +484,15 @@ namespace BoulderNotes{
             string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
             Texture2D tex = ES3.LoadImage(path+fileName);
             return Sprite.Create(
-                        tex, 
-                        new Rect(0.0f, 0.0f, tex.width, tex.height), 
-                        new Vector2(0.5f, 0.5f),
-                        tex.height/4);
+                tex, 
+                new Rect(0.0f, 0.0f, tex.width, tex.height), 
+                new Vector2(0.5f, 0.5f),
+                tex.height/4);
+        }
+        public Texture2D LoadTextureByES3(BNGym gym, string fileName){
+            string path = ES3_ROOTPATH + "/" + gym.GetID() + "/" + ES3_DIC_IMAGES + "/";
+            Texture2D tex = ES3.LoadImage(path+fileName);
+            return tex;
         }
 /*
         public Texture2D LoadWallImage(string path){

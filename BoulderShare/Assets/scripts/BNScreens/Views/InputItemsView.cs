@@ -5,12 +5,11 @@ using TMPro;
 using AdvancedInputFieldPlugin;
 
 namespace BoulderNotes{
-public class InputItemsView: BNScreen
+public class InputItemsView: BNScreenWithGyms
 {
     public enum TargetItem{None, WallType, Grade, Texts, Tape, Image, Sort};
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TargetItem currentTargetItem;
-    [SerializeField] private BNScreenInput screen;
 
     [SerializeField] private WallTypeToggleGroup wallTypeGroup;
     [SerializeField] private GradeToggleGroup gradeGroup;
@@ -20,48 +19,51 @@ public class InputItemsView: BNScreen
     [SerializeField] private GameObject gradeObj;
     [SerializeField] private GameObject sortObj;
     [SerializeField] private AdvancedInputField advancedIF;
-
+    private BNScreenStackWithTargetGym stack;
     public override void InitForFirstTransition(){
-        screen = null;
-        
-        if (belongingStack != null){
-            BNScreen s = belongingStack.GetPreviousScreen(1);
-            if (s is BNScreenInput){
-                screen = s as BNScreenInput;
-                currentTargetItem = screen.GetCurrentTargetItem();
+        stack = GetScreenStackWithGyms();
+        if (stack != null){
+            currentTargetItem = stack.GetTargetItemToInput();
+            
+            ShowObj();
 
-                ShowObj();
+            if (currentTargetItem == TargetItem.WallType){
+                titleText.text = "壁の種類";
+                wallTypeGroup.Init(stack.GetTargetWallType());
+            }else if (currentTargetItem == TargetItem.Grade){
+                titleText.text = "グレード";
+                gradeGroup.Init(stack.GetTargetGrade());
+            }else if (currentTargetItem == TargetItem.Texts){
+                titleText.text = "テキスト";
+                advancedIF.Text = stack.GetTargetString();
+            }else if (currentTargetItem == TargetItem.Sort){
+                titleText.text = "";
+                sortToggleGroup.Init(stack.GetTargetSortType());
 
-                if (currentTargetItem == TargetItem.WallType){
-                    titleText.text = "壁の種類";
-                    wallTypeGroup.Init(screen.GetWallType());
-                }else if (currentTargetItem == TargetItem.Grade){
-                    titleText.text = "グレード";
-                    gradeGroup.Init(screen.GetGrade());
-                }else if (currentTargetItem == TargetItem.Texts){
-                    titleText.text = "テキスト";
-                    advancedIF.Text = screen.GetText();
-                }else if (currentTargetItem == TargetItem.Sort){
-                    titleText.text = "";
-                    sortToggleGroup.Init(screen.GetSortType());
-
-                }
             }
         }
     }
     private void ShowObj(){
-        walltypeObj.SetActive(false);
-        gradeObj.SetActive(false);
-        textObj.SetActive(false);
-        sortObj.SetActive(false);
         if (currentTargetItem == TargetItem.WallType){
-            walltypeObj.SetActive(true);
+            BNManager.Instance.ActivateNecessary(walltypeObj, true);
+            BNManager.Instance.ActivateNecessary(gradeObj, false);
+            BNManager.Instance.ActivateNecessary(textObj, false);
+            BNManager.Instance.ActivateNecessary(sortObj, false);
         }else if(currentTargetItem == TargetItem.Grade){
-            gradeObj.SetActive(true);
+            BNManager.Instance.ActivateNecessary(gradeObj, true);
+            BNManager.Instance.ActivateNecessary(walltypeObj, false);
+            BNManager.Instance.ActivateNecessary(textObj, false);
+            BNManager.Instance.ActivateNecessary(sortObj, false);
         }else if (currentTargetItem == TargetItem.Texts){
-            textObj.SetActive(true);
+            BNManager.Instance.ActivateNecessary(textObj, true);
+            BNManager.Instance.ActivateNecessary(walltypeObj, false);
+            BNManager.Instance.ActivateNecessary(gradeObj, false);
+            BNManager.Instance.ActivateNecessary(sortObj, false);
         }else if (currentTargetItem == TargetItem.Sort){
-            sortObj.SetActive(true);
+            BNManager.Instance.ActivateNecessary(sortObj, true);
+            BNManager.Instance.ActivateNecessary(walltypeObj, false);
+            BNManager.Instance.ActivateNecessary(gradeObj, false);
+            BNManager.Instance.ActivateNecessary(textObj, false);
         }
     }
 
@@ -74,15 +76,15 @@ public class InputItemsView: BNScreen
     }
 
     public void Register(){
-        if (screen != null){
+        if (stack != null){
             if (currentTargetItem == TargetItem.WallType){
-                screen.SetWallType(wallTypeGroup.GetWallType());
+                stack.SetTargetWallType(wallTypeGroup.GetWallType());
             }else if(currentTargetItem == TargetItem.Grade){
-                screen.SetGrade(gradeGroup.GetGrade());
+                stack.SetTargetGrade(gradeGroup.GetGrade());
             }else if(currentTargetItem == TargetItem.Texts){
-                screen.SetText(advancedIF.Text);
+                stack.SetTargetString(advancedIF.Text);
             }else if(currentTargetItem == TargetItem.Sort){
-                screen.SetSortType(sortToggleGroup.GetSortType());
+                stack.SetTargetSortType(sortToggleGroup.GetSortType());
             }
         }
 

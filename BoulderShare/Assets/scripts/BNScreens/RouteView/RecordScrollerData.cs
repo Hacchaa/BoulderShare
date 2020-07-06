@@ -10,7 +10,7 @@ public class RecordScrollerData : RecordScrollerDataBase{
     public int completeRate;
     public string comment;
     public int tryNumber;
-    public AssetReference conditionImageRef; 
+    public BNRecord.Condition condition; 
 }
 public class RecordOverviewScrollerData : RecordScrollerDataBase {
     public int days;
