@@ -520,6 +520,11 @@ namespace BoulderNotes{
             return time;
         }
 
+
+        public DateTime GetFullTime(){
+            return DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
+        }
+
         public string GetDate(){
             DateTime t = DateTime.ParseExact(time, BNGymDataCenter.FORMAT_TIME, null);
 
