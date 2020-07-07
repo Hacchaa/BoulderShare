@@ -52,6 +52,11 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 		return displayImage.IsAlreadyMoved();
 	}
 	public bool IsAttemptingToGoOver(Vector2 dir){
+
+		if (Mathf.Abs(dir.x) < Mathf.Abs(dir.y)){
+			return false;
+		}
+
 		//右端
 		if (displayImage.IsInTheRightSide()){
 			//Debug.Log("right");

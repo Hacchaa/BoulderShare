@@ -10,6 +10,7 @@ using SA.iOS.UIKit;
 namespace BoulderNotes {
 public class RegisterRecordView : BNScreenWithGyms
 {
+    [SerializeField] private TextMeshProUGUI fullTime;
     [SerializeField] private GameObject deleteButton;
     [SerializeField] private TextMeshProUGUI dayText;
     [SerializeField] private TextMeshProUGUI timeText;
@@ -26,8 +27,14 @@ public class RegisterRecordView : BNScreenWithGyms
     [SerializeField] private ClearStatusToggle[] toggles;
     [SerializeField] private GameObject clearStatusObj;
     private BNScreenStackWithTargetGym stack;
+    private string recordDate;
     private string recordTime;
     private bool hasInsight;
+    private static string RECORDTIME_HEAD = "yyyyMMdd";
+    private static string RECORDTIME_END = "HHmmssffff";
+
+    private DateTime dateDT;
+    private DateTime timeDT;
   
     public override void InitForFirstTransition(){
         ClearFields();
@@ -59,9 +66,11 @@ public class RegisterRecordView : BNScreenWithGyms
             if (record == null){
                 //Debug.Log("new");
                 //新規作成
-                dayText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_DATE2);
-                timeText.text = DateTime.Now.ToString(BNGymDataCenter.FORMAT_HM);
-                recordTime = DateTime.Now.ToString(BNGymDataCenter.FORMAT_TIME);
+                DateTime now = DateTime.Now;
+                dayText.text = now.ToString(BNGymDataCenter.FORMAT_DATE2);
+                timeText.text = now.ToString(BNGymDataCenter.FORMAT_HM);
+                recordDate = now.ToString(RECORDTIME_HEAD);
+                recordTime = now.ToString(RECORDTIME_END);
                 deleteButton.SetActive(false);
                 clearStatusObj.SetActive(false);
             }else{
@@ -69,7 +78,9 @@ public class RegisterRecordView : BNScreenWithGyms
                 //編集
                 dayText.text = record.GetDate();
                 timeText.text = record.GetDate3();
-                recordTime = record.GetTime();
+                string fullTime = record.GetTime();
+                recordDate = fullTime.Substring(0, RECORDTIME_HEAD.Length);
+                recordTime = fullTime.Substring(RECORDTIME_HEAD.Length, RECORDTIME_END.Length);
                 completeRateSlider.value = 0f + record.GetCompleteRate();
                 conditionSlider.value = 0.0f + (int)record.GetCondition();
                 stack.SetTargetString(record.GetComment());
@@ -218,6 +229,8 @@ public class RegisterRecordView : BNScreenWithGyms
 
         picker.Show((DateTime d) =>{
             dayText.text = d.ToString(BNGymDataCenter.FORMAT_DATE2);
+            Debug.Log("date:"+d.ToString(BNGymDataCenter.FORMAT_TIME));
+            fullTime.text = d.ToString(BNGymDataCenter.FORMAT_TIME);
         });
     }
     public void OnClickingTimeButton(){
@@ -226,6 +239,8 @@ public class RegisterRecordView : BNScreenWithGyms
 
         picker.Show((DateTime d) =>{
             timeText.text = d.ToString(BNGymDataCenter.FORMAT_HM);
+            Debug.Log("time:"+d.ToString(BNGymDataCenter.FORMAT_TIME));
+            fullTime.text = d.ToString(BNGymDataCenter.FORMAT_TIME);
         });
     }
 }
