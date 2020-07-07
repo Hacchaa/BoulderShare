@@ -237,5 +237,11 @@ public class RegisterRecordView : BNScreenWithGyms
             timeDT = d;
         });
     }
+    public void ShowCalendar(){
+        ISN_UICalendar.PickDate((DateTime d) =>{
+            dayText.text = d.ToString(BNGymDataCenter.FORMAT_TIME);
+            dateDT = d;
+        });
+    }
 }
 }

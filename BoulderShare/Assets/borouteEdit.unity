@@ -90270,7 +90270,6 @@ MonoBehaviour:
     transition: {fileID: 67719337}
   needEnabledList:
   - {fileID: 614625399}
-  fullTime: {fileID: 1912314235}
   deleteButton: {fileID: 722190879}
   dayText: {fileID: 1819937368}
   timeText: {fileID: 124471804}
@@ -98991,7 +98990,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1452433583}
-        m_MethodName: OnClickingDateButton
+        m_MethodName: ShowCalendar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
