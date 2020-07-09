@@ -20,6 +20,10 @@ public class EditWallImageView: BNScreen
     [SerializeField] private Camera mobilePaintCamera;
     [SerializeField] private float maskThreshould = 0.2f;
     [SerializeField] private Image testImage;
+    [SerializeField] private EditWallImage_PenSizeController penSizeController;
+    [SerializeField] private EditWallImage_PenTypeController penTypeController;
+    [SerializeField] private EditWallImage_FillTypeController fillTypeController;
+    [SerializeField] private EditWallImage_Undo undoController;
     private float ptPerTexsize;
     private float defaultFOV;
     private Renderer rend;
@@ -30,10 +34,17 @@ public class EditWallImageView: BNScreen
     private BNRoute route;
     private BNWallImageNames wallImageNames;
     private Texture2D wallImage;
+    
     public override void InitForFirstTransition(){
         stack = null;
         route = null;
         routeView = null;
+
+        penSizeController.Init();
+        penTypeController.Init();
+        fillTypeController.Init();
+        undoController.Init();
+    
         if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
             stack = belongingStack as BNScreenStackWithTargetGym;
             route = stack.GetTargetRoute();
@@ -60,6 +71,10 @@ public class EditWallImageView: BNScreen
 
             texWidth = wallImage.width;
             texHeight = wallImage.height;
+
+            testImage.material = rend.material;
+            testImage.enabled = false;
+            testImage.enabled = true;
         }
     }
 
@@ -198,5 +213,26 @@ public class EditWallImageView: BNScreen
         Debug.Log("Screenshot saved at: "+path);*/
     }
 
+
+    private bool undoSwitch = false;
+    public void Undo(){
+        if (undoSwitch){
+            undoController.ShowDisableIcon();
+        }else{
+            undoController.ShowEnableIcon();
+        }
+        undoSwitch = !undoSwitch;
+    }
+
+    private bool fillSwitch = false;
+
+    public void ChangeFillType(){
+        if (fillSwitch){
+            fillTypeController.SwitchOff();
+        }else{
+            fillTypeController.SwitchOn();
+        }
+        fillSwitch = !fillSwitch;
+    }
 }
 }
