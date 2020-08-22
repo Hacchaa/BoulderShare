@@ -4,10 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
 using System;
+using System.Runtime.InteropServices;
 
 namespace BoulderNotes{
 public class BNManager : SingletonMonoBehaviour<BNManager>
 {
+    #if UNITY_IPHONE
+	[DllImport("__Internal")]
+	public static extern void BoulderNotes_Audio(int n);
+	#endif
     [SerializeField] private AssetReference[] cornerPanelFill;
     [SerializeField] private AssetReference[] cornerPanelStroke;
     [SerializeField] private Sprite[] cornerPanelFillSprites;
@@ -94,16 +99,17 @@ public class BNManager : SingletonMonoBehaviour<BNManager>
             obj.SetActive(b);
         }
     }     
-    public void FillImageToParent(Image wallImage, RectTransform fillRect, RectTransform parent, Sprite spr){
+
+    public void FillImageToParent(RectTransform fillRect, RectTransform parent, Texture tex){
+        FillImageToParent(fillRect, parent, tex.width, tex.height);
+    }
+    public void FillImageToParent(RectTransform fillRect, RectTransform parent, int texWidth, int texHeight){
         if (parent == null){
             parent = fillRect.transform.parent.GetComponent<RectTransform>();
         }
 
         float fitHeight = parent.rect.height;
         float fitWidth = parent.rect.width;
-
-        float texWidth = spr.texture.width;
-        float texHeight = spr.texture.height;
 
         float difW = Mathf.Abs(fitWidth - texWidth);
         float difH = Mathf.Abs(fitHeight - texHeight);
@@ -122,24 +128,22 @@ public class BNManager : SingletonMonoBehaviour<BNManager>
         fillRect.anchorMin = new Vector2(0.5f, 0.5f);
         fillRect.anchorMax = new Vector2(0.5f, 0.5f);
         fillRect.sizeDelta = new Vector2(w, h);
-
-        wallImage.sprite = spr;
     }
-	public void FitImageToParent(Image image, RectTransform fitRect, RectTransform parent, Sprite spr){
+
+    public void FitImageToParent(RectTransform fitRect, RectTransform parent, Texture tex){
+        FitImageToParent(fitRect, parent, tex.width, tex.height);
+    }
+	public void FitImageToParent(RectTransform fitRect, RectTransform parent, float texWidth, float texHeight){
         if (parent == null){
             parent = fitRect.transform.parent.GetComponent<RectTransform>();
         }
         float fitHeight = parent.rect.height;
         float fitWidth = parent.rect.width;
 
-        float texWidth = spr.texture.width;
-        float texHeight = spr.texture.height;
-
         float difW = Mathf.Abs(fitWidth - texWidth);
         float difH = Mathf.Abs(fitHeight - texHeight);
         
         float w, h, r;
-
         if (fitHeight / fitWidth < texHeight / texWidth){
             r = fitHeight / texHeight; 
             h = fitHeight;
@@ -154,8 +158,6 @@ public class BNManager : SingletonMonoBehaviour<BNManager>
         fitRect.anchorMax = new Vector2(0.5f, 0.5f);
         fitRect.sizeDelta = new Vector2(w, h);
 		fitRect.anchoredPosition = Vector2.zero;
-
-        image.sprite = spr;
     }
 
     public Sprite CreateSprite(Texture2D tex){

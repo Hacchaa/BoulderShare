@@ -36,10 +36,12 @@ public class DisplayImage : MonoBehaviour
 
         if(editedSprite != null){
             cur = 1;
-            BNManager.Instance.FitImageToParent(image, imageRect, root, editedSprite);
+            BNManager.Instance.FitImageToParent(imageRect, root, editedSprite.texture);
+            image.sprite = editedSprite;
         }else{
             cur = 0;
-            BNManager.Instance.FitImageToParent(image, imageRect, root, sprite);
+            BNManager.Instance.FitImageToParent(imageRect, root, sprite.texture);
+            image.sprite = sprite;
         }
         size = imageRect.sizeDelta;
     }

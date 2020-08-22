@@ -6,25 +6,30 @@ using UnityEngine.UI;
 namespace BoulderNotes{
 public class EditWallImage_Undo : MonoBehaviour
 {
-    [SerializeField] private EditWallImageView view;
+    [SerializeField] private MobilePaintController controller;
     [SerializeField] private Image icon;
     [SerializeField] private Sprite enableSprite;
     [SerializeField] private Sprite disableSprite;
-    
+    private bool enableUndo;
     public void Init(){
         icon.sprite = disableSprite;
+        enableUndo = false;
     }
 
-    public void ShowEnableIcon(){
+    public void EnableUndo(){
         icon.sprite = enableSprite;
+        enableUndo = true;
     }
 
-    public void ShowDisableIcon(){
+    public void DisableUndo(){
         icon.sprite = disableSprite;
+        enableUndo = false;
     }
 
     public void Undo(){
-        view.Undo();
+        if (enableUndo){
+            controller.Undo();
+        }
     }
 
 }

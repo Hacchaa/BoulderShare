@@ -40,5 +40,9 @@ public class PenSizeItem : MonoBehaviour
     public void OnPushingButton(){
         controller.ChangeFocusItem(index);
     }
+
+    public float GetBrushSize(){
+        return size;
+    }
 }
 }

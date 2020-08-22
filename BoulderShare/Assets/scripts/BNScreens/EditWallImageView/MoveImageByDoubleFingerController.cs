@@ -8,11 +8,10 @@ using DG.Tweening;
 using System.Runtime.InteropServices;
 
 namespace BoulderNotes{
-public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IInitializePotentialDragHandler{
-	[SerializeField] private DisplayImageControllerManager manager;
+public class MoveImageByDoubleFingerController : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler, IInitializePotentialDragHandler{
+	[SerializeField] private MobilePaintController manager;
 	[SerializeField] private RectTransform boundsRect;
 	[SerializeField] private RectTransform dummyRect;
-	[SerializeField] private RectTransform cursor;
 	[SerializeField] private float animationDuration = 0.3f;
 	[SerializeField] private float elasticity = 0.1f;
 	[SerializeField] private float decelerationRate = 0.1f;
@@ -23,7 +22,6 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 	private float zoomRateLimit = 4.5f;
 	private bool isAlreadyUpdate = false;
 	private bool doneZoomAnim = false;
-	private bool needVelocity;
 	private bool m_Dragging;
 	private Bounds m_ViewBounds;
 	private Bounds m_ContentBounds;
@@ -32,45 +30,19 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 	private Vector2 firstSize; 
 	private Vector2 prevCenterPositionWithDoubleFinger;
 	private Vector2 prevSizeDelta;
-	[SerializeField] private DisplayImage displayImage;
 
- 	public void Init (DisplayImage dImage) {
-		displayImage = dImage;
-		moveRect = dImage.GetImageRect();
-		displayArea = dImage.GetViewRect();
+ 	public void Init (Texture2D texture, RectTransform imageRect, RectTransform displayRect) {
+		moveRect = imageRect;
+		displayArea = displayRect;
+
+        BNManager.Instance.FitImageToParent(moveRect, displayArea, texture);
 
 		CalculateBoundsArea(moveRect.sizeDelta);
-		firstSize = dImage.GetSize();
+		firstSize = imageRect.sizeDelta;
 
 		m_Velocity = Vector2.zero;
 	}	
 
-	public bool IsAlreadyMoved(){
-		return displayImage.IsAlreadyMoved();
-	}
-	public bool IsAttemptingToGoOver(Vector2 dir){
-
-		if (Mathf.Abs(dir.x) < Mathf.Abs(dir.y)){
-			return false;
-		}
-
-		//右端
-		if (displayImage.IsInTheRightSide()){
-			//Debug.Log("right");
-			if (dir.x < 0f){
-				return true;
-			}
-		}
-		//左端
-		if (displayImage.IsInTheLeftSide()){
-			//Debug.Log("left");
-			if (dir.x > 0f){
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	public void OnInitializePotentialDrag(PointerEventData data){
         
@@ -78,7 +50,6 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 
     public void OnBeginDrag(PointerEventData data){
 		m_Dragging = true;
-		manager.DisableScroller();
     }
 
 	public void OnDrag(PointerEventData data){
@@ -109,45 +80,6 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 
         //一本指の場合
         if (!manager.HasFinger(1)){
-			Vector2 del = dP1 / CanvasResolutionManager.Instance.GetRatioOfPtToPx();
-			Vector2 prev;
-			del = CalcBoundsDelta(del);
-
-			if (displayImage.IsInTheRightSide()){
-				moveRect.anchoredPosition += new Vector2(0f, del.y);
-				manager.AddScrollPositionX(del.x);
-				del = manager.GetScrollContentPosition();
-				if (del.x > 0f){
-					moveRect.anchoredPosition += new Vector2(del.x, 0f);
-					manager.ResetScrollPosition();
-				}
-			}else if(displayImage.IsInTheLeftSide()){
-				moveRect.anchoredPosition += new Vector2(0f, del.y);
-				manager.AddScrollPositionX(del.x);
-				del = manager.GetScrollContentPosition();
-				if (del.x < 0f){
-					moveRect.anchoredPosition += new Vector2(del.x, 0f);
-					manager.ResetScrollPosition();
-				}
-			}else{
-				prev = moveRect.anchoredPosition;
-				moveRect.anchoredPosition += del;
-				if(displayImage.IsInTheRightSide()){
-					displayImage.ClampOnRight();
-					manager.AddScrollPositionX((prev + del - moveRect.anchoredPosition).x);
-				}else if(displayImage.IsInTheLeftSide()){
-					displayImage.ClampOnLeft();
-					manager.AddScrollPositionX((prev + del - moveRect.anchoredPosition).x);
-				}
-			}
-
-            Vector2 v;
-        	RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, data.position, data.pressEventCamera, out v);
-			v += new Vector2((displayArea.pivot.x - 0.5f) * displayArea.rect.width, (displayArea.pivot.y - 0.5f) * displayArea.rect.height);
-            isAlreadyUpdate = true;
-			needVelocity = true;
-			cursor.anchoredPosition = v;
-			prevCenterPositionWithDoubleFinger = v;
             return ;
         }
 
@@ -174,13 +106,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
         Vector2 diff = (cur - old) / CanvasResolutionManager.Instance.GetRatioOfPtToPx();;
         moveRect.anchoredPosition += CalcBoundsDelta(diff);
 
+        manager.OnZoomAction();
 		isAlreadyUpdate = true;
-		needVelocity = false;
 	}
 	public void OnEndDrag(PointerEventData data){
 		if (!manager.HasFinger(0)){
 			m_Dragging = false;
-			manager.EnableScroller();
 		}
 		BoundSizeWithAnim();
     }
@@ -202,30 +133,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 				if (offset[axis] != 0)
 				{
 					float speed = m_Velocity[axis];
-					if (axis == 0){
-						//外側のscrollRectに速度を渡す
-						manager.AddScrollVelocityX(speed);
-						m_Velocity[axis] = 0f;
-						float diff ;
-						if (offset[axis] < 0f){
-							//Debug.Log("clampOnLeft");
-							diff = displayImage.ClampOnLeft();
-						}else{
-							//Debug.Log("clampOnright");
-							diff = displayImage.ClampOnRight();
-						}
-						//Debug.Log("diff:"+diff);
-						manager.AddScrollPositionX(-diff);
-						position[axis]=moveRect.anchoredPosition.x;
-						//Debug.Log("position.x:"+position.x);
-					}else{
-						float smoothTime = elasticity;
+					float smoothTime = elasticity;
 
-						position[axis] = Mathf.SmoothDamp(moveRect.anchoredPosition[axis], moveRect.anchoredPosition[axis] + offset[axis], ref speed, smoothTime, Mathf.Infinity, deltaTime);
-						if (Mathf.Abs(speed) < 1)
-							speed = 0;
-						m_Velocity[axis] = speed;
-					}
+                    position[axis] = Mathf.SmoothDamp(moveRect.anchoredPosition[axis], moveRect.anchoredPosition[axis] + offset[axis], ref speed, smoothTime, Mathf.Infinity, deltaTime);
+                    if (Mathf.Abs(speed) < 1)
+                        speed = 0;
+                    m_Velocity[axis] = speed;
 				}
 				// Else move content according to velocity with deceleration applied.
 				else
@@ -241,12 +154,8 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
 
 		if (m_Dragging)
 		{
-			if (needVelocity){
-				Vector3 newVelocity = (moveRect.anchoredPosition - m_PrevPosition) / deltaTime;
-				m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
-			}else{
-				m_Velocity = Vector2.zero;
-			}
+            Vector3 newVelocity = (moveRect.anchoredPosition - m_PrevPosition) / deltaTime;
+            m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
 		}
 
 		if (moveRect.anchoredPosition != m_PrevPosition)
@@ -359,33 +268,12 @@ public class MoveImageController : MonoBehaviour, IDragHandler, IEndDragHandler,
         RectTransformUtility.ScreenPointToLocalPointInRectangle(displayArea, screenPosition, data.pressEventCamera, out center);
 		center += new Vector2((displayArea.pivot.x - 0.5f) * displayArea.rect.width, (displayArea.pivot.y - 0.5f) * displayArea.rect.height);
 		prevCenterPositionWithDoubleFinger = center;
-		cursor.anchoredPosition = center;
 		if (moveRect.sizeDelta.x < firstSize.x || moveRect.sizeDelta.x > firstSize.x * zoomRateLimit){
 			rate = (rate - 1f)*BOUNDEDZOOM + 1f;
 		}
 		moveRect.sizeDelta *= rate;
 		CalculateBoundsArea(moveRect.sizeDelta);
 		moveRect.anchoredPosition -= ((center-moveRect.anchoredPosition) * (rate - 1f));
-	}
-
-	public void ZoomButton(){
-		float rate = 1.05f;
-		//Debug.Log("diff "+(moveRect.sizeDelta*(rate-1f)));
-		//Debug.Log("sizeDelta before:"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
-		//Debug.Log("anchoredPosition before:"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);
-		moveRect.sizeDelta *= rate;
-		CalculateBoundsArea(moveRect.sizeDelta);
-		moveRect.anchoredPosition -= ((cursor.anchoredPosition-moveRect.anchoredPosition) * (rate - 1f));	
-		//Debug.Log("sizeDelta after :"+moveRect.sizeDelta.x + ", "+moveRect.sizeDelta.y);
-		//Debug.Log("anchoredPosition after :"+moveRect.anchoredPosition.x + ", "+moveRect.anchoredPosition.y);	
-	}
-
-	public void ShrinkButton(){
-		float rate = 0.95f;
-		//Debug.Log("diff "+(moveRect.sizeDelta*(rate-1f)));
-		moveRect.sizeDelta *= rate;
-		CalculateBoundsArea(moveRect.sizeDelta);
-		moveRect.anchoredPosition -= ((cursor.anchoredPosition-moveRect.anchoredPosition) * (rate - 1f));	
 	}
 
 	public void CalculateBoundsArea(Vector2 size, bool consideredMimBouonds = false, bool debug = false){

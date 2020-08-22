@@ -11,20 +11,20 @@ public class SliderEventCatcher : MonoBehaviour, IPointerDownHandler, IPointerUp
     [SerializeField] private EditWallImageView view;
 
     public void OnPointerDown(PointerEventData data){
-        view.SetBrushSize();
-        view.ShowBrush();
-        reciever.OnPointerDown(data);
+        //view.SetBrushSize();
+        //view.ShowBrush();
+        //reciever.OnPointerDown(data);
     }
     public void OnPointerUp(PointerEventData data){
-        view.HideBrush();
-        reciever.OnPointerUp(data);
+        //view.HideBrush();
+        //reciever.OnPointerUp(data);
     }
     public void OnInitializePotentialDrag(PointerEventData data){
-        reciever.OnInitializePotentialDrag(data);
+        //reciever.OnInitializePotentialDrag(data);
     }   
 
     public void OnDrag(PointerEventData data){
-        reciever.OnDrag(data);
+        //reciever.OnDrag(data);
     }
 }
 }

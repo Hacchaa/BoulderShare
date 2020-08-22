@@ -6,10 +6,10 @@ using UnityEngine.UI;
 using System.IO;
 
 namespace BoulderNotes{
-public class EditWallImageView: BNScreen
+public class EditWallImageView: BNScreenWithGyms
 {
     [SerializeField] private GameObject mobliePaintRoot;
-    [SerializeField] private unitycoder_MobilePaint.MobilePaint mobilePaint;
+    [SerializeField] private MobilePaintUGUI mobilePaint;
     [SerializeField] private RectTransform drawArea;
     [SerializeField] private float offsetTop = 88f;
     [SerializeField] private float offsetWidth = 60f;
@@ -19,11 +19,8 @@ public class EditWallImageView: BNScreen
     [SerializeField] private GameObject mobilePaintUI;
     [SerializeField] private Camera mobilePaintCamera;
     [SerializeField] private float maskThreshould = 0.2f;
-    [SerializeField] private Image testImage;
-    [SerializeField] private EditWallImage_PenSizeController penSizeController;
-    [SerializeField] private EditWallImage_PenTypeController penTypeController;
-    [SerializeField] private EditWallImage_FillTypeController fillTypeController;
-    [SerializeField] private EditWallImage_Undo undoController;
+    [SerializeField] private MobilePaintController mobilePaintController;
+
     private float ptPerTexsize;
     private float defaultFOV;
     private Renderer rend;
@@ -40,13 +37,8 @@ public class EditWallImageView: BNScreen
         route = null;
         routeView = null;
 
-        penSizeController.Init();
-        penTypeController.Init();
-        fillTypeController.Init();
-        undoController.Init();
-    
-        if (belongingStack != null && belongingStack is BNScreenStackWithTargetGym){
-            stack = belongingStack as BNScreenStackWithTargetGym;
+        stack = GetScreenStackWithGyms();
+        if (stack != null){
             route = stack.GetTargetRoute();
             BNScreen s = stack.GetPreviousScreen(1);
             if (s is RouteView){
@@ -56,6 +48,7 @@ public class EditWallImageView: BNScreen
             }
         }
         if (wallImage != null){
+            /*
             CalcDrawArea();
             mobliePaintRoot.SetActive(true);
             rend = mobilePaint.GetComponent<Renderer>();
@@ -66,15 +59,14 @@ public class EditWallImageView: BNScreen
             mobilePaint.InitializeEverything();
             brushSlider.value = mobilePaint.brushSize;
             brushPreview.gameObject.SetActive(false);
+            */
+
+            mobilePaintController.Init(wallImage);
 
             defaultFOV = mobilePaintCamera.fieldOfView;
 
             texWidth = wallImage.width;
             texHeight = wallImage.height;
-
-            testImage.material = rend.material;
-            testImage.enabled = false;
-            testImage.enabled = true;
         }
     }
 
@@ -119,7 +111,7 @@ public class EditWallImageView: BNScreen
     public void ReverseTransition(){
         BNScreens.Instance.ReverseTransition();
     }
-
+/*
     public void DoUndo(){
         if(mobilePaint != null){
             mobilePaint.DoUndo();
@@ -135,10 +127,12 @@ public class EditWallImageView: BNScreen
 
     public void SetBrushSize(float v = -1f){
         if (v < 0){
-            v = mobilePaint.brushSize;
+            v = penSizeController.GetBrushSize();
         }
+        int val = (int)v;
+        mobilePaint.SetBrushSizeByPt(val/2f);
         //brushsizeは半径
-        brushPreview.sizeDelta = Vector2.one * v * ptPerTexsize * 2f / ( mobilePaintCamera.fieldOfView / defaultFOV);
+        brushPreview.sizeDelta = Vector2.one * val * ptPerTexsize * 2f / ( mobilePaintCamera.fieldOfView / defaultFOV);
     }
     public void ShowBrush(){
         brushPreview.gameObject.SetActive(true);
@@ -150,15 +144,17 @@ public class EditWallImageView: BNScreen
     }
 
     public void SetBrushMode(){
-        mobilePaint.SetDrawModeBrush();
+        mobilePaint.SetDrawMode(MobilePaintUGUI.DrawMode.Default);
     }
     public void SetFillMode(){
-        mobilePaint.SetDrawModeFill();
+        mobilePaint.SetDrawMode(MobilePaintUGUI.DrawMode.FloodFill);
     }
 
+*/
     public void SaveWallImage(){
-        Color32[] maskColors = ((Texture2D)rend.material.GetTexture("_MaskTex")).GetPixels32();
-        Color32[] mainColors = ((Texture2D)rend.material.GetTexture("_MainTex")).GetPixels32();
+        Material material = mobilePaint.GetImage().material;
+        Color32[] maskColors = ((Texture2D)material.GetTexture("_MaskTex")).GetPixels32();
+        Color32[] mainColors = ((Texture2D)material.GetTexture("_MainTex")).GetPixels32();
         byte[] bin = new byte[texWidth * texHeight * 4];
         Texture2D image = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
 
@@ -211,28 +207,6 @@ public class EditWallImageView: BNScreen
         File.WriteAllBytes(path, bin);
 
         Debug.Log("Screenshot saved at: "+path);*/
-    }
-
-
-    private bool undoSwitch = false;
-    public void Undo(){
-        if (undoSwitch){
-            undoController.ShowDisableIcon();
-        }else{
-            undoController.ShowEnableIcon();
-        }
-        undoSwitch = !undoSwitch;
-    }
-
-    private bool fillSwitch = false;
-
-    public void ChangeFillType(){
-        if (fillSwitch){
-            fillTypeController.SwitchOff();
-        }else{
-            fillTypeController.SwitchOn();
-        }
-        fillSwitch = !fillSwitch;
     }
 }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace BoulderNotes{
 public class EditWallImage_FillTypeController : MonoBehaviour
 {
-    [SerializeField] private EditWallImageView view;
+    [SerializeField] private MobilePaintController controller;
     [SerializeField] private Image icon;
     [SerializeField] private Sprite onSprite;
     [SerializeField] private Sprite offSprite;
@@ -25,7 +25,7 @@ public class EditWallImage_FillTypeController : MonoBehaviour
     }
 
     public void SwitchFillType(){
-        view.ChangeFillType();
+        controller.ChangeFillType();
     }
 }
 }

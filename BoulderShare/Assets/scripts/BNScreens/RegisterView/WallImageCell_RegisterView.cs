@@ -62,7 +62,8 @@ public class WallImageCell_RegisterView : MonoBehaviour
     }
 
     public void displayImage(Sprite sprite){
-        BNManager.Instance.FitImageToParent(image, image.GetComponent<RectTransform>(), null, sprite);
+        BNManager.Instance.FitImageToParent(image.GetComponent<RectTransform>(), null, sprite.texture);
+        image.sprite = sprite;
     }
 /*
     public Texture2D GetTexture(){
