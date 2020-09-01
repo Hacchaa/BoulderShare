@@ -14,7 +14,8 @@ public class MobilePaintUGUI : MonoBehaviour
     {
         Default,
         FloodFill,
-        Eraser
+        Eraser,
+        Circle
     }
     private DrawMode drawMode;
     [SerializeField] private Camera cam;
@@ -42,7 +43,7 @@ public class MobilePaintUGUI : MonoBehaviour
 
     [SerializeField] private bool enableUndo;
     private List<byte[]> undoPixels;
-    private int maxUndoBuffers = 10;
+    private int maxUndoBuffers = 30;
 
     [SerializeField] private Color32 clearColor;
 
@@ -52,14 +53,19 @@ public class MobilePaintUGUI : MonoBehaviour
 
     private bool goneOut;
     [SerializeField] private bool connectBrushStokes;
+    [SerializeField] private Image previewCircle;
+    private RectTransform previewCircleRect;
 
     private bool isDoneFirstProc = false;
+    private bool isPixelOverwrited = false;
     private void FirstProc(){
         image = GetComponent<Image>();
         imageRect = image.GetComponent<RectTransform>();
         imageRect.anchorMin = new Vector2(0.5f, 0.5f);
         imageRect.anchorMax = new Vector2(0.5f, 0.5f);
         imageRect.pivot = new Vector2(0.5f, 0.5f);
+
+        previewCircleRect = previewCircle.gameObject.GetComponent<RectTransform>();
 
         material = image.material;
         pixelUVs = new Vector2[touchableFingerNum];
@@ -68,11 +74,10 @@ public class MobilePaintUGUI : MonoBehaviour
         if (enableUndo){
             undoPixels = new List<byte[]>();
         }
-        drawMode = DrawMode.Default;
         isDoneFirstProc = true;
     }
 
-    public void Init(Texture mainTex){
+    public void Init(Texture mainTex, Texture2D maskTex = null){
         if (!isDoneFirstProc){
             FirstProc();
         }
@@ -84,6 +89,8 @@ public class MobilePaintUGUI : MonoBehaviour
             mainTex = material.GetTexture(mainTextureName);
         }else{
             material.SetTexture(mainTextureName, mainTex);
+            
+            //描画の反映　もっと良い方法あるかも
             image.enabled = false;
             image.enabled = true;
         }
@@ -95,13 +102,23 @@ public class MobilePaintUGUI : MonoBehaviour
         pixels = new byte[texWidth * texHeight * 4];
 
         drawingTexture = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+        if (maskTex != null){
+            drawingTexture.SetPixels32(maskTex.GetPixels32());
+            drawingTexture.Apply(false);
+        }
+        
         material.SetTexture(targetTextureName, drawingTexture);
 
         drawingTexture.filterMode = FilterMode.Point;
         drawingTexture.wrapMode = TextureWrapMode.Clamp;
 
-        ClearImage(false);
+        if(maskTex == null){
+            ClearImage(false);
+        }else{
+            ClearImageByTargetTexture();
+        }
         textureNeedsUpdate = false;
+        drawMode = DrawMode.Default;
     }
     void Update()
     {
@@ -118,7 +135,7 @@ public class MobilePaintUGUI : MonoBehaviour
     }
     public void OnBeginDrag(PointerEventData data){
         int n = fingerToUVIndexMap.Count;
-        if (n > touchableFingerNum){
+        if (n >= touchableFingerNum){
             return ;
         }
         fingerToUVIndexMap.Add(data.pointerId, n);
@@ -133,6 +150,7 @@ public class MobilePaintUGUI : MonoBehaviour
         // get hit texture coordinate
         CalcTextureCoordinateFromScreenPoint(data.position, out pixelUVs[index]);
         goneOut = false;
+        isPixelOverwrited = false;
     }
 
     public void OnDrag(PointerEventData data){
@@ -144,6 +162,9 @@ public class MobilePaintUGUI : MonoBehaviour
         bool isIn = CalcTextureCoordinateFromScreenPoint(data.position, out v);
         if (!isIn){
             goneOut = true;
+            if (drawMode == DrawMode.Circle){
+                HidePreviewCircle();
+            }
             return ;
         }
 
@@ -161,6 +182,9 @@ public class MobilePaintUGUI : MonoBehaviour
 
             case DrawMode.Eraser:
                 EraseWithBackgroundColor((int)pixelUVs[index].x, (int)pixelUVs[index].y);
+                break;
+            case DrawMode.Circle:
+                ShowPreviewCircle(data.position);
                 break;
 
             default:
@@ -194,6 +218,22 @@ public class MobilePaintUGUI : MonoBehaviour
         if (!fingerToUVIndexMap.ContainsKey(data.pointerId)){
             return ;
         }
+        if (drawMode == DrawMode.Circle){
+            HidePreviewCircle();
+
+            int index = fingerToUVIndexMap[data.pointerId];
+            Vector2 v;
+            bool isIn = CalcTextureCoordinateFromScreenPoint(data.position, out v);
+            if (isIn){
+                DrawCircle((int)pixelUVs[index].x, (int)pixelUVs[index].y);
+            }
+            textureNeedsUpdate = true;
+        }
+
+        if (!isPixelOverwrited && enableUndo){
+            DoUndo();
+        }
+
         fingerToUVIndexMap.Remove(data.pointerId); 
     }
     public void DrawCircle(int x, int y){
@@ -206,10 +246,7 @@ public class MobilePaintUGUI : MonoBehaviour
 
                 pixel = (texWidth * (y + py) + x + px) * 4;
 
-                pixels[pixel] = paintColor.r;
-                pixels[pixel + 1] = paintColor.g;
-                pixels[pixel + 2] = paintColor.b;
-                pixels[pixel + 3] = paintColor.a;
+                DrawPoint(pixel);
             }
         }
     } 
@@ -295,7 +332,24 @@ public class MobilePaintUGUI : MonoBehaviour
             }
         }
     }
+    public void HidePreviewCircle(){
+        previewCircle.gameObject.SetActive(false);
+    }
+    public void ShowPreviewCircle(Vector2 screenPosition){
+        if (!previewCircle.gameObject.activeSelf){
+            previewCircle.gameObject.SetActive(true);
+        }
+        Vector2 local;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRect, screenPosition, cam, out local);
+
+        previewCircleRect.localPosition = local;
+        previewCircleRect.sizeDelta = Vector2.one * brushSize / GetRatioOfImageTextureToImageSize() * 2f;
+    }
+
     public void DrawPoint(int pixel){
+        if (pixels[pixel] != paintColor.r || pixels[pixel + 1] != paintColor.g || pixels[pixel + 2] != paintColor.b || pixels[pixel + 3] != paintColor.a){
+            isPixelOverwrited = true;
+        }
         pixels[pixel] = paintColor.r;
         pixels[pixel + 1] = paintColor.g;
         pixels[pixel + 2] = paintColor.b;
@@ -370,6 +424,19 @@ public class MobilePaintUGUI : MonoBehaviour
 
         UpdateTexture();
     }
+    public void ClearImageByTargetTexture()
+    {
+        Color32[] tempPixels = drawingTexture.GetPixels32();
+        int tempCount = tempPixels.Length;
+
+        for (int i = 0; i < tempCount; i++)
+        {
+            pixels[i*4] = tempPixels[i].r;
+            pixels[i*4 + 1] = tempPixels[i].g;
+            pixels[i*4 + 2] = tempPixels[i].b;
+            pixels[i*4 + 3] = tempPixels[i].a;
+        }
+    }
 
     private void UpdateTexture(){
         drawingTexture.LoadRawTextureData(pixels);
@@ -409,6 +476,9 @@ public class MobilePaintUGUI : MonoBehaviour
         n++;
         System.Array.Copy(pixels, undoPixels[n - 1], pixels.Length);        
     }
+    public int GetUndoSize(){
+        return undoPixels.Count;
+    }
 
     public void SetDrawMode(DrawMode mode){
         drawMode = mode;
@@ -435,6 +505,9 @@ public class MobilePaintUGUI : MonoBehaviour
 
     public Image GetImage(){
         return image;
+    }
+    public DrawMode GetDrawMode(){
+        return drawMode;
     }
 
     public float GetRatioOfImageTextureToImageSize(){

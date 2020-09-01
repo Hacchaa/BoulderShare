@@ -43,14 +43,24 @@ public class PickImageManager : SingletonMonoBehaviour<PickImageManager>
 	}
 
     public void ShowPopup(string title, string detailText, string yesText, string noText, Action yesAction){
-        ISN_UIAlertController alert = new ISN_UIAlertController(title, detailText, ISN_UIAlertControllerStyle.Alert);
-        if (!string.IsNullOrEmpty(noText)){
-            ISN_UIAlertAction no = new ISN_UIAlertAction(noText, ISN_UIAlertActionStyle.Default, null);
-            alert.AddAction(no);
-        }
-        ISN_UIAlertAction yes = new ISN_UIAlertAction(yesText, ISN_UIAlertActionStyle.Destructive ,yesAction);
-        alert.AddAction(yes);
-        alert.Present();
+        #if UNITY_IPHONE
+            if (Application.platform != RuntimePlatform.IPhonePlayer){
+                #if UNITY_EDITOR
+                    if (yesAction != null){
+                        yesAction();
+                    }
+                #endif
+			    return ;
+		    }
+            ISN_UIAlertController alert = new ISN_UIAlertController(title, detailText, ISN_UIAlertControllerStyle.Alert);
+            if (!string.IsNullOrEmpty(noText)){
+                ISN_UIAlertAction no = new ISN_UIAlertAction(noText, ISN_UIAlertActionStyle.Default, null);
+                alert.AddAction(no);
+            }
+            ISN_UIAlertAction yes = new ISN_UIAlertAction(yesText, ISN_UIAlertActionStyle.Destructive ,yesAction);
+            alert.AddAction(yes);
+            alert.Present();
+        #endif 
     }
 
 	private void PickImageFromLibrary(){

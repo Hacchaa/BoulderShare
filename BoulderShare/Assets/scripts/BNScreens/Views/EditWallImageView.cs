@@ -20,6 +20,7 @@ public class EditWallImageView: BNScreenWithGyms
     [SerializeField] private Camera mobilePaintCamera;
     [SerializeField] private float maskThreshould = 0.2f;
     [SerializeField] private MobilePaintController mobilePaintController;
+    [SerializeField] private GameObject deleteButton;
 
     private float ptPerTexsize;
     private float defaultFOV;
@@ -30,12 +31,15 @@ public class EditWallImageView: BNScreenWithGyms
     private RouteView routeView;
     private BNRoute route;
     private BNWallImageNames wallImageNames;
-    private Texture2D wallImage;
+    private Sprite wallImage;
+    private Sprite maskImage;
     
     public override void InitForFirstTransition(){
         stack = null;
         route = null;
         routeView = null;
+        wallImage = null;
+        maskImage = null;
 
         stack = GetScreenStackWithGyms();
         if (stack != null){
@@ -43,10 +47,14 @@ public class EditWallImageView: BNScreenWithGyms
             BNScreen s = stack.GetPreviousScreen(1);
             if (s is RouteView){
                 routeView = s as RouteView;
-                wallImage = routeView.GetSelectedWallImage();
                 wallImageNames = routeView.GetSelectedWallImageName();
+                wallImage = stack.LoadImageByES3(wallImageNames.fileName);
+                if (!string.IsNullOrEmpty(wallImageNames.maskName)){
+                    maskImage = stack.LoadImageByES3(wallImageNames.maskName);
+                }
             }
         }
+
         if (wallImage != null){
             /*
             CalcDrawArea();
@@ -60,13 +68,18 @@ public class EditWallImageView: BNScreenWithGyms
             brushSlider.value = mobilePaint.brushSize;
             brushPreview.gameObject.SetActive(false);
             */
-
-            mobilePaintController.Init(wallImage);
+            
+            mobilePaintController.Init(wallImage, maskImage);
 
             defaultFOV = mobilePaintCamera.fieldOfView;
 
-            texWidth = wallImage.width;
-            texHeight = wallImage.height;
+            texWidth = wallImage.texture.width;
+            texHeight = wallImage.texture.height;
+        }
+        if(maskImage == null){
+            deleteButton.SetActive(false);
+        }else{
+            deleteButton.SetActive(true);
         }
     }
 
@@ -82,8 +95,8 @@ public class EditWallImageView: BNScreenWithGyms
 
         float parentW = drawArea.rect.width - offsetWidth;
         float parentH = drawArea.rect.height - offsetTop;
-        int texW = wallImage.width;
-        int texH = wallImage.height;
+        int texW = wallImage.texture.width;
+        int texH = wallImage.texture.height;
         float drawW;
         float drawH;
         float r;
@@ -172,18 +185,31 @@ public class EditWallImageView: BNScreenWithGyms
                 bin[i*4+3] = 255;
             }
         }
-
         image.LoadRawTextureData(bin);
         image.Apply(false);
+        
+        Texture2D maskImage = new Texture2D(texWidth, texHeight, TextureFormat.RGBA32, false);
+        for(int i = 0 ; i < maskColors.Length ; i++){
+            bin[i*4] = maskColors[i].r;
+            bin[i*4+1] = maskColors[i].g;
+            bin[i*4+2] = maskColors[i].b;
+            bin[i*4+3] = maskColors[i].a;
+        }
+        maskImage.LoadRawTextureData(bin);
+        maskImage.Apply(false);
 
         if (stack != null){
+            List<BNWallImage> wallImages = new List<BNWallImage>();
             string[] str = wallImageNames.fileName.Split('.');
             string name = str[0] + BNGymDataCenter.POSTFIX_ID_WALLIMAGEEDITED + "." + str[1];
-            List<BNWallImage> wallImages = new List<BNWallImage>();
             wallImages.Add(new BNWallImage(image, name));
             wallImageNames.editedFileName = name;
-            route.ModifyWallImageFileName(wallImageNames);
 
+            name = str[0] + BNGymDataCenter.POSTFIX_ID_WALLIMAGEMASK + "." + str[1];
+            wallImages.Add(new BNWallImage(maskImage, name));
+            wallImageNames.maskName = name;
+
+            route.ModifyWallImageFileName(wallImageNames);
             stack.ModifyRoute(route, wallImages);
         }
         /*
@@ -207,6 +233,38 @@ public class EditWallImageView: BNScreenWithGyms
         File.WriteAllBytes(path, bin);
 
         Debug.Log("Screenshot saved at: "+path);*/
+    }
+
+    public void PushRemoveButton(){
+        PickImageManager.Instance.ShowPopup("ホールド登録の削除", "本当にホールド登録を削除しますか？", "削除する", "キャンセル", RemoveProc);
+    }
+    private void RemoveProc(){
+        RemoveEditedImage();
+        ReverseTransition();
+    }
+    private void RemoveEditedImage(){
+        if (wallImageNames != null && !string.IsNullOrEmpty(wallImageNames.editedFileName)){
+            if (stack != null){
+                List<string> removeList = new List<string>();
+                removeList.Add(wallImageNames.editedFileName);
+                if(!string.IsNullOrEmpty(wallImageNames.maskName)){
+                    removeList.Add(wallImageNames.maskName);
+                }
+                wallImageNames.editedFileName = null;
+                wallImageNames.maskName = null;
+
+                route.ModifyWallImageFileName(wallImageNames);
+                stack.ModifyRoute(route, null, removeList);
+            }
+        }
+    }
+
+    public void PushBackButton(){
+        if (mobilePaintController.HasUpdate()){
+            PickImageManager.Instance.ShowPopup("まだ保存していません", "保存しないで終了します。よろしいですか？", "終了する", "キャンセル", ReverseTransition);
+        }else{
+            ReverseTransition();
+        }
     }
 }
 }

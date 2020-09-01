@@ -25,6 +25,7 @@ namespace BoulderNotes{
         public const string PREFIX_ID_RECORD = "T";
         public const string PREFIX_ID_WALLIMAGE = "WI";
         public const string POSTFIX_ID_WALLIMAGEEDITED = "EDI";
+        public const string POSTFIX_ID_WALLIMAGEMASK = "MASK";
         private const string ES3_ROOTPATH = "Gyms";
         private const string ES3_FILE_BNGYMIDS = "gymIDs";
         private const string ES3_KEY_BNGYMIDS = "BNGymIDs";

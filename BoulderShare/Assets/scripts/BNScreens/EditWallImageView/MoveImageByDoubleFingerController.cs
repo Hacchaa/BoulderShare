@@ -390,6 +390,9 @@ public class MoveImageByDoubleFingerController : MonoBehaviour, IDragHandler, IE
 		//Debug.Log("offset "+offset.x+","+offset.y);
 		dummyRect.anchoredPosition += offset;
 
+		//速度を0にしておく
+		m_Velocity = Vector2.zero;
+
 		Sequence seq = DOTween.Sequence();
 		seq.OnStart(()=>{
 			//Debug.Log("anim start");
@@ -409,9 +412,12 @@ public class MoveImageByDoubleFingerController : MonoBehaviour, IDragHandler, IE
 			//二本指操作の禁止解除
 			//Debug.Log("anim end");
 			doneZoomAnim = false;
+			manager.OnZoomAction();
 		});
 
 		seq.Play();
+
+		
 	}
 }
 }

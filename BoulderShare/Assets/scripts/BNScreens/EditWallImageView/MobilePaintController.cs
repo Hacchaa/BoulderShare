@@ -12,30 +12,44 @@ public class MobilePaintController : MonoBehaviour, IInitializePotentialDragHand
     [SerializeField] private MoveImageByDoubleFingerController moveImageController;
 	[SerializeField] private MobilePaintUGUI mobilePaint;
 	[SerializeField] private Image image;
+    [SerializeField] private Image originalImage;
 	[SerializeField] private RectTransform displayRect;
     [SerializeField] private EditWallImage_PenSizeController penSizeController;
     [SerializeField] private EditWallImage_PenTypeController penTypeController;
     [SerializeField] private EditWallImage_FillTypeController fillTypeController;
+    [SerializeField] private EditWallImage_ShowOrigin showOrigin;
     [SerializeField] private EditWallImage_Undo undoController;
+    [SerializeField] private Slider StampSizeSlider;
+    [SerializeField] private float minStampSize = 10;
+    [SerializeField] private float maxStampSize = 100;
+    [SerializeField] private EditWallImage_SaveButton saveButton;
     private bool canMove;
     private bool isDeterminedEvent;
 	private int[] eTouches;
 	public static int FINGER_NONE = -100;
 
-    public void Init(Texture2D texture){
+    public void Init(Sprite mainImage, Sprite maskImage){
+        Texture2D maskTex = (maskImage == null)? null : maskImage.texture;
+
         if (eTouches == null){
 			eTouches = new int[] {FINGER_NONE, FINGER_NONE};
 		}
-        image.sprite = BNManager.Instance.CreateSprite(texture);
-        moveImageController.Init(texture, image.GetComponent<RectTransform>(), displayRect);
-		mobilePaint.Init(texture);
+        image.sprite = mainImage;
+        moveImageController.Init(mainImage.texture, image.GetComponent<RectTransform>(), displayRect);
+		mobilePaint.Init(mainImage.texture, maskTex);
 		penSizeController.Init();
         penTypeController.Init();
         fillTypeController.Init();
         undoController.Init();
+        showOrigin.Init();
 		SetBrushSize();
         canMove = false;
         isDeterminedEvent = false;
+
+        originalImage.sprite = mainImage;
+        originalImage.gameObject.SetActive(false);
+
+        saveButton.Init();
     }
     public void LateUpdate(){
         if(canMove){
@@ -113,7 +127,14 @@ public class MobilePaintController : MonoBehaviour, IInitializePotentialDragHand
             moveImageController.OnEndDrag(ped);
         }else{
             mobilePaint.OnEndDrag(ped);
-			undoController.EnableUndo();
+            int currentUndoSize = mobilePaint.GetUndoSize();
+            if (currentUndoSize != 0){
+                undoController.EnableUndo();
+
+                saveButton.EnableButton();
+            }else{
+                saveButton.DisableButton();
+            }
         }
 
         if(!HasFinger(0)){
@@ -122,21 +143,42 @@ public class MobilePaintController : MonoBehaviour, IInitializePotentialDragHand
     }  
 
 	public void OnZoomAction(){
-		SetBrushSize();
+        MobilePaintUGUI.DrawMode mode = mobilePaint.GetDrawMode();
+		if (mode == MobilePaintUGUI.DrawMode.Default){
+            SetBrushSize(penSizeController.GetBrushSize());
+        }else if(mode == MobilePaintUGUI.DrawMode.Circle){
+            SetBrushSizeByStampSizeSlider(StampSizeSlider.value);
+            HideStampPreview();
+        }else if (mode == MobilePaintUGUI.DrawMode.Eraser){
+            SetBrushSize(penSizeController.GetBrushSize());
+        }
 	}
 
 	public void SetBrushSize(float v = -1f){
         if (v < 0){
-            v = penSizeController.GetBrushSize();
+            v = penSizeController.GetDefaultBrushSize();
         }
-        int val = (int)v;
+
+        mobilePaint.SetBrushSizeByPt(v/2f);
+    }
+    public void SetBrushSizeByStampSizeSlider(float v){
+        float val = v * (maxStampSize - minStampSize) + minStampSize;
         mobilePaint.SetBrushSizeByPt(val/2f);
+        ShowStampPreview();
     }
-    public void SetBrushMode(){
-        mobilePaint.SetDrawMode(MobilePaintUGUI.DrawMode.Default);
-    }
-    public void SetFillMode(){
-        mobilePaint.SetDrawMode(MobilePaintUGUI.DrawMode.FloodFill);
+    public void SetBrushMode(MobilePaintUGUI.DrawMode mode){
+        mobilePaint.SetDrawMode(mode);
+        penTypeController.Focus(mode);
+
+        if (mode == MobilePaintUGUI.DrawMode.Default){
+            penSizeController.ChangeFocusItemByDefault();
+        }else if(mode == MobilePaintUGUI.DrawMode.Circle){
+            StampSizeSlider.value = 0f;
+            StampSizeSlider.value = 0.5f;
+            HideStampPreview();
+        }else if (mode == MobilePaintUGUI.DrawMode.Eraser){
+            penSizeController.ChangeFocusItemByDefault();
+        }
     }
 
     public void Undo(){
@@ -144,8 +186,10 @@ public class MobilePaintController : MonoBehaviour, IInitializePotentialDragHand
 
         if(mobilePaint.CanDoUndo()){
 			undoController.EnableUndo();
+            saveButton.EnableButton();
 		}else{
 			undoController.DisableUndo();
+            saveButton.DisableButton();
 		}
     }
 
@@ -158,6 +202,23 @@ public class MobilePaintController : MonoBehaviour, IInitializePotentialDragHand
             fillTypeController.SwitchOn();
         }
         fillSwitch = !fillSwitch;
+    }
+
+    public void ShowOriginalImage(){
+        originalImage.gameObject.SetActive(true);
+    }
+    public void HideOriginalImage(){
+        originalImage.gameObject.SetActive(false);
+    }
+    public void ShowStampPreview(){
+        mobilePaint.ShowPreviewCircle(new Vector2(Screen.width/2f, Screen.height/2f));
+    }
+    public void HideStampPreview(){
+        mobilePaint.HidePreviewCircle();
+    }
+
+    public bool HasUpdate(){
+        return mobilePaint.CanDoUndo();
     }
 }
 }

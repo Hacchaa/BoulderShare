@@ -7,6 +7,7 @@ namespace BoulderNotes{
 public class EditWallImage_PenTypeItem : MonoBehaviour
 {
     [SerializeField] private Image icon;
+    [SerializeField] private MobilePaintUGUI.DrawMode drawMode;
     [SerializeField] private EditWallImage_PenTypeController controller;
     [SerializeField] private Sprite focusSprite;
     [SerializeField] private Sprite deFocusSprite;
@@ -32,6 +33,9 @@ public class EditWallImage_PenTypeItem : MonoBehaviour
 
     public void OnPushingButton(){
         controller.ChangePenType(index);
+    }
+    public MobilePaintUGUI.DrawMode GetDrawMode(){
+        return drawMode;
     }
 }
 }

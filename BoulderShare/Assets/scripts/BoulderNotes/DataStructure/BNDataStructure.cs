@@ -139,6 +139,7 @@ namespace BoulderNotes{
     public class BNWallImageNames{
         public string fileName;
         public string editedFileName;
+        public string maskName;
     }
     [Serializable]
     public class BNRoute{

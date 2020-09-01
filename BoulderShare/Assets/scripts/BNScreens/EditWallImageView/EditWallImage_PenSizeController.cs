@@ -10,6 +10,7 @@ public class EditWallImage_PenSizeController : MonoBehaviour
     [SerializeField] private PenSizeItem[] items;
     [SerializeField] private Color focusColor;
     [SerializeField] private Color deFocusColor;
+
     private int defaultItemIndex;
     private int cur;
     public void Init(){
@@ -30,6 +31,9 @@ public class EditWallImage_PenSizeController : MonoBehaviour
 
         cur = index;
         SendBrushSize();
+    }
+    public void ChangeFocusItemByDefault(){
+        ChangeFocusItem(defaultItemIndex);
     }
 
     public void SendBrushSize(){
